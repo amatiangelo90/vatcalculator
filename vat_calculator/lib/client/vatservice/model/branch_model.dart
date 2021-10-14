@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../enums.dart';
 
-class Company{
+class BranchModel{
   int pkBranchId;
   String companyName;
   String eMail;
@@ -13,7 +13,7 @@ class Company{
   String apiKeyOrUser;
   String apiUidOrPassword;
 
-  Company({
+  BranchModel({
     @required this.pkBranchId,
     @required this.companyName,
     @required this.eMail,

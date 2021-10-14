@@ -75,11 +75,11 @@ class RecapDataState extends State<RecapData> {
                   height: MediaQuery.of(context).size.width / 4,
                   width: MediaQuery.of(context).size.width / 2,
                   child: Card(
-                    color: provider == 'fattureInCloud' ? Colors.blueAccent : Colors.orange,
+                    color: provider == 'fatture_in_cloud' ? Colors.blueAccent : Colors.orange,
                     semanticContainer: true,
                     clipBehavior: Clip.antiAliasWithSaveLayer,
                     child: Image.asset(
-                      provider == 'fattureInCloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
+                      provider == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
                       fit: BoxFit.contain,
                     ),
                     shape: RoundedRectangleBorder(
@@ -94,7 +94,7 @@ class RecapDataState extends State<RecapData> {
             const SizedBox(height: 10),
             Row(
               children: <Widget>[
-                provider == 'fattureInCloud' ?
+                provider == 'fatture_in_cloud' ?
                 Flexible(child: Text("ApiKey : " + apikey_user, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)) :
                 Flexible(child: Text("User : " + apikey_user, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),
                 //Text(provider, style: const TextStyle(fontSize: 16)),
@@ -103,7 +103,7 @@ class RecapDataState extends State<RecapData> {
             const SizedBox(height: 10),
             Row(
               children: <Widget>[
-                provider == 'fattureInCloud' ?
+                provider == 'fatture_in_cloud' ?
                 Flexible(child: Text("ApiUid :" + apiuid_pass, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)) :
                 Flexible(child: Text("Password : " + apiuid_pass, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),
                 //Text(provider, style: const TextStyle(fontSize: 16)),

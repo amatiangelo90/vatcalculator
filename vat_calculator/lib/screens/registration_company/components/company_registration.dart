@@ -3,16 +3,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/aruba/constant/utils_aruba.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
-import 'package:vat_calculator/client/fattureICloud/constant/utils_icloud.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/company.dart';
+import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/registration_company/components/recap_data.dart';
 import 'package:vat_calculator/screens/registration_company/components/vatprovider.dart';
 import 'package:vat_calculator/theme.dart';
-import '../../../enums.dart';
 import 'company_details.dart';
 
 class CompanyRegistration extends StatefulWidget {
@@ -141,7 +139,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     if(resultValidation){
       // TODO salvare dati azienda
 
-      Company company = Company(
+      BranchModel company = BranchModel(
           eMail: dataBundleNotifier.dataBundleList[0].email,
           phoneNumber: mapData['mobile_no'],
           address: mapData['address'],
@@ -156,8 +154,21 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
       print('Saving the following company to database: ');
       print(company.toMap());
-      var performSaveUser = clientService.performSaveBranch(company);
+      clientService.performSaveBranch(company);
 
+
+      ContactState.controllerPIva.clear();
+      ContactState.controllerAddress.clear();
+      ContactState.controllerCompanyName.clear();
+      ContactState.controllerMobileNo.clear();
+      VatProviderState.controllerApiKeyOrUser.clear();
+      VatProviderState.controllerApiUidOrPassword.clear();
+
+      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(ContactState.controllerEmail.text);
+
+      dataBundleNotifier.addBranches(_branchList);
+
+      Navigator.pushNamed(context, HomeScreen.routeName);
     }
   }
 
@@ -176,7 +187,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       return false;
     }else if(mapData['apiuid_or_password'] == null || mapData['apiuid_or_password'] == ''){
 
-      if(mapData['provider_name'] == 'fattureInCloud'){
+      if(mapData['provider_name'] == 'fatture_in_cloud'){
         Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Inserire ApiUid per il provider FattureInCloud'),
         ));
@@ -195,7 +206,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       return false;
     }else if(mapData['apikey_or_user'] == null || mapData['apikey_or_user'] == ''){
 
-      if(mapData['provider_name'] == 'fattureInCloud'){
+      if(mapData['provider_name'] == 'fatture_in_cloud'){
         Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Inserire ApiKey per il provider FattureInCloud'),
         ));
@@ -220,7 +231,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       return false;
     }
 
-    if(mapData['provider_name'] == 'fattureInCloud'){
+    if(mapData['provider_name'] == 'fatture_in_cloud'){
       print('validate');
       bool result = await validateCredentials(mapData);
       if(result){

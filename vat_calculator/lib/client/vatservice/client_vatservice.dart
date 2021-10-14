@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import 'constant/utils_vatservice.dart';
-import 'model/company.dart';
+import 'model/branch_model.dart';
 import 'model/user_model.dart';
 
 class ClientVatService{
@@ -42,7 +42,7 @@ class ClientVatService{
   }
 
   Future<Response> performSaveBranch(
-      Company company) async {
+      BranchModel company) async {
 
     var dio = Dio();
 
@@ -111,5 +111,53 @@ class ClientVatService{
 
   }
 
+  Future<List<BranchModel>> retrieveBranchesByUserEmail(
+      String eMail) async {
 
+    var dio = Dio();
+
+    List<BranchModel> branchList = [];
+
+    String body = json.encode(
+        UserModel(
+            name: '',
+            lastName: '',
+            mail: eMail,
+            phone: ''
+        ).toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve User by Email): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((branchElement) {
+
+        branchList.add(
+            BranchModel(
+                pkBranchId: branchElement['pkBranchId'],
+                companyName: branchElement['name'],
+                eMail: branchElement['email'],
+                vatNumber: branchElement['vatNumber'],
+                address: branchElement['address'],
+                phoneNumber: branchElement['phone'],
+                providerFatture: branchElement['provider'],
+                apiKeyOrUser: branchElement['idKeyUser'],
+                apiUidOrPassword: branchElement['idUidPassword']));
+      });
+      return branchList;
+
+    }catch(e){
+      print(e);
+    }
+    return branchList;
+  }
 }

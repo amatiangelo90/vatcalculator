@@ -39,6 +39,7 @@ class BodyProfile extends StatelessWidget {
                     if(_auth!=null){
                       _auth.signOut();
                     }
+                    dataBundleNotifier.clearAll();
                     ScaffoldMessenger.of(context)
                         .showSnackBar(const SnackBar(
                         duration: Duration(milliseconds: 2700),

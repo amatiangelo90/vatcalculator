@@ -80,12 +80,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
                     ClientVatService clientService = ClientVatService();
                     var performSaveUser = clientService.performSaveUser(firstName, lastName, phoneNumber, widget.email);
-                    Timer(Duration(seconds: 2),(){});
-
-                    //print('Recupero info cliente da mail : ' + widget.email);
-                    //var userRetrievedByEmail = clientService.retrieveUserByEmail(widget.email);
-                    //print(userRetrievedByEmail);
-                    Timer(const Duration(milliseconds: 2500), ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen(email: widget.email,),),),);
+                    Timer(const Duration(milliseconds: 2500), ()=> Navigator.push(context, MaterialPageRoute(builder: (context) =>LandingScreen(email: widget.email,),),),);
 
                   }else{
                     ScaffoldMessenger.of(context)

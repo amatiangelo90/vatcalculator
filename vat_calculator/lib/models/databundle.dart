@@ -1,16 +1,53 @@
 import 'package:flutter/cupertino.dart';
 
-import '../client/vatservice/model/company.dart';
+import '../client/vatservice/model/branch_model.dart';
 
 class DataBundle {
 
-  String email;
-  String password;
-  String firstName;
-  String lastName;
-  String phone;
-  List<Company> companyList;
+  String _email;
+  String _password;
+  String _firstName;
+  String _lastName;
+  String _phone;
+  List<BranchModel> _companyList;
 
-  DataBundle({@required this.email, this.password, this.firstName, this.lastName,
-    this.companyList, this.phone});
+
+  DataBundle(this._email, this._password, this._firstName, this._lastName,
+      this._phone, this._companyList);
+
+  String get email => _email;
+
+  set email(String value) {
+    _email = value;
+  }
+
+  String get password => _password;
+
+  set password(String value) {
+    _password = value;
+  }
+
+  String get firstName => _firstName;
+
+  set firstName(String value) {
+    _firstName = value;
+  }
+
+  String get lastName => _lastName;
+
+  set lastName(String value) {
+    _lastName = value;
+  }
+
+  String get phone => _phone;
+
+  set phone(String value) {
+    _phone = value;
+  }
+
+  List<BranchModel> get companyList => _companyList;
+
+  set companyList(List<BranchModel> value) {
+    _companyList = value;
+  }
 }

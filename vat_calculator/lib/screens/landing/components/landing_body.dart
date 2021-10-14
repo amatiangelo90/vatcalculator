@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundle.dart';
@@ -28,9 +29,10 @@ class LandingBody extends StatelessWidget {
               height: SizeConfig.screenHeight * 0.4,
             ),
             SizedBox(height: SizeConfig.screenHeight * 0.08),
-            Center(
+            Flexible(
               child: Text(
                 "Benvenuto " + email,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
                   fontWeight: FontWeight.bold,
@@ -45,9 +47,14 @@ class LandingBody extends StatelessWidget {
                 text: "Andiamo!",
                 press: () async {
                   ClientVatService clientService = ClientVatService();
-                  UserModel userModelRetrieved= await clientService.retrieveUserByEmail(email);
-                  DataBundle dataBundle = DataBundle(email: userModelRetrieved.mail, lastName: userModelRetrieved.lastName, firstName: userModelRetrieved.name, phone: userModelRetrieved.phone, companyList: []);
+                  UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
+
+                  DataBundle dataBundle = DataBundle(userModelRetrieved.mail, '', userModelRetrieved.lastName, userModelRetrieved.name, userModelRetrieved.phone, []);
+
+                  List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
                   dataBundleNotifier.addDataBundle(dataBundle);
+                  dataBundleNotifier.addBranches(_branchList);
+
                   Navigator.pushNamed(context, HomeScreen.routeName);
                 },
               ),

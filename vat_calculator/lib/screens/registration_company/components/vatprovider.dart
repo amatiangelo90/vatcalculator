@@ -49,7 +49,7 @@ class VatProviderState extends State<VatProvider> {
                       isArubaChoiced = false;
                       controllerApiKeyOrUser.clear();
                       controllerApiUidOrPassword.clear();
-                      controllerProviderName.text = 'fattureInCloud';
+                      controllerProviderName.text = 'fatture_in_cloud';
                     });
                   },
                   child: SizedBox(
@@ -211,7 +211,7 @@ class VatProviderState extends State<VatProvider> {
                     textColor: Colors.white,
                     onPressed: ()  async {
 
-                      if(controllerProviderName.text == 'fattureInCloud'){
+                      if(controllerProviderName.text == 'fatture_in_cloud'){
                         var performRichiestaInfoResponse = await fattureInCloudClient.performRichiestaInfo(
                             controllerApiUidOrPassword.text,
                             controllerApiKeyOrUser.text);
