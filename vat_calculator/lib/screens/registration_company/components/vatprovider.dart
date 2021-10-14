@@ -49,7 +49,7 @@ class VatProviderState extends State<VatProvider> {
                       isArubaChoiced = false;
                       controllerApiKeyOrUser.clear();
                       controllerApiUidOrPassword.clear();
-                      controllerProviderName.text = ProviderFattureElettroniche.fattureInCloud.toString();
+                      controllerProviderName.text = 'fattureInCloud';
                     });
                   },
                   child: SizedBox(
@@ -78,7 +78,7 @@ class VatProviderState extends State<VatProvider> {
                       isArubaChoiced = true;
                       controllerApiKeyOrUser.clear();
                       controllerApiUidOrPassword.clear();
-                      controllerProviderName.text = ProviderFattureElettroniche.aruba.toString();
+                      controllerProviderName.text = 'aruba';
                     });
                   },
                   child: SizedBox(
@@ -211,7 +211,7 @@ class VatProviderState extends State<VatProvider> {
                     textColor: Colors.white,
                     onPressed: ()  async {
 
-                      if(controllerProviderName.text == ProviderFattureElettroniche.fattureInCloud.toString()){
+                      if(controllerProviderName.text == 'fattureInCloud'){
                         var performRichiestaInfoResponse = await fattureInCloudClient.performRichiestaInfo(
                             controllerApiUidOrPassword.text,
                             controllerApiKeyOrUser.text);
@@ -225,8 +225,8 @@ class VatProviderState extends State<VatProvider> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }else{
-                          final snackBar =
-                          const SnackBar(
+                          const snackBar =
+                          SnackBar(
                             duration: Duration(seconds: 5),
                             backgroundColor: Colors.green,
                             content: Text('Credenziali Valide!',
@@ -234,7 +234,7 @@ class VatProviderState extends State<VatProvider> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
-                      }else if (controllerProviderName.text == ProviderFattureElettroniche.aruba.toString()){
+                      }else if (controllerProviderName.text == 'aruba'){
 
                         var performAuthAruba = await arubaClient.performAuthentication(
                             controllerApiUidOrPassword.text,

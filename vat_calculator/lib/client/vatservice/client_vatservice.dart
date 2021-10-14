@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 
 import 'constant/utils_vatservice.dart';
+import 'model/company.dart';
 import 'model/user_model.dart';
 
 class ClientVatService{
@@ -33,6 +34,37 @@ class ClientVatService{
 
       print('Request' + body);
       print('Response From VatService (' + VAT_SERVICE_URL_SAVE_USER + '): ' + post.data.toString());
+
+    }catch(e){
+      print(e);
+    }
+    return post;
+  }
+
+  Future<Response> performSaveBranch(
+      Company company) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        company.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_SAVE_BRANCH + '...');
+    print('Body Request ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        'http://217.160.242.158:8080/vatservices/api/retrievemodelbranch',
+      );
+
+      post = await dio.post(
+        VAT_SERVICE_URL_SAVE_BRANCH,
+        data: body,
+      );
+
+      print('Response From VatService (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
 
     }catch(e){
       print(e);

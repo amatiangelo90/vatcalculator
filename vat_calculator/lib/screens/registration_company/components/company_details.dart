@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:vat_calculator/models/databundlenotifier.dart';
 
 class Contact extends StatefulWidget {
   const Contact({Key key}) : super(key: key);
@@ -23,93 +25,92 @@ class ContactState extends State<Contact> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Form(
-      key: formKey,
-      autovalidate: false,
-      child: Column(
-        children: <Widget>[
-          TextFormField(
-            maxLines: 1,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.add_business,
-                color: Colors.grey,
+    return Consumer<DataBundleNotifier>(
+      builder: (context, dataBundleNotifier, child){
+        return Form(
+          key: formKey,
+          autovalidate: false,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                enabled: false,
+                maxLines: 1,
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(
+                    Icons.email,
+                    color: Colors.grey,
+                  ),
+                  hintText: dataBundleNotifier.dataBundleList[0].email,
+                  hintStyle: const TextStyle(color: Colors.black),
+                  disabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.transparent)),
+                ),
+                controller: controllerEmail,
               ),
-              hintText: 'Ragione Sociale',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              const SizedBox(height: 20),
+              TextFormField(
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.add_business,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Ragione Sociale',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                controller: controllerCompanyName,
               ),
-            ),
-            controller: controllerCompanyName,
+              const SizedBox(height: 20),
+              TextFormField(
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.all_inbox,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Partita Iva',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                controller: controllerPIva,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                minLines: 1,
+                maxLines: 2,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.home,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Indirizzo',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                controller: controllerAddress,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.phone,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Cellulare',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                controller: controllerMobileNo,
+              ),
+            ],
           ),
-          const SizedBox(height: 20),
-          TextFormField(
-            maxLines: 1,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.email,
-                color: Colors.grey,
-              ),
-              hintText: 'Email',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-            ),
-            controller: controllerEmail,
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            maxLines: 1,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.all_inbox,
-                color: Colors.grey,
-              ),
-              hintText: 'Partita Iva',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-            ),
-            controller: controllerPIva,
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            minLines: 1,
-            maxLines: 2,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.home,
-                color: Colors.grey,
-              ),
-              hintText: 'Indirizzo',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-            ),
-            controller: controllerAddress,
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            maxLines: 1,
-            decoration: const InputDecoration(
-              prefixIcon: Icon(
-                Icons.phone,
-                color: Colors.grey,
-              ),
-              hintText: 'Cellulare',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10.0)),
-              ),
-            ),
-            validator: (value) {
-              if (value.trim().isEmpty) {
-                return "Il cellulare è obbligatorio";
-              }
-            },
-            controller: controllerMobileNo,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 

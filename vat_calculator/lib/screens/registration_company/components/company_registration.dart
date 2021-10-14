@@ -1,10 +1,13 @@
 import 'dart:collection';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/aruba/constant/utils_aruba.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/fattureICloud/constant/utils_icloud.dart';
+import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/company.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/registration_company/components/recap_data.dart';
 import 'package:vat_calculator/screens/registration_company/components/vatprovider.dart';
@@ -130,42 +133,60 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
   }
 
   Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier) async {
-    print(mapData.toString());
-    print(dataBundleNotifier.dataBundleList[0].email);
+    print('Map Data Branch : ' + mapData.toString());
+
     bool resultValidation = await validateData(mapData);
+    sleep(Duration(seconds:1));
+    ClientVatService clientService = ClientVatService();
     if(resultValidation){
       // TODO salvare dati azienda
+
+      Company company = Company(
+          eMail: dataBundleNotifier.dataBundleList[0].email,
+          phoneNumber: mapData['mobile_no'],
+          address: mapData['address'],
+          apiKeyOrUser: mapData['apikey_or_user'],
+          apiUidOrPassword: mapData['apiuid_or_password'],
+          companyName: mapData['company_name'],
+          providerFatture: mapData['provider_name'],
+          vatNumber: mapData['piva'],
+          pkBranchId: 0
+      );
+
+
+      print('Saving the following company to database: ');
+      print(company.toMap());
+      var performSaveUser = clientService.performSaveBranch(company);
 
     }
   }
 
   Future<bool> validateData(mapData) async {
+
     if(mapData['company_name'] == null || mapData['company_name'] == ''){
       Scaffold.of(context).showSnackBar(const SnackBar(
                content: Text('Nome azienda vuoto'),
              ));
       return false;
+
     }else if(mapData['provider_name'] == null || mapData['provider_name'] == ''){
       Scaffold.of(context).showSnackBar(const SnackBar(
         content: Text('Selezionare un provider per la fatturazione elettronica'),
       ));
       return false;
-    }else if(mapData['email'] == null || mapData['email'] == ''){
-      Scaffold.of(context).showSnackBar(const SnackBar(
-        content: Text('Inserire la mail'),
-      ));
-      return false;
     }else if(mapData['apiuid_or_password'] == null || mapData['apiuid_or_password'] == ''){
-      if(mapData['provider_name'] == ProviderFattureElettroniche.fattureInCloud.toString()){
+
+      if(mapData['provider_name'] == 'fattureInCloud'){
         Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Inserire ApiUid per il provider FattureInCloud'),
         ));
         return false;
-      }else if(mapData['provider_name'] == ProviderFattureElettroniche.aruba.toString()){
-      Scaffold.of(context).showSnackBar(const SnackBar(
-        content: Text('Inserire la password per il provider Aruba'),
-       ));
-      return false;
+
+      } else if(mapData['provider_name'] == 'aruba'){
+        Scaffold.of(context).showSnackBar(const SnackBar(
+          content: Text('Inserire la password per il provider Aruba'),
+        ));
+        return false;
       }
     }else if(mapData['piva'] == null || mapData['piva'] == ''){
       Scaffold.of(context).showSnackBar(const SnackBar(
@@ -173,18 +194,21 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       ));
       return false;
     }else if(mapData['apikey_or_user'] == null || mapData['apikey_or_user'] == ''){
-      if(mapData['provider_name'] == ProviderFattureElettroniche.fattureInCloud.toString()){
+
+      if(mapData['provider_name'] == 'fattureInCloud'){
         Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Inserire ApiKey per il provider FattureInCloud'),
         ));
         return false;
-      }else if(mapData['provider_name'] == ProviderFattureElettroniche.aruba.toString()){
+      }else if(mapData['provider_name'] == 'aruba'){
         Scaffold.of(context).showSnackBar(const SnackBar(
           content: Text('Inserire utenza per il provider Aruba'),
         ));
         return false;
       }
+
     }else if(mapData['mobile_no'] == null || mapData['mobile_no'] == ''){
+
       Scaffold.of(context).showSnackBar(const SnackBar(
         content: Text('Inserire il recapito dell\'azienda'),
       ));
@@ -196,7 +220,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       return false;
     }
 
-    if(mapData['provider_name'] == 'ProviderFattureElettroniche.fattureInCloud'){
+    if(mapData['provider_name'] == 'fattureInCloud'){
       print('validate');
       bool result = await validateCredentials(mapData);
       if(result){
@@ -204,7 +228,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       }else{
         return false;
       }
-    }else if (mapData['provider_name'] == 'ProviderFattureElettroniche.aruba'){
+    }else if (mapData['provider_name'] == 'aruba'){
       // TODO VALIDATE CREDENTIAL ARUBA AND SAVE IT
       if(true){
         return true;
@@ -213,4 +237,5 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       }
     }
   }
+
 }

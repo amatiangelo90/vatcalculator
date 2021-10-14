@@ -85,7 +85,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                     //print('Recupero info cliente da mail : ' + widget.email);
                     //var userRetrievedByEmail = clientService.retrieveUserByEmail(widget.email);
                     //print(userRetrievedByEmail);
-                    Timer(const Duration(milliseconds: 2500), ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => const LandingScreen(),),),);
+                    Timer(const Duration(milliseconds: 2500), ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen(email: widget.email,),),),);
 
                   }else{
                     ScaffoldMessenger.of(context)

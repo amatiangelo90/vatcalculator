@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-import 'company.dart';
+import '../client/vatservice/model/company.dart';
 
 class DataBundle {
 
