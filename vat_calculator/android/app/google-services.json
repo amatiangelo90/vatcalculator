@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "897416784718",
+    "project_id": "vatcalculator-177f7",
+    "storage_bucket": "vatcalculator-177f7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:897416784718:android:28e5e1a1fa59e13a4d8c1f",
+        "android_client_info": {
+          "package_name": "com.acorp.vat_calculator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "897416784718-k4qstnq6dfoifr1k4ofmm1d1646lc7hj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2kJK6U-2oDyTjYwWCO97OjwGQvBNmzOA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "897416784718-k4qstnq6dfoifr1k4ofmm1d1646lc7hj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
