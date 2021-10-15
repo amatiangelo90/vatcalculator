@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundle.dart';
@@ -44,16 +45,20 @@ class LandingBody extends StatelessWidget {
             SizedBox(
               width: SizeConfig.screenWidth * 0.6,
               child: DefaultButton(
-                text: "Andiamo!",
+                text: "Procediamo",
                 press: () async {
                   ClientVatService clientService = ClientVatService();
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
 
-                  DataBundle dataBundle = DataBundle(userModelRetrieved.mail, '', userModelRetrieved.lastName, userModelRetrieved.name, userModelRetrieved.phone, []);
+                  DataBundle dataBundle = DataBundle(userModelRetrieved.mail, '', userModelRetrieved.name, userModelRetrieved.lastName, userModelRetrieved.phone, []);
 
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
+
+                  List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                  dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+
 
                   Navigator.pushNamed(context, HomeScreen.routeName);
                 },

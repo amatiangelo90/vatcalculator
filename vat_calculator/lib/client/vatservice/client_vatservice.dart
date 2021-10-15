@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 
 import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
+import 'model/recessed_model.dart';
 import 'model/user_model.dart';
 
 class ClientVatService{
@@ -37,8 +38,44 @@ class ClientVatService{
 
     }catch(e){
       print(e);
+      rethrow;
     }
     return post;
+  }
+
+  Future<Response> saveRecessed(
+      double amount,
+      String description,
+      int dateTimeRecessed,
+      int pkBranchId) async{
+
+    var dio = Dio();
+
+    String body = json.encode(
+        RecessedModel(
+            amount: amount,
+            dateTimeRecessed: dateTimeRecessed,
+            description: description,
+            dateTimeRecessedInsert: DateTime.now().millisecondsSinceEpoch,
+            fkBranchId: pkBranchId,
+            pkRecessedId: null).toMap());
+
+    Response post;
+    print('Save import recessed request body: ' + body);
+    try{
+      post = await dio.post(
+
+        VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH,
+        data: body,
+      );
+
+      print('Response From VatService (' + VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH + '): ' + post.data.toString());
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+
   }
 
   Future<Response> performSaveBranch(
@@ -65,11 +102,11 @@ class ClientVatService{
       );
 
       print('Response From VatService (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
-
+      return post;
     }catch(e){
-      print(e);
+      rethrow;
     }
-    return post;
+
   }
 
   Future<UserModel> retrieveUserByEmail(
@@ -106,8 +143,8 @@ class ClientVatService{
       return userModel;
     }catch(e){
       print(e);
+      rethrow;
     }
-    return null;
 
   }
 
@@ -157,7 +194,47 @@ class ClientVatService{
 
     }catch(e){
       print(e);
+      rethrow;
     }
-    return branchList;
+  }
+
+  Future<List<RecessedModel>> retrieveRecessedListByBranch(BranchModel currentBranch) async {
+    var dio = Dio();
+
+    List<RecessedModel> recessedList = [];
+
+    String body = json.encode(
+        currentBranch.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve User by Email): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((recessedElement) {
+
+        recessedList.add(
+            RecessedModel(
+                fkBranchId: recessedElement['fkBranchId'],
+                description: recessedElement['description'],
+                dateTimeRecessed: recessedElement['dateTimeRecessed'],
+                dateTimeRecessedInsert: recessedElement['dateTimeRecessedInsert'],
+                amount: recessedElement['amount'],
+                pkRecessedId: recessedElement['pkRecessedId']
+            ));
+      });
+      return recessedList;
+  }catch(e){
+      print(e);
+      rethrow;
+    }
   }
 }

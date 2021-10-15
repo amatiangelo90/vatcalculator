@@ -32,6 +32,9 @@ const String kDataTreatmentFalseError = "Consenti al trattamento dati";
 const String kShortPassError = "Password troppo corta";
 const String kMatchPassError = "Le password non corrispondono";
 const String kNamelNullError = "Inserisci il tuo nome";
+const String kImportNullError = "Inserisci l\'importo";
+const String kInvalidImportNullError = "Inserire un importo valido";
+const String kCasualeExpenceNullError = "Inserisci la casuale";
 const String kPhoneNumberNullError = "Inserisci il tuo numero di cellulare";
 const String kAddressNullError = "Inserisci il tuo indirizzo";
 
@@ -48,4 +51,24 @@ OutlineInputBorder outlineInputBorder() {
     borderRadius: BorderRadius.circular(getProportionateScreenWidth(15)),
     borderSide: BorderSide(color: kTextColor),
   );
+}
+
+String getNameDayFromWeekDay(int weekday) {
+  switch(weekday){
+    case 1:
+      return 'Lunedi';
+    case 2:
+      return 'Martedi';
+    case 3:
+      return 'Mercoledi';
+    case 4:
+      return 'Giovedi';
+    case 5:
+      return 'Venerdi';
+    case 6:
+      return 'Sabato';
+    case 7:
+      return 'Domenica';
+
+  }
 }

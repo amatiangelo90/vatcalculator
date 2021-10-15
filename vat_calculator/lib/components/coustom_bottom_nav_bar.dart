@@ -56,11 +56,12 @@ class CustomBottomNavBar extends StatelessWidget {
                     Navigator.pushNamed(context, RegistrationCompanyScreen.routeName),
               ),
               IconButton(
-                icon: SvgPicture.asset("assets/icons/Chat bubble Icon.svg",
+                icon: SvgPicture.asset("assets/icons/Parcel.svg",
                   color: MenuState.recap == selectedMenu
                       ? Colors.teal
                       : inActiveIconColor,),
-                onPressed: () {},
+                onPressed: () =>
+                    Navigator.pushNamed(context, VatCalculatorScreen.routeName),
               ),
               IconButton(
                 icon: SvgPicture.asset(

@@ -63,44 +63,42 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return SafeArea(
-          child : SingleChildScrollView(
-            child: Theme(
-              data: themeStepper(),
-              child: Stepper(
-                currentStep: currentStep,
-                steps: steps,
-                type: StepperType.vertical,
-                onStepTapped: (step) {
-                  setState(() {
-                    currentStep = step;
-                  });
-                },
-                onStepContinue: () {
-                  setState(() {
-                    if (currentStep < steps.length - 1) {
-                      if (currentStep == 0) {
+        return SingleChildScrollView(
+          child: Theme(
+            data: themeStepper(),
+            child: Stepper(
+              currentStep: currentStep,
+              steps: steps,
+              type: StepperType.vertical,
+              onStepTapped: (step) {
+                setState(() {
+                  currentStep = step;
+                });
+              },
+              onStepContinue: () {
+                setState(() {
+                  if (currentStep < steps.length - 1) {
+                    if (currentStep == 0) {
+                      currentStep = currentStep + 1;
+                    } else {
+                      if (currentStep == 1) {
                         currentStep = currentStep + 1;
-                      } else {
-                        if (currentStep == 1) {
-                          currentStep = currentStep + 1;
-                        }
                       }
-                    } else {
-                      saveCompanyData(mapData, dataBundleNotifier);
                     }
-                  });
-                },
-                onStepCancel: () {
-                  setState(() {
-                    if (currentStep > 0) {
-                      currentStep = currentStep - 1;
-                    } else {
-                      currentStep = 0;
-                    }
-                  });
-                },
-              ),
+                  } else {
+                    saveCompanyData(mapData, dataBundleNotifier);
+                  }
+                });
+              },
+              onStepCancel: () {
+                setState(() {
+                  if (currentStep > 0) {
+                    currentStep = currentStep - 1;
+                  } else {
+                    currentStep = 0;
+                  }
+                });
+              },
             ),
           ),
         );
@@ -134,7 +132,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     print('Map Data Branch : ' + mapData.toString());
 
     bool resultValidation = await validateData(mapData);
-    sleep(Duration(seconds:1));
+
     ClientVatService clientService = ClientVatService();
     if(resultValidation){
       // TODO salvare dati azienda
@@ -154,7 +152,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
       print('Saving the following company to database: ');
       print(company.toMap());
-      clientService.performSaveBranch(company);
+      await clientService.performSaveBranch(company);
 
 
       ContactState.controllerPIva.clear();
@@ -164,7 +162,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       VatProviderState.controllerApiKeyOrUser.clear();
       VatProviderState.controllerApiUidOrPassword.clear();
 
-      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(ContactState.controllerEmail.text);
+
+      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(dataBundleNotifier.dataBundleList[0].email);
 
       dataBundleNotifier.addBranches(_branchList);
 
