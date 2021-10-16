@@ -11,8 +11,10 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/profile/components/profile_menu.dart';
+import 'package:vat_calculator/screens/registration_company/registration_company_screen.dart';
 
 import '../../../constants.dart';
+import '../../../size_config.dart';
 
 class VatCalculatorBody extends StatefulWidget {
   const VatCalculatorBody({Key key}) : super(key: key);
@@ -48,7 +50,33 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-      return dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : SingleChildScrollView(
+      return dataBundleNotifier.currentBranch == null ? Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Sembra che tu non abbia configurato ancora nessuna attività. ",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: getProportionateScreenWidth(13),
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 30,),
+            SizedBox(
+              width: SizeConfig.screenWidth * 0.6,
+              child: DefaultButton(
+                text: "Crea Attività",
+                press: () async {
+                  Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                },
+              ),
+            ),
+          ],
+        ),
+      ) : SingleChildScrollView(
         child: Column(
           children: [
             Card(
@@ -69,25 +97,141 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                           children: [
                             Row(
                               children: [
-                                const SizedBox(width: 20),
                                 Expanded(child: Center(child: Text(dataBundleNotifier.currentBranch.companyName, style: const TextStyle(color: kPinaColor,fontSize: 30),))),
                               ],
                             ),
-                            SizedBox(
-                              width: 100,
-                              child: Card(
-                                color: dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? Colors.blue : Colors.orange,
-                                semanticContainer: true,
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                child: Image.asset(
-                                  dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
-                                  fit: BoxFit.contain,
+                            GestureDetector(
+                              onTap: (){
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      contentPadding: EdgeInsets.zero,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      content: Builder(
+                                        builder: (context) {
+                                          var height = MediaQuery.of(context).size.height;
+                                          var width = MediaQuery.of(context).size.width;
+                                          return SizedBox(
+
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    decoration: const BoxDecoration(
+                                                      borderRadius: BorderRadius.only(
+                                                          topRight: Radius.circular(10.0),
+                                                          topLeft: Radius.circular(10.0) ),
+                                                      color: kPrimaryColor,
+                                                    ),
+                                                    child: Column(
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text('  Dettagli Provider',style: TextStyle(
+                                                              fontSize: getProportionateScreenWidth(20),
+                                                              fontWeight: FontWeight.bold,
+                                                              color: const Color(0xFFF5F6F9),
+                                                            ),),
+                                                            IconButton(icon: const Icon(
+                                                              Icons.clear,
+                                                              color: Color(0xFFF5F6F9),
+                                                            ), onPressed: () { Navigator.pop(context); },),
+
+                                                          ],
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        width: width - 90,
+                                                        child: Card(
+                                                          color: dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? Colors.blue : Colors.orange,
+                                                          semanticContainer: true,
+                                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                                          child: Image.asset(
+                                                            dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
+                                                            fit: BoxFit.contain,
+                                                          ),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(10.0),
+                                                          ),
+                                                          elevation: 5,
+                                                          margin: const EdgeInsets.all(10),
+                                                        ),
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const SizedBox(width: 22),
+                                                          Text(dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'ApiKey' : 'User',style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontSize: getProportionateScreenWidth(14),
+                                                            fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      ProfileMenu(
+                                                        text: dataBundleNotifier.currentBranch.apiKeyOrUser,
+                                                        icon: '',
+                                                        press: () => {
+                                                        },
+                                                        showArrow: false,
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          const SizedBox(width: 22),
+                                                          Text(dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'ApiUid' : 'Password',
+                                                            style: TextStyle(
+                                                              color: Colors.grey,
+                                                              fontSize: getProportionateScreenWidth(14),
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      ProfileMenu(
+                                                        text: dataBundleNotifier.currentBranch.apiUidOrPassword,
+                                                        icon: '',
+                                                        press: () => {
+                                                        },
+                                                        showArrow: false,
+                                                      ),
+                                                      SizedBox(height: 20,),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                );
+                              },
+                              child: SizedBox(
+                                width: 120,
+                                child: Card(
+                                  color: dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? Colors.blue : Colors.orange,
+                                  semanticContainer: true,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  child: Image.asset(
+                                    dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  elevation: 5,
+                                  margin: const EdgeInsets.all(10),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                elevation: 5,
-                                margin: const EdgeInsets.all(10),
                               ),
                             ),
                           ],
@@ -175,6 +319,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
   }
 
   Future getIvaDetailsWidget(DataBundleNotifier dataBundleNotifier) async {
+
     List<ResponseAcquistiApi> retrieveListaAcquisti =
         await iCloudClient.retrieveListaAcquisti(
             dataBundleNotifier.currentBranch.apiUidOrPassword,
@@ -211,11 +356,16 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
     double totalIvaNdcReceived = 0.0;
     double totalIvaNdcSent = 0.0;
 
+    List<ResponseAcquistiApi> extractedAcquistiFatture = [];
+    List<ResponseAcquistiApi> extractedNdc = [];
+
     retrieveListaAcquisti.forEach((acquisto) {
       if (acquisto.tipo == 'spesa') {
+        extractedAcquistiFatture.add(acquisto);
         totalIvaAcquisti =
             totalIvaAcquisti + double.parse(acquisto.importo_iva);
       } else if (acquisto.tipo == 'ndc') {
+        extractedNdc.add(acquisto);
         totalIvaNdcReceived =
             totalIvaNdcReceived + double.parse(acquisto.importo_iva);
       }
@@ -232,7 +382,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
           (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
     });
 
-    if ((totalIvaAcquisti + totalIvaNdcReceived) >
+    if ((totalIvaAcquisti + totalIvaNdcReceived) >=
         (totalIvaFatture + totalIvaNdcSent + calculateVatFromListRecessed(dataBundleNotifier.getRecessedListByRangeDate(_currentDateTimeRange.start, _currentDateTimeRange.end)))) {
       // iva a credito
       listOut.add(Padding(
@@ -274,7 +424,6 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
         ),
       ));
     } else {
-      // iva a credito
       listOut.add(Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
@@ -307,7 +456,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
               ],
             ),
           ),
-          color: Colors.red,
+          color: Colors.deepOrange,
         ),
       ));
     }
@@ -319,31 +468,43 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  height: _width / 2.3,
-                  width: _width / 2.3,
-                  color: Colors.white,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.white12, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 20,
-                    color: Colors.brown,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Iva Acquisti',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text('€ ' + totalIvaAcquisti.toStringAsFixed(2),
-                            style:
-                                const TextStyle(color: Colors.white, fontSize: 25)),
-                      ],
+                GestureDetector(
+                  onTap: () {
+
+                  },
+                  child: Container(
+                    height: _width / 2.3,
+                    width: _width / 2.3,
+                    color: Colors.white,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.white12, width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      elevation: 20,
+                      color: Colors.brown,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: const [
+                              Text(
+                                'Iva',
+                                style: TextStyle(color: Colors.white, fontSize: 13),
+                              ),Text(
+                                'Fatture Acquisti',
+                                style: TextStyle(color: Colors.white, fontSize: 13),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Text('€ ' + totalIvaAcquisti.toStringAsFixed(2),
+                              style:
+                                  const TextStyle(color: Colors.white, fontSize: 25)),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -361,9 +522,16 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Iva Fatture',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        Column(
+                          children: const [
+                            Text(
+                              'Iva',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),Text(
+                              'Fatture Vendite',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
@@ -397,9 +565,17 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Iva NDC (Emesse)',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        Column(
+                          children: const [
+                            Text(
+                              'Iva',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                            Text(
+                              'NDC (Emesse)',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
@@ -425,9 +601,17 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Iva NDC (Ricevute)',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        Column(
+                          children: [
+                            const Text(
+                              'Iva',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                            const Text(
+                              'NDC (Ricevute)',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,
@@ -470,9 +654,17 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
-                          'Iva Incassi',
-                          style: TextStyle(color: Colors.white, fontSize: 13),
+                        Column(
+                          children: const [
+                            Text(
+                              'Iva',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                            Text(
+                              'Incassi',
+                              style: TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                          ],
                         ),
                         const SizedBox(
                           height: 10,

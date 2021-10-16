@@ -40,8 +40,7 @@ class _BodyState extends State<Body> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Sembra che tu non abbia configurato ancora nessuna attività. "
-                      " Fino a quel momento buon divertimento!",
+                  "Sembra che tu non abbia configurato ancora nessuna attività. ",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(13),
@@ -462,7 +461,7 @@ class _BodyState extends State<Body> {
         // If  you are using latest version of flutter then lable text and hint text shown like this
         // if you r using flutter less then 1.20.* then maybe this is not working properly
         floatingLabelBehavior: FloatingLabelBehavior.always,
-        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Cash.svg"),
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/euro.svg"),
       ),
     );
   }

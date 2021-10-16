@@ -1,8 +1,10 @@
 import 'dart:collection';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/aruba/client_aruba.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
@@ -23,6 +25,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
   var currentStep = 0;
 
   FattureInCloudClient fattureInCloudClient = FattureInCloudClient();
+  ArubaClient arubaClient = ArubaClient();
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +107,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     );
   }
 
-  Future<bool> validateCredentials(mapData) async {
+  Future<bool> validateCredentialsFattureInCloud(mapData) async {
 
     var performRichiestaInfoResponse = await fattureInCloudClient.performRichiestaInfo(
         mapData['apiuid_or_password'],
@@ -126,15 +129,32 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     }
   }
 
-  Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier) async {
-    print('Map Data Branch : ' + mapData.toString());
+  Future<bool> validateCredentialsAruba(mapData) async {
+    Response performAuthAruba = await arubaClient.performVerifyCredentials(
+        mapData['apiuid_or_password'],
+        mapData['apikey_or_user']);
 
+    if(performAuthAruba.statusCode == 200){
+      return true;
+    }else{
+      final snackBar =
+      SnackBar(
+          duration: const Duration(seconds: 7),
+          backgroundColor: Colors.red,
+          content: Text('Impossibile salvare i dati. Dati non corretti per l\'integrazione con ' + mapData['provider_name'] + '. Error: ' + performAuthAruba.data.toString(),
+          )
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      return false;
+    }
+  }
+
+  Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier) async {
     bool resultValidation = await validateData(mapData);
 
     ClientVatService clientService = ClientVatService();
     if(resultValidation){
-      // TODO salvare dati azienda
-
       BranchModel company = BranchModel(
           eMail: dataBundleNotifier.dataBundleList[0].email,
           phoneNumber: mapData['mobile_no'],
@@ -153,18 +173,26 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       await clientService.performSaveBranch(company);
 
 
+
+      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(dataBundleNotifier.dataBundleList[0].email);
+
+      dataBundleNotifier.addBranches(_branchList);
+      final snackBar =
+      SnackBar(
+          duration: const Duration(seconds: 3),
+          backgroundColor: Colors.green,
+          content: Text('Azienda ' + ContactState.controllerCompanyName.text +' creata',
+          )
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
       ContactState.controllerPIva.clear();
       ContactState.controllerAddress.clear();
       ContactState.controllerCompanyName.clear();
       ContactState.controllerMobileNo.clear();
       VatProviderState.controllerApiKeyOrUser.clear();
       VatProviderState.controllerApiUidOrPassword.clear();
-
-
-      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(dataBundleNotifier.dataBundleList[0].email);
-
-      dataBundleNotifier.addBranches(_branchList);
-
       Navigator.pushNamed(context, HomeScreen.routeName);
     }
   }
@@ -229,16 +257,16 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     }
 
     if(mapData['provider_name'] == 'fatture_in_cloud'){
-      print('validate');
-      bool result = await validateCredentials(mapData);
+      bool result = await validateCredentialsFattureInCloud(mapData);
       if(result){
         return true;
       }else{
         return false;
       }
     }else if (mapData['provider_name'] == 'aruba'){
-      // TODO VALIDATE CREDENTIAL ARUBA AND SAVE IT
-      if(true){
+
+      bool result = await validateCredentialsAruba(mapData);
+      if(result){
         return true;
       }else{
         return false;

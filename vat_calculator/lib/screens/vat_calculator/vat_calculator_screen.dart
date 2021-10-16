@@ -42,7 +42,7 @@ class VatCalculatorScreen extends StatelessWidget {
             ],
           ),
           body: const VatCalculatorBody(),
-          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.home),
+          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.vatcalc),
         );
       },
     );

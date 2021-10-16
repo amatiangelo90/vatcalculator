@@ -31,7 +31,7 @@ class CustomBottomNavBar extends StatelessWidget {
                 BoxShadow(
                   offset: const Offset(0, -15),
                   blurRadius: 20,
-                  color: const Color(0xFFDADADA).withOpacity(0.45),
+                  color: const Color(0xFFDADADA).withOpacity(0.25),
                 ),
               ],
               borderRadius: const BorderRadius.only(
@@ -46,7 +46,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   children: [
                     IconButton(
                       icon: SvgPicture.asset(
-                        "assets/icons/Chat bubble Icon.svg",
+                        "assets/icons/home.svg",
                         color: MenuState.home == selectedMenu
                             ? Colors.teal
                             : inActiveIconColor,
@@ -57,16 +57,6 @@ class CustomBottomNavBar extends StatelessWidget {
                       }
                     ),
                     IconButton(
-                      icon: SvgPicture.asset("assets/icons/Shop Icon.svg",
-                        color: MenuState.company == selectedMenu
-                            ? Colors.teal
-                            : inActiveIconColor,),
-                        onPressed: () {
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
-                        }
-                    ),
-                    IconButton(
                       icon: SvgPicture.asset("assets/icons/Parcel.svg",
                         color: MenuState.vatcalc == selectedMenu
                             ? Colors.teal
@@ -74,6 +64,16 @@ class CustomBottomNavBar extends StatelessWidget {
                         onPressed: () {
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(context, VatCalculatorScreen.routeName);
+                        }
+                    ),
+                    IconButton(
+                        icon: SvgPicture.asset("assets/icons/Shop Icon.svg",
+                          color: MenuState.company == selectedMenu
+                              ? Colors.teal
+                              : inActiveIconColor,),
+                        onPressed: () {
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
                         }
                     ),
                     IconButton(

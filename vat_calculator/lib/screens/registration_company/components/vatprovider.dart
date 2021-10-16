@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/aruba/client_aruba.dart';
 import 'package:vat_calculator/client/aruba/constant/utils_aruba.dart';
@@ -305,21 +306,12 @@ class VatProviderState extends State<VatProvider> {
                         }
                       }else if (controllerProviderName.text == 'aruba'){
 
-                        var performAuthAruba = await arubaClient.performAuthentication(
+                        Response performAuthAruba = await arubaClient.performVerifyCredentials(
                             controllerApiUidOrPassword.text,
                             controllerApiKeyOrUser.text);
 
-                        if(performAuthAruba.data.toString().contains('error')){
-                          final snackBar =
-                          SnackBar(
-                              duration: Duration(seconds: 5),
-                              backgroundColor: Colors.red,
-                              content: Text('Validazione Fallita. Messaggio di errore dal server: ' + performAuthAruba.data.toString(),
-                              )
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        }else{
-                          final snackBar =
+                        if(performAuthAruba.statusCode == 200){
+                          const snackBar =
                           SnackBar(
                             duration: Duration(seconds: 5),
                             backgroundColor: Colors.green,
@@ -327,9 +319,18 @@ class VatProviderState extends State<VatProvider> {
                             ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }else{
+                          const snackBar =
+                          SnackBar(
+                              duration: Duration(seconds: 5),
+                              backgroundColor: Colors.red,
+                              content: Text('Validazione Fallita. Credenziali errate ',
+                              )
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       }else{
-                        final snackBar = SnackBar(
+                        const snackBar = SnackBar(
                           duration: Duration(seconds: 5),
                           backgroundColor: Colors.red,
                           content: Text('Selezionare e configurare un provider per la fatturazione elettronica',

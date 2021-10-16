@@ -93,6 +93,7 @@ class ContactState extends State<Contact> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                keyboardType: TextInputType.number,
                 maxLines: 1,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(
