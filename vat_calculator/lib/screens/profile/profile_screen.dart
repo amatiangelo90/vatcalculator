@@ -17,7 +17,7 @@ class ProfileScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               automaticallyImplyLeading: false,
-              title: Text("Profilo " + dataBundleNotifier.dataBundleList[0].firstName , style: const TextStyle(fontSize: 15, color: Colors.black),),
+              title: Text("Profilo " + (dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''), style: const TextStyle(fontSize: 15, color: Colors.black),),
             ),
             body: BodyProfile(),
             bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.profile),

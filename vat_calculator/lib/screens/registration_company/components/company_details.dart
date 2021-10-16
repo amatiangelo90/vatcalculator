@@ -24,7 +24,6 @@ class ContactState extends State<Contact> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Form(
@@ -40,7 +39,7 @@ class ContactState extends State<Contact> {
                     Icons.email,
                     color: Colors.grey,
                   ),
-                  hintText: dataBundleNotifier.dataBundleList[0].email,
+                  hintText: dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].email : '',
                   hintStyle: const TextStyle(color: Colors.black),
                   disabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.transparent)),
                 ),

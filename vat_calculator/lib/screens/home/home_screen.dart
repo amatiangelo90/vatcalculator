@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: kPrimaryColor,
             centerTitle: true,
             title: Text(
-              "Ciao ${dataBundleNotifier.dataBundleList[0].firstName}",
+              "Ciao ${dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''}",
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(20),
                 fontWeight: FontWeight.bold,

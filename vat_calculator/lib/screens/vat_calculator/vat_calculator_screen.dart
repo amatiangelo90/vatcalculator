@@ -29,7 +29,7 @@ class VatCalculatorScreen extends StatelessWidget {
             ),
             elevation: 5,
             automaticallyImplyLeading: false,
-            actions: [
+            actions: const [
               Padding(
                 padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                 child: IconButton(icon: Icon(

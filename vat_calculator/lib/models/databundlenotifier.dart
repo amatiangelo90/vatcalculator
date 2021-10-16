@@ -56,7 +56,9 @@ class DataBundleNotifier extends ChangeNotifier {
   void addBranches(List<BranchModel> branchList) {
     dataBundleList[0].companyList.clear();
     dataBundleList[0].companyList = branchList;
-    currentBranch = dataBundleList[0].companyList[0];
+    if(dataBundleList[0].companyList.isNotEmpty){
+      currentBranch = dataBundleList[0].companyList[0];
+    }
     notifyListeners();
   }
 
@@ -87,7 +89,18 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void clearAll(){
-    dataBundleList.clear();
+    if(dataBundleList.isNotEmpty){
+      dataBundleList.clear();
+    }
+    if(currentBranch != null){
+      currentBranch = null;
+    }
+    if(currentListRecessed.isNotEmpty){
+      currentListRecessed.clear();
+    }
+    setShowIvaButtonToFalse();
+    indexIvaList = 0;
+
     notifyListeners();
   }
 

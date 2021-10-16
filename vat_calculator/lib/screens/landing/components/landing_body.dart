@@ -55,9 +55,11 @@ class LandingBody extends StatelessWidget {
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
+                  if(dataBundleNotifier.currentBranch != null){
+                    List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                  }
 
-                  List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                  dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
 
 
                   Navigator.pushNamed(context, HomeScreen.routeName);

@@ -22,72 +22,75 @@ class CustomBottomNavBar extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                offset: const Offset(0, -15),
-                blurRadius: 20,
-                color: const Color(0xFFDADADA).withOpacity(0.15),
+          color: const Color(0xFFF5F6F9),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF5F6F9),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(0, -15),
+                  blurRadius: 20,
+                  color: const Color(0xFFDADADA).withOpacity(0.45),
+                ),
+              ],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(40),
+                topRight: Radius.circular(40),
               ),
-            ],
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(40),
-              topRight: Radius.circular(40),
             ),
+            child: SafeArea(
+                top: false,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        "assets/icons/Chat bubble Icon.svg",
+                        color: MenuState.home == selectedMenu
+                            ? Colors.teal
+                            : inActiveIconColor,
+                      ),
+                      onPressed: () {
+                        dataBundleNotifier.setShowIvaButtonToFalse();
+                        Navigator.pushNamed(context, HomeScreen.routeName);
+                      }
+                    ),
+                    IconButton(
+                      icon: SvgPicture.asset("assets/icons/Shop Icon.svg",
+                        color: MenuState.company == selectedMenu
+                            ? Colors.teal
+                            : inActiveIconColor,),
+                        onPressed: () {
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                        }
+                    ),
+                    IconButton(
+                      icon: SvgPicture.asset("assets/icons/Parcel.svg",
+                        color: MenuState.vatcalc == selectedMenu
+                            ? Colors.teal
+                            : inActiveIconColor,),
+                        onPressed: () {
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, VatCalculatorScreen.routeName);
+                        }
+                    ),
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        "assets/icons/User Icon.svg",
+                        color: MenuState.profile == selectedMenu
+                            ? Colors.teal
+                            : inActiveIconColor,
+                      ),
+                        onPressed: () {
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, ProfileScreen.routeName);
+                        }
+                    ),
+                  ],
+                )),
           ),
-          child: SafeArea(
-              top: false,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      "assets/icons/Chat bubble Icon.svg",
-                      color: MenuState.home == selectedMenu
-                          ? Colors.teal
-                          : inActiveIconColor,
-                    ),
-                    onPressed: () {
-                      dataBundleNotifier.setShowIvaButtonToFalse();
-                      Navigator.pushNamed(context, HomeScreen.routeName);
-                    }
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset("assets/icons/Shop Icon.svg",
-                      color: MenuState.company == selectedMenu
-                          ? Colors.teal
-                          : inActiveIconColor,),
-                      onPressed: () {
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
-                      }
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset("assets/icons/Parcel.svg",
-                      color: MenuState.vatcalc == selectedMenu
-                          ? Colors.teal
-                          : inActiveIconColor,),
-                      onPressed: () {
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, VatCalculatorScreen.routeName);
-                      }
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      "assets/icons/User Icon.svg",
-                      color: MenuState.profile == selectedMenu
-                          ? Colors.teal
-                          : inActiveIconColor,
-                    ),
-                      onPressed: () {
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, ProfileScreen.routeName);
-                      }
-                  ),
-                ],
-              )),
         );
       },
     );

@@ -32,267 +32,263 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
+        return Container(
+          color: const Color(0xFFF5F6F9),
+          child: dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              color: Color(0xFFF5F6F9),
-              child: Column(
-                children: [
-                  Center(
-                    child: Text(
-                      "Sembra che tu non abbia configurato ancora nessuna attività. "
-                          "Ma andiamo con ordine. Spero che l'app risulti facile da usare e per qualsiasi problema "
-                          "ti invito a contattare l\'amministratore! Troverai i suoi contatti nella sezione profilo (alla voce \'Hai bisogno di aiuto?\'). \n\n"
-                          " Ho bisFino a quel momento buon divertimento!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(13),
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sembra che tu non abbia configurato ancora nessuna attività. "
+                      " Fino a quel momento buon divertimento!",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(13),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
-                  const SizedBox(height: 30,),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.6,
-                    child: DefaultButton(
-                      text: "Crea Attività",
-                      press: () async {
-                        Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ) :
-          Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: getProportionateScreenHeight(56),
-                  child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: IconButton(icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: kPrimaryColor,
-                    ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                const SizedBox(height: 30,),
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.6,
+                  child: DefaultButton(
+                    text: "Crea Attività",
+                    press: () async {
+                      Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                    },
                   ),
-                  GestureDetector(
-                      onTap: (){
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                content: Builder(
-                                  builder: (context) {
-                                    var height = MediaQuery.of(context).size.height;
-                                    var width = MediaQuery.of(context).size.width;
-                                    return SizedBox(
-                                      height: height - 250,
-                                      width: width - 90,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight: Radius.circular(10.0),
-                                                    topLeft: Radius.circular(10.0) ),
-                                                color: kPrimaryColor,
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text('  Calendario',style: TextStyle(
-                                                        fontSize: getProportionateScreenWidth(20),
-                                                        fontWeight: FontWeight.bold,
-                                                        color: const Color(0xFFF5F6F9),
-                                                      ),),
-                                                      IconButton(icon: const Icon(
-                                                        Icons.clear,
-                                                        color: Color(0xFFF5F6F9),
-                                                      ), onPressed: () { Navigator.pop(context); },),
+                ),
+              ],
+            ),
+          ) : SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: getProportionateScreenHeight(56),
+                    child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: IconButton(icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: kPrimaryColor,
+                      ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                    ),
+                    GestureDetector(
+                        onTap: (){
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var height = MediaQuery.of(context).size.height;
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        height: height - 250,
+                                        width: width - 90,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10.0),
+                                                      topLeft: Radius.circular(10.0) ),
+                                                  color: kPrimaryColor,
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text('  Calendario',style: TextStyle(
+                                                          fontSize: getProportionateScreenWidth(20),
+                                                          fontWeight: FontWeight.bold,
+                                                          color: const Color(0xFFF5F6F9),
+                                                        ),),
+                                                        IconButton(icon: const Icon(
+                                                          Icons.clear,
+                                                          color: Color(0xFFF5F6F9),
+                                                        ), onPressed: () { Navigator.pop(context); },),
 
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    children: [
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      children: [
 
-                                                      Column(
-                                                        children: buildDateList(dataBundleNotifier, context),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                                        Column(
+                                                          children: buildDateList(dataBundleNotifier, context),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
-                                            ),
-                                            // buildDateList(),
-                                          ],
+                                              // buildDateList(),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                          );
-                      },
-                      child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                    child: IconButton(icon: const Icon(
-                      Icons.arrow_forward_ios,
-                      color: kPrimaryColor,
-                    ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Card(
-                  shape: BeveledRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 2,
-                  child: Column(
-                    children: [
-                      const Text('Registra Incasso'),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                            child: IconButton(icon: const Icon(
-                              Icons.arrow_back_ios,
-                              color: kPrimaryColor,
-                            ), onPressed: () { dataBundleNotifier.previousIva(); },),
-                          ),
-                          Text('Iva ' + dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList].toString() + '%', style: const TextStyle(fontSize: 20),),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                            child: IconButton(icon: const Icon(
-                              Icons.arrow_forward_ios,
-                              color: kPrimaryColor,
-                            ), onPressed: () { dataBundleNotifier.nextIva(); },),
-                          ),
-                        ],
-                      ),
-                      Form(
-                        key: _formExpenceKey,
-                        child: Column(
+                                      );
+                                    },
+                                  ),
+                                )
+                            );
+                        },
+                        child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: IconButton(icon: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: kPrimaryColor,
+                      ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Card(
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 2,
+                    child: Column(
+                      children: [
+                        const Text('Registra Incasso'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: buildExpenceImportForField(),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: buildCasualeExpenceForField(),
-                            ),
-                            Padding(
                               padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                              child: FormError(errors: errors),
+                              child: IconButton(icon: const Icon(
+                                Icons.arrow_back_ios,
+                                color: kPrimaryColor,
+                              ), onPressed: () { dataBundleNotifier.previousIva(); },),
                             ),
-
+                            Text('Iva ' + dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList].toString() + '%', style: const TextStyle(fontSize: 20),),
                             Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: DefaultButton(
-                                text: "Salva Importo",
-                                press: () async {
-                                  if (_formExpenceKey.currentState.validate()) {
-                                    _formExpenceKey.currentState.save();
-                                    KeyboardUtil.hideKeyboard(context);
-                                    try{
-
-                                      ClientVatService clientService = ClientVatService();
-                                      await clientService.saveRecessed(
-                                          double.parse(recessedController.text),
-                                          casualeRecessedController.text,
-                                          dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
-                                          dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
-                                          dataBundleNotifier.currentBranch.pkBranchId
-                                      );
-
-                                      List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                                      dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-
-                                      recessedController.clear();
-                                      casualeRecessedController.clear();
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                          duration: Duration(milliseconds: 2000),
-                                          backgroundColor: Colors.green,
-                                          content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-
-                                    }catch(e){
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                          duration: const Duration(milliseconds: 6000),
-                                          backgroundColor: Colors.red,
-                                          content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                                    }
-                                  }
-                                },
-                              ),
+                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                              child: IconButton(icon: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: kPrimaryColor,
+                              ), onPressed: () { dataBundleNotifier.nextIva(); },),
                             ),
                           ],
                         ),
-                      ),
+                        Form(
+                          key: _formExpenceKey,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: buildExpenceImportForField(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: buildCasualeExpenceForField(),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: FormError(errors: errors),
+                              ),
 
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Card(
-                  shape: BeveledRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  elevation: 2,
-                  child: Column(
-                    children: [
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text('Ultimi 10 incassi registrati'),
-                      ),
-                      const SizedBox(height: 15,),
-                      Column(
-                        children: buildRecessedLastTenDays(dataBundleNotifier),
-                      ),
+                              Padding(
+                                padding: const EdgeInsets.all(18.0),
+                                child: DefaultButton(
+                                  text: "Salva Importo",
+                                  press: () async {
+                                    if (_formExpenceKey.currentState.validate()) {
+                                      _formExpenceKey.currentState.save();
+                                      KeyboardUtil.hideKeyboard(context);
+                                      try{
 
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: DefaultButton(
-                          text: "Dettaglio Incassi",
-                          press: () async {
+                                        ClientVatService clientService = ClientVatService();
+                                        await clientService.saveRecessed(
+                                            double.parse(recessedController.text),
+                                            casualeRecessedController.text,
+                                            dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
+                                            dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                            dataBundleNotifier.currentBranch.pkBranchId
+                                        );
 
-                          },
+                                        List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+
+                                        recessedController.clear();
+                                        casualeRecessedController.clear();
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                            duration: Duration(milliseconds: 2000),
+                                            backgroundColor: Colors.green,
+                                            content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+
+                                      }catch(e){
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                            duration: const Duration(milliseconds: 6000),
+                                            backgroundColor: Colors.red,
+                                            content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                                      }
+                                    }
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Card(
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 2,
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Ultimi 10 incassi registrati'),
+                        ),
+                        const SizedBox(height: 15,),
+                        Column(
+                          children: buildRecessedLastTenDays(dataBundleNotifier),
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: DefaultButton(
+                            text: "Dettaglio Incassi",
+                            press: () async {
+
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

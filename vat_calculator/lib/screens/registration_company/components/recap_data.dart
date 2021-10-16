@@ -44,7 +44,7 @@ class RecapDataState extends State<RecapData> {
             Row(
               children: <Widget>[
                 const Text("Email: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
-                Flexible(child: Text(dataBundleNotifier.dataBundleList[0].email, style: const TextStyle(fontSize: 16))),
+                Flexible(child: Text(dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].email : '', style: const TextStyle(fontSize: 16))),
               ],
             ),
             const SizedBox(height: 10),

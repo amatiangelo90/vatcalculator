@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +48,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-      return SingleChildScrollView(
+      return dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : SingleChildScrollView(
         child: Column(
           children: [
             Card(
@@ -63,26 +65,31 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                               borderRadius: BorderRadius.circular(15)),
                           backgroundColor: const Color(0xFFF5F6F9),
                         ),
-                        child: Row(
+                        child: Column(
                           children: [
-                            const SizedBox(width: 20),
-                            Expanded(child: Center(child: Text(dataBundleNotifier.currentBranch.companyName, style: const TextStyle(color: kPinaColor,fontSize: 30),))),
-                          ],
-                        ),
-                      ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(20),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          backgroundColor: const Color(0xFFF5F6F9),
-                        ),
-                        onPressed: () {},
-                        child: Row(
-                          children: [
-                            const SizedBox(width: 20),
-                            Expanded(child: Center(child: Text(getNameProvider(dataBundleNotifier.currentBranch.providerFatture)))),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20),
+                                Expanded(child: Center(child: Text(dataBundleNotifier.currentBranch.companyName, style: const TextStyle(color: kPinaColor,fontSize: 30),))),
+                              ],
+                            ),
+                            SizedBox(
+                              width: 100,
+                              child: Card(
+                                color: dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? Colors.blue : Colors.orange,
+                                semanticContainer: true,
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                child: Image.asset(
+                                  dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
+                                  fit: BoxFit.contain,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                elevation: 5,
+                                margin: const EdgeInsets.all(10),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -131,7 +138,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
             children: const [
               Center(
                   child: CircularProgressIndicator(
-                color: Colors.red,
+                color: Colors.brown,
               )),
               SizedBox(),
               Center(
