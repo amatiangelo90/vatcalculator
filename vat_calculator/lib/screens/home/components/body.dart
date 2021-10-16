@@ -36,33 +36,36 @@ class _BodyState extends State<Body> {
           scrollDirection: Axis.vertical,
           child: dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Center(
-                  child: Text(
-                    "Sembra che tu non abbia configurato ancora nessuna attività. "
-                        "Ma andiamo con ordine. Spero che l'app risulti facile da usare e per qualsiasi problema "
-                        "ti invito a contattare l\'amministratore! Troverai i suoi contatti nella sezione profilo (alla voce \'Hai bisogno di aiuto?\'). \n\n"
-                        " Ho bisFino a quel momento buon divertimento!",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(13),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+            child: Container(
+              color: Color(0xFFF5F6F9),
+              child: Column(
+                children: [
+                  Center(
+                    child: Text(
+                      "Sembra che tu non abbia configurato ancora nessuna attività. "
+                          "Ma andiamo con ordine. Spero che l'app risulti facile da usare e per qualsiasi problema "
+                          "ti invito a contattare l\'amministratore! Troverai i suoi contatti nella sezione profilo (alla voce \'Hai bisogno di aiuto?\'). \n\n"
+                          " Ho bisFino a quel momento buon divertimento!",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(13),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 30,),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.6,
-                  child: DefaultButton(
-                    text: "Crea Attività",
-                    press: () async {
-                      Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
-                    },
+                  const SizedBox(height: 30,),
+                  SizedBox(
+                    width: SizeConfig.screenWidth * 0.6,
+                    child: DefaultButton(
+                      text: "Crea Attività",
+                      press: () async {
+                        Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ) :
           Column(
@@ -73,7 +76,6 @@ class _BodyState extends State<Body> {
                   width: double.infinity,
                   height: getProportionateScreenHeight(56),
                   child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
-
                 ),
               ),
               Row(
@@ -83,15 +85,81 @@ class _BodyState extends State<Body> {
                     padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                     child: IconButton(icon: const Icon(
                       Icons.arrow_back_ios,
-                      color: Colors.blueGrey,
+                      color: kPrimaryColor,
                     ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
                   ),
-                  Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),),
+                  GestureDetector(
+                      onTap: (){
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                contentPadding: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                content: Builder(
+                                  builder: (context) {
+                                    var height = MediaQuery.of(context).size.height;
+                                    var width = MediaQuery.of(context).size.width;
+                                    return SizedBox(
+                                      height: height - 250,
+                                      width: width - 90,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(10.0),
+                                                    topLeft: Radius.circular(10.0) ),
+                                                color: kPrimaryColor,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text('  Calendario',style: TextStyle(
+                                                        fontSize: getProportionateScreenWidth(20),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: const Color(0xFFF5F6F9),
+                                                      ),),
+                                                      IconButton(icon: const Icon(
+                                                        Icons.clear,
+                                                        color: Color(0xFFF5F6F9),
+                                                      ), onPressed: () { Navigator.pop(context); },),
+
+                                                    ],
+                                                  ),
+                                                  Column(
+                                                    children: [
+
+                                                      Column(
+                                                        children: buildDateList(dataBundleNotifier, context),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            // buildDateList(),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          );
+                      },
+                      child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
                     child: IconButton(icon: const Icon(
                       Icons.arrow_forward_ios,
-                      color: Colors.blueGrey,
+                      color: kPrimaryColor,
                     ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
                   ),
                 ],
@@ -106,7 +174,26 @@ class _BodyState extends State<Body> {
                   child: Column(
                     children: [
                       const Text('Registra Incasso'),
-
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                            child: IconButton(icon: const Icon(
+                              Icons.arrow_back_ios,
+                              color: kPrimaryColor,
+                            ), onPressed: () { dataBundleNotifier.previousIva(); },),
+                          ),
+                          Text('Iva ' + dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList].toString() + '%', style: const TextStyle(fontSize: 20),),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                            child: IconButton(icon: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: kPrimaryColor,
+                            ), onPressed: () { dataBundleNotifier.nextIva(); },),
+                          ),
+                        ],
+                      ),
                       Form(
                         key: _formExpenceKey,
                         child: Column(
@@ -123,6 +210,7 @@ class _BodyState extends State<Body> {
                               padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                               child: FormError(errors: errors),
                             ),
+
                             Padding(
                               padding: const EdgeInsets.all(18.0),
                               child: DefaultButton(
@@ -137,6 +225,7 @@ class _BodyState extends State<Body> {
                                       await clientService.saveRecessed(
                                           double.parse(recessedController.text),
                                           casualeRecessedController.text,
+                                          dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
                                           dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
                                           dataBundleNotifier.currentBranch.pkBranchId
                                       );
@@ -181,7 +270,11 @@ class _BodyState extends State<Body> {
                   elevation: 2,
                   child: Column(
                     children: [
-                      const Text('Ultimi 10 incassi registrati'),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Ultimi 10 incassi registrati'),
+                      ),
+                      const SizedBox(height: 15,),
                       Column(
                         children: buildRecessedLastTenDays(dataBundleNotifier),
                       ),
@@ -189,7 +282,7 @@ class _BodyState extends State<Body> {
                       Padding(
                         padding: const EdgeInsets.all(18.0),
                         child: DefaultButton(
-                          text: "Dettagli Incassi",
+                          text: "Dettaglio Incassi",
                           press: () async {
 
                           },
@@ -234,7 +327,7 @@ class _BodyState extends State<Body> {
                                         borderRadius: BorderRadius.only(
                                             topRight: Radius.circular(10.0),
                                             topLeft: Radius.circular(10.0) ),
-                                        color: Colors.blueGrey,
+                                        color: kPrimaryColor,
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -264,7 +357,7 @@ class _BodyState extends State<Body> {
                   );
                 },
                 child: Card(
-                  color: Colors.lightGreen,
+                  color: kPinaColor,
                   elevation: 4,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -297,7 +390,7 @@ class _BodyState extends State<Body> {
         GestureDetector(
             child: Container(
                   decoration: BoxDecoration(
-                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.lightGreen : Colors.white,
+                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? kPinaColor : Colors.white,
                     border: const Border(
                       bottom: BorderSide(width: 1.0, color: Colors.grey),
                     ),
@@ -419,7 +512,7 @@ class _BodyState extends State<Body> {
     }
 
     Table table = Table(
-      border: TableBorder.all(color: Colors.white),
+      border: TableBorder.symmetric(inside: BorderSide(width: 1, color: const Color(0xFFF5F6F9))),
       children: [
         TableRow(children: [
           Column(children: const [
@@ -470,6 +563,77 @@ class _BodyState extends State<Body> {
               ]),
             ])
     );
+  }
+
+  buildDateList(DataBundleNotifier dataBundleNotifier, BuildContext context) {
+    List<Widget> branchWidgetList = [];
+    List<DateTime> dateTimeList = [
+      DateTime.now().subtract(const Duration(days: 9)),
+      DateTime.now().subtract(const Duration(days: 8)),
+      DateTime.now().subtract(const Duration(days: 7)),
+      DateTime.now().subtract(const Duration(days: 6)),
+      DateTime.now().subtract(const Duration(days: 5)),
+      DateTime.now().subtract(const Duration(days: 4)),
+      DateTime.now().subtract(const Duration(days: 3)),
+      DateTime.now().subtract(const Duration(days: 2)),
+      DateTime.now().subtract(const Duration(days: 1)),
+      DateTime.now(),
+      DateTime.now().add(const Duration(days: 1)),
+      DateTime.now().add(const Duration(days: 2)),
+      DateTime.now().add(const Duration(days: 3)),
+      DateTime.now().add(const Duration(days: 4)),
+      DateTime.now().add(const Duration(days: 5)),
+      DateTime.now().add(const Duration(days: 6)),
+      DateTime.now().add(const Duration(days: 7)),
+      DateTime.now().add(const Duration(days: 8)),
+      DateTime.now().add(const Duration(days: 9)),
+      DateTime.now().add(const Duration(days: 10)),
+      DateTime.now().add(const Duration(days: 11)),
+    ];
+
+    dateTimeList.forEach((currentDate) {
+      branchWidgetList.add(
+        GestureDetector(
+          child: Container(
+            decoration: BoxDecoration(
+              color: (dataBundleNotifier.currentDateTime.day == currentDate.day
+                  && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.grey : const Color(0xFFF5F6F9),
+              border: const Border(
+                bottom: BorderSide(width: 1.0, color: Colors.blueGrey),
+
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  currentDate.day == DateTime.now().day ?
+                  Text('  OGGI',
+                    style: TextStyle(
+                      fontSize: (dataBundleNotifier.currentDateTime.day == currentDate.day
+                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
+                      color: (dataBundleNotifier.currentDateTime.day == currentDate.day
+                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.white : Colors.black,
+                    ),) :
+                  Text('  '  + currentDate.day.toString() + '.' + currentDate.month.toString() + ' ' + getNameDayFromWeekDay(currentDate.weekday),
+                    style: TextStyle(
+                      fontSize: (dataBundleNotifier.currentDateTime.day == currentDate.day
+                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
+                      color: (dataBundleNotifier.currentDateTime.day == currentDate.day
+                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.white : Colors.black,
+                    ),),
+                ],
+              ),
+            ),
+          ),
+          onTap: () {
+            dataBundleNotifier.setCurrentDateTime(currentDate);
+            Navigator.pop(context);
+          },
+        ),
+      );
+    });
+    return branchWidgetList;
   }
 }
 

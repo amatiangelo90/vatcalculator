@@ -46,6 +46,7 @@ class ClientVatService{
   Future<Response> saveRecessed(
       double amount,
       String description,
+      int iva,
       int dateTimeRecessed,
       int pkBranchId) async{
 
@@ -54,6 +55,7 @@ class ClientVatService{
     String body = json.encode(
         RecessedModel(
             amount: amount,
+            vat: iva,
             dateTimeRecessed: dateTimeRecessed,
             description: description,
             dateTimeRecessedInsert: DateTime.now().millisecondsSinceEpoch,
@@ -225,6 +227,7 @@ class ClientVatService{
             RecessedModel(
                 fkBranchId: recessedElement['fkBranchId'],
                 description: recessedElement['description'],
+                vat: recessedElement['vat'],
                 dateTimeRecessed: recessedElement['dateTimeRecessed'],
                 dateTimeRecessedInsert: recessedElement['dateTimeRecessedInsert'],
                 amount: recessedElement['amount'],

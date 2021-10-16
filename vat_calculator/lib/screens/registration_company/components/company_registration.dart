@@ -63,43 +63,41 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return SingleChildScrollView(
-          child: Theme(
-            data: themeStepper(),
-            child: Stepper(
-              currentStep: currentStep,
-              steps: steps,
-              type: StepperType.vertical,
-              onStepTapped: (step) {
-                setState(() {
-                  currentStep = step;
-                });
-              },
-              onStepContinue: () {
-                setState(() {
-                  if (currentStep < steps.length - 1) {
-                    if (currentStep == 0) {
+        return Theme(
+          data: themeStepper(),
+          child: Stepper(
+            currentStep: currentStep,
+            steps: steps,
+            type: StepperType.vertical,
+            onStepTapped: (step) {
+              setState(() {
+                currentStep = step;
+              });
+            },
+            onStepContinue: () {
+              setState(() {
+                if (currentStep < steps.length - 1) {
+                  if (currentStep == 0) {
+                    currentStep = currentStep + 1;
+                  } else {
+                    if (currentStep == 1) {
                       currentStep = currentStep + 1;
-                    } else {
-                      if (currentStep == 1) {
-                        currentStep = currentStep + 1;
-                      }
                     }
-                  } else {
-                    saveCompanyData(mapData, dataBundleNotifier);
                   }
-                });
-              },
-              onStepCancel: () {
-                setState(() {
-                  if (currentStep > 0) {
-                    currentStep = currentStep - 1;
-                  } else {
-                    currentStep = 0;
-                  }
-                });
-              },
-            ),
+                } else {
+                  saveCompanyData(mapData, dataBundleNotifier);
+                }
+              });
+            },
+            onStepCancel: () {
+              setState(() {
+                if (currentStep > 0) {
+                  currentStep = currentStep - 1;
+                } else {
+                  currentStep = 0;
+                }
+              });
+            },
           ),
         );
       },

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
+import '../../constants.dart';
 import '../../enums.dart';
+import '../../size_config.dart';
 import 'components/company_registration.dart';
 
 class RegistrationCompanyScreen extends StatelessWidget {
@@ -11,7 +13,14 @@ class RegistrationCompanyScreen extends StatelessWidget {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text('Regista la tua attività', style: TextStyle(color: Colors.black, fontFamily: "Muli",)),
+        title: Text('Regista la tua attività',
+          style: TextStyle(
+            fontSize: getProportionateScreenWidth(20),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: kPrimaryColor,
       ),
       body: CompanyRegistration(),
       bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.company),

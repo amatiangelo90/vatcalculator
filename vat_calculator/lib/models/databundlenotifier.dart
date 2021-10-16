@@ -13,7 +13,39 @@ class DataBundleNotifier extends ChangeNotifier {
 
   BranchModel currentBranch;
   List<RecessedModel> currentListRecessed = [];
+
   DateTime currentDateTime = DateTime.now();
+  bool showIvaButtonPressed = false;
+  int indexIvaList = 0;
+  List<int> ivaList = [22, 10, 4, 0];
+
+
+  void setShowIvaButtonToFalse(){
+    showIvaButtonPressed = false;
+    notifyListeners();
+  }
+
+  void setShowIvaButtonToTrue(){
+    showIvaButtonPressed = true;
+    notifyListeners();
+  }
+
+  List<RecessedModel> getRecessedListByRangeDate(DateTime start, DateTime end){
+    List<RecessedModel> listToReturn = [];
+    if(currentListRecessed.isEmpty){
+      return listToReturn;
+    }else{
+      currentListRecessed.forEach((recessedElement) {
+        if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(end) && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(start)){
+          listToReturn.add(recessedElement);
+        }
+      });
+      return listToReturn;
+    }
+  }
+  List<int> getIvaList(){
+    return ivaList;
+  }
 
   void addDataBundle(DataBundle bundle){
     print('Adding bundle to Notifier' + bundle.email.toString());
@@ -73,6 +105,24 @@ class DataBundleNotifier extends ChangeNotifier {
     currentListRecessed.clear();
     currentListRecessed = recessedModelList;
 
+    notifyListeners();
+  }
+
+  void previousIva() {
+    if(indexIvaList == 0){
+      indexIvaList = 3;
+    }else{
+      indexIvaList --;
+    }
+    notifyListeners();
+  }
+
+  void nextIva() {
+    if(indexIvaList == 3){
+      indexIvaList = 0;
+    }else{
+      indexIvaList ++;
+    }
     notifyListeners();
   }
 }

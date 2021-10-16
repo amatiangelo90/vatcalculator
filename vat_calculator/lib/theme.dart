@@ -20,10 +20,10 @@ ThemeData themeStepper() {
     textTheme: textTheme(),
     inputDecorationTheme: inputDecorationTheme(),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-      secondaryHeaderColor: Colors.deepOrangeAccent,
-      primarySwatch: Colors.deepOrange,
+      secondaryHeaderColor: Colors.brown,
+      primarySwatch: Colors.brown,
       colorScheme: const ColorScheme.light(
-          primary: Colors.deepOrangeAccent
+          primary: Colors.brown
       )
   );
 }

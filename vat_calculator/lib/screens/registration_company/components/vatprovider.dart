@@ -4,7 +4,9 @@ import 'package:vat_calculator/client/aruba/constant/utils_aruba.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/fattureICloud/constant/utils_icloud.dart';
 
+import '../../../constants.dart';
 import '../../../enums.dart';
+import '../../../size_config.dart';
 
 class VatProvider extends StatefulWidget {
   const VatProvider({Key key}) : super(key: key);
@@ -108,21 +110,88 @@ class VatProviderState extends State<VatProvider> {
             children: [
               (isFattureInCloudChoiced == true && isArubaChoiced == false) ? Row(
                 children: [
-                  RichText(
-                    text: const TextSpan(
-                      children: [
-                        TextSpan(
-                          text: "  ",
-                        ),
-                        WidgetSpan(
-                          child: Icon(Icons.info_outlined, size: 19, color: Colors.blueAccent,),
-                        ),
-                        TextSpan(
-                            text: " ApiKey e ApiUid? Come fare per ottenerli?",
-                            style: TextStyle(color: Colors.black, fontSize: 12)
-                        ),
-                      ],
+                  GestureDetector(
+                    child: RichText(
+                      text: const TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "  ",
+                          ),
+                          WidgetSpan(
+                            child: Icon(Icons.info_outlined, size: 19, color: Colors.blueAccent,),
+                          ),
+                          TextSpan(
+                              text: " ApiKey e ApiUid? Come fare per ottenerli?",
+                              style: TextStyle(color: Colors.black, fontSize: 12)
+                          ),
+                        ],
+                      ),
                     ),
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            contentPadding: EdgeInsets.zero,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.all(
+                                    Radius.circular(10.0))),
+                            content: Builder(
+                              builder: (context) {
+                                var height = MediaQuery.of(context).size.height;
+                                var width = MediaQuery.of(context).size.width;
+                                return SizedBox(
+                                  height: height - 250,
+                                  width: width - 90,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(10.0),
+                                                topLeft: Radius.circular(10.0) ),
+                                            color: Colors.blue,
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('  ApiKey e ApiUid?',style: TextStyle(
+                                                    fontSize: getProportionateScreenWidth(14),
+                                                    fontWeight: FontWeight.bold,
+                                                    color: const Color(0xFFF5F6F9),
+                                                  ),),
+                                                  IconButton(icon: const Icon(
+                                                    Icons.clear,
+                                                    color: Color(0xFFF5F6F9),
+                                                  ), onPressed: () { Navigator.pop(context); },),
+
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        const Padding(
+                                          padding: EdgeInsets.all(18.0),
+                                          child: Text('L\' ApiKey e l\'ApiUid sono una coppia di parametri che servono per integrare '
+                                              'la presente applicazione con il tuo provider per la gestione delle fatture elettroniche. \n\nTutto ciò di cui hai '
+                                              'bisogno sono le tue credenziali FattureInCloud, accedere al servizio e recuperare i dati nella sezione dedicata.\n\n'
+                                              ''
+                                              'https://secure.fattureincloud.it/help/articolo/309-integrazioni-ecommerce', style: TextStyle(fontSize: 14),),
+                                        ),
+
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                      );
+                    },
                   ),
                 ],
               ) : const SizedBox(),

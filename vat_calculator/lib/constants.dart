@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const Color kPrimaryColor = Colors.blueGrey;
+const Color kPrimaryColor = Color(0XFF66855F);
+const Color kPinaColor = Colors.brown;
+
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kPrimaryGradientColor = LinearGradient(
   begin: Alignment.topLeft,

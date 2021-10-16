@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 
+import '../../../constants.dart';
 import 'profile_menu.dart';
 import 'profile_pic.dart';
 
@@ -24,16 +25,19 @@ class BodyProfile extends StatelessWidget {
                   text: "Gestione account",
                   icon: "assets/icons/User Icon.svg",
                   press: () => {},
+                  showArrow: true,
                 ),
                 ProfileMenu(
                   text: "Hai bisogno di aiuto?",
                   icon: "assets/icons/Question mark.svg",
                   press: () {
                   },
+                  showArrow: true,
                 ),
                 ProfileMenu(
                   text: "Log Out",
                   icon: "assets/icons/Log out.svg",
+                  showArrow: true,
                   press: () {
                     FirebaseAuth _auth = FirebaseAuth.instance;
                     if(_auth!=null){
@@ -43,7 +47,7 @@ class BodyProfile extends StatelessWidget {
                     ScaffoldMessenger.of(context)
                         .showSnackBar(const SnackBar(
                         duration: Duration(milliseconds: 2700),
-                        backgroundColor: Colors.orangeAccent,
+                        backgroundColor: kPinaColor,
                         content: Text('Logging out...', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                     Navigator.pushNamed(context, SplashScreen.routeName);
                   },

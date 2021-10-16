@@ -8,6 +8,7 @@ import 'package:vat_calculator/screens/profile/profile_screen.dart';
 import 'package:vat_calculator/screens/registration_company/registration_company_screen.dart';
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/vat_calculator_screen.dart';
 
 
 import 'screens/sign_up/sign_up_screen.dart';
@@ -24,4 +25,5 @@ final Map<String, WidgetBuilder> routes = {
   LandingScreen.routeName: (context) => LandingScreen(),
   ProfileScreen.routeName: (context) => ProfileScreen(),
   RegistrationCompanyScreen.routeName: (context) => RegistrationCompanyScreen(),
+  VatCalculatorScreen.routeName: (context) => VatCalculatorScreen(),
 };

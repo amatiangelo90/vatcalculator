@@ -8,10 +8,12 @@ class ProfileMenu extends StatelessWidget {
     @required this.text,
     @required this.icon,
     this.press,
+    this.showArrow,
   }) : super(key: key);
 
   final String text, icon;
   final VoidCallback press;
+  final bool showArrow;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +30,14 @@ class ProfileMenu extends StatelessWidget {
         onPressed: press,
         child: Row(
           children: [
-            SvgPicture.asset(
+            icon == '' ? const SizedBox(width: 0,) : SvgPicture.asset(
               icon,
               color: kPrimaryColor,
               width: 22,
             ),
             const SizedBox(width: 20),
             Expanded(child: Text(text)),
-            const Icon(Icons.arrow_forward_ios),
+            showArrow ? const Icon(Icons.arrow_forward_ios) : SizedBox(width: 0,),
           ],
         ),
       ),
