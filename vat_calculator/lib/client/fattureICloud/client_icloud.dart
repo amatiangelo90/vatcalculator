@@ -5,8 +5,10 @@ import 'package:vat_calculator/client/fattureICloud/constant/utils_icloud.dart';
 
 import 'model/request_api.dart';
 import 'model/request_info.dart';
+import 'model/request_retrieve_fornitori.dart';
 import 'model/response_acquisti_api.dart';
 import 'model/response_fatture_api.dart';
+import 'model/response_fornitori.dart';
 
 
 class FattureInCloudClient {
@@ -38,6 +40,42 @@ class FattureInCloudClient {
       print(e);
     }
     return post;
+  }
+
+  Future<List<ResponseAnagraficaFornitori>> performRichiestaFornitori(
+      String apiUid,
+      String apiKey) async {
+    List<ResponseAnagraficaFornitori> listResponseFornitori = [];
+    var dio = Dio();
+
+    String body = json.encode(
+        FattureInCloudFornitoriRequest(
+          apiKey: apiKey,
+          apiUid: apiUid,
+          cf: '',
+          piva: '',
+          id: '',
+          nome: '',
+          filtro: '',
+          pagina: 1
+        ).toMap());
+
+    Response post;
+    print('Request retrieve fornitori for current fattureincloud. Body: ' + body);
+    try{
+      post = await dio.post(
+
+        URL_FATTURE_ICLOUD_FORNITORI,
+        data: body,
+      );
+
+      print('Response From Icloud (' + URL_FATTURE_ICLOUD_FORNITORI + '): ' + post.data.toString());
+
+
+    }catch(e){
+      print(e);
+    }
+    return convertDataResponseIntoFornitoriList(post);
   }
 
   Future<List<ResponseAcquistiApi>> retrieveListaAcquisti(
@@ -242,5 +280,30 @@ class FattureInCloudClient {
       }
     }
     return listOut;
+  }
+
+  List<ResponseAnagraficaFornitori> convertDataResponseIntoFornitoriList(Response post) {
+    List<ResponseAnagraficaFornitori> listOut = [];
+
+    String encode = json.encode(post.data);
+
+    Map valueMap = jsonDecode(encode);
+    if(valueMap.containsKey('success')){
+      if(valueMap['success']){
+        if(valueMap.containsKey('lista_fornitori')){
+          List<dynamic> listDocuments = valueMap['lista_fornitori'];
+          listDocuments.forEach((currentFornitore) {
+            listOut.add(ResponseAnagraficaFornitori.fromMap(currentFornitore));
+          });
+        }
+      }else{
+        throw Exception('Impossible to retrieve data from ICloudFatture');
+      }
+    }
+    listOut.toSet().toList().forEach((element) {
+      print(element.nome);
+    });
+
+    return listOut.toSet().toList();
   }
 }

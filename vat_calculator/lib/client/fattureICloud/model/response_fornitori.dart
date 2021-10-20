@@ -1,4 +1,5 @@
-class ResponseFornitori{
+class ResponseAnagraficaFornitori {
+  int pkSupplierId;
   String id;
   String nome;
   String referente;
@@ -15,63 +16,88 @@ class ResponseFornitori{
   String piva;
   String cf;
   String termini_pagamento;
-  bool pagamento_fine_mese;
+  String pagamento_fine_mese;
   String val_iva_default;
   String desc_iva_default;
   String extra;
-  bool PA;
-  bool PA_codice;
+  String PA;
+  String PA_codice;
+  int fkBranchId;
 
+  ResponseAnagraficaFornitori(
+      {this.pkSupplierId,
+      this.id,
+      this.nome,
+      this.referente,
+      this.indirizzo_via,
+      this.indirizzo_cap,
+      this.indirizzo_citta,
+      this.indirizzo_provincia,
+      this.indirizzo_extra,
+      this.paese,
+      this.mail,
+      this.pec,
+      this.tel,
+      this.fax,
+      this.piva,
+      this.cf,
+      this.extra,
+      this.fkBranchId});
 
-  ResponseFornitori({
-    this.id,
-    this.nome,
-    this.referente,
-    this.indirizzo_via,
-    this.indirizzo_cap,
-    this.indirizzo_citta,
-    this.indirizzo_provincia,
-    this.indirizzo_extra,
-    this.paese,
-    this.mail,
-    this.pec,
-    this.tel,
-    this.fax,
-    this.piva,
-    this.cf,
-    this.termini_pagamento,
-    this.pagamento_fine_mese,
-    this.val_iva_default,
-    this.desc_iva_default,
-    this.extra,
-    this.PA,
-    this.PA_codice});
-
-  factory ResponseFornitori.fromMap(Map cartMap){
-    return ResponseFornitori(
-      id: cartMap['id'].toString(),
-      nome: cartMap['nome'].toString(),
-      referente: cartMap['referente'].toString(),
-      indirizzo_via: cartMap['indirizzo_via'].toString(),
-      indirizzo_cap:  cartMap['indirizzo_cap'].toString(),
-      indirizzo_citta: cartMap['indirizzo_citta'].toString(),
-      indirizzo_provincia: cartMap['indirizzo_provincia'].toString(),
-      indirizzo_extra: cartMap['indirizzo_extra'].toString(),
-      paese: cartMap['paese'].toString(),
-      mail: cartMap['mail'].toString(),
-      pec: cartMap['pec'].toString(),
-      tel: cartMap['tel'].toString(),
-      fax: cartMap['fax'].toString(),
-      piva: cartMap['piva'].toString(),
-      cf: cartMap['cf'].toString(),
-      termini_pagamento: cartMap['termini_pagamento'].toString(),
-      pagamento_fine_mese: cartMap['pagamento_fine_mese'],
-      val_iva_default: cartMap['val_iva_default'].toString(),
-      desc_iva_default: cartMap['desc_iva_default'].toString(),
-      extra: cartMap['extra'].toString(),
-      PA: cartMap['PA'],
-      PA_codice: cartMap['PA_codice']);
+  factory ResponseAnagraficaFornitori.fromMap(Map cartMap) {
+    return ResponseAnagraficaFornitori(
+        pkSupplierId: 0,
+        id: cartMap['id'].toString(),
+        nome: cartMap['nome'].toString(),
+        referente: cartMap['referente'].toString(),
+        indirizzo_via: cartMap['indirizzo_via'].toString(),
+        indirizzo_cap: cartMap['indirizzo_cap'].toString(),
+        indirizzo_citta: cartMap['indirizzo_citta'].toString(),
+        indirizzo_provincia: cartMap['indirizzo_provincia'].toString(),
+        indirizzo_extra: cartMap['indirizzo_extra'].toString(),
+        paese: cartMap['paese'].toString(),
+        mail: cartMap['mail'].toString(),
+        pec: cartMap['pec'].toString(),
+        tel: cartMap['tel'].toString(),
+        fax: cartMap['fax'].toString(),
+        piva: cartMap['piva'].toString(),
+        cf: cartMap['cf'].toString(),
+        extra: cartMap['extra'].toString(),
+        fkBranchId: cartMap['fkBranchId']);
   }
+
+  toMap() {
+    return {
+      'pk_supplier_id': pkSupplierId,
+      'id': id,
+      'nome': nome,
+      'referente': referente,
+      'indirizzo_via': indirizzo_via,
+      'indirizzo_cap': indirizzo_cap,
+      'indirizzo_citta': indirizzo_citta,
+      'indirizzo_provincia': indirizzo_provincia,
+      'indirizzo_extra': indirizzo_extra,
+      'paese': paese,
+      'mail': mail,
+      'pec': pec,
+      'tel': tel,
+      'fax': fax,
+      'piva': piva,
+      'cf': cf,
+      'extra': extra,
+      'fk_branch_id': fkBranchId
+    };
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ResponseAnagraficaFornitori &&
+          runtimeType == other.runtimeType &&
+          nome == other.nome;
+
+  @override
+  int get hashCode => nome.hashCode;
 
 
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -11,11 +13,18 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<DataBundle> dataBundleList = [
   ];
+  List<RecessedModel> currentListRecessed = [
+
+  ];
+
+  List<ResponseAnagraficaFornitori> currentListSuppliers = [
+
+  ];
 
   BranchModel currentBranch;
-  List<RecessedModel> currentListRecessed = [];
   DateTime currentDateTime = DateTime.now();
   DateTimeRange currentDateTimeRange;
+
 
   void initializeCurrentDateTimeRangeWeekly() {
     currentDateTimeRange = DateTimeRange(
@@ -99,6 +108,10 @@ class DataBundleNotifier extends ChangeNotifier {
     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
     currentListRecessed.clear();
     currentListRecessed.addAll(_recessedModelList);
+
+    List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
+    currentListSuppliers.clear();
+    currentListSuppliers.addAll(_supplierModelList);
     notifyListeners();
   }
 
@@ -128,6 +141,10 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();
+    }
+
+    if(currentListSuppliers.isNotEmpty){
+      currentListSuppliers.clear();
     }
     setShowIvaButtonToFalse();
     indexIvaList = 0;
@@ -168,5 +185,47 @@ class DataBundleNotifier extends ChangeNotifier {
       indexIvaList ++;
     }
     notifyListeners();
+  }
+
+  void configLoading() {
+    EasyLoading.instance
+      ..displayDuration = const Duration(milliseconds: 2000)
+      ..indicatorType = EasyLoadingIndicatorType.fadingCircle
+      ..loadingStyle = EasyLoadingStyle.dark
+      ..indicatorSize = 45.0
+      ..radius = 10.0
+      ..progressColor = Colors.yellow
+      ..backgroundColor = Colors.green
+      ..indicatorColor = Colors.yellow
+      ..textColor = Colors.yellow
+      ..maskColor = Colors.blue.withOpacity(0.5)
+      ..userInteractions = true
+      ..dismissOnTap = false
+      ..customAnimation = CustomAnimation();
+  }
+
+  void addCurrentSuppliersList(List<ResponseAnagraficaFornitori> suppliersModelList) {
+    currentListSuppliers.clear();
+    currentListSuppliers.addAll(suppliersModelList);
+    notifyListeners();
+  }
+}
+
+class CustomAnimation extends EasyLoadingAnimation {
+  CustomAnimation();
+
+  @override
+  Widget buildWidget(
+      Widget child,
+      AnimationController controller,
+      AlignmentGeometry alignment,
+      ) {
+    return Opacity(
+      opacity: controller.value,
+      child: RotationTransition(
+        turns: controller,
+        child: child,
+      ),
+    );
   }
 }

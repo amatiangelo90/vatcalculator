@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/routes.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         theme: theme(),
         initialRoute: SplashScreen.routeName,
         routes: routes,
+        builder: EasyLoading.init(),
       ),
     );
   }

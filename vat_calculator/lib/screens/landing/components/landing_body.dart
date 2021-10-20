@@ -1,9 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -47,6 +50,8 @@ class LandingBody extends StatelessWidget {
               child: DefaultButton(
                 text: "Procediamo",
                 press: () async {
+                  EasyLoading.show();
+
                   ClientVatService clientService = ClientVatService();
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
 
@@ -55,13 +60,18 @@ class LandingBody extends StatelessWidget {
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
+
                   if(dataBundleNotifier.currentBranch != null){
                     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
                     dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
                   }
+
+                  if(dataBundleNotifier.currentBranch != null){
+                    List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
+                  }
                   dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
-
-
+                  EasyLoading.dismiss();
                   Navigator.pushNamed(context, HomeScreen.routeName);
                 },
               ),

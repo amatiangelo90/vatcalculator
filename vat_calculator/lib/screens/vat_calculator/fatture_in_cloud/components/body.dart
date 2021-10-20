@@ -9,7 +9,6 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile/components/profile_menu.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import '../../../../constants.dart';
@@ -19,15 +18,16 @@ class VatFattureInCloudCalculatorBody extends StatefulWidget {
   const VatFattureInCloudCalculatorBody({Key key}) : super(key: key);
 
   @override
-  _VatFattureInCloudCalculatorBodyState createState() => _VatFattureInCloudCalculatorBodyState();
+  _VatFattureInCloudCalculatorBodyState createState() =>
+      _VatFattureInCloudCalculatorBodyState();
 }
 
-class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalculatorBody> {
+class _VatFattureInCloudCalculatorBodyState
+    extends State<VatFattureInCloudCalculatorBody> {
   DateTimeRange _currentDateTimeRange;
   FattureInCloudClient iCloudClient;
   DateTime _currentDateForDateRangePicker;
   double _width;
-
 
   @override
   void initState() {
@@ -49,225 +49,323 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-      return dataBundleNotifier.currentBranch == null ? Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Sembra che tu non abbia configurato ancora nessuna attività. ",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: getProportionateScreenWidth(13),
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
+      return dataBundleNotifier.currentBranch == null
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Sembra che tu non abbia configurato ancora nessuna attività. ",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(13),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  SizedBox(
+                    width: SizeConfig.screenWidth * 0.6,
+                    child: DefaultButton(
+                      text: "Crea Attività",
+                      press: () async {
+                        Navigator.pushNamed(
+                            context, CompanyRegistration.routeName);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 30,),
-            SizedBox(
-              width: SizeConfig.screenWidth * 0.6,
-              child: DefaultButton(
-                text: "Crea Attività",
-                press: () async {
-                  Navigator.pushNamed(context, CompanyRegistration.routeName);
-
-                },
-              ),
-            ),
-          ],
-        ),
-      ) : SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            )
+          : SingleChildScrollView(
               child: Column(
                 children: [
-                  Column(
-                    children: [
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(20),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          backgroundColor: kCustomWhite,
-                        ),
-                        child: Column(
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      children: [
+                        Column(
                           children: [
-                            Row(
-                              children: [
-                                Expanded(child: Center(child: Text(dataBundleNotifier.currentBranch.companyName, style: const TextStyle(color: kPinaColor,fontSize: 30),))),
-                              ],
-                            ),
-                            GestureDetector(
-                              onTap: (){
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      contentPadding: EdgeInsets.zero,
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      content: Builder(
-                                        builder: (context) {
-                                          var height = MediaQuery.of(context).size.height;
-                                          var width = MediaQuery.of(context).size.width;
-                                          return SizedBox(
-
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.vertical,
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    decoration: const BoxDecoration(
-                                                      borderRadius: BorderRadius.only(
-                                                          topRight: Radius.circular(10.0),
-                                                          topLeft: Radius.circular(10.0) ),
-                                                      color: kPrimaryColor,
-                                                    ),
-                                                    child: Column(
-                                                      children: [
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                primary: kPrimaryColor,
+                                padding: const EdgeInsets.all(20),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15)),
+                                backgroundColor: kCustomWhite,
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Center(
+                                              child: Text(
+                                        dataBundleNotifier
+                                            .currentBranch.companyName,
+                                        style: const TextStyle(
+                                            color: kPinaColor, fontSize: 30),
+                                      ))),
+                                    ],
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                                contentPadding: EdgeInsets.zero,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0))),
+                                                content: Builder(
+                                                  builder: (context) {
+                                                    var height =
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .height;
+                                                    var width =
+                                                        MediaQuery.of(context)
+                                                            .size
+                                                            .width;
+                                                    return SizedBox(
+                                                      child:
+                                                          SingleChildScrollView(
+                                                        scrollDirection:
+                                                            Axis.vertical,
+                                                        child: Column(
                                                           children: [
-                                                            Text('  Dettagli Provider',style: TextStyle(
-                                                              fontSize: getProportionateScreenWidth(20),
-                                                              fontWeight: FontWeight.bold,
-                                                              color: kCustomWhite,
-                                                            ),),
-                                                            IconButton(icon: const Icon(
-                                                              Icons.clear,
-                                                              color: kCustomWhite,
-                                                            ), onPressed: () { Navigator.pop(context); },),
-
+                                                            Container(
+                                                              decoration:
+                                                                  const BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                    topRight: Radius
+                                                                        .circular(
+                                                                            10.0),
+                                                                    topLeft: Radius
+                                                                        .circular(
+                                                                            10.0)),
+                                                                color:
+                                                                    kPrimaryColor,
+                                                              ),
+                                                              child: Column(
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      Text(
+                                                                        '  Dettagli Provider',
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              getProportionateScreenWidth(20),
+                                                                          fontWeight:
+                                                                              FontWeight.bold,
+                                                                          color:
+                                                                              kCustomWhite,
+                                                                        ),
+                                                                      ),
+                                                                      IconButton(
+                                                                        icon:
+                                                                            const Icon(
+                                                                          Icons
+                                                                              .clear,
+                                                                          color:
+                                                                              kCustomWhite,
+                                                                        ),
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        },
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            Column(
+                                                              children: [
+                                                                SizedBox(
+                                                                  width: width -
+                                                                      90,
+                                                                  child: Card(
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    semanticContainer:
+                                                                        true,
+                                                                    clipBehavior:
+                                                                        Clip.antiAliasWithSaveLayer,
+                                                                    child: Image
+                                                                        .asset(
+                                                                      'assets/images/fattureincloud.png',
+                                                                      fit: BoxFit
+                                                                          .contain,
+                                                                    ),
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              10.0),
+                                                                    ),
+                                                                    elevation:
+                                                                        5,
+                                                                    margin:
+                                                                        const EdgeInsets.all(
+                                                                            10),
+                                                                  ),
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    const SizedBox(
+                                                                        width:
+                                                                            22),
+                                                                    Text(
+                                                                      'ApiKey',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        fontSize:
+                                                                            getProportionateScreenWidth(14),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                ProfileMenu(
+                                                                  text: dataBundleNotifier
+                                                                      .currentBranch
+                                                                      .apiKeyOrUser,
+                                                                  icon: '',
+                                                                  press: () =>
+                                                                      {},
+                                                                  showArrow:
+                                                                      false,
+                                                                ),
+                                                                Row(
+                                                                  children: [
+                                                                    const SizedBox(
+                                                                        width:
+                                                                            22),
+                                                                    Text(
+                                                                      dataBundleNotifier.currentBranch.providerFatture ==
+                                                                              'fatture_in_cloud'
+                                                                          ? 'ApiUid'
+                                                                          : 'Password',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .grey,
+                                                                        fontSize:
+                                                                            getProportionateScreenWidth(14),
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                ProfileMenu(
+                                                                  text: dataBundleNotifier
+                                                                      .currentBranch
+                                                                      .apiUidOrPassword,
+                                                                  icon: '',
+                                                                  press: () =>
+                                                                      {},
+                                                                  showArrow:
+                                                                      false,
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 20,
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ],
                                                         ),
-
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      SizedBox(
-                                                        width: width - 90,
-                                                        child: Card(
-                                                          color: Colors.blue,
-                                                          semanticContainer: true,
-                                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                                          child: Image.asset(
-                                                            'assets/images/fattureincloud.png',
-                                                            fit: BoxFit.contain,
-                                                          ),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(10.0),
-                                                          ),
-                                                          elevation: 5,
-                                                          margin: const EdgeInsets.all(10),
-                                                        ),
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          const SizedBox(width: 22),
-                                                          Text('ApiKey',style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: getProportionateScreenWidth(14),
-                                                            fontWeight: FontWeight.bold,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      ProfileMenu(
-                                                        text: dataBundleNotifier.currentBranch.apiKeyOrUser,
-                                                        icon: '',
-                                                        press: () => {
-                                                        },
-                                                        showArrow: false,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          const SizedBox(width: 22),
-                                                          Text(dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'ApiUid' : 'Password',
-                                                            style: TextStyle(
-                                                              color: Colors.grey,
-                                                              fontSize: getProportionateScreenWidth(14),
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      ProfileMenu(
-                                                        text: dataBundleNotifier.currentBranch.apiUidOrPassword,
-                                                        icon: '',
-                                                        press: () => {
-                                                        },
-                                                        showArrow: false,
-                                                      ),
-                                                      SizedBox(height: 20,),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
+                                                    );
+                                                  },
+                                                ),
+                                              ));
+                                    },
+                                    child: SizedBox(
+                                      width: 120,
+                                      child: Card(
+                                        color: dataBundleNotifier.currentBranch
+                                                    .providerFatture ==
+                                                'fatture_in_cloud'
+                                            ? Colors.blue
+                                            : Colors.orange,
+                                        semanticContainer: true,
+                                        clipBehavior:
+                                            Clip.antiAliasWithSaveLayer,
+                                        child: Image.asset(
+                                          dataBundleNotifier.currentBranch
+                                                      .providerFatture ==
+                                                  'fatture_in_cloud'
+                                              ? 'assets/images/fattureincloud.png'
+                                              : 'assets/images/aruba.png',
+                                          fit: BoxFit.contain,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
+                                        elevation: 5,
+                                        margin: const EdgeInsets.all(10),
                                       ),
-                                    )
-                                );
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ProfileMenu(
+                              text: 'Intervallo temporale ' +
+                                  _currentDateTimeRange.start.day.toString() +
+                                  '/' +
+                                  _currentDateTimeRange.start.month.toString() +
+                                  ' - ' +
+                                  _currentDateTimeRange.end.day.toString() +
+                                  '/' +
+                                  _currentDateTimeRange.end.month.toString(),
+                              icon: "assets/icons/calendar.svg",
+                              press: () => {
+                                _selectDateRange(context),
+                                dataBundleNotifier.setShowIvaButtonToFalse(),
                               },
-                              child: SizedBox(
-                                width: 120,
-                                child: Card(
-                                  color: dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? Colors.blue : Colors.orange,
-                                  semanticContainer: true,
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  child: Image.asset(
-                                    dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
-                                    fit: BoxFit.contain,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  elevation: 5,
-                                  margin: const EdgeInsets.all(10),
-                                ),
+                              showArrow: false,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(18.0),
+                              child: DefaultButton(
+                                text: "Calcola Iva",
+                                press: () async {
+                                  dataBundleNotifier.setShowIvaButtonToTrue();
+                                },
+                                color: Colors.blue,
                               ),
                             ),
                           ],
                         ),
-                      ),
-                      ProfileMenu(
-                        text: 'Intervallo temporale ' + _currentDateTimeRange.start.day.toString() + '/'
-                            +  _currentDateTimeRange.start.month.toString()
-                            +' - ' +  _currentDateTimeRange.end.day.toString() +'/'
-                            +  _currentDateTimeRange.end.month.toString(),
-                        icon: "assets/icons/calendar.svg",
-                        press: () => {
-                          _selectDateRange(context),
-                          dataBundleNotifier.setShowIvaButtonToFalse(),
-                        },
-                        showArrow: false,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: DefaultButton(
-                          text: "Calcola Iva",
-                          press: () async {
-                            dataBundleNotifier.setShowIvaButtonToTrue();
-                          },
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  dataBundleNotifier.showIvaButtonPressed
+                      ? buildIVAPage(dataBundleNotifier)
+                      : const SizedBox(
+                          width: 0,
+                        ),
                 ],
               ),
-            ),
-            dataBundleNotifier.showIvaButtonPressed ? buildIVAPage(dataBundleNotifier) : const SizedBox(width: 0,),
-          ],
-        ),
-      );
+            );
     });
   }
 
@@ -279,39 +377,39 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
         children: <Widget>[
           FutureBuilder(
             initialData: <Widget>[
-          Column(
-            children: const [
-              Center(
-                  child: CircularProgressIndicator(
-                color: Colors.brown,
-              )),
-              SizedBox(),
-              Center(
-                child: Text(
-                  'Caricamento dati..',
-                  style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black,
-                      fontFamily: 'LoraFont'),
-                ),
+              Column(
+                children: const [
+                  Center(
+                      child: CircularProgressIndicator(
+                    color: Colors.brown,
+                  )),
+                  SizedBox(),
+                  Center(
+                    child: Text(
+                      'Caricamento dati..',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          color: Colors.black,
+                          fontFamily: 'LoraFont'),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          )
             ],
             future: getIvaDetailsWidget(dataBundleNotifier),
             builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Padding(
-              padding: EdgeInsets.all(8.0),
-              child: ListView(
-                primary: false,
-                shrinkWrap: true,
-                children: snapshot.data,
-              ),
-            );
-          } else {
-            return const CircularProgressIndicator();
-          }
+              if (snapshot.hasData) {
+                return Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: ListView(
+                    primary: false,
+                    shrinkWrap: true,
+                    children: snapshot.data,
+                  ),
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
             },
           ),
         ],
@@ -320,7 +418,6 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
   }
 
   Future getIvaDetailsWidget(DataBundleNotifier dataBundleNotifier) async {
-
     List<ResponseAcquistiApi> retrieveListaAcquisti =
         await iCloudClient.retrieveListaAcquisti(
             dataBundleNotifier.currentBranch.apiUidOrPassword,
@@ -384,7 +481,11 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
     });
 
     if ((totalIvaAcquisti + totalIvaNdcReceived) >=
-        (totalIvaFatture + totalIvaNdcSent + calculateVatFromListRecessed(dataBundleNotifier.getRecessedListByRangeDate(_currentDateTimeRange.start, _currentDateTimeRange.end)))) {
+        (totalIvaFatture +
+            totalIvaNdcSent +
+            calculateVatFromListRecessed(
+                dataBundleNotifier.getRecessedListByRangeDate(
+                    _currentDateTimeRange.start, _currentDateTimeRange.end)))) {
       // iva a credito
       listOut.add(Padding(
         padding: const EdgeInsets.all(8.0),
@@ -411,7 +512,11 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                       ((totalIvaNdcReceived + totalIvaAcquisti) -
                               (totalIvaFatture +
                                   totalIvaNdcSent +
-                                  calculateVatFromListRecessed(dataBundleNotifier.getRecessedListByRangeDate(_currentDateTimeRange.start, _currentDateTimeRange.end))))
+                                  calculateVatFromListRecessed(
+                                      dataBundleNotifier
+                                          .getRecessedListByRangeDate(
+                                              _currentDateTimeRange.start,
+                                              _currentDateTimeRange.end))))
                           .toStringAsFixed(2),
                   style: const TextStyle(color: Colors.white, fontSize: 40),
                 ),
@@ -448,7 +553,15 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                 ),
                 Text(
                   '€ ' +
-                      ((totalIvaFatture + totalIvaNdcReceived + calculateVatFromListRecessed(dataBundleNotifier.getRecessedListByRangeDate(_currentDateTimeRange.start, _currentDateTimeRange.end))) - (totalIvaAcquisti + totalIvaNdcSent)).toStringAsFixed(2),
+                      ((totalIvaFatture +
+                                  totalIvaNdcReceived +
+                                  calculateVatFromListRecessed(
+                                      dataBundleNotifier
+                                          .getRecessedListByRangeDate(
+                                              _currentDateTimeRange.start,
+                                              _currentDateTimeRange.end))) -
+                              (totalIvaAcquisti + totalIvaNdcSent))
+                          .toStringAsFixed(2),
                   style: const TextStyle(color: Colors.white, fontSize: 40),
                 ),
                 const SizedBox(
@@ -471,8 +584,14 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                        FattureAcquistiDetailsPage(listResponseAcquisti: extractedAcquistiFatture,),),);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FattureAcquistiDetailsPage(
+                          listResponseAcquisti: extractedAcquistiFatture,
+                        ),
+                      ),
+                    );
                   },
                   child: Container(
                     height: _width / 2.3,
@@ -492,10 +611,13 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                             children: const [
                               Text(
                                 'Iva',
-                                style: TextStyle(color: Colors.white, fontSize: 13),
-                              ),Text(
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13),
+                              ),
+                              Text(
                                 'Fatture Acquisti',
-                                style: TextStyle(color: Colors.white, fontSize: 13),
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 13),
                               ),
                             ],
                           ),
@@ -503,8 +625,8 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                             height: 10,
                           ),
                           Text('€ ' + totalIvaAcquisti.toStringAsFixed(2),
-                              style:
-                                  const TextStyle(color: Colors.white, fontSize: 25)),
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 25)),
                         ],
                       ),
                     ),
@@ -528,10 +650,13 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                           children: const [
                             Text(
                               'Iva',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
-                            ),Text(
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
+                            ),
+                            Text(
                               'Fatture Vendite',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ],
                         ),
@@ -571,11 +696,13 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                           children: const [
                             Text(
                               'Iva',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                             Text(
                               'NDC (Emesse)',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ],
                         ),
@@ -607,11 +734,13 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                           children: [
                             const Text(
                               'Iva',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                             const Text(
                               'NDC (Ricevute)',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ],
                         ),
@@ -660,19 +789,27 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                           children: const [
                             Text(
                               'Iva',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                             Text(
                               'Incassi',
-                              style: TextStyle(color: Colors.white, fontSize: 13),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 13),
                             ),
                           ],
                         ),
                         const SizedBox(
                           height: 10,
                         ),
-                        Text(calculateVatFromListRecessed(
-                            dataBundleNotifier.getRecessedListByRangeDate(_currentDateTimeRange.start, _currentDateTimeRange.end)).toStringAsFixed(2), style: const TextStyle(color: Colors.white, fontSize: 22)),
+                        Text(
+                            calculateVatFromListRecessed(dataBundleNotifier
+                                    .getRecessedListByRangeDate(
+                                        _currentDateTimeRange.start,
+                                        _currentDateTimeRange.end))
+                                .toStringAsFixed(2),
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 22)),
 
                         //
                       ],
@@ -714,32 +851,31 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
   }
 
   String getNameProvider(String providerFatture) {
-    if(providerFatture == 'fatture_in_cloud'){
+    if (providerFatture == 'fatture_in_cloud') {
       return 'Fatture In Cloud';
     }
-    if(providerFatture == 'aruba'){
+    if (providerFatture == 'aruba') {
       return 'Aruba';
     }
     return 'Errore ';
   }
 
-  double calculateVatFromListRecessed(List<RecessedModel> recessedListByRangeDate) {
+  double calculateVatFromListRecessed(
+      List<RecessedModel> recessedListByRangeDate) {
     double totalIva = 0;
-    try{
-      if(recessedListByRangeDate == null || recessedListByRangeDate.isEmpty){
+    try {
+      if (recessedListByRangeDate == null || recessedListByRangeDate.isEmpty) {
         return totalIva;
-      }else{
+      } else {
         recessedListByRangeDate.forEach((element) {
           print(element.toMap().toString());
-          totalIva = totalIva + (element.amount * (element.vat/100));
+          totalIva = totalIva + (element.amount * (element.vat / 100));
         });
         return totalIva;
       }
-    }catch(e){
+    } catch (e) {
       print(e);
       return 0;
     }
-
   }
-
 }

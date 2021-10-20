@@ -3,6 +3,7 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
+import 'components/body_orders.dart';
 
 class OrdersScreen extends StatelessWidget {
   static String routeName = "/ordersscreen";
@@ -16,12 +17,14 @@ class OrdersScreen extends StatelessWidget {
           style: TextStyle(
             fontSize: getProportionateScreenWidth(20),
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: kPrimaryColor,
           ),
         ),
-        backgroundColor: kPrimaryColor,
+        backgroundColor: kCustomWhite,
       ),
-      body: const Text('Ordini'),
+      body: const OrdersScreenBody(
+
+      ),
       bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.orders),
     );
   }
