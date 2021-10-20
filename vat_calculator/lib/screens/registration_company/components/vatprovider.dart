@@ -163,11 +163,11 @@ class VatProviderState extends State<VatProvider> {
                                                   Text('  ApiKey e ApiUid?',style: TextStyle(
                                                     fontSize: getProportionateScreenWidth(14),
                                                     fontWeight: FontWeight.bold,
-                                                    color: const Color(0xFFF5F6F9),
+                                                    color: kCustomWhite,
                                                   ),),
                                                   IconButton(icon: const Icon(
                                                     Icons.clear,
-                                                    color: Color(0xFFF5F6F9),
+                                                    color: kCustomWhite,
                                                   ), onPressed: () { Navigator.pop(context); },),
 
                                                 ],

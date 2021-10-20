@@ -7,3 +7,6 @@ const String URL_FATTURE_ICLOUD_FATTURE_LISTA = 'https://api.fattureincloud.it:4
 
 /// Info
 const String URL_FATTURE_ICLOUD_REQUEST_INFO = 'https://api.fattureincloud.it:443/v1/richiesta/info';
+
+/// Info
+const String URL_FATTURE_ICLOUD_FORNITORI = 'https://api.fattureincloud.it:443/v1/clienti/lista';

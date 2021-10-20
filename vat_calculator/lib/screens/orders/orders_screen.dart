@@ -3,17 +3,16 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
-import 'components/company_registration.dart';
 
-class RegistrationCompanyScreen extends StatelessWidget {
-  static String routeName = "/registration_company";
+class OrdersScreen extends StatelessWidget {
+  static String routeName = "/ordersscreen";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text('Regista la tua attività',
+        title: Text('Ordini',
           style: TextStyle(
             fontSize: getProportionateScreenWidth(20),
             fontWeight: FontWeight.bold,
@@ -22,8 +21,8 @@ class RegistrationCompanyScreen extends StatelessWidget {
         ),
         backgroundColor: kPrimaryColor,
       ),
-      body: CompanyRegistration(),
-      bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.company),
+      body: const Text('Ordini'),
+      bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.orders),
     );
   }
 }

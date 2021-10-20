@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -13,8 +14,38 @@ class DataBundleNotifier extends ChangeNotifier {
 
   BranchModel currentBranch;
   List<RecessedModel> currentListRecessed = [];
-
   DateTime currentDateTime = DateTime.now();
+  DateTimeRange currentDateTimeRange;
+
+  void initializeCurrentDateTimeRangeWeekly() {
+    currentDateTimeRange = DateTimeRange(
+      start: currentDateTime
+          .subtract(Duration(days: currentDateTime.weekday - 1)),
+      end: currentDateTime.add(Duration(
+          days: DateTime.daysPerWeek - currentDateTime.weekday)),
+    );
+    notifyListeners();
+  }
+
+  void addWeekToDateTimeRange(){
+    currentDateTimeRange = DateTimeRange(
+      start: currentDateTimeRange.start
+          .add(const Duration(days: 7)),
+      end: currentDateTimeRange.end.add(const Duration(
+          days: 7)),
+    );
+    notifyListeners();
+  }
+
+  void subtractWeekToDateTimeRange(){
+    currentDateTimeRange = DateTimeRange(
+      start: currentDateTimeRange.start
+          .subtract(const Duration(days: 7)),
+      end: currentDateTimeRange.end.subtract(const Duration(
+          days: 7)),
+    );
+    notifyListeners();
+  }
   bool showIvaButtonPressed = false;
   int indexIvaList = 0;
   List<int> ivaList = [22, 10, 4, 0];

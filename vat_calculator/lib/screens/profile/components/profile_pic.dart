@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../constants.dart';
+
 class ProfilePic extends StatelessWidget {
   const ProfilePic({
     Key key,
@@ -33,7 +35,7 @@ class ProfilePic extends StatelessWidget {
                     side: const BorderSide(color: Colors.white),
                   ),
                   primary: Colors.white,
-                  backgroundColor: const Color(0xFFF5F6F9),
+                  backgroundColor: kCustomWhite,
                 ),
                 onPressed: () {
 

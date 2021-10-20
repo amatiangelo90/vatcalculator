@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import '../../constants.dart';
-import '../../enums.dart';
-import '../../size_config.dart';
-import 'components/body.dart';
+import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
+import '../../../constants.dart';
+import '../../../enums.dart';
+import '../../../size_config.dart';
 
-class HomeScreen extends StatelessWidget {
+class FattureInCloudCalculatorScreen extends StatelessWidget {
 
-  static String routeName = "/home";
+  static String routeName = "/fattureincloud";
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
             backgroundColor: kCustomWhite,
             centerTitle: true,
             title: Text(
-              "Ciao ${dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''}",
+              "Iva FattureInCloud",
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(20),
                 fontWeight: FontWeight.bold,
@@ -30,8 +30,8 @@ class HomeScreen extends StatelessWidget {
             elevation: 0,
             automaticallyImplyLeading: false,
           ),
-          body: const Body(),
-          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.home),
+          body: const VatFattureInCloudCalculatorBody(),
+          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.vatcalc),
         );
       },
     );

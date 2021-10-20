@@ -27,6 +27,10 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UISupportedInterfaceOrientations</key>
+	<key>NSCameraUsageDescription</key>
+    <string>Need to access your camera to capture a photo add and update profile picture.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Need to access your photo library to select a photo add and update profile picture</string>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>

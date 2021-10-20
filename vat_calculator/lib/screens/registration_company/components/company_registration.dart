@@ -13,10 +13,13 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/registration_company/components/recap_data.dart';
 import 'package:vat_calculator/screens/registration_company/components/vatprovider.dart';
 import 'package:vat_calculator/theme.dart';
+import '../../../constants.dart';
+import '../../../size_config.dart';
 import 'company_details.dart';
 
 class CompanyRegistration extends StatefulWidget {
 
+  static String routeName = 'companyregistration';
   @override
   _CompanyRegistrationState createState() => _CompanyRegistrationState();
 }
@@ -68,39 +71,59 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       builder: (context, dataBundleNotifier, child){
         return Theme(
           data: themeStepper(),
-          child: Stepper(
-            currentStep: currentStep,
-            steps: steps,
-            type: StepperType.vertical,
-            onStepTapped: (step) {
-              setState(() {
-                currentStep = step;
-              });
-            },
-            onStepContinue: () {
-              setState(() {
-                if (currentStep < steps.length - 1) {
-                  if (currentStep == 0) {
-                    currentStep = currentStep + 1;
-                  } else {
-                    if (currentStep == 1) {
+          child: Scaffold(
+            appBar: AppBar(
+              leading: IconButton(
+                onPressed: () => Navigator.of(context).pop(),
+                icon: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                ),
+              ),
+              centerTitle: true,
+              title: Text('Registra la tua attività',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(20),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              backgroundColor: kPrimaryColor,
+            ),
+            body: Stepper(
+              currentStep: currentStep,
+              steps: steps,
+              type: StepperType.vertical,
+              onStepTapped: (step) {
+                setState(() {
+                  currentStep = step;
+                });
+              },
+              onStepContinue: () {
+                setState(() {
+                  if (currentStep < steps.length - 1) {
+                    if (currentStep == 0) {
                       currentStep = currentStep + 1;
+                    } else {
+                      if (currentStep == 1) {
+                        currentStep = currentStep + 1;
+                      }
                     }
+                  } else {
+                    saveCompanyData(mapData, dataBundleNotifier);
                   }
-                } else {
-                  saveCompanyData(mapData, dataBundleNotifier);
-                }
-              });
-            },
-            onStepCancel: () {
-              setState(() {
-                if (currentStep > 0) {
-                  currentStep = currentStep - 1;
-                } else {
-                  currentStep = 0;
-                }
-              });
-            },
+                });
+              },
+              onStepCancel: () {
+                setState(() {
+                  if (currentStep > 0) {
+                    currentStep = currentStep - 1;
+                  } else {
+                    currentStep = 0;
+                  }
+                });
+              },
+            ),
           ),
         );
       },

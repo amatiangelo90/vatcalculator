@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,20 +8,21 @@ import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart'
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
+import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile/components/profile_menu.dart';
-import 'package:vat_calculator/screens/registration_company/registration_company_screen.dart';
+import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
+import '../../../../constants.dart';
+import '../../../../size_config.dart';
 
-import '../../../constants.dart';
-import '../../../size_config.dart';
-
-class VatCalculatorBody extends StatefulWidget {
-  const VatCalculatorBody({Key key}) : super(key: key);
+class VatFattureInCloudCalculatorBody extends StatefulWidget {
+  const VatFattureInCloudCalculatorBody({Key key}) : super(key: key);
 
   @override
-  _VatCalculatorBodyState createState() => _VatCalculatorBodyState();
+  _VatFattureInCloudCalculatorBodyState createState() => _VatFattureInCloudCalculatorBodyState();
 }
 
-class _VatCalculatorBodyState extends State<VatCalculatorBody> {
+class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalculatorBody> {
   DateTimeRange _currentDateTimeRange;
   FattureInCloudClient iCloudClient;
   DateTime _currentDateForDateRangePicker;
@@ -70,7 +69,8 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
               child: DefaultButton(
                 text: "Crea Attività",
                 press: () async {
-                  Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                  Navigator.pushNamed(context, CompanyRegistration.routeName);
+
                 },
               ),
             ),
@@ -79,8 +79,8 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
       ) : SingleChildScrollView(
         child: Column(
           children: [
-            Card(
-              elevation: 39,
+            Padding(
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
                   Column(
@@ -91,7 +91,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                           padding: const EdgeInsets.all(20),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(15)),
-                          backgroundColor: const Color(0xFFF5F6F9),
+                          backgroundColor: kCustomWhite,
                         ),
                         child: Column(
                           children: [
@@ -135,11 +135,11 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                                                             Text('  Dettagli Provider',style: TextStyle(
                                                               fontSize: getProportionateScreenWidth(20),
                                                               fontWeight: FontWeight.bold,
-                                                              color: const Color(0xFFF5F6F9),
+                                                              color: kCustomWhite,
                                                             ),),
                                                             IconButton(icon: const Icon(
                                                               Icons.clear,
-                                                              color: Color(0xFFF5F6F9),
+                                                              color: kCustomWhite,
                                                             ), onPressed: () { Navigator.pop(context); },),
 
                                                           ],
@@ -153,11 +153,11 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                                                       SizedBox(
                                                         width: width - 90,
                                                         child: Card(
-                                                          color: dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? Colors.blue : Colors.orange,
+                                                          color: Colors.blue,
                                                           semanticContainer: true,
                                                           clipBehavior: Clip.antiAliasWithSaveLayer,
                                                           child: Image.asset(
-                                                            dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'assets/images/fattureincloud.png' : 'assets/images/aruba.png',
+                                                            'assets/images/fattureincloud.png',
                                                             fit: BoxFit.contain,
                                                           ),
                                                           shape: RoundedRectangleBorder(
@@ -170,7 +170,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                                                       Row(
                                                         children: [
                                                           const SizedBox(width: 22),
-                                                          Text(dataBundleNotifier.currentBranch.providerFatture == 'fatture_in_cloud' ? 'ApiKey' : 'User',style: TextStyle(
+                                                          Text('ApiKey',style: TextStyle(
                                                             color: Colors.grey,
                                                             fontSize: getProportionateScreenWidth(14),
                                                             fontWeight: FontWeight.bold,
@@ -256,6 +256,7 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                           press: () async {
                             dataBundleNotifier.setShowIvaButtonToTrue();
                           },
+                          color: Colors.blue,
                         ),
                       ),
                     ],
@@ -470,7 +471,8 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
               children: [
                 GestureDetector(
                   onTap: () {
-
+                    Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                        FattureAcquistiDetailsPage(listResponseAcquisti: extractedAcquistiFatture,),),);
                   },
                   child: Container(
                     height: _width / 2.3,
@@ -634,16 +636,16 @@ class _VatCalculatorBodyState extends State<VatCalculatorBody> {
                 Container(
                   height: _width / 2.3,
                   width: _width / 2.3,
-                  color: const Color(0xFFF5F6F9),
+                  color: kCustomWhite,
                   child: const Card(
                     elevation: 0,
-                    color: Color(0xFFF5F6F9),
+                    color: kCustomWhite,
                   ),
                 ),
                 Container(
                   height: _width / 2.3,
                   width: _width / 2.3,
-                  color: const Color(0xFFF5F6F9),
+                  color: kCustomWhite,
                   child: Card(
                     shape: RoundedRectangleBorder(
                       side: const BorderSide(color: Colors.white12, width: 1),

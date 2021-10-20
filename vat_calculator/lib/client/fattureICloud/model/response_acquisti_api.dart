@@ -50,4 +50,6 @@ class ResponseAcquistiApi{
       saldato: cartMap['saldato'],
     );
   }
+
+
 }

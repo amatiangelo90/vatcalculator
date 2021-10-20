@@ -8,7 +8,9 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/registration_company/registration_company_screen.dart';
+import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
+import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -33,7 +35,7 @@ class _BodyState extends State<Body> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          color: const Color(0xFFF5F6F9),
+          color: kCustomWhite,
           child: dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -54,7 +56,7 @@ class _BodyState extends State<Body> {
                   child: DefaultButton(
                     text: "Crea Attività",
                     press: () async {
-                      Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                      Navigator.pushNamed(context, CompanyRegistration.routeName);
                     },
                   ),
                 ),
@@ -86,7 +88,7 @@ class _BodyState extends State<Body> {
                         onTap: (){
                             showDialog(
                                 context: context,
-                                builder: (_) => AlertDialog(
+                                builder: (_) => AlertDialog (
                                   contentPadding: EdgeInsets.zero,
                                   shape: const RoundedRectangleBorder(
                                       borderRadius:
@@ -118,11 +120,11 @@ class _BodyState extends State<Body> {
                                                         Text('  Calendario',style: TextStyle(
                                                           fontSize: getProportionateScreenWidth(20),
                                                           fontWeight: FontWeight.bold,
-                                                          color: const Color(0xFFF5F6F9),
+                                                          color: kCustomWhite,
                                                         ),),
                                                         IconButton(icon: const Icon(
                                                           Icons.clear,
-                                                          color: Color(0xFFF5F6F9),
+                                                          color: kCustomWhite,
                                                         ), onPressed: () { Navigator.pop(context); },),
 
                                                       ],
@@ -279,6 +281,60 @@ class _BodyState extends State<Body> {
                             text: "Dettaglio Incassi",
                             press: () async {
 
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Card(
+                    shape: BeveledRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    elevation: 2,
+                    child: Column(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Dettaglio settimanale'),
+                        ),
+                        const SizedBox(height: 15,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                              child: IconButton(icon: const Icon(
+                                Icons.arrow_back_ios,
+                                color: kPrimaryColor,
+                              ), onPressed: () { dataBundleNotifier.subtractWeekToDateTimeRange(); },),
+                            ),
+                            Text(dataBundleNotifier.currentDateTimeRange.start.day.toString()
+                                + '/' + dataBundleNotifier.currentDateTimeRange.start.month.toString() + ' - ' +
+                                dataBundleNotifier.currentDateTimeRange.end.day.toString()
+                                + '/' + dataBundleNotifier.currentDateTimeRange.end.month.toString(), style: const TextStyle(fontSize: 20),),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                              child: IconButton(icon: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: kPrimaryColor,
+                              ), onPressed: () { dataBundleNotifier.addWeekToDateTimeRange(); },),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [buildWeekDetailReceed(dataBundleNotifier),]
+                        ),
+
+                        Padding(
+                          padding: const EdgeInsets.all(18.0),
+                          child: DefaultButton(
+                            text: "Dettaglio Incassi",
+                            press: () async {
+                              Navigator.pushNamed(context, DetailsRecessed.routeName);
                             },
                           ),
                         ),
@@ -507,7 +563,7 @@ class _BodyState extends State<Body> {
     }
 
     Table table = Table(
-      border: TableBorder.symmetric(inside: BorderSide(width: 1, color: const Color(0xFFF5F6F9))),
+      border: TableBorder.symmetric(inside: BorderSide(width: 1, color: kCustomWhite)),
       children: [
         TableRow(children: [
           Column(children: const [
@@ -592,7 +648,7 @@ class _BodyState extends State<Body> {
           child: Container(
             decoration: BoxDecoration(
               color: (dataBundleNotifier.currentDateTime.day == currentDate.day
-                  && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.grey : const Color(0xFFF5F6F9),
+                  && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.grey : kCustomWhite,
               border: const Border(
                 bottom: BorderSide(width: 1.0, color: Colors.blueGrey),
 
@@ -629,6 +685,19 @@ class _BodyState extends State<Body> {
       );
     });
     return branchWidgetList;
+  }
+
+  buildWeekDetailReceed(DataBundleNotifier dataBundleNotifier) {
+    double total = 0.0;
+
+    dataBundleNotifier.getRecessedListByRangeDate(
+        dataBundleNotifier.currentDateTimeRange.start,
+        dataBundleNotifier.currentDateTimeRange.end).forEach((recessedItem) {
+          total = total + recessedItem.amount;
+    });
+
+    return Text(total.toString());
+
   }
 }
 

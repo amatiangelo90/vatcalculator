@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 
 import '../../../constants.dart';
@@ -25,6 +26,14 @@ class BodyProfile extends StatelessWidget {
                   text: "Gestione account",
                   icon: "assets/icons/User Icon.svg",
                   press: () => {},
+                  showArrow: true,
+                ),
+                ProfileMenu(
+                  text: "Crea Attività",
+                  icon: "assets/icons/Shop Icon.svg",
+                  press: () {
+                    Navigator.pushNamed(context, CompanyRegistration.routeName);
+                  },
                   showArrow: true,
                 ),
                 ProfileMenu(

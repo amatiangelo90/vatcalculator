@@ -3,9 +3,11 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
+import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile/profile_screen.dart';
-import 'package:vat_calculator/screens/registration_company/registration_company_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/vat_calculator_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
+import '../constants.dart';
 import '../enums.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
@@ -22,11 +24,11 @@ class CustomBottomNavBar extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          color: const Color(0xFFF5F6F9),
+          color: kCustomWhite,
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 14),
             decoration: BoxDecoration(
-              color: const Color(0xFFF5F6F9),
+              color: kCustomWhite,
               boxShadow: [
                 BoxShadow(
                   offset: const Offset(0, -15),
@@ -63,17 +65,29 @@ class CustomBottomNavBar extends StatelessWidget {
                             : inActiveIconColor,),
                         onPressed: () {
                           dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, VatCalculatorScreen.routeName);
+                          if(dataBundleNotifier.currentBranch == null){
+                            Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                          }
+                          print(dataBundleNotifier.currentBranch.providerFatture);
+                          switch(dataBundleNotifier.currentBranch.providerFatture){
+                            case 'fatture_in_cloud':
+                              Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                              break;
+                            case 'aruba':
+                              Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                              break;
+                          }
+
                         }
                     ),
                     IconButton(
-                        icon: SvgPicture.asset("assets/icons/Shop Icon.svg",
-                          color: MenuState.company == selectedMenu
+                        icon: SvgPicture.asset("assets/icons/receipt.svg",
+                          color: MenuState.orders == selectedMenu
                               ? Colors.teal
                               : inActiveIconColor,),
                         onPressed: () {
                           dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, RegistrationCompanyScreen.routeName);
+                          Navigator.pushNamed(context, OrdersScreen.routeName);
                         }
                     ),
                     IconButton(

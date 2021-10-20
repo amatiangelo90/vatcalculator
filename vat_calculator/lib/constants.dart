@@ -3,6 +3,7 @@ import 'package:vat_calculator/size_config.dart';
 
 const Color kPrimaryColor = Color(0XFF66855F);
 const Color kPinaColor = Colors.brown;
+const Color kCustomWhite = Color(0xFFF5F6F9);
 
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kPrimaryGradientColor = LinearGradient(

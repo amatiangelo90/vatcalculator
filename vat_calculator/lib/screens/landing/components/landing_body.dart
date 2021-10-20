@@ -59,7 +59,7 @@ class LandingBody extends StatelessWidget {
                     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
                     dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
                   }
-
+                  dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
 
 
                   Navigator.pushNamed(context, HomeScreen.routeName);
