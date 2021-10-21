@@ -5,7 +5,6 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
-
 import '../constants.dart';
 import 'databundle.dart';
 
@@ -210,6 +209,8 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+
 
 class CustomAnimation extends EasyLoadingAnimation {
   CustomAnimation();

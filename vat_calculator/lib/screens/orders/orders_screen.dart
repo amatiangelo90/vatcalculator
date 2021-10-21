@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import '../../constants.dart';
 import '../../enums.dart';
@@ -10,20 +11,19 @@ class OrdersScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: const CommonDrawer(),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        iconTheme: const IconThemeData(color: Colors.white),
         centerTitle: true,
         title: Text('Ordini',
           style: TextStyle(
-            fontSize: getProportionateScreenWidth(20),
-            fontWeight: FontWeight.bold,
-            color: kPrimaryColor,
+            fontSize: getProportionateScreenWidth(17),
+            color: kCustomWhite,
           ),
         ),
-        backgroundColor: kCustomWhite,
+        backgroundColor: kPrimaryColor,
       ),
       body: const OrdersScreenBody(
-
       ),
       bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.orders),
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
@@ -16,19 +17,19 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
+          drawer: const CommonDrawer(),
           appBar: AppBar(
-            backgroundColor: kCustomWhite,
+            iconTheme: const IconThemeData(color: Colors.white),
+            backgroundColor: kPrimaryColor,
             centerTitle: true,
             title: Text(
               "Iva FattureInCloud",
               style: TextStyle(
-                fontSize: getProportionateScreenWidth(20),
-                fontWeight: FontWeight.bold,
-                color: kPrimaryColor,
+                fontSize: getProportionateScreenWidth(17),
+                color: kCustomWhite,
               ),
             ),
             elevation: 0,
-            automaticallyImplyLeading: false,
           ),
           body: const VatFattureInCloudCalculatorBody(),
           bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.vatcalc),

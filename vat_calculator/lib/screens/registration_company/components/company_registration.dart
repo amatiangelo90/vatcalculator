@@ -83,8 +83,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
               centerTitle: true,
               title: Text('Registra la tua attività',
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(20),
-                  fontWeight: FontWeight.bold,
+                  fontSize: getProportionateScreenWidth(17),
                   color: Colors.white,
                 ),
               ),
@@ -110,7 +109,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
                       }
                     }
                   } else {
-                    saveCompanyData(mapData, dataBundleNotifier);
+                    saveCompanyData(mapData, dataBundleNotifier, context);
                   }
                 });
               },
@@ -173,8 +172,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     }
   }
 
-  Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier) async {
-    bool resultValidation = await validateData(mapData);
+  Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier, context) async {
+    bool resultValidation = await validateData(mapData, context);
 
     ClientVatService clientService = ClientVatService();
     if(resultValidation){
@@ -220,7 +219,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     }
   }
 
-  Future<bool> validateData(mapData) async {
+  Future<bool> validateData(mapData, context) async {
 
     if(mapData['company_name'] == null || mapData['company_name'] == ''){
       Scaffold.of(context).showSnackBar(const SnackBar(

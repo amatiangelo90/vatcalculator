@@ -24,87 +24,83 @@ class CustomBottomNavBar extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          color: kCustomWhite,
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: kCustomWhite,
-              boxShadow: [
-                BoxShadow(
-                  offset: const Offset(0, -15),
-                  blurRadius: 20,
-                  color: const Color(0xFFDADADA).withOpacity(0.25),
+              border: Border(
+                top: BorderSide(
+                  color: kPrimaryColor,
+                  width: 1.0,
                 ),
-              ],
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(40),
-                topRight: Radius.circular(40),
               ),
-            ),
-            child: SafeArea(
-                top: false,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    IconButton(
-                      icon: SvgPicture.asset(
-                        "assets/icons/home.svg",
-                        color: MenuState.home == selectedMenu
-                            ? Colors.teal
-                            : inActiveIconColor,
-                      ),
+          ),
+
+          child: SafeArea(
+              top: false,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/icons/home.svg",
+                      color: MenuState.home == selectedMenu
+                          ? kPrimaryColor
+                          : inActiveIconColor,
+                      width: 22,
+                    ),
+                    onPressed: () {
+                      dataBundleNotifier.setShowIvaButtonToFalse();
+                      Navigator.pushNamed(context, HomeScreen.routeName);
+                    }
+                  ),
+                  IconButton(
+                    icon: SvgPicture.asset("assets/icons/Parcel.svg",
+                      color: MenuState.vatcalc == selectedMenu
+                          ? kPrimaryColor
+                          : inActiveIconColor,
+                      width: 22,),
                       onPressed: () {
                         dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, HomeScreen.routeName);
-                      }
-                    ),
-                    IconButton(
-                      icon: SvgPicture.asset("assets/icons/Parcel.svg",
-                        color: MenuState.vatcalc == selectedMenu
-                            ? Colors.teal
-                            : inActiveIconColor,),
-                        onPressed: () {
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          if(dataBundleNotifier.currentBranch == null){
+                        if(dataBundleNotifier.currentBranch == null){
+                          Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                        }
+                        print(dataBundleNotifier.currentBranch.providerFatture);
+                        switch(dataBundleNotifier.currentBranch.providerFatture){
+                          case 'fatture_in_cloud':
                             Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                          }
-                          print(dataBundleNotifier.currentBranch.providerFatture);
-                          switch(dataBundleNotifier.currentBranch.providerFatture){
-                            case 'fatture_in_cloud':
-                              Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                              break;
-                            case 'aruba':
-                              Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                              break;
-                          }
+                            break;
+                          case 'aruba':
+                            Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                            break;
+                        }
 
-                        }
-                    ),
-                    IconButton(
-                        icon: SvgPicture.asset("assets/icons/receipt.svg",
-                          color: MenuState.orders == selectedMenu
-                              ? Colors.teal
-                              : inActiveIconColor,),
-                        onPressed: () {
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, OrdersScreen.routeName);
-                        }
-                    ),
-                    IconButton(
-                      icon: SvgPicture.asset(
-                        "assets/icons/User Icon.svg",
-                        color: MenuState.profile == selectedMenu
-                            ? Colors.teal
+                      }
+                  ),
+                  IconButton(
+                      icon: SvgPicture.asset("assets/icons/receipt.svg",
+                        color: MenuState.orders == selectedMenu
+                            ? kPrimaryColor
                             : inActiveIconColor,
-                      ),
-                        onPressed: () {
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, ProfileScreen.routeName);
-                        }
+                        width: 22,),
+                      onPressed: () {
+                        dataBundleNotifier.setShowIvaButtonToFalse();
+                        Navigator.pushNamed(context, OrdersScreen.routeName);
+                      }
+                  ),
+                  IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/icons/User Icon.svg",
+                      color: MenuState.profile == selectedMenu
+                          ? kPrimaryColor
+                          : inActiveIconColor,
+                      width: 22,
                     ),
-                  ],
-                )),
-          ),
+                      onPressed: () {
+                        dataBundleNotifier.setShowIvaButtonToFalse();
+                        Navigator.pushNamed(context, ProfileScreen.routeName);
+                      }
+                  ),
+                ],
+              )),
         );
       },
     );

@@ -385,8 +385,7 @@ class _BodyState extends State<Body> {
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text('  Lista Attività',style: TextStyle(
-                                            fontSize: getProportionateScreenWidth(20),
-                                            fontWeight: FontWeight.bold,
+                                            fontSize: getProportionateScreenWidth(17),
                                             color: Colors.white,
                                           ),),
                                           IconButton(icon: const Icon(

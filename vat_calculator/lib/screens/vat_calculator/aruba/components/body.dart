@@ -131,8 +131,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Text('  Dettagli Provider',style: TextStyle(
-                                                              fontSize: getProportionateScreenWidth(20),
-                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: getProportionateScreenWidth(17),
                                                               color: kCustomWhite,
                                                             ),),
                                                             IconButton(icon: const Icon(
@@ -281,7 +280,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
             children: const [
               Center(
                   child: CircularProgressIndicator(
-                color: Colors.brown,
+                color: kPinaColor,
               )),
               SizedBox(),
               Center(
@@ -455,7 +454,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
               ],
             ),
           ),
-          color: Colors.deepOrange,
+          color: kPinaColor,
         ),
       ));
     }
@@ -482,7 +481,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                       elevation: 20,
-                      color: Colors.brown,
+                      color: kPinaColor,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -518,7 +517,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -561,7 +560,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -597,7 +596,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -650,7 +649,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

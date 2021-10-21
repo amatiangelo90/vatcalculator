@@ -49,323 +49,306 @@ class _VatFattureInCloudCalculatorBodyState
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-      return dataBundleNotifier.currentBranch == null
-          ? Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(13),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.6,
-                    child: DefaultButton(
-                      text: "Crea Attività",
-                      press: () async {
-                        Navigator.pushNamed(
-                            context, CompanyRegistration.routeName);
-                      },
-                    ),
-                  ),
-                ],
+      if (dataBundleNotifier.currentBranch == null) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Sembra che tu non abbia configurato ancora nessuna attività. ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(13),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            )
-          : SingleChildScrollView(
-              child: Column(
+              const SizedBox(
+                height: 30,
+              ),
+              SizedBox(
+                width: SizeConfig.screenWidth * 0.6,
+                child: DefaultButton(
+                  text: "Crea Attività",
+                  press: () async {
+                    Navigator.pushNamed(context, CompanyRegistration.routeName);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      } else {
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      children: [
-                        Column(
+                  Column(
+                    children: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          primary: kPrimaryColor,
+                          padding: const EdgeInsets.all(20),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          backgroundColor: kCustomWhite,
+                        ),
+                        child: Column(
                           children: [
-                            TextButton(
-                              style: TextButton.styleFrom(
-                                primary: kPrimaryColor,
-                                padding: const EdgeInsets.all(20),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15)),
-                                backgroundColor: kCustomWhite,
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                          child: Center(
-                                              child: Text(
-                                        dataBundleNotifier
-                                            .currentBranch.companyName,
-                                        style: const TextStyle(
-                                            color: kPinaColor, fontSize: 30),
-                                      ))),
-                                    ],
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                contentPadding: EdgeInsets.zero,
-                                                shape:
-                                                    const RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.all(
-                                                                Radius.circular(
-                                                                    10.0))),
-                                                content: Builder(
-                                                  builder: (context) {
-                                                    var height =
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .height;
-                                                    var width =
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width;
-                                                    return SizedBox(
-                                                      child:
-                                                          SingleChildScrollView(
-                                                        scrollDirection:
-                                                            Axis.vertical,
+                            Row(
+                              children: [
+                                Expanded(
+                                    child: Center(
+                                        child: Text(
+                                  dataBundleNotifier.currentBranch.companyName,
+                                  style: const TextStyle(
+                                      color: kPrimaryColor, fontSize: 27),
+                                ))),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          contentPadding: EdgeInsets.zero,
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          content: Builder(
+                                            builder: (context) {
+                                              var width = MediaQuery.of(context)
+                                                  .size
+                                                  .width;
+                                              return SizedBox(
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius.only(
+                                                                  topRight: Radius
+                                                                      .circular(
+                                                                          10.0),
+                                                                  topLeft: Radius
+                                                                      .circular(
+                                                                          10.0)),
+                                                          color: kPrimaryColor,
+                                                        ),
                                                         child: Column(
                                                           children: [
-                                                            Container(
-                                                              decoration:
-                                                                  const BoxDecoration(
-                                                                borderRadius: BorderRadius.only(
-                                                                    topRight: Radius
-                                                                        .circular(
-                                                                            10.0),
-                                                                    topLeft: Radius
-                                                                        .circular(
-                                                                            10.0)),
-                                                                color:
-                                                                    kPrimaryColor,
-                                                              ),
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .spaceBetween,
-                                                                    children: [
-                                                                      Text(
-                                                                        '  Dettagli Provider',
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              getProportionateScreenWidth(20),
-                                                                          fontWeight:
-                                                                              FontWeight.bold,
-                                                                          color:
-                                                                              kCustomWhite,
-                                                                        ),
-                                                                      ),
-                                                                      IconButton(
-                                                                        icon:
-                                                                            const Icon(
-                                                                          Icons
-                                                                              .clear,
-                                                                          color:
-                                                                              kCustomWhite,
-                                                                        ),
-                                                                        onPressed:
-                                                                            () {
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        },
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            Column(
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceBetween,
                                                               children: [
-                                                                SizedBox(
-                                                                  width: width -
-                                                                      90,
-                                                                  child: Card(
-                                                                    color: Colors
-                                                                        .blue,
-                                                                    semanticContainer:
-                                                                        true,
-                                                                    clipBehavior:
-                                                                        Clip.antiAliasWithSaveLayer,
-                                                                    child: Image
-                                                                        .asset(
-                                                                      'assets/images/fattureincloud.png',
-                                                                      fit: BoxFit
-                                                                          .contain,
-                                                                    ),
-                                                                    shape:
-                                                                        RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10.0),
-                                                                    ),
-                                                                    elevation:
-                                                                        5,
-                                                                    margin:
-                                                                        const EdgeInsets.all(
-                                                                            10),
+                                                                Text(
+                                                                  '  Dettagli Provider',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        getProportionateScreenWidth(
+                                                                            17),
+                                                                    color:
+                                                                        kCustomWhite,
                                                                   ),
                                                                 ),
-                                                                Row(
-                                                                  children: [
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            22),
-                                                                    Text(
-                                                                      'ApiKey',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        fontSize:
-                                                                            getProportionateScreenWidth(14),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                ProfileMenu(
-                                                                  text: dataBundleNotifier
-                                                                      .currentBranch
-                                                                      .apiKeyOrUser,
-                                                                  icon: '',
-                                                                  press: () =>
-                                                                      {},
-                                                                  showArrow:
-                                                                      false,
-                                                                ),
-                                                                Row(
-                                                                  children: [
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            22),
-                                                                    Text(
-                                                                      dataBundleNotifier.currentBranch.providerFatture ==
-                                                                              'fatture_in_cloud'
-                                                                          ? 'ApiUid'
-                                                                          : 'Password',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        fontSize:
-                                                                            getProportionateScreenWidth(14),
-                                                                        fontWeight:
-                                                                            FontWeight.bold,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                ProfileMenu(
-                                                                  text: dataBundleNotifier
-                                                                      .currentBranch
-                                                                      .apiUidOrPassword,
-                                                                  icon: '',
-                                                                  press: () =>
-                                                                      {},
-                                                                  showArrow:
-                                                                      false,
-                                                                ),
-                                                                SizedBox(
-                                                                  height: 20,
+                                                                IconButton(
+                                                                  icon:
+                                                                      const Icon(
+                                                                    Icons.clear,
+                                                                    color:
+                                                                        kCustomWhite,
+                                                                  ),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
                                                                 ),
                                                               ],
                                                             ),
                                                           ],
                                                         ),
                                                       ),
-                                                    );
-                                                  },
+                                                      Column(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: width - 90,
+                                                            child: Card(
+                                                              color:
+                                                                  Colors.blue,
+                                                              semanticContainer:
+                                                                  true,
+                                                              clipBehavior: Clip
+                                                                  .antiAliasWithSaveLayer,
+                                                              child:
+                                                                  Image.asset(
+                                                                'assets/images/fattureincloud.png',
+                                                                fit: BoxFit
+                                                                    .contain,
+                                                              ),
+                                                              shape:
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0),
+                                                              ),
+                                                              elevation: 5,
+                                                              margin:
+                                                                  const EdgeInsets
+                                                                      .all(10),
+                                                            ),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const SizedBox(
+                                                                  width: 22),
+                                                              Text(
+                                                                'ApiKey',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  fontSize:
+                                                                      getProportionateScreenWidth(
+                                                                          14),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          ProfileMenu(
+                                                            text: dataBundleNotifier
+                                                                .currentBranch
+                                                                .apiKeyOrUser,
+                                                            icon: '',
+                                                            press: () => {},
+                                                            showArrow: false,
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              const SizedBox(
+                                                                  width: 22),
+                                                              Text(
+                                                                dataBundleNotifier
+                                                                            .currentBranch
+                                                                            .providerFatture ==
+                                                                        'fatture_in_cloud'
+                                                                    ? 'ApiUid'
+                                                                    : 'Password',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                  fontSize:
+                                                                      getProportionateScreenWidth(
+                                                                          14),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          ProfileMenu(
+                                                            text: dataBundleNotifier
+                                                                .currentBranch
+                                                                .apiUidOrPassword,
+                                                            icon: '',
+                                                            press: () => {},
+                                                            showArrow: false,
+                                                          ),
+                                                          SizedBox(
+                                                            height: 20,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ));
-                                    },
-                                    child: SizedBox(
-                                      width: 120,
-                                      child: Card(
-                                        color: dataBundleNotifier.currentBranch
-                                                    .providerFatture ==
-                                                'fatture_in_cloud'
-                                            ? Colors.blue
-                                            : Colors.orange,
-                                        semanticContainer: true,
-                                        clipBehavior:
-                                            Clip.antiAliasWithSaveLayer,
-                                        child: Image.asset(
-                                          dataBundleNotifier.currentBranch
-                                                      .providerFatture ==
-                                                  'fatture_in_cloud'
-                                              ? 'assets/images/fattureincloud.png'
-                                              : 'assets/images/aruba.png',
-                                          fit: BoxFit.contain,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        elevation: 5,
-                                        margin: const EdgeInsets.all(10),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            ProfileMenu(
-                              text: 'Intervallo temporale ' +
-                                  _currentDateTimeRange.start.day.toString() +
-                                  '/' +
-                                  _currentDateTimeRange.start.month.toString() +
-                                  ' - ' +
-                                  _currentDateTimeRange.end.day.toString() +
-                                  '/' +
-                                  _currentDateTimeRange.end.month.toString(),
-                              icon: "assets/icons/calendar.svg",
-                              press: () => {
-                                _selectDateRange(context),
-                                dataBundleNotifier.setShowIvaButtonToFalse(),
+                                              );
+                                            },
+                                          ),
+                                        ));
                               },
-                              showArrow: false,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: DefaultButton(
-                                text: "Calcola Iva",
-                                press: () async {
-                                  dataBundleNotifier.setShowIvaButtonToTrue();
-                                },
-                                color: Colors.blue,
+                              child: SizedBox(
+                                width: 120,
+                                child: Card(
+                                  color: dataBundleNotifier
+                                              .currentBranch.providerFatture ==
+                                          'fatture_in_cloud'
+                                      ? Colors.blue
+                                      : Colors.orange,
+                                  semanticContainer: true,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  child: Image.asset(
+                                    dataBundleNotifier.currentBranch
+                                                .providerFatture ==
+                                            'fatture_in_cloud'
+                                        ? 'assets/images/fattureincloud.png'
+                                        : 'assets/images/aruba.png',
+                                    fit: BoxFit.contain,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  elevation: 5,
+                                  margin: const EdgeInsets.all(10),
+                                ),
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  dataBundleNotifier.showIvaButtonPressed
-                      ? buildIVAPage(dataBundleNotifier)
-                      : const SizedBox(
-                          width: 0,
+                      ),
+                      ProfileMenu(
+                        text: 'Intervallo temporale ' +
+                            _currentDateTimeRange.start.day.toString() +
+                            '/' +
+                            _currentDateTimeRange.start.month.toString() +
+                            ' - ' +
+                            _currentDateTimeRange.end.day.toString() +
+                            '/' +
+                            _currentDateTimeRange.end.month.toString(),
+                        icon: "assets/icons/calendar.svg",
+                        press: () => {
+                          _selectDateRange(context),
+                          dataBundleNotifier.setShowIvaButtonToFalse(),
+                        },
+                        showArrow: false,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: DefaultButton(
+                          text: "Calcola Iva",
+                          press: () async {
+                            dataBundleNotifier.setShowIvaButtonToTrue();
+                          },
+                          color: Colors.blue,
                         ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-            );
+              dataBundleNotifier.showIvaButtonPressed
+                  ? buildIVAPage(dataBundleNotifier)
+                  : const SizedBox(
+                      width: 0,
+                    ),
+            ],
+          ),
+        );
+      }
     });
   }
 
@@ -381,7 +364,7 @@ class _VatFattureInCloudCalculatorBodyState
                 children: const [
                   Center(
                       child: CircularProgressIndicator(
-                    color: Colors.brown,
+                    color: kPinaColor,
                   )),
                   SizedBox(),
                   Center(
@@ -570,7 +553,7 @@ class _VatFattureInCloudCalculatorBodyState
               ],
             ),
           ),
-          color: Colors.deepOrange,
+          color: kPinaColor,
         ),
       ));
     }
@@ -603,7 +586,7 @@ class _VatFattureInCloudCalculatorBodyState
                         borderRadius: BorderRadius.circular(15),
                       ),
                       elevation: 20,
-                      color: Colors.brown,
+                      color: kPinaColor,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -642,7 +625,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -688,7 +671,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -726,7 +709,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -781,7 +764,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: Colors.brown,
+                    color: kPinaColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

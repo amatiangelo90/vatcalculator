@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const Color kPrimaryColor = Color(0XFF66855F);
-const Color kPinaColor = Colors.brown;
+//const Color kPrimaryColor = Color(0XFF66855F);
+//const Color kPrimaryColor = Color(0XFF127410);
+
+//Draft https://www.color-hex.com/color-palette/115661
+//#081730	(8,23,48)
+// #2c3c5c	(44,60,92)
+// #171717	(23,23,23)
+// #e38f54	(227,143,84)
+// #152440	(21,36,64)
+const Color kPrimaryColor = Color(0XFF20322f);
+const Color kPinaColor = Color(0XFF803037);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 
 const kPrimaryLightColor = Color(0xFFFFECDF);
