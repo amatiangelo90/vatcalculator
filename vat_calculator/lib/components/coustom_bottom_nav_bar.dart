@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
-import 'package:vat_calculator/screens/profile/profile_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../constants.dart';
@@ -25,7 +24,7 @@ class CustomBottomNavBar extends StatelessWidget {
       builder: (context, dataBundleNotifier, child){
         return Container(
           decoration: const BoxDecoration(
-              color: kCustomWhite,
+              color: kPrimaryColor,
               border: Border(
                 top: BorderSide(
                   color: kPrimaryColor,
@@ -43,9 +42,9 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: SvgPicture.asset(
                       "assets/icons/home.svg",
                       color: MenuState.home == selectedMenu
-                          ? kPrimaryColor
+                          ? Colors.white
                           : inActiveIconColor,
-                      width: 22,
+                      width: 30,
                     ),
                     onPressed: () {
                       dataBundleNotifier.setShowIvaButtonToFalse();
@@ -55,9 +54,9 @@ class CustomBottomNavBar extends StatelessWidget {
                   IconButton(
                     icon: SvgPicture.asset("assets/icons/Parcel.svg",
                       color: MenuState.vatcalc == selectedMenu
-                          ? kPrimaryColor
+                          ? Colors.white
                           : inActiveIconColor,
-                      width: 22,),
+                      width: 30,),
                       onPressed: () {
                         dataBundleNotifier.setShowIvaButtonToFalse();
                         if(dataBundleNotifier.currentBranch == null){
@@ -78,25 +77,12 @@ class CustomBottomNavBar extends StatelessWidget {
                   IconButton(
                       icon: SvgPicture.asset("assets/icons/receipt.svg",
                         color: MenuState.orders == selectedMenu
-                            ? kPrimaryColor
+                            ? Colors.white
                             : inActiveIconColor,
-                        width: 22,),
+                        width: 30,),
                       onPressed: () {
                         dataBundleNotifier.setShowIvaButtonToFalse();
                         Navigator.pushNamed(context, OrdersScreen.routeName);
-                      }
-                  ),
-                  IconButton(
-                    icon: SvgPicture.asset(
-                      "assets/icons/User Icon.svg",
-                      color: MenuState.profile == selectedMenu
-                          ? kPrimaryColor
-                          : inActiveIconColor,
-                      width: 22,
-                    ),
-                      onPressed: () {
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, ProfileScreen.routeName);
                       }
                   ),
                 ],

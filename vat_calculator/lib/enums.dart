@@ -1,2 +1,2 @@
-enum MenuState { home, orders, vatcalc, profile }
+enum MenuState { home, orders, vatcalc }
 //enum ProviderFattureElettroniche{ fattureInCloud, aruba}

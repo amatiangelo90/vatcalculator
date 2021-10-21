@@ -22,12 +22,23 @@ class HomeScreen extends StatelessWidget {
             iconTheme: const IconThemeData(color: Colors.white),
             backgroundColor: kPrimaryColor,
             centerTitle: true,
-            title: Text(
-              "Ciao ${dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''}",
-              style: TextStyle(
-                fontSize: getProportionateScreenWidth(17),
-                color: kCustomWhite,
-              ),
+            title: Column(
+              children: [
+                Text(
+                  "Ciao ${dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''}",
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(17),
+                    color: kCustomWhite,
+                  ),
+                ),
+                Text(
+                  dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].email : '',
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(7),
+                    color: kCustomWhite,
+                  ),
+                ),
+              ],
             ),
 
             elevation: 0,

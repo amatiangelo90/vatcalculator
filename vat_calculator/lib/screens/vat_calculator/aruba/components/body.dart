@@ -241,8 +241,8 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                             +  _currentDateTimeRange.end.month.toString(),
                         icon: "assets/icons/calendar.svg",
                         press: () => {
-                          _selectDateRange(context),
                           dataBundleNotifier.setShowIvaButtonToFalse(),
+                          _selectDateRange(context),
                         },
                         showArrow: false,
                       ),
@@ -253,7 +253,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                           press: () async {
                             dataBundleNotifier.setShowIvaButtonToTrue();
                           },
-                          color: Colors.orange,
+                          color: kPrimaryColor,
                         ),
                       ),
                     ],
@@ -695,7 +695,9 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
         return Theme(
           data: ThemeData.dark().copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: kPrimaryColor,
+              primary: kPinaColor,
+              secondary: Colors.white,
+              onPrimary: Colors.white,
             ),
           ),
           child: child,

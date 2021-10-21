@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -460,7 +461,9 @@ class _BodyState extends State<Body> {
               ),
             ),
             onTap: () {
+              EasyLoading.show();
               dataBundleNotifier.setCurrentBranch(currentBranch);
+              EasyLoading.dismiss();
               Navigator.pop(context);
             },
         ),

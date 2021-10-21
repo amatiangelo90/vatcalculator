@@ -333,7 +333,7 @@ class _VatFattureInCloudCalculatorBodyState
                           press: () async {
                             dataBundleNotifier.setShowIvaButtonToTrue();
                           },
-                          color: Colors.blue,
+                          color: kPrimaryColor,
                         ),
                       ),
                     ],
@@ -814,11 +814,14 @@ class _VatFattureInCloudCalculatorBodyState
       initialDateRange: _currentDateTimeRange,
       firstDate: DateTime(2018),
       lastDate: DateTime(2040),
+        useRootNavigator: false,
       builder: (BuildContext context, Widget child) {
         return Theme(
           data: ThemeData.dark().copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: kPrimaryColor,
+              primary: kPinaColor,
+              secondary: Colors.white,
+              onPrimary: Colors.white,
             ),
           ),
           child: child,
