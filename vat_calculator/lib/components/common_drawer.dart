@@ -8,6 +8,8 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
+import 'package:vat_calculator/screens/storage/storage_screen.dart';
+import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 
@@ -38,17 +40,18 @@ class _CommonDrawerState extends State<CommonDrawer> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  SizedBox(height: 100,),
+                  const SizedBox(height: 100,),
                   Row(
                     children: [
                       const SizedBox(width: 20,),
-                      Text(dataBundleNotifier.dataBundleList[0].firstName, style:TextStyle(color: Colors.white, fontSize: 20)),
+                      dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: Colors.white, fontSize: 20)) :
+                      const SizedBox(width: 0,),
                     ],
                   ),
                   Row(
                     children: [
                       const SizedBox(width: 20,),
-                      Text(dataBundleNotifier.dataBundleList[0].email, style:TextStyle(color: Colors.white)),
+                      dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].email, style:const TextStyle(color: Colors.white)) : const SizedBox(width: 0,),
                     ],
                   ),
                   const SizedBox(height: 30,),
@@ -75,6 +78,12 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   }, kPrimaryColor,
                       kCustomWhite,
                       kPrimaryColor),
+                  buildDrawerRow('assets/icons/storage.svg','Magazzino',(){
+                    dataBundleNotifier.setShowIvaButtonToFalse();
+                    Navigator.pushNamed(context, StorageScreen.routeName);
+                  }, kPrimaryColor,
+                      kCustomWhite,
+                      kPrimaryColor),
 
                   buildDrawerRow('assets/icons/receipt.svg','Ordini',(){
                     dataBundleNotifier.setShowIvaButtonToFalse();
@@ -90,7 +99,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         padding: const EdgeInsets.all(15),
                         backgroundColor: kCustomWhite,
                       ),
-                      onPressed: (){},
+                      onPressed: (){
+
+                        Navigator.pushNamed(context, SuppliersScreen.routeName);
+                      },
                       child: Row(
                         children: [
                           SvgPicture.asset(
@@ -99,14 +111,14 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             width: 22,
                           ),
                           const SizedBox(width: 20),
-                          Expanded(child: const Text('Fornitori')),
+                          const Expanded(child: Text('Fornitori')),
                           Row(
                             children: [
                               SizedBox(
                                 height: 28,
-                                width: 28,
+                                width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                 child: Card(
-                                  color: Colors.redAccent,
+                                  color: Colors.red,
                                   child: Center(child: Text(dataBundleNotifier.currentListSuppliers.length.toString()
                                     , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                 ),
@@ -150,9 +162,9 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 height: 28,
                                 width: 28,
                                 child: Card(
-                                  color: Colors.redAccent,
-                                  child: Center(child: Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
-                                    , style: TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                  color: Colors.red,
+                                  child: Center(child: dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
+                                    , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
                                 ),
                               ),
                               showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30,) : const Icon(Icons.arrow_forward_ios),
@@ -186,6 +198,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   }, kPrimaryColor,
                       kCustomWhite,
                       kPrimaryColor),
+
                   buildDrawerRow(
                       'assets/icons/Question mark.svg',
                       'Hai bisogno di aiuto?',(){

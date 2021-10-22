@@ -9,7 +9,7 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
-import 'package:vat_calculator/screens/profile/components/profile_menu.dart';
+import 'package:vat_calculator/components/item_menu.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
@@ -227,7 +227,7 @@ class _VatFattureInCloudCalculatorBodyState
                                                               ),
                                                             ],
                                                           ),
-                                                          ProfileMenu(
+                                                          ItemMenu(
                                                             text: dataBundleNotifier
                                                                 .currentBranch
                                                                 .apiKeyOrUser,
@@ -260,7 +260,7 @@ class _VatFattureInCloudCalculatorBodyState
                                                               ),
                                                             ],
                                                           ),
-                                                          ProfileMenu(
+                                                          ItemMenu(
                                                             text: dataBundleNotifier
                                                                 .currentBranch
                                                                 .apiUidOrPassword,
@@ -310,7 +310,7 @@ class _VatFattureInCloudCalculatorBodyState
                           ],
                         ),
                       ),
-                      ProfileMenu(
+                      ItemMenu(
                         text: 'Intervallo temporale ' +
                             _currentDateTimeRange.start.day.toString() +
                             '/' +
@@ -333,7 +333,7 @@ class _VatFattureInCloudCalculatorBodyState
                           press: () async {
                             dataBundleNotifier.setShowIvaButtonToTrue();
                           },
-                          color: kPrimaryColor,
+                          color: kCustomBlue,
                         ),
                       ),
                     ],
@@ -586,7 +586,7 @@ class _VatFattureInCloudCalculatorBodyState
                         borderRadius: BorderRadius.circular(15),
                       ),
                       elevation: 20,
-                      color: kPinaColor,
+                      color: kBeigeColor,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -595,12 +595,12 @@ class _VatFattureInCloudCalculatorBodyState
                               Text(
                                 'Iva',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 13),
+                                    color: kCustomBlue, fontSize: 13),
                               ),
                               Text(
                                 'Fatture Acquisti',
                                 style: TextStyle(
-                                    color: Colors.white, fontSize: 13),
+                                    color: kCustomBlue, fontSize: 13),
                               ),
                             ],
                           ),
@@ -609,7 +609,7 @@ class _VatFattureInCloudCalculatorBodyState
                           ),
                           Text('€ ' + totalIvaAcquisti.toStringAsFixed(2),
                               style: const TextStyle(
-                                  color: Colors.white, fontSize: 25)),
+                                  color: kCustomBlue, fontSize: 25)),
                         ],
                       ),
                     ),
@@ -625,7 +625,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: kPinaColor,
+                    color: kBeigeColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -634,12 +634,12 @@ class _VatFattureInCloudCalculatorBodyState
                             Text(
                               'Iva',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                             Text(
                               'Fatture Vendite',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                           ],
                         ),
@@ -648,7 +648,7 @@ class _VatFattureInCloudCalculatorBodyState
                         ),
                         Text('€ ' + totalIvaFatture.toStringAsFixed(2),
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 22)),
+                                color: kCustomBlue, fontSize: 22)),
                       ],
                     ),
                   ),
@@ -671,7 +671,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: kPinaColor,
+                    color: kBeigeColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -680,12 +680,12 @@ class _VatFattureInCloudCalculatorBodyState
                             Text(
                               'Iva',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                             Text(
                               'NDC (Emesse)',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                           ],
                         ),
@@ -694,7 +694,7 @@ class _VatFattureInCloudCalculatorBodyState
                         ),
                         Text('€ ' + totalIvaNdcSent.toStringAsFixed(2),
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 22)),
+                                color: kCustomBlue, fontSize: 22)),
                       ],
                     ),
                   ),
@@ -709,21 +709,21 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: kPinaColor,
+                    color: kBeigeColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Column(
-                          children: [
-                            const Text(
+                          children: const [
+                            Text(
                               'Iva',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
-                            const Text(
+                            Text(
                               'NDC (Ricevute)',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                           ],
                         ),
@@ -732,7 +732,7 @@ class _VatFattureInCloudCalculatorBodyState
                         ),
                         Text('€ ' + totalIvaNdcReceived.toStringAsFixed(2),
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 22)),
+                                color: kCustomBlue, fontSize: 22)),
                       ],
                     ),
                   ),
@@ -764,7 +764,7 @@ class _VatFattureInCloudCalculatorBodyState
                       borderRadius: BorderRadius.circular(15),
                     ),
                     elevation: 20,
-                    color: kPinaColor,
+                    color: kBeigeColor,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -773,12 +773,12 @@ class _VatFattureInCloudCalculatorBodyState
                             Text(
                               'Iva',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                             Text(
                               'Incassi',
                               style:
-                                  TextStyle(color: Colors.white, fontSize: 13),
+                                  TextStyle(color: kCustomBlue, fontSize: 13),
                             ),
                           ],
                         ),
@@ -792,7 +792,7 @@ class _VatFattureInCloudCalculatorBodyState
                                         _currentDateTimeRange.end))
                                 .toStringAsFixed(2),
                             style: const TextStyle(
-                                color: Colors.white, fontSize: 22)),
+                                color: kCustomBlue, fontSize: 22)),
 
                         //
                       ],

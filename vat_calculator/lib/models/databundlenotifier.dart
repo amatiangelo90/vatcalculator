@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -110,6 +112,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
+    sleep(Duration(seconds: 1));
     currentListSuppliers.addAll(_supplierModelList);
     notifyListeners();
   }
@@ -187,6 +190,8 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void addCurrentSuppliersList(List<ResponseAnagraficaFornitori> suppliersModelList) {
+
+    print(suppliersModelList.length);
     currentListSuppliers.clear();
     currentListSuppliers.addAll(suppliersModelList);
     notifyListeners();

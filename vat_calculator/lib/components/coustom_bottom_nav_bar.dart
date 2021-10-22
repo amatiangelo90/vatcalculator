@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../constants.dart';
@@ -42,7 +43,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: SvgPicture.asset(
                       "assets/icons/home.svg",
                       color: MenuState.home == selectedMenu
-                          ? Colors.white
+                          ? Colors.greenAccent
                           : inActiveIconColor,
                       width: 30,
                     ),
@@ -54,7 +55,7 @@ class CustomBottomNavBar extends StatelessWidget {
                   IconButton(
                     icon: SvgPicture.asset("assets/icons/Parcel.svg",
                       color: MenuState.vatcalc == selectedMenu
-                          ? Colors.white
+                          ? Colors.greenAccent
                           : inActiveIconColor,
                       width: 30,),
                       onPressed: () {
@@ -75,9 +76,20 @@ class CustomBottomNavBar extends StatelessWidget {
                       }
                   ),
                   IconButton(
+                      icon: SvgPicture.asset("assets/icons/storage.svg",
+                        color: MenuState.storage == selectedMenu
+                            ? Colors.greenAccent
+                            : inActiveIconColor,
+                        width: 30,),
+                      onPressed: () {
+                        dataBundleNotifier.setShowIvaButtonToFalse();
+                        Navigator.pushNamed(context, StorageScreen.routeName);
+                      }
+                  ),
+                  IconButton(
                       icon: SvgPicture.asset("assets/icons/receipt.svg",
                         color: MenuState.orders == selectedMenu
-                            ? Colors.white
+                            ? Colors.greenAccent
                             : inActiveIconColor,
                         width: 30,),
                       onPressed: () {

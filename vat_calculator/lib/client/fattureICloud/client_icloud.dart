@@ -45,7 +45,6 @@ class FattureInCloudClient {
   Future<List<ResponseAnagraficaFornitori>> performRichiestaFornitori(
       String apiUid,
       String apiKey) async {
-    List<ResponseAnagraficaFornitori> listResponseFornitori = [];
     var dio = Dio();
 
     String body = json.encode(
@@ -69,8 +68,7 @@ class FattureInCloudClient {
         data: body,
       );
 
-      print('Response From Icloud (' + URL_FATTURE_ICLOUD_FORNITORI + '): ' + post.data.toString());
-
+      print('Response From Icloud Retrieve Fornitori (' + URL_FATTURE_ICLOUD_FORNITORI + '): ' + post.data.toString());
 
     }catch(e){
       print(e);
@@ -290,16 +288,21 @@ class FattureInCloudClient {
     Map valueMap = jsonDecode(encode);
     if(valueMap.containsKey('success')){
       if(valueMap['success']){
+
         if(valueMap.containsKey('lista_fornitori')){
           List<dynamic> listDocuments = valueMap['lista_fornitori'];
+          print('pina');
+          print(listDocuments.length);
           listDocuments.forEach((currentFornitore) {
             listOut.add(ResponseAnagraficaFornitori.fromMap(currentFornitore));
           });
         }
+
       }else{
         throw Exception('Impossible to retrieve data from ICloudFatture');
       }
     }
+    print(listOut.toSet().toList().length);
     listOut.toSet().toList().forEach((element) {
       print(element.nome);
     });

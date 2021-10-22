@@ -409,7 +409,7 @@ class _BodyState extends State<Body> {
                   );
                 },
                 child: Card(
-                  color: kPinaColor,
+                  color: kBeigeColor,
                   elevation: 4,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -442,7 +442,7 @@ class _BodyState extends State<Body> {
         GestureDetector(
             child: Container(
                   decoration: BoxDecoration(
-                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? kPinaColor : Colors.white,
+                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? kBeigeColor : Colors.white,
                     border: const Border(
                       bottom: BorderSide(width: 1.0, color: Colors.grey),
                     ),

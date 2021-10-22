@@ -9,7 +9,7 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
-import 'package:vat_calculator/screens/profile/components/profile_menu.dart';
+import 'package:vat_calculator/components/item_menu.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
@@ -175,7 +175,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                                                           ),
                                                         ],
                                                       ),
-                                                      ProfileMenu(
+                                                      ItemMenu(
                                                         text: dataBundleNotifier.currentBranch.apiKeyOrUser,
                                                         icon: '',
                                                         press: () => {
@@ -194,7 +194,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                                                           ),
                                                         ],
                                                       ),
-                                                      ProfileMenu(
+                                                      ItemMenu(
                                                         text: dataBundleNotifier.currentBranch.apiUidOrPassword,
                                                         icon: '',
                                                         press: () => {
@@ -234,7 +234,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                           ],
                         ),
                       ),
-                      ProfileMenu(
+                      ItemMenu(
                         text: 'Intervallo temporale ' + _currentDateTimeRange.start.day.toString() + '/'
                             +  _currentDateTimeRange.start.month.toString()
                             +' - ' +  _currentDateTimeRange.end.day.toString() +'/'

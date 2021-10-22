@@ -48,13 +48,13 @@ class _FattureAcquistiDetailsPageState
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: currentFattureAcquistiList.isNotEmpty ? SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
           children: buildListFattureAcquistiDetails(
               currentFattureAcquistiList, height),
         ),
-      ),
+      ) : Center(child: const Text('Non sono presenti fatture per il periodo indicato')),
     );
   }
 

@@ -8,6 +8,9 @@ import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
+import 'package:vat_calculator/screens/storage/storage_screen.dart';
+import 'package:vat_calculator/screens/suppliers/components/supplier_add_screen.dart';
+import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 
@@ -28,4 +31,7 @@ final Map<String, WidgetBuilder> routes = {
   ArubaCalculatorScreen.routeName: (context) => ArubaCalculatorScreen(),
   CompanyRegistration.routeName: (context) => CompanyRegistration(),
   OrdersScreen.routeName: (context) => OrdersScreen(),
+  StorageScreen.routeName: (context) => StorageScreen(),
+  SuppliersScreen.routeName: (context) => SuppliersScreen(),
+  AddSupplierScreen.routeName: (context) => AddSupplierScreen(),
 };
