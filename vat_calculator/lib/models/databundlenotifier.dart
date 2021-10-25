@@ -6,7 +6,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import '../constants.dart';
 import 'databundle.dart';
 
@@ -23,9 +25,25 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  List<StorageModel> currentStorageList = [
+
+  ];
+
+  List<ProductModel> currentProductModelListForSupplier = [
+
+  ];
+
+
   BranchModel currentBranch;
   DateTime currentDateTime = DateTime.now();
   DateTimeRange currentDateTimeRange;
+
+  void addAllCurrentProductSupplierList(List<ProductModel> listProduct){
+    currentProductModelListForSupplier.clear();
+    currentProductModelListForSupplier.addAll(listProduct);
+    notifyListeners();
+  }
+
 
   void initializeCurrentDateTimeRangeWeekly() {
     currentDateTimeRange = DateTimeRange(
@@ -112,8 +130,12 @@ class DataBundleNotifier extends ChangeNotifier {
 
     List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
-    sleep(Duration(seconds: 1));
+    sleep(const Duration(seconds: 1));
     currentListSuppliers.addAll(_supplierModelList);
+
+    List<StorageModel> _storageModel = await clientService.retrieveStorageListByBranch(currentBranch);
+    currentStorageList.clear();
+    currentStorageList.addAll(_storageModel);
     notifyListeners();
   }
 
@@ -191,9 +213,15 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void addCurrentSuppliersList(List<ResponseAnagraficaFornitori> suppliersModelList) {
 
-    print(suppliersModelList.length);
     currentListSuppliers.clear();
     currentListSuppliers.addAll(suppliersModelList);
+    notifyListeners();
+  }
+
+  void addCurrentStorageList(List<StorageModel> storageModelList) {
+
+    currentStorageList.clear();
+    currentStorageList.addAll(storageModelList);
     notifyListeners();
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -14,6 +15,7 @@ import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.da
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 
 import '../constants.dart';
+import '../size_config.dart';
 
 class CommonDrawer extends StatefulWidget {
   const CommonDrawer({Key key}) : super(key: key);
@@ -40,19 +42,126 @@ class _CommonDrawerState extends State<CommonDrawer> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  const SizedBox(height: 100,),
-                  Row(
-                    children: [
-                      const SizedBox(width: 20,),
-                      dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: Colors.white, fontSize: 20)) :
-                      const SizedBox(width: 0,),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 20,),
-                      dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].email, style:const TextStyle(color: Colors.white)) : const SizedBox(width: 0,),
-                    ],
+
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: [0.1, 0.4, 0.7, 0.9],
+                        colors: [
+                          Colors.black54,
+                          kPrimaryColor,
+                          kPrimaryColor,
+                          kPrimaryColor,
+                        ],
+                      ),
+                        border: Border.all(color: kPrimaryColor),
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), bottomLeft: Radius.circular(20)),
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 60,),
+                        Row(
+                          children: [
+                            const SizedBox(width: 20,),
+                            dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
+                            const SizedBox(width: 0,),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            const SizedBox(width: 20,),
+                            dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].email, style:const TextStyle(color: kCustomWhite)) : const SizedBox(width: 0,),
+                          ],
+                        ),
+                        const SizedBox(height: 10,),
+                        GestureDetector(
+                          onTap: (){
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var height = MediaQuery.of(context).size.height;
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        height: height - 350,
+                                        width: width,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10.0),
+                                                      topLeft: Radius.circular(10.0) ),
+                                                  color: kPrimaryColor,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text('  Lista Attività',style: TextStyle(
+                                                      fontSize: getProportionateScreenWidth(17),
+                                                      color: Colors.white,
+                                                    ),),
+                                                    IconButton(icon: const Icon(
+                                                      Icons.clear,
+                                                      color: Colors.white,
+                                                    ), onPressed: () {
+                                                      Navigator.popAndPushNamed(context, HomeScreen.routeName);
+                                                      },),
+                                                  ],
+                                                ),
+                                              ),
+                                              Column(
+                                                children: buildListBranches(dataBundleNotifier),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  const SizedBox(width: 20,),
+                                  dataBundleNotifier.currentBranch != null ? Text(dataBundleNotifier.currentBranch.companyName, style:const TextStyle(color: kCustomWhite)) : const SizedBox(width: 0,),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(Icons.keyboard_arrow_down, color: kCustomWhite,),
+                                  const SizedBox(width: 20,),
+                                  GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(context, CompanyRegistration.routeName);
+                                      },
+                                      child: const Icon(Icons.add_circle_outline_rounded, color: kBeigeColor,size: 29,)
+                                  ),
+                                  const SizedBox(width: 20,),
+                                ],
+                              ),
+
+                            ],
+
+                          ),
+                        ),
+                        const SizedBox(height: 10,),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 30,),
                   buildDrawerRow('assets/icons/home.svg','Home',(){
@@ -75,12 +184,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
                         break;
                     }
-                  }, kPrimaryColor,
-                      kCustomWhite,
-                      kPrimaryColor),
-                  buildDrawerRow('assets/icons/storage.svg','Magazzino',(){
-                    dataBundleNotifier.setShowIvaButtonToFalse();
-                    Navigator.pushNamed(context, StorageScreen.routeName);
                   }, kPrimaryColor,
                       kCustomWhite,
                       kPrimaryColor),
@@ -120,6 +223,45 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 child: Card(
                                   color: Colors.red,
                                   child: Center(child: Text(dataBundleNotifier.currentListSuppliers.length.toString()
+                                    , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                ),
+                              ),
+                              const Icon(Icons.arrow_forward_ios),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        primary: kPrimaryColor,
+                        padding: const EdgeInsets.all(15),
+                        backgroundColor: kCustomWhite,
+                      ),
+                      onPressed: (){
+
+                        Navigator.pushNamed(context, StorageScreen.routeName);
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/storage.svg',
+                            color: kPrimaryColor,
+                            width: 22,
+                          ),
+                          const SizedBox(width: 20),
+                          const Expanded(child: Text('Magazzino')),
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: 28,
+                                width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                child: Card(
+                                  color: Colors.red,
+                                  child: Center(child: Text(dataBundleNotifier.currentStorageList.length.toString()
                                     , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                 ),
                               ),
@@ -276,6 +418,45 @@ class _CommonDrawerState extends State<CommonDrawer> {
       );
     });
     return Column(children: branchList,);
+  }
+
+  buildListBranches(DataBundleNotifier dataBundleNotifier) {
+
+    List<Widget> branchWidgetList = [];
+
+    dataBundleNotifier.dataBundleList[0].companyList.forEach((currentBranch) {
+      branchWidgetList.add(
+        GestureDetector(
+          child: Container(
+            decoration: BoxDecoration(
+              color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? kBeigeColor : Colors.white,
+              border: const Border(
+                bottom: BorderSide(width: 1.0, color: Colors.grey),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text('   ' + currentBranch.companyName,
+                    style: TextStyle(
+                      fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(20) : getProportionateScreenWidth(16),
+                      color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : Colors.black,
+                    ),),
+                ],
+              ),
+            ),
+          ),
+          onTap: () {
+            EasyLoading.show();
+            dataBundleNotifier.setCurrentBranch(currentBranch);
+            EasyLoading.dismiss();
+            Navigator.pop(context);
+          },
+        ),
+      );
+    });
+    return branchWidgetList;
   }
 }
 

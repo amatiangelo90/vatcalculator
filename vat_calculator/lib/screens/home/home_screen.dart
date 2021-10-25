@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
@@ -21,6 +22,14 @@ class HomeScreen extends StatelessWidget {
           appBar: AppBar(
             iconTheme: const IconThemeData(color: Colors.white),
             backgroundColor: kPrimaryColor,
+            actions: [
+              SvgPicture.asset(
+                'assets/icons/User Icon.svg',
+                color: kCustomWhite,
+                width: 25,
+              ),
+              const SizedBox(width: 15,),
+            ],
             centerTitle: true,
             title: Column(
               children: [

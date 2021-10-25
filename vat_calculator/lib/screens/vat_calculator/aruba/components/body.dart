@@ -181,6 +181,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                                                         press: () => {
                                                         },
                                                         showArrow: false,
+                                                        backgroundColor: kCustomWhite,
                                                       ),
                                                       Row(
                                                         children: [
@@ -200,6 +201,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                                                         press: () => {
                                                         },
                                                         showArrow: false,
+                                                        backgroundColor: kCustomWhite,
                                                       ),
                                                       const SizedBox(height: 20,),
                                                     ],
@@ -245,6 +247,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                           _selectDateRange(context),
                         },
                         showArrow: false,
+                        backgroundColor: kCustomWhite,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(18.0),
@@ -253,7 +256,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
                           press: () async {
                             dataBundleNotifier.setShowIvaButtonToTrue();
                           },
-                          color: kPrimaryColor,
+                          color: Colors.orange,
                         ),
                       ),
                     ],

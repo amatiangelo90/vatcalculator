@@ -16,8 +16,6 @@ class AddSupplierScreen extends StatefulWidget {
 
   static String routeName = 'addsupplier';
 
-
-
   @override
   State<AddSupplierScreen> createState() => _AddSupplierScreenState();
 }
@@ -169,6 +167,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                             ),
                             controller: controllerAddressCiy,
                           ),
+
                           const SizedBox(height: 20),
                           TextFormField(
                             keyboardType: TextInputType.number,

@@ -48,7 +48,7 @@ class ResponseAnagraficaFornitori {
     return ResponseAnagraficaFornitori(
         pkSupplierId: 0,
         id: cartMap['id'].toString(),
-        nome: cartMap['nome'].toString(),
+        nome: cartMap['name'].toString(),
         referente: cartMap['referente'].toString(),
         indirizzo_via: cartMap['indirizzo_via'].toString(),
         indirizzo_cap: cartMap['indirizzo_cap'].toString(),
@@ -70,7 +70,7 @@ class ResponseAnagraficaFornitori {
     return {
       'pk_supplier_id': pkSupplierId,
       'id': id,
-      'nome': nome,
+      'name': nome,
       'referente': referente,
       'indirizzo_via': indirizzo_via,
       'indirizzo_cap': indirizzo_cap,

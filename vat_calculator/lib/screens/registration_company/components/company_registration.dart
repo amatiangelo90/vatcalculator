@@ -194,6 +194,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       print(company.toMap());
       await clientService.performSaveBranch(company);
 
+
       List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(dataBundleNotifier.dataBundleList[0].email);
 
       dataBundleNotifier.addBranches(_branchList);

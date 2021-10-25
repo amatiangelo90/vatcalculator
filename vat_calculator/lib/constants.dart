@@ -17,7 +17,8 @@ import 'package:vat_calculator/size_config.dart';
 // #e7e5e1	(231,229,225)
 // #a8acab	(168,172,171)
 // #d2c5b9	(210,197,185)
-const Color kPrimaryColor = Color(0XFF2f4a36);
+const Color kPrimaryColor = Color(0XFF081730);
+const Color kWinterGreen = Color(0XFF2f4a36);
 const Color kPinaColor = Color(0XFF803037);
 const Color kBeigeColor = Color(0XFFd2c5b9);
 const Color kCustomWhite = Color(0xFFF5F6F9);

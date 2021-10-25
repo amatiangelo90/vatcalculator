@@ -234,6 +234,7 @@ class _VatFattureInCloudCalculatorBodyState
                                                             icon: '',
                                                             press: () => {},
                                                             showArrow: false,
+                                                            backgroundColor: kCustomWhite,
                                                           ),
                                                           Row(
                                                             children: [
@@ -325,6 +326,7 @@ class _VatFattureInCloudCalculatorBodyState
                           dataBundleNotifier.setShowIvaButtonToFalse(),
                         },
                         showArrow: false,
+                        backgroundColor: kCustomWhite,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(18.0),
@@ -333,7 +335,7 @@ class _VatFattureInCloudCalculatorBodyState
                           press: () async {
                             dataBundleNotifier.setShowIvaButtonToTrue();
                           },
-                          color: kCustomBlue,
+                          color: Colors.blue,
                         ),
                       ),
                     ],

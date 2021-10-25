@@ -9,23 +9,25 @@ class ItemMenu extends StatelessWidget {
     @required this.icon,
     this.press,
     this.showArrow,
+    @required this.backgroundColor,
   }) : super(key: key);
 
   final String text, icon;
   final VoidCallback press;
   final bool showArrow;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       child: TextButton(
         style: TextButton.styleFrom(
           primary: kPrimaryColor,
           padding: const EdgeInsets.all(20),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          backgroundColor: kCustomWhite,
+          backgroundColor: backgroundColor,
         ),
         onPressed: press,
         child: Row(
@@ -37,7 +39,7 @@ class ItemMenu extends StatelessWidget {
             ),
             const SizedBox(width: 20),
             Expanded(child: Text(text)),
-            showArrow ? const Icon(Icons.arrow_forward_ios) : SizedBox(width: 0,),
+            showArrow ? const Icon(Icons.arrow_forward_ios) : const SizedBox(width: 0,),
           ],
         ),
       ),

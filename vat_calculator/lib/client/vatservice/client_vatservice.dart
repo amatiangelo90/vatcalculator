@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 
 import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
+import 'model/product_model.dart';
 import 'model/recessed_model.dart';
 import 'model/user_model.dart';
 
@@ -72,7 +74,10 @@ class ClientVatService{
         data: body,
       );
 
-      print('Response From VatService (' + VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH + '): ' + post.data.toString());
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH + '): ' + post.data.toString());
+      }
+
       return post;
     }catch(e){
       print(e);
@@ -89,14 +94,18 @@ class ClientVatService{
     String body = json.encode(
         anagraficaFornitore.toMap());
     Response post;
-    print('Save supplier request body: ' + body);
+
+    print('Save supplier ($VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH) request body: ' + body);
     try{
       post = await dio.post(
         VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH,
         data: body,
       );
 
-      print('Response From VatService (' + VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH + '): ' + post.data.toString());
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH + '): ' + post.data.toString());
+      }
+
       return post;
     }catch(e){
       print(e);
@@ -115,20 +124,50 @@ class ClientVatService{
 
 
     print('Calling ' + VAT_SERVICE_URL_SAVE_BRANCH + '...');
-    print('Body Request ' + body);
+    print('Body Request Save branch: ' + body);
 
     Response post;
     try{
-      post = await dio.post(
-        'http://217.160.242.158:8080/vatservices/api/retrievemodelbranch',
-      );
 
       post = await dio.post(
         VAT_SERVICE_URL_SAVE_BRANCH,
         data: body,
       );
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
+      }
+      return post;
+    }catch(e){
+      rethrow;
+    }
 
-      print('Response From VatService (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
+  }
+
+  Future<Response> performSaveProduct(
+      ProductModel product) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        product.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_SAVE_PRODUCT + '...');
+    print('Body Request Save product: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_SAVE_PRODUCT,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT + '): ' + post.data.toString());
+      }
+
+
       return post;
     }catch(e){
       rethrow;
@@ -230,6 +269,7 @@ class ClientVatService{
 
     List<RecessedModel> recessedList = [];
 
+
     String body = json.encode(
         currentBranch.toMap());
 
@@ -261,6 +301,7 @@ class ClientVatService{
       });
       return recessedList;
   }catch(e){
+      print('Errore retrieving recessed : ');
       print(e);
       rethrow;
     }
@@ -291,7 +332,7 @@ class ClientVatService{
 
         suppliersList.add(
             ResponseAnagraficaFornitori(
-              pkSupplierId: supplierElement['pkSupplierId'],
+              pkSupplierId: supplierElement['pk_supplier_id'],
               cf: supplierElement['cf'],
               extra: supplierElement['extra'],
               fax: supplierElement['fax'],
@@ -302,7 +343,7 @@ class ClientVatService{
               indirizzo_provincia: supplierElement['indirizzo_provincia'],
               indirizzo_via: supplierElement['indirizzo_via'],
               mail: supplierElement['mail'],
-              nome: supplierElement['nome'],
+              nome: supplierElement['name'],
               paese: supplierElement['paese'],
               pec: supplierElement['pec'],
               piva: supplierElement['piva'],
@@ -313,6 +354,90 @@ class ClientVatService{
       });
       return suppliersList;
     }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<ProductModel>> retrieveProductsBySupplier(ResponseAnagraficaFornitori currentSupplier) async {
+    var dio = Dio();
+    List<ProductModel> productsList = [];
+
+    String body = json.encode(
+        currentSupplier.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_SUPPLIER,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve products list by supplier): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_SUPPLIER + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((product) {
+
+        productsList.add(
+            ProductModel(
+                pkProductId: product['pkProductId'],
+                nome: product['name'],
+                codice: product['code'],
+                unita_misura: product['measureUnit'],
+                iva_applicata: product['vatApplied'],
+                prezzo_lordo: product['price'],
+                descrizione: product['description'],
+                categoria: product['category'],
+                fkSupplierId: product['fkSupplierId']));
+      });
+      return productsList;
+    }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<StorageModel>> retrieveStorageListByBranch(BranchModel currentBranch) async {
+    var dio = Dio();
+    List<StorageModel> storageList = [];
+
+    String body = json.encode(
+        currentBranch.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_STORAGE_BY_BRANCH,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve storage list by branch): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_STORAGE_BY_BRANCH + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((storage) {
+
+        storageList.add(
+          StorageModel(
+              pkStorageId: storage['pk_storage_id'],
+              name: storage['name'],
+              code: storage['code'],
+              creationDate: DateTime.fromMillisecondsSinceEpoch(storage['creation_date']),
+              address: storage['address'],
+              city: storage['city'],
+              cap: storage['cap'],
+              fkBranchId: storage['fk_branch_id']));
+      });
+
+      return storageList;
+    }catch(e){
+      print('Errore retrieving storage model : ');
       print(e);
       rethrow;
     }

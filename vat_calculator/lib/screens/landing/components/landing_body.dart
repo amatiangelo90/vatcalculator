@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundle.dart';
@@ -56,7 +57,7 @@ class LandingBody extends StatelessWidget {
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
 
                   DataBundle dataBundle = DataBundle(userModelRetrieved.mail, '', userModelRetrieved.name, userModelRetrieved.lastName, userModelRetrieved.phone, []);
-
+                  print("###########");
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
@@ -70,6 +71,12 @@ class LandingBody extends StatelessWidget {
                     List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                     dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
                   }
+                  if(dataBundleNotifier.currentBranch != null){
+                    List<StorageModel> _storageModelList = await clientService.retrieveStorageListByBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier.addCurrentStorageList(_storageModelList);
+                  }
+
+
                   dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
                   EasyLoading.dismiss();
                   Navigator.pushNamed(context, HomeScreen.routeName);
