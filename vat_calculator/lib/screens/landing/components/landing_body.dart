@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -56,8 +57,16 @@ class LandingBody extends StatelessWidget {
                   ClientVatService clientService = ClientVatService();
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
 
+                  if(userModelRetrieved != null){
+                    Response response = await clientService.checkSpecialUser(userModelRetrieved);
+                    if(response != null && response.statusCode != null && response.statusCode == 200){
+                      if(response.data){
+                        print('Enable special user');
+                        dataBundleNotifier.enableSpecialUser();
+                      }
+                    }
+                  }
                   DataBundle dataBundle = DataBundle(userModelRetrieved.mail, '', userModelRetrieved.name, userModelRetrieved.lastName, userModelRetrieved.phone, []);
-                  print("###########");
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);

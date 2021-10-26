@@ -358,7 +358,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
         padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
         child: GestureDetector(
           onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(product: currentProduct,),),);
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(product: currentProduct,supplier: widget.currentSupplier,),),);
           },
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

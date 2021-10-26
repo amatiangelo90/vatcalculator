@@ -46,6 +46,33 @@ class ClientVatService{
     return post;
   }
 
+  Future<Response> checkSpecialUser(
+      UserModel usermodel) async {
+
+    var dio = Dio();
+
+    String body = json.encode(usermodel.toMap());
+
+    Response post;
+    print('Is current user with mail ['+ usermodel.mail+'] '
+        'in special list? Calling (' + VAT_SERVICE_URL_CHECK_SPECIAL_USER + ') ');
+
+    try{
+      print('Request' + body);
+      post = await dio.post(
+        VAT_SERVICE_URL_CHECK_SPECIAL_USER,
+        data: body,
+      );
+
+     print('Response from [' + VAT_SERVICE_URL_CHECK_SPECIAL_USER + ']' + post.toString());
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+    return post;
+  }
+
   Future<Response> performSaveRecessed(
       double amount,
       String description,
@@ -167,6 +194,68 @@ class ClientVatService{
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT + '): ' + post.data.toString());
       }
 
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
+  Future<Response> performUpdateProduct(
+      ProductModel product) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        product.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_PRODUCT + '...');
+    print('Body Request update product: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_PRODUCT,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_PRODUCT + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
+  Future<Response> performDeleteProduct(
+      ProductModel product) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        product.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_DELETE_PRODUCT + '...');
+    print('Body Request delete product: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_PRODUCT,
+        data: body,
+      );
+
+      if(post != null && post.data){
+        print('Response From VatService (' + VAT_SERVICE_URL_DELETE_PRODUCT + '): ' + post.data);
+      }
 
       return post;
     }catch(e){

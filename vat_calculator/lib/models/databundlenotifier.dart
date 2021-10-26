@@ -33,10 +33,16 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  bool isSpecialUser = false;
 
   BranchModel currentBranch;
   DateTime currentDateTime = DateTime.now();
   DateTimeRange currentDateTimeRange;
+
+  void enableSpecialUser(){
+    isSpecialUser = true;
+    notifyListeners();
+  }
 
   void addAllCurrentProductSupplierList(List<ProductModel> listProduct){
     currentProductModelListForSupplier.clear();

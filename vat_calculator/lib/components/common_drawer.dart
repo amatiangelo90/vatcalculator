@@ -63,10 +63,22 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       children: [
                         const SizedBox(height: 60,),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const SizedBox(width: 20,),
-                            dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
-                            const SizedBox(width: 0,),
+                            Row(
+                              children: [
+                                const SizedBox(width: 20,),
+                                dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
+                                const SizedBox(width: 0,),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.yellow.shade700,
+                                ) : SizedBox(width: 0,),
+                                const SizedBox(width: 20,),
+                              ],
+                            ),
                           ],
                         ),
                         Row(

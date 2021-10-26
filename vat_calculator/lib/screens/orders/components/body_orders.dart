@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
+import 'package:vat_calculator/screens/suppliers/components/supplier_add_screen.dart';
 
 import '../../../size_config.dart';
 
@@ -113,7 +114,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                             child: DefaultButton(
                               text: "Crea Fornitore",
                               press: () async {
-
+                                Navigator.pushNamed(context, AddSupplierScreen.routeName);
                               },
                             ),
                           ),

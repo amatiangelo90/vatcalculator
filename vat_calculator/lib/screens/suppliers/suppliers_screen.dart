@@ -83,7 +83,35 @@ class SuppliersScreen extends StatelessWidget {
                     ),
                   ),
                 ],
-              ) : buildListSuppliers(dataBundleNotifier, context),
+              ) : dataBundleNotifier.currentListSuppliers.isNotEmpty ?
+              buildListSuppliers(dataBundleNotifier, context) :
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Non hai ancora creato nessun fornitore. ",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(13),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 30,),
+                    SizedBox(
+                      width: SizeConfig.screenWidth * 0.6,
+                      child: DefaultButton(
+                        text: "Crea Fornitore",
+                        press: () async {
+                          Navigator.pushNamed(context, AddSupplierScreen.routeName);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           );
         });
@@ -93,7 +121,8 @@ class SuppliersScreen extends StatelessWidget {
     List<Widget> listout = [];
 
 
-    listout.add(currentListSuppliers.currentListSuppliers.isNotEmpty ? const Text('La tua lista fornitori') : const Text('Non hai ancora fornitori'));
+    listout.add(const Text('La tua lista fornitori')
+    );
     currentListSuppliers.currentListSuppliers.forEach((supplier) {
       listout.add(ItemMenu(
         text: supplier.nome,

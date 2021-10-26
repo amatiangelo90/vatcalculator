@@ -19,3 +19,13 @@ const String VAT_SERVICE_URL_RETRIEVE_SUPPLIER_BY_BRANCHES = 'http://$host:8080/
 const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_SUPPLIER = 'http://$host:8080/vatservices/api/v1/retrieve/products';
 const String VAT_SERVICE_URL_RETRIEVE_STORAGE_BY_BRANCH = 'http://$host:8080/vatservices/api/v1/retrieve/storages';
 
+const String VAT_SERVICE_URL_CHECK_SPECIAL_USER = 'http://$host:8080/vatservices/api/v1/check/specialuser';
+
+//Update url
+const String VAT_SERVICE_URL_UPDATE_PRODUCT = 'http://$host:8080/vatservices/api/v1/update/product';
+
+//Delete
+const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';
+
+
+

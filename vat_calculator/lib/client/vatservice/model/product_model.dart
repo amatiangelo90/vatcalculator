@@ -26,6 +26,7 @@ class ProductModel {
 
   toMap(){
     return {
+      'pkProductId' : pkProductId,
       'name': nome,
       'code' : codice,
       'measureUnit' : unita_misura,

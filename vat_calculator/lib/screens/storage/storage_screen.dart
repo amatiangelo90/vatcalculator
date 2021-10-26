@@ -27,6 +27,9 @@ class StorageScreen extends StatelessWidget {
               ),
             ),
             backgroundColor: kPrimaryColor,
+            actions: [
+
+            ],
           ),
           body: dataBundleNotifier.currentBranch == null ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -61,7 +64,7 @@ class StorageScreen extends StatelessWidget {
                 child: Text(
                   dataBundleNotifier.dataBundleList.isNotEmpty ? "Ciao ${dataBundleNotifier.dataBundleList[0].firstName}, sembra "
                       "che tu non abbia configurato ancora nessun magazzino per ${dataBundleNotifier.currentBranch.companyName}. "
-                      "Ti ricordo che è possibile associare i prodotti al tuo magazzino solo dopo averli creati ed associati ad uno dei tuoi fornitori." : "",
+                      "Ti ricordo che è possibile inserire prodotti al tuo magazzino solo dopo averli creati ed associati ad uno dei tuoi fornitori." : "",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(13),
@@ -76,6 +79,7 @@ class StorageScreen extends StatelessWidget {
                 child: DefaultButton(
                   text: "Crea Magazzino",
                   press: () async {
+
 
                   },
                 ),
