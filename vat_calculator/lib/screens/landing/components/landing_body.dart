@@ -54,7 +54,7 @@ class LandingBody extends StatelessWidget {
                 press: () async {
                   EasyLoading.show();
 
-                  ClientVatService clientService = ClientVatService();
+                  ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
 
                   if(userModelRetrieved != null){

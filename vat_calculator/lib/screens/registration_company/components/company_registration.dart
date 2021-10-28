@@ -175,7 +175,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
   Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier, context) async {
     bool resultValidation = await validateData(mapData, context);
 
-    ClientVatService clientService = ClientVatService();
+    ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
     if(resultValidation){
       BranchModel company = BranchModel(
           eMail: dataBundleNotifier.dataBundleList[0].email,
@@ -212,6 +212,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       ContactState.controllerAddress.clear();
       ContactState.controllerCompanyName.clear();
       ContactState.controllerMobileNo.clear();
+      ContactState.controllerCity.clear();
+      ContactState.controllerCap.clear();
       VatProviderState.controllerApiKeyOrUser.clear();
       VatProviderState.controllerApiUidOrPassword.clear();
       Navigator.pushNamed(context, HomeScreen.routeName);

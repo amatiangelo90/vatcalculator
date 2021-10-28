@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/enums.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
 class RecapData extends StatefulWidget {
@@ -24,6 +23,8 @@ class RecapDataState extends State<RecapData> {
     var email = widget.mapInfo["email"];
     var piva = widget.mapInfo["piva"];
     var address = widget.mapInfo["address"];
+    var city = widget.mapInfo["city"];
+    var cap = widget.mapInfo["cap"];
     var mobile = widget.mapInfo["mobile_no"];
 
     var provider = widget.mapInfo["provider_name"];
@@ -59,6 +60,18 @@ class RecapDataState extends State<RecapData> {
               children: <Widget>[
                 const Text("Indirizzo: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
                 Flexible(child: Text(address, style: const TextStyle(fontSize: 16))),
+              ],
+            ),
+            const SizedBox(height: 10),Row(
+              children: <Widget>[
+                const Text("Città: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                Flexible(child: Text(city, style: const TextStyle(fontSize: 16))),
+              ],
+            ),
+            const SizedBox(height: 10),Row(
+              children: <Widget>[
+                const Text("cap: ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),),
+                Flexible(child: Text(cap.toString(), style: const TextStyle(fontSize: 16))),
               ],
             ),
             const SizedBox(height: 10),
@@ -97,7 +110,6 @@ class RecapDataState extends State<RecapData> {
                 provider == 'fatture_in_cloud' ?
                 Flexible(child: Text("ApiKey : " + apikey_user, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)) :
                 Flexible(child: Text("User : " + apikey_user, style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),)),
-                //Text(provider, style: const TextStyle(fontSize: 16)),
               ],
             ),
             const SizedBox(height: 10),

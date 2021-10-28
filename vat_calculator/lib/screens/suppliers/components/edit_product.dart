@@ -90,12 +90,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               elevation: 2,
               actions: [
-                IconButton(
-                    icon: const Icon(Icons.restore_from_trash, color: kPinaColor,),
-                    onPressed: () => {
-                      Navigator.of(context).pop(),
-                    }
-                ),
+
               ],
             ),
             body: SingleChildScrollView(
@@ -239,7 +234,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       child: CupertinoTextField(
                         controller: _unitMeasureController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
+                        keyboardType: TextInputType.text,
                         clearButtonMode: OverlayVisibilityMode.editing,
                         autocorrect: false,
                       ),

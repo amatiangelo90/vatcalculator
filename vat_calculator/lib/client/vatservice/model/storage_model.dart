@@ -35,8 +35,7 @@ class StorageModel {
     );
   }
 
-  factory StorageModel.fromMap(
-      Map snapshot,
+  factory StorageModel.fromMap(Map snapshot,
       String docId){
     return StorageModel(
       pkStorageId: snapshot['pk_storage_id'],
@@ -50,12 +49,18 @@ class StorageModel {
     );
   }
 
-  toJson(){
+  toMap() {
+    int currentDate;
+    if(creationDate == null){
+      currentDate = 0;
+    }else{
+      currentDate = creationDate.millisecondsSinceEpoch;
+    }
     return {
-      'pk_storage_id' : pkStorageId,
+      'pk_storage_id': pkStorageId,
       'name': name,
-      'code' : code,
-      'creation_date' : creationDate,
+      'code': code,
+      'creation_date': currentDate,
       'address': address,
       'cap': cap,
       'city': city,
@@ -66,7 +71,7 @@ class StorageModel {
 
   @override
   String toString() {
-    return 'Magazzino [' + name +']' + ' - branchid ['+ fkBranchId.toString() +']';
+    return 'Magazzino [' + name + ']' + ' - branchid [' +
+        fkBranchId.toString() + ']';
   }
-
 }

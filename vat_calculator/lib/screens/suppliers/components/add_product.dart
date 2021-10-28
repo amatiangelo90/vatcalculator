@@ -212,7 +212,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     child: CupertinoTextField(
                       controller: _unitMeasureController,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.text,
                       clearButtonMode: OverlayVisibilityMode.editing,
                       autocorrect: false,
                     ),

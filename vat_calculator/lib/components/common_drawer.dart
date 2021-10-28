@@ -284,6 +284,44 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       ),
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        primary: kPrimaryColor,
+                        padding: const EdgeInsets.all(15),
+                        backgroundColor: kCustomWhite,
+                      ),
+                      onPressed: (){
+
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/party.svg',
+                            color: kPrimaryColor,
+                            width: 22,
+                          ),
+                          const SizedBox(width: 20),
+                          const Expanded(child: Text('Eventi')),
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: 28,
+                                width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                child: Card(
+                                  color: Colors.red,
+                                  child: Center(child: Text('0'
+                                    , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                ),
+                              ),
+                              const Icon(Icons.arrow_forward_ios),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                     child: TextButton(

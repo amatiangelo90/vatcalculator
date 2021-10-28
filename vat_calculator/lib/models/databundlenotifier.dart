@@ -1,21 +1,21 @@
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import '../constants.dart';
 import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
 
   List<DataBundle> dataBundleList = [
-    ];
+
+  ];
 
   List<RecessedModel> currentListRecessed = [
 
@@ -33,11 +33,42 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  List<StorageProductModel> currentStorageProductListForCurrentStorage = [
+
+  ];
+
+  List<ProductModel> productToAddToStorage = [
+
+  ];
+
+  ClientVatService clientService = ClientVatService();
+
   bool isSpecialUser = false;
 
   BranchModel currentBranch;
+  StorageModel currentStorage;
+
   DateTime currentDateTime = DateTime.now();
   DateTimeRange currentDateTimeRange;
+
+  bool cupertinoSwitch = false;
+
+  void switchCupertino(){
+    if(cupertinoSwitch){
+      cupertinoSwitch = false;
+    }else{
+      cupertinoSwitch = true;
+    }
+
+    notifyListeners();
+  }
+  ClientVatService getclientServiceInstance(){
+    if(clientService == null){
+      return ClientVatService();
+    }else{
+      return clientService;
+    }
+  }
 
   void enableSpecialUser(){
     isSpecialUser = true;
@@ -47,6 +78,12 @@ class DataBundleNotifier extends ChangeNotifier {
   void addAllCurrentProductSupplierList(List<ProductModel> listProduct){
     currentProductModelListForSupplier.clear();
     currentProductModelListForSupplier.addAll(listProduct);
+    notifyListeners();
+  }
+
+  void addAllCurrentListProductToProductListToAddToStorage(List<ProductModel> listProduct){
+    productToAddToStorage.clear();
+    productToAddToStorage.addAll(listProduct);
     notifyListeners();
   }
 
@@ -128,7 +165,6 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   Future<void> setCurrentBranch(BranchModel branchModel) async {
-    ClientVatService clientService = ClientVatService();
     currentBranch = branchModel;
     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
     currentListRecessed.clear();
@@ -142,6 +178,13 @@ class DataBundleNotifier extends ChangeNotifier {
     List<StorageModel> _storageModel = await clientService.retrieveStorageListByBranch(currentBranch);
     currentStorageList.clear();
     currentStorageList.addAll(_storageModel);
+    if(currentStorageList.isNotEmpty){
+      currentStorage = currentStorageList[0];
+    }
+    if(currentStorageList.isNotEmpty){
+      List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
+      currentStorageProductListForCurrentStorage = storageProductModelList;
+    }
     notifyListeners();
   }
 
@@ -224,10 +267,50 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCurrentStorageList(List<StorageModel> storageModelList) {
+  Future<void> setCurrentStorage(StorageModel storageModel) async {
+    currentStorage = storageModel;
+    List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
+    currentStorageProductListForCurrentStorage = storageProductModelList;
+    notifyListeners();
+  }
+
+  Future<void> refreshProductListAfterInsertProductIntoStorage() async {
+    List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
+    currentStorageProductListForCurrentStorage = storageProductModelList;
+    notifyListeners();
+  }
+
+  Future<void> addCurrentStorageList(List<StorageModel> storageModelList) async {
 
     currentStorageList.clear();
     currentStorageList.addAll(storageModelList);
+    if(currentStorageList.isNotEmpty){
+      currentStorage = currentStorageList[0];
+    }
+
+    if(currentStorageList.isNotEmpty){
+      List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorageList[0].pkStorageId);
+      currentStorageProductListForCurrentStorage = storageProductModelList;
+    }
     notifyListeners();
+  }
+
+  List<String> retrieveListStoragesName(){
+    List<String> listNames = [];
+
+    currentStorageList.forEach((element) {
+      listNames.add(element.name);
+    });
+
+    return listNames;
+  }
+
+  String retrieveSupplierById(int supplierId) {
+    currentListSuppliers.forEach((element) {
+      if(element.pkSupplierId == supplierId){
+        return element.nome;
+      }
+    });
+    return "";
   }
 }

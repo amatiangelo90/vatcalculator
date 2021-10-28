@@ -20,6 +20,8 @@ class ContactState extends State<Contact> {
   static TextEditingController controllerCompanyName = TextEditingController();
   static TextEditingController controllerEmail = TextEditingController();
   static TextEditingController controllerAddress = TextEditingController();
+  static TextEditingController controllerCity = TextEditingController();
+  static TextEditingController controllerCap = TextEditingController();
   static TextEditingController controllerMobileNo = TextEditingController();
 
   @override
@@ -90,6 +92,36 @@ class ContactState extends State<Contact> {
                   ),
                 ),
                 controller: controllerAddress,
+              ),
+              const SizedBox(height: 20),TextFormField(
+                minLines: 1,
+                maxLines: 2,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.home,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Città',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                controller: controllerCity,
+              ),
+              const SizedBox(height: 20),TextFormField(
+                minLines: 1,
+                maxLines: 2,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.home,
+                    color: Colors.grey,
+                  ),
+                  hintText: 'Cap',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                  ),
+                ),
+                controller: controllerCap,
               ),
               const SizedBox(height: 20),
               TextFormField(

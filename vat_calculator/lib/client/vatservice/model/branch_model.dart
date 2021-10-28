@@ -6,6 +6,8 @@ class BranchModel{
   String eMail;
   String vatNumber;
   String address;
+  String city;
+  int cap;
   String phoneNumber;
   String providerFatture;
   String apiKeyOrUser;
@@ -17,6 +19,8 @@ class BranchModel{
     @required this.eMail,
     @required this.vatNumber,
     @required this.address,
+    @required this.city,
+    @required this.cap,
     @required this.phoneNumber,
     @required this.providerFatture,
     @required this.apiKeyOrUser,
@@ -28,6 +32,8 @@ class BranchModel{
       'name': companyName,
       'email': eMail,
       'address' : address,
+      'city' : city,
+      'cap' : cap,
       'phone' : phoneNumber,
       'vatNumber': vatNumber,
       'provider': providerFatture,

@@ -219,7 +219,7 @@ class _BodyState extends State<Body> {
                                       KeyboardUtil.hideKeyboard(context);
                                       try{
 
-                                        ClientVatService clientService = ClientVatService();
+                                        ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
                                         await clientService.performSaveRecessed(
                                             double.parse(recessedController.text),
                                             casualeRecessedController.text,

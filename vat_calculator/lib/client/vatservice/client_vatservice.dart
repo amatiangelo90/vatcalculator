@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
@@ -8,6 +9,8 @@ import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
 import 'model/product_model.dart';
 import 'model/recessed_model.dart';
+import 'model/save_product_into_storage_request.dart';
+import 'model/storage_product_model.dart';
 import 'model/user_model.dart';
 
 class ClientVatService{
@@ -113,6 +116,36 @@ class ClientVatService{
 
   }
 
+  Future<Response> performSaveStorage(
+      StorageModel storageModel) async{
+
+    var dio = Dio();
+
+    String body = json.encode(
+        storageModel.toMap());
+
+    Response post;
+    print('Save storage : ' + body);
+    print('Calling save storage method ' + VAT_SERVICE_URL_SAVE_STORAGE_FOR_BRANCH + ' to save storage for branch with id ' + storageModel.fkBranchId.toString());
+    try{
+      post = await dio.post(
+
+        VAT_SERVICE_URL_SAVE_STORAGE_FOR_BRANCH,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_STORAGE_FOR_BRANCH + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+
+  }
+
   Future<Response> performSaveSupplier(ResponseAnagraficaFornitori anagraficaFornitore
       ) async{
 
@@ -202,6 +235,38 @@ class ClientVatService{
 
   }
 
+  Future<Response> performSaveProductIntoStorage(
+      SaveProductToStorageRequest saveProductToStorageRequest) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        saveProductToStorageRequest.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE + '...');
+    print('Body Request Save product into storage with id [' + saveProductToStorageRequest.fkStorageId.toString() +' ]: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE + '): ' + post.data.toString());
+      }
+
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
   Future<Response> performUpdateProduct(
       ProductModel product) async {
 
@@ -264,6 +329,37 @@ class ClientVatService{
 
   }
 
+  Future<Response> removeProductFromStorage(
+      StorageProductModel storageProductModel) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        storageProductModel.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE + '...');
+    print('Body Request delete product from storage: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE,
+        data: body,
+      );
+
+      if(post != null && post.data){
+        print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE + '): ' + post.data);
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
   Future<UserModel> retrieveUserByEmail(
       String eMail) async {
 
@@ -310,6 +406,8 @@ class ClientVatService{
 
     List<BranchModel> branchList = [];
 
+    print('Retrieve branches list for the user with mail ' + eMail);
+    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL);
     String body = json.encode(
         UserModel(
             name: '',
@@ -318,6 +416,7 @@ class ClientVatService{
             phone: ''
         ).toMap());
 
+    print('Retrieve branches body request: '  + body);
     Response post;
     try{
       post = await dio.post(
@@ -325,7 +424,6 @@ class ClientVatService{
         data: body,
       );
 
-      print('Request body for Vat Service (Retrieve User by Email): ' + body);
       print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL + '): ' + post.data.toString());
       String encode = json.encode(post.data);
 
@@ -340,12 +438,71 @@ class ClientVatService{
                 eMail: branchElement['email'],
                 vatNumber: branchElement['vatNumber'],
                 address: branchElement['address'],
+                city: branchElement['city'],
+                cap: branchElement['cap'],
                 phoneNumber: branchElement['phone'],
                 providerFatture: branchElement['provider'],
                 apiKeyOrUser: branchElement['idKeyUser'],
                 apiUidOrPassword: branchElement['idUidPassword']));
       });
       return branchList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(
+      int pkStorageId) async {
+
+    var dio = Dio();
+
+    List<StorageProductModel> storageProoductModelRelationList = [];
+
+    print('Retrieve relation object for store with id : ' + pkStorageId.toString());
+    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE);
+    String body = json.encode(
+        StorageModel(
+            pkStorageId: pkStorageId,
+            name: '',
+            code: '',
+            creationDate: null,
+            address: '',
+            city: '',
+            cap: '',
+            fkBranchId: 0).toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE,
+        data: body,
+      );
+
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((branchElement) {
+
+        storageProoductModelRelationList.add(
+            StorageProductModel(
+              pkStorageProductId: branchElement['pkStorageProductId'],
+              supplierId: branchElement['supplierId'],
+              available: branchElement['available'],
+              fkProductId: branchElement['fkProductId'],
+              productName: branchElement['productName'],
+              stock: branchElement['stock'],
+              fkStorageId: branchElement['fkStorageId'],
+              supplierName: branchElement['supplierName'],
+              price: branchElement['price'],
+              vatApplied : branchElement['vatApplied'],
+
+            ));
+      });
+      return storageProoductModelRelationList;
 
     }catch(e){
       print(e);
@@ -490,6 +647,49 @@ class ClientVatService{
     }
   }
 
+
+Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) async {
+    var dio = Dio();
+    List<ProductModel> productsList = [];
+
+    String body = json.encode(
+        branchModel.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_BRANCH,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve products list by branch id filtering on suppliers): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_BRANCH + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((product) {
+
+        productsList.add(
+            ProductModel(
+                pkProductId: product['pkProductId'],
+                nome: product['name'],
+                codice: product['code'],
+                unita_misura: product['measureUnit'],
+                iva_applicata: product['vatApplied'],
+                prezzo_lordo: product['price'],
+                descrizione: product['description'],
+                categoria: product['category'],
+                fkSupplierId: product['fkSupplierId']));
+      });
+      return productsList;
+    }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+  }
+
   Future<List<StorageModel>> retrieveStorageListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
     List<StorageModel> storageList = [];
@@ -531,4 +731,5 @@ class ClientVatService{
       rethrow;
     }
   }
+
 }

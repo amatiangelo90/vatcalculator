@@ -24,7 +24,7 @@ class ItemMenu extends StatelessWidget {
       child: TextButton(
         style: TextButton.styleFrom(
           primary: kPrimaryColor,
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(10),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: backgroundColor,

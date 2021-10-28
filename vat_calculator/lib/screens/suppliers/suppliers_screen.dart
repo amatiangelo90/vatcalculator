@@ -120,9 +120,6 @@ class SuppliersScreen extends StatelessWidget {
   Widget buildListSuppliers(DataBundleNotifier currentListSuppliers, context) {
     List<Widget> listout = [];
 
-
-    listout.add(const Text('La tua lista fornitori')
-    );
     currentListSuppliers.currentListSuppliers.forEach((supplier) {
       listout.add(ItemMenu(
         text: supplier.nome,
@@ -137,7 +134,7 @@ class SuppliersScreen extends StatelessWidget {
           Navigator.push(context,  MaterialPageRoute(builder: (context) => EditSuppliersScreen(currentSupplier: supplier,),),);
         },
         showArrow: true,
-        backgroundColor: kBeigeColor,
+        backgroundColor: kCustomWhite,
       ),);
     });
 
