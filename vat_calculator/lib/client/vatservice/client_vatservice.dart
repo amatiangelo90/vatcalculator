@@ -19,7 +19,10 @@ class ClientVatService{
       String firstName,
       String lastName,
       String phoneNumber,
-      String eMail) async {
+      String eMail,
+      String privileges,
+      int relatedUserId
+      ) async {
 
     var dio = Dio();
 
@@ -28,7 +31,9 @@ class ClientVatService{
             name: firstName,
             lastName: lastName,
             mail: eMail,
-            phone: phoneNumber
+            phone: phoneNumber,
+            privilege: privileges,
+            relatedUserId: relatedUserId,
         ).toMap());
 
     Response post;
@@ -365,13 +370,17 @@ class ClientVatService{
 
     var dio = Dio();
 
+    print('Retrieve user by email : ' + eMail);
     String body = json.encode(
         UserModel(
             name: '',
             lastName: '',
             mail: eMail,
-            phone: ''
+            phone: '',
+            privilege: ''
         ).toMap());
+
+    print('Request body for Vat Service (Retrieve User by Email): ' + body);
 
     Response post;
     try{
@@ -380,7 +389,7 @@ class ClientVatService{
         data: body,
       );
 
-      print('Request body for Vat Service (Retrieve User by Email): ' + body);
+
       print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_USER_BY_EMAIL + '): ' + post.data.toString());
 
       UserModel userModel = UserModel(
@@ -388,7 +397,8 @@ class ClientVatService{
         id: post.data['id'],
         lastName: post.data['lastName'],
         phone: post.data['phone'],
-        mail: post.data['mail']
+        mail: post.data['mail'],
+        privilege: post.data['privileges']
       );
 
       return userModel;
@@ -399,20 +409,21 @@ class ClientVatService{
 
   }
 
-  Future<List<BranchModel>> retrieveBranchesByUserEmail(
-      String eMail) async {
+  Future<List<BranchModel>> retrieveBranchesByUserId(
+      int id) async {
 
     var dio = Dio();
 
     List<BranchModel> branchList = [];
 
-    print('Retrieve branches list for the user with mail ' + eMail);
+    print('Retrieve branches list for the user with id ' + id.toString());
     print('Url: ' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL);
     String body = json.encode(
         UserModel(
+            id: id,
             name: '',
             lastName: '',
-            mail: eMail,
+            mail: '',
             phone: ''
         ).toMap());
 

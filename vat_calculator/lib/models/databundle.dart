@@ -4,6 +4,7 @@ import '../client/vatservice/model/branch_model.dart';
 
 class DataBundle {
 
+  int _id;
   String _email;
   String _password;
   String _firstName;
@@ -12,8 +13,15 @@ class DataBundle {
   List<BranchModel> _companyList;
 
 
-  DataBundle(this._email, this._password, this._firstName, this._lastName,
+  DataBundle(this._id, this._email, this._password, this._firstName, this._lastName,
       this._phone, this._companyList);
+
+
+  int get id => _id;
+
+  set id(int value) {
+    _id = value;
+  }
 
   String get email => _email;
 

@@ -56,7 +56,6 @@ class LandingBody extends StatelessWidget {
 
                   ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
-
                   if(userModelRetrieved != null){
                     Response response = await clientService.checkSpecialUser(userModelRetrieved);
                     if(response != null && response.statusCode != null && response.statusCode == 200){
@@ -66,8 +65,15 @@ class LandingBody extends StatelessWidget {
                       }
                     }
                   }
-                  DataBundle dataBundle = DataBundle(userModelRetrieved.mail, '', userModelRetrieved.name, userModelRetrieved.lastName, userModelRetrieved.phone, []);
-                  List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(userModelRetrieved.mail);
+                  print('3');
+                  DataBundle dataBundle = DataBundle(
+                      userModelRetrieved.id,
+                      userModelRetrieved.mail,
+                      '',
+                      userModelRetrieved.name,
+                      userModelRetrieved.lastName,
+                      userModelRetrieved.phone, []);
+                  List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
 

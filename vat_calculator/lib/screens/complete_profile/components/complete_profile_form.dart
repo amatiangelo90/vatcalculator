@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/custom_surfix_icon.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
@@ -79,7 +80,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                         content: Text('Grazie $firstName, il tuo profilo è stato creato e presto verrai reindirizzato alla home page.', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
 
                     ClientVatService clientService = ClientVatService();
-                    await clientService.performSaveUser(firstName, lastName, phoneNumber, widget.email);
+                    await clientService.performSaveUser(firstName, lastName, phoneNumber, widget.email, Privileges.SUPER_ADMIN, 0);
                     Timer(const Duration(milliseconds: 2500), ()=> Navigator.push(context, MaterialPageRoute(builder: (context) =>LandingScreen(email: widget.email,),),),);
 
                   }else{

@@ -195,7 +195,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
       await clientService.performSaveBranch(company);
 
 
-      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserEmail(dataBundleNotifier.dataBundleList[0].email);
+      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
 
       dataBundleNotifier.addBranches(_branchList);
       final snackBar =

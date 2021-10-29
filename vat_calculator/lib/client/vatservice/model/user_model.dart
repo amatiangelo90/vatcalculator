@@ -6,6 +6,8 @@ class UserModel{
   String lastName;
   String phone;
   String mail;
+  String privilege;
+  int relatedUserId;
 
   UserModel(
       {
@@ -14,6 +16,8 @@ class UserModel{
         @required this.lastName,
         @required this.phone,
         @required this.mail,
+        @required this.privilege,
+        @required this.relatedUserId,
       });
 
   toMap(){
@@ -22,7 +26,9 @@ class UserModel{
       'name': name,
       'lastName': lastName,
       'phone' : phone,
-      'mail' : mail
+      'mail' : mail,
+      'privilege' : privilege,
+      'relatedUserId' : relatedUserId,
     };
   }
 
@@ -33,6 +39,8 @@ class UserModel{
       lastName: json['lastName'] as String,
       phone: json['phoneNumber'] as String,
       mail: json['eMail'] as String,
+      privilege: json['privilege'] as String,
+      relatedUserId: json['relatedUserId'] as int,
     );
   }
 }
