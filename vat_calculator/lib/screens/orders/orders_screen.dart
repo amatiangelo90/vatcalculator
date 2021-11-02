@@ -6,22 +6,32 @@ import '../../enums.dart';
 import '../../size_config.dart';
 import 'components/body_orders.dart';
 
-class OrdersScreen extends StatelessWidget {
+class OrdersScreen extends StatefulWidget {
   static String routeName = "/ordersscreen";
 
-  final kPages = <Widget>[
-    OrdersScreenBody(),
-    const Center(child: Text('Bozze Ordini')),
-  ];
+  @override
+  State<OrdersScreen> createState() => _OrdersScreenState();
+}
 
+class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMixin{
 
-  final kTab = <Tab>[
-    const Tab(child: Text('Ordini')),
-    const Tab(child: Text('Bozze Ordini')),
-  ];
+  TabController controller;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+
+    final kPages = <Widget>[
+      Center(child: Text('Bozze Ordini' + controller.index.toString())),
+      Center(child: Text('Bozze Ordini' + controller.index.toString())),
+    ];
+
+
+    final kTab = <Tab>[
+      const Tab(child: Text('Ordini')),
+      const Tab(child: Text('Bozze Ordini')),
+    ];
+
     return DefaultTabController(
       length: kTab.length,
       child: Scaffold(
@@ -37,16 +47,28 @@ class OrdersScreen extends StatelessWidget {
           ),
           backgroundColor: kPrimaryColor,
           bottom: TabBar(
+            controller: controller,
             tabs: kTab,
-            indicator: const UnderlineTabIndicator(borderSide: BorderSide(width: 3.0, color: kPinaColor),
+            indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 3.0, color: controller.index == 0 ? Colors.blueAccent : Colors.orange),
             ),
           ),
         ),
         body: TabBarView(
+          controller: controller,
           children: kPages,
         ),
         bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.orders),
       ),
     );
+  }
+
+  @override
+  void initState() {
+    controller = TabController(length:2, initialIndex: _currentIndex, vsync: this);
+    controller.addListener(() {
+      setState(() {
+        _currentIndex = controller.index;
+      });
+    });
   }
 }

@@ -10,12 +10,25 @@ class DataBundle {
   String _firstName;
   String _lastName;
   String _phone;
+  String _privilege;
   List<BranchModel> _companyList;
 
 
-  DataBundle(this._id, this._email, this._password, this._firstName, this._lastName,
-      this._phone, this._companyList);
+  DataBundle(this._id,
+      this._email,
+      this._password,
+      this._firstName,
+      this._lastName,
+      this._phone,
+      this._privilege,
+      this._companyList);
 
+
+  String get privilege => _privilege;
+
+  set privilege(String value) {
+    _privilege = value;
+  }
 
   int get id => _id;
 

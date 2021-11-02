@@ -7,6 +7,7 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 
 import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
+import 'model/order_model.dart';
 import 'model/product_model.dart';
 import 'model/recessed_model.dart';
 import 'model/save_product_into_storage_request.dart';
@@ -141,6 +142,35 @@ class ClientVatService{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_STORAGE_FOR_BRANCH + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+
+  }
+
+  Future<Response> performSaveOrder(
+      OrderModel orderModel) async{
+
+    var dio = Dio();
+
+    String body = json.encode(
+        orderModel.toMap());
+
+    Response post;
+    print('Save order : ' + body);
+    print('Calling save order method ' + VAT_SERVICE_URL_SAVE_ORDER + ' to save order for branch with id ' + orderModel.fk_branch_id.toString());
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_SAVE_ORDER,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_ORDER + '): ' + post.data.toString());
       }
 
       return post;
@@ -398,7 +428,7 @@ class ClientVatService{
         lastName: post.data['lastName'],
         phone: post.data['phone'],
         mail: post.data['mail'],
-        privilege: post.data['privileges']
+        privilege: post.data['privilege']
       );
 
       return userModel;
@@ -482,7 +512,8 @@ class ClientVatService{
             address: '',
             city: '',
             cap: '',
-            fkBranchId: 0).toMap());
+            fkBranchId: 0,
+        ).toMap());
 
     Response post;
     try{
@@ -510,6 +541,7 @@ class ClientVatService{
               supplierName: branchElement['supplierName'],
               price: branchElement['price'],
               vatApplied : branchElement['vatApplied'],
+              unitMeasure : branchElement['unitMeasure'],
 
             ));
       });
@@ -736,6 +768,33 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       });
 
       return storageList;
+    }catch(e){
+      print('Errore retrieving storage model : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> updateStock(List<StorageProductModel> currentStorageProductListForCurrentStorageUnload) async {
+    var dio = Dio();
+    String body = '[';
+    currentStorageProductListForCurrentStorageUnload.forEach((currentStorageProductElement) {
+      body = body + json.encode(
+          currentStorageProductElement.toMap()) + ',';
+    });
+    body = body.substring(0, body.length - 1);
+    body = body + ']';
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_STOCK,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Update Branch): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
+
     }catch(e){
       print('Errore retrieving storage model : ');
       print(e);

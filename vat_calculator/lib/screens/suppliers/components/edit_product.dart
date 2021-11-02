@@ -35,11 +35,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
   bool _packagesUnitMeasure = false;
   bool _otherUnitMeasure = false;
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _unitMeasureController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _unitMeasureController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
 
 
   @override

@@ -5,6 +5,7 @@ import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.da
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/landing/landing_page.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
@@ -42,4 +43,5 @@ final Map<String, WidgetBuilder> routes = {
   AddProductScreen.routeName: (context) => AddProductScreen(),
   EditProductScreen.routeName: (context) => EditProductScreen(),
   AddStorageScreen.routeName: (context) => AddStorageScreen(),
+  ProfileEditiScreen.routeName: (context) => ProfileEditiScreen(),
 };

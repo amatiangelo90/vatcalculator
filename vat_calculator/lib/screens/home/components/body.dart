@@ -69,7 +69,7 @@ class _BodyState extends State<Body> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(1.0),
                   child: SizedBox(
                     width: double.infinity,
                     height: getProportionateScreenHeight(56),
@@ -163,7 +163,7 @@ class _BodyState extends State<Body> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(25.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Card(
                     shape: BeveledRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -409,8 +409,8 @@ class _BodyState extends State<Body> {
                   );
                 },
                 child: Card(
-                  color: kBeigeColor,
-                  elevation: 4,
+                  color: Colors.green.shade700,
+                  elevation: 7,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     child: Row(
@@ -420,7 +420,7 @@ class _BodyState extends State<Body> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                          child: Text('' + dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(20)),),
+                          child: Text('' + dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(16)),),
                         ),
                         const Padding(
                           padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
@@ -442,7 +442,7 @@ class _BodyState extends State<Body> {
         GestureDetector(
             child: Container(
                   decoration: BoxDecoration(
-                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? kBeigeColor : Colors.white,
+                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.green.shade700 : Colors.white,
                     border: const Border(
                       bottom: BorderSide(width: 1.0, color: Colors.grey),
                     ),

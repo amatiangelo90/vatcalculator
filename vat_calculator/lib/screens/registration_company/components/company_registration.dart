@@ -40,6 +40,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
     mapData["address"] = ContactState.controllerAddress.text;
     mapData["company_name"] = ContactState.controllerCompanyName.text;
     mapData["mobile_no"] = ContactState.controllerMobileNo.text;
+    mapData["city"] = ContactState.controllerCity.text;
+    mapData["cap"] = ContactState.controllerCap.text;
 
     mapData["provider_name"] = VatProviderState.controllerProviderName.text;
     mapData["apikey_or_user"] = VatProviderState.controllerApiKeyOrUser.text;
@@ -174,7 +176,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
   Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier, context) async {
     bool resultValidation = await validateData(mapData, context);
-
+// TODO sistemare il cap
     ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
     if(resultValidation){
       BranchModel company = BranchModel(
@@ -184,6 +186,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
           apiKeyOrUser: mapData['apikey_or_user'],
           apiUidOrPassword: mapData['apiuid_or_password'],
           companyName: mapData['company_name'],
+          cap: 34,
+          city: mapData['city'],
           providerFatture: mapData['provider_name'],
           vatNumber: mapData['piva'],
           pkBranchId: 0

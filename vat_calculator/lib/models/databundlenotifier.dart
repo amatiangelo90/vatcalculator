@@ -37,9 +37,20 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  List<StorageProductModel> currentStorageProductListForCurrentStorageUnload = [
+
+  ];
+
+  List<StorageProductModel> currentStorageProductListForCurrentStorageLoad = [
+
+  ];
+
+
   List<ProductModel> productToAddToStorage = [
 
   ];
+
+  String currentPrivilegeType;
 
   ClientVatService clientService = ClientVatService();
 
@@ -52,6 +63,11 @@ class DataBundleNotifier extends ChangeNotifier {
   DateTimeRange currentDateTimeRange;
 
   bool cupertinoSwitch = false;
+
+  void setCurrentPrivilegeType(String privilege){
+    currentPrivilegeType = privilege;
+    notifyListeners();
+  }
 
   void switchCupertino(){
     if(cupertinoSwitch){
@@ -183,8 +199,45 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentStorageList.isNotEmpty){
       List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
-      currentStorageProductListForCurrentStorage = storageProductModelList;
+
+      currentStorageProductListForCurrentStorage.clear();
+      currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+
+      currentStorageProductListForCurrentStorageUnload.clear();
+      currentStorageProductListForCurrentStorageUnload = [];
+      currentStorageProductListForCurrentStorage.forEach((element) {
+        currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
+            pkStorageProductId: element.pkStorageProductId,
+            fkStorageId: element.fkStorageId,
+            fkProductId: element.fkProductId,
+            supplierId: element.supplierId,
+            productName: element.productName,
+            stock: 0.0,
+            available: element.available,
+            supplierName: element.supplierName,
+            price: element.price,
+            vatApplied: element.vatApplied,
+            unitMeasure: element.unitMeasure));
+      });
+
+      currentStorageProductListForCurrentStorageLoad.clear();
+      currentStorageProductListForCurrentStorageLoad = [];
+      currentStorageProductListForCurrentStorage.forEach((element) {
+        currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
+            pkStorageProductId: element.pkStorageProductId,
+            fkStorageId: element.fkStorageId,
+            fkProductId: element.fkProductId,
+            supplierId: element.supplierId,
+            productName: element.productName,
+            stock: 0.0,
+            available: element.available,
+            supplierName: element.supplierName,
+            price: element.price,
+            vatApplied: element.vatApplied,
+            unitMeasure: element.unitMeasure));
+      });
     }
+
     notifyListeners();
   }
 
@@ -270,13 +323,88 @@ class DataBundleNotifier extends ChangeNotifier {
   Future<void> setCurrentStorage(StorageModel storageModel) async {
     currentStorage = storageModel;
     List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
-    currentStorageProductListForCurrentStorage = storageProductModelList;
+    currentStorageProductListForCurrentStorage.clear();
+    currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+
+    currentStorageProductListForCurrentStorageUnload.clear();
+    currentStorageProductListForCurrentStorageUnload = [];
+    currentStorageProductListForCurrentStorage.forEach((element) {
+      currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
+          pkStorageProductId: element.pkStorageProductId,
+          fkStorageId: element.fkStorageId,
+          fkProductId: element.fkProductId,
+          supplierId: element.supplierId,
+          productName: element.productName,
+          stock: 0.0,
+          available: element.available,
+          supplierName: element.supplierName,
+          price: element.price,
+          vatApplied: element.vatApplied,
+          unitMeasure: element.unitMeasure));
+    });
+
+    currentStorageProductListForCurrentStorageLoad.clear();
+    currentStorageProductListForCurrentStorageLoad = [];
+    currentStorageProductListForCurrentStorage.forEach((element) {
+      currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
+          pkStorageProductId: element.pkStorageProductId,
+          fkStorageId: element.fkStorageId,
+          fkProductId: element.fkProductId,
+          supplierId: element.supplierId,
+          productName: element.productName,
+          stock: 0.0,
+          available: element.available,
+          supplierName: element.supplierName,
+          price: element.price,
+          vatApplied: element.vatApplied,
+          unitMeasure: element.unitMeasure));
+    });
+
     notifyListeners();
   }
 
   Future<void> refreshProductListAfterInsertProductIntoStorage() async {
+
     List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
-    currentStorageProductListForCurrentStorage = storageProductModelList;
+
+    currentStorageProductListForCurrentStorage.clear();
+    currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+
+    currentStorageProductListForCurrentStorageUnload.clear();
+    currentStorageProductListForCurrentStorageUnload = [];
+
+    currentStorageProductListForCurrentStorage.forEach((element) {
+      currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
+          pkStorageProductId: element.pkStorageProductId,
+          fkStorageId: element.fkStorageId,
+          fkProductId: element.fkProductId,
+          supplierId: element.supplierId,
+          productName: element.productName,
+          stock: 0.0,
+          available: element.available,
+          supplierName: element.supplierName,
+          price: element.price,
+          vatApplied: element.vatApplied,
+          unitMeasure: element.unitMeasure));
+    });
+
+    currentStorageProductListForCurrentStorageLoad.clear();
+    currentStorageProductListForCurrentStorageLoad = [];
+    currentStorageProductListForCurrentStorage.forEach((element) {
+      currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
+          pkStorageProductId: element.pkStorageProductId,
+          fkStorageId: element.fkStorageId,
+          fkProductId: element.fkProductId,
+          supplierId: element.supplierId,
+          productName: element.productName,
+          stock: 0.0,
+          available: element.available,
+          supplierName: element.supplierName,
+          price: element.price,
+          vatApplied: element.vatApplied,
+          unitMeasure: element.unitMeasure));
+    });
+
     notifyListeners();
   }
 
@@ -290,7 +418,41 @@ class DataBundleNotifier extends ChangeNotifier {
 
     if(currentStorageList.isNotEmpty){
       List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorageList[0].pkStorageId);
-      currentStorageProductListForCurrentStorage = storageProductModelList;
+      currentStorageProductListForCurrentStorage.clear();
+      currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+      currentStorageProductListForCurrentStorageUnload.clear();
+      currentStorageProductListForCurrentStorageUnload = [];
+      currentStorageProductListForCurrentStorage.forEach((element) {
+        currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
+            pkStorageProductId: element.pkStorageProductId,
+            fkStorageId: element.fkStorageId,
+            fkProductId: element.fkProductId,
+            supplierId: element.supplierId,
+            productName: element.productName,
+            stock: 0.0,
+            available: element.available,
+            supplierName: element.supplierName,
+            price: element.price,
+            vatApplied: element.vatApplied,
+            unitMeasure: element.unitMeasure));
+      });
+
+      currentStorageProductListForCurrentStorageLoad.clear();
+      currentStorageProductListForCurrentStorageLoad = [];
+      currentStorageProductListForCurrentStorage.forEach((element) {
+        currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
+            pkStorageProductId: element.pkStorageProductId,
+            fkStorageId: element.fkStorageId,
+            fkProductId: element.fkProductId,
+            supplierId: element.supplierId,
+            productName: element.productName,
+            stock: 0.0,
+            available: element.available,
+            supplierName: element.supplierName,
+            price: element.price,
+            vatApplied: element.vatApplied,
+            unitMeasure: element.unitMeasure));
+      });
     }
     notifyListeners();
   }
@@ -312,5 +474,19 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     });
     return "";
+  }
+
+  void clearUnloadProductList() {
+    currentStorageProductListForCurrentStorageUnload.forEach((element) {
+      element.stock = 0.0;
+    });
+    notifyListeners();
+  }
+
+  void clearLoadProductList() {
+    currentStorageProductListForCurrentStorageLoad.forEach((element) {
+      element.stock = 0.0;
+    });
+    notifyListeners();
   }
 }

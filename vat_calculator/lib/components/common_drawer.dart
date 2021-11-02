@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
@@ -184,28 +186,90 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   kCustomWhite,
                   kPrimaryColor),
                   buildDrawerRow('assets/icons/Parcel.svg','Iva',(){
-                    dataBundleNotifier.setShowIvaButtonToFalse();
-                    if(dataBundleNotifier.currentBranch == null){
-                      Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                    }
-                    switch(dataBundleNotifier.currentBranch.providerFatture){
-                      case 'fatture_in_cloud':
+                    if(dataBundleNotifier.currentPrivilegeType == Privileges.USER){
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog (
+                            contentPadding: EdgeInsets.zero,
+                            shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                BorderRadius.all(
+                                    Radius.circular(10.0))),
+                            content: SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                height: MediaQuery.of(context).size.height / 5,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: const Center(child: Text('Utente non abilitato per '
+                                      'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
+                                )),
+                          )
+                      );
+                    }else{
+                      dataBundleNotifier.setShowIvaButtonToFalse();
+                      if(dataBundleNotifier.currentBranch == null){
                         Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                        break;
-                      case 'aruba':
-                        Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                        break;
+                      }
+                      switch(dataBundleNotifier.currentBranch.providerFatture){
+                        case 'fatture_in_cloud':
+                          Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                          break;
+                        case 'aruba':
+                          Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                          break;
+                      }
                     }
                   }, kPrimaryColor,
                       kCustomWhite,
                       kPrimaryColor),
 
-                  buildDrawerRow('assets/icons/receipt.svg','Ordini',(){
-                    dataBundleNotifier.setShowIvaButtonToFalse();
-                    Navigator.pushNamed(context, OrdersScreen.routeName);
-                  }, kPrimaryColor,
-                      kCustomWhite,
-                      kPrimaryColor),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        primary: kPrimaryColor,
+                        padding: const EdgeInsets.all(15),
+                        backgroundColor: kCustomWhite,
+                      ),
+                      onPressed: (){
+                        Navigator.pushNamed(context, OrdersScreen.routeName);
+                      },
+                      child: Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/receipt.svg',
+                            color: kPrimaryColor,
+                            width: 22,
+                          ),
+                          const SizedBox(width: 20),
+                          const Expanded(child: Text('Ordini')),
+                          Row(
+                            children: [
+                              SizedBox(
+                                height: getProportionateScreenHeight(28),
+                                width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                child: Card(
+                                  color: Colors.blueAccent,
+                                  child: Center(child: Text('0'
+                                    , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                ),
+                              ),
+                              SizedBox(
+                                height: getProportionateScreenHeight(28),
+                                width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                child: Card(
+                                  color: Colors.orange,
+                                  child: Center(child: Text('0'
+                                    , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                ),
+                              ),
+                              const Icon(Icons.arrow_forward_ios),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                     child: TextButton(
@@ -230,7 +294,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           Row(
                             children: [
                               SizedBox(
-                                height: 28,
+                                height: getProportionateScreenHeight(28),
                                 width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                 child: Card(
                                   color: Colors.red,
@@ -269,7 +333,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           Row(
                             children: [
                               SizedBox(
-                                height: 28,
+                                height: getProportionateScreenHeight(28),
                                 width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                 child: Card(
                                   color: Colors.red,
@@ -307,7 +371,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           Row(
                             children: [
                               SizedBox(
-                                height: 28,
+                                height: getProportionateScreenHeight(28),
                                 width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                 child: Card(
                                   color: Colors.red,
@@ -351,7 +415,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           Row(
                             children: [
                               SizedBox(
-                                height: 28,
+                                height: getProportionateScreenHeight(28),
                                 width: 28,
                                 child: Card(
                                   color: Colors.red,
@@ -386,8 +450,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   ) : SizedBox(width: 0,),
                   showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
 
-                  buildDrawerRow('assets/icons/User Icon.svg','Profilo',(){
-                  }, kPrimaryColor,
+                  buildDrawerRow('assets/icons/User Icon.svg',
+                      'Profilo',
+                          (){
+                            dataBundleNotifier.setShowIvaButtonToFalse();
+                            Navigator.pushNamed(context, ProfileEditiScreen.routeName);
+                            },
+                      kPrimaryColor,
                       kCustomWhite,
                       kPrimaryColor),
 
@@ -479,7 +548,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
         GestureDetector(
           child: Container(
             decoration: BoxDecoration(
-              color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? kBeigeColor : Colors.white,
+              color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.green.shade700 : Colors.white,
               border: const Border(
                 bottom: BorderSide(width: 1.0, color: Colors.grey),
               ),

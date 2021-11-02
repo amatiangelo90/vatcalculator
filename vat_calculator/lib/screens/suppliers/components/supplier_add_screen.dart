@@ -272,6 +272,5 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
       Navigator.pushNamed(context, SuppliersScreen.routeName);
     }
   }
-
 }
 

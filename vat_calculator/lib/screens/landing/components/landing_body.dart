@@ -65,14 +65,18 @@ class LandingBody extends StatelessWidget {
                       }
                     }
                   }
-                  print('3');
+                  print('Privilege: ' + userModelRetrieved.privilege.toString());
                   DataBundle dataBundle = DataBundle(
                       userModelRetrieved.id,
                       userModelRetrieved.mail,
                       '',
                       userModelRetrieved.name,
                       userModelRetrieved.lastName,
-                      userModelRetrieved.phone, []);
+                      userModelRetrieved.phone,
+                      userModelRetrieved.privilege,
+                      []);
+                  dataBundleNotifier.setCurrentPrivilegeType(userModelRetrieved.privilege);
+
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
