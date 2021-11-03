@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:data_table_2/data_table_2.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
@@ -22,6 +20,7 @@ import '../../enums.dart';
 import '../../size_config.dart';
 import 'components/add_storage_screen.dart';
 import 'components/dismissable_widget_products.dart';
+import 'components/unload_comunication_page.dart';
 
 class StorageScreen extends StatefulWidget{
   static String routeName = "/storagescreen";
@@ -210,7 +209,7 @@ class _StorageScreenState extends State<StorageScreen>{
                   buildStorageChooserDialog(context, dataBundleNotifier);
                 },
                 child: Text(
-                  dataBundleNotifier.currentStorage.name,
+                  dataBundleNotifier.currentStorage != null ? dataBundleNotifier.currentStorage.name : 'Crea Magazzino',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
                     color: kCustomWhite,
@@ -516,55 +515,64 @@ class _StorageScreenState extends State<StorageScreen>{
               child: DefaultButton(
                 color: kPinaColor,
                 text: 'Effettua Scarico',
-                press: () {
-                  Map<String, int> supplierIds = {};
-                  // preparing draft orders
+                press: () async {
+                  int stockProductDiffentThan0 = 0;
+                  Map<int, List<StorageProductModel>> orderedMapBySuppliers = {};
                   dataBundleNotifier.currentStorageProductListForCurrentStorageUnload.forEach((element) {
                     if(element.stock != 0){
-                      print('Build order draft');
-                      print('Draft order for ' + element.supplierName + ' with id [' + element.supplierId.toString() + '] - ' + element.productName + ' x ' + element.stock.toString());
-                      if(!supplierIds.containsKey(element.supplierName)){
-                        supplierIds[element.supplierName] = element.supplierId;
+                      stockProductDiffentThan0 = stockProductDiffentThan0 + 1;
+
+                      if(orderedMapBySuppliers.keys.contains(element.supplierId)){
+                          orderedMapBySuppliers[element.supplierId].add(element);
+                      }else{
+                        orderedMapBySuppliers[element.supplierId] = [element];
                       }
                     }
                   });
-
-
-                  supplierIds.keys.forEach((currentSupplierName) async {
-                    Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(OrderModel(
-                        code: DateTime.now().microsecondsSinceEpoch.toString().substring(3,16),
-                        details: 'Ordine Bozza per fornitore con id ' + supplierIds[currentSupplierName].toString(),
-                        total: 0.0,
-                        status: OrderState.DRAFT,
-                        creation_date: DateTime.now().millisecondsSinceEpoch,
-                        delivery_date: null,
-                        fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
-                        fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                        fk_user_id: dataBundleNotifier.dataBundleList[0].id,
-                        pk_order_id: 0,
-                        fk_supplier_id: supplierIds[currentSupplierName]
+                  if(stockProductDiffentThan0 == 0){
+                    Scaffold.of(context).showSnackBar(const SnackBar(
+                      content: Text('Immettere la quantità di scarico per almeno un prodotto'),
                     ));
-                  });
+                  }else{
+                    Map<int, List<StorageProductModel>> recapMapForCustomer = orderedMapBySuppliers;
+                    orderedMapBySuppliers.forEach((key, value) async {
+                      Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(OrderModel(
+                          code: DateTime.now().microsecondsSinceEpoch.toString().substring(3,16),
+                          details: 'Ordine Bozza per fornitore con id ' + key.toString(),
+                          total: 0.0,
+                          status: OrderState.DRAFT,
+                          creation_date: DateTime.now().millisecondsSinceEpoch,
+                          delivery_date: null,
+                          fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
+                          fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
+                          fk_user_id: dataBundleNotifier.dataBundleList[0].id,
+                          pk_order_id: 0,
+                          fk_supplier_id: key
+                      ));
 
-                  dataBundleNotifier.currentStorageProductListForCurrentStorageUnload.forEach((element) {
-                    dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
-                      if(element.stock != 0){
+                      value.forEach((element) {
 
-                      }
-                      if(standardElement.pkStorageProductId == element.pkStorageProductId){
-                        element.stock = standardElement.stock - element.stock;
-                      }
+                        print('Create relation between ' + performSaveOrderId.data.toString() + ' and : ' + element.fkProductId.toString() + ' - Stock: ' +  element.stock.toString());
+                        dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
+                            element.stock,
+                            element.fkProductId,
+                            performSaveOrderId.data
+                        );
+
+                        dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
+                          if(standardElement.pkStorageProductId == element.pkStorageProductId){
+                            element.stock = standardElement.stock - element.stock;
+                            ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
+                            getclientServiceInstance.updateStock([element]);
+                          }
+                        });
+
+
+                      });
                     });
-                    print(element.pkStorageProductId.toString() + ' -  ' + element.productName + ' -  ' + element.stock.toString());
-                  });
 
-
-                  ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
-                  getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageUnload);
-
-                  dataBundleNotifier.clearUnloadProductList();
-                  dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                  refreshPage(dataBundleNotifier);
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ComunicationUnloadStorageScreen(orderedMapBySuppliers: recapMapForCustomer ,),),);
+                  }
                 },
               ),
             ),
@@ -680,7 +688,8 @@ class _StorageScreenState extends State<StorageScreen>{
                 color: Colors.green.shade700,
                 text: 'Carico',
                 press: () {
-                  dataBundleNotifier.currentStorageProductListForCurrentStorageUnload.forEach((element) {
+
+                  dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
                     dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
                       if(standardElement.pkStorageProductId == element.pkStorageProductId){
                         element.stock = standardElement.stock + element.stock;
@@ -688,10 +697,11 @@ class _StorageScreenState extends State<StorageScreen>{
                     });
                   });
                   ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
-                  getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageUnload);
+                  getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageLoad);
                   dataBundleNotifier.clearUnloadProductList();
                   dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
                   refreshPage(dataBundleNotifier);
+
                 },
               ),
             ),
@@ -713,7 +723,7 @@ class _StorageScreenState extends State<StorageScreen>{
       ),
     ];
 
-    dataBundleNotifier.currentStorageProductListForCurrentStorageUnload.forEach((element) {
+    dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
       TextEditingController controller = TextEditingController(text: element.stock.toString());
       rows.add(
         Row(

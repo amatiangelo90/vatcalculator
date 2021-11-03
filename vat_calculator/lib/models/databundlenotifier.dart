@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import '../constants.dart';
 import 'databundle.dart';
 
@@ -49,6 +51,14 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ProductModel> productToAddToStorage = [
 
   ];
+
+  List<OrderModel> currentOrdersForCurrentBranch = [
+
+  ];
+
+  List<OrderModel> currentUnderWorkingOrdersList = [];
+  List<OrderModel> currentDraftOrdersList = [];
+  List<OrderModel> currentArchiviedWorkingOrdersList = [];
 
   String currentPrivilegeType;
 
@@ -171,11 +181,26 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addBranches(List<BranchModel> branchList) {
+  Future<void> addBranches(List<BranchModel> branchList) async {
     dataBundleList[0].companyList.clear();
     dataBundleList[0].companyList = branchList;
     if(dataBundleList[0].companyList.isNotEmpty){
       currentBranch = dataBundleList[0].companyList[0];
+      List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
+      currentOrdersForCurrentBranch.clear();
+      currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
+      currentDraftOrdersList.clear();
+      currentArchiviedWorkingOrdersList.clear();
+      currentUnderWorkingOrdersList.clear();
+      currentOrdersForCurrentBranch.forEach((orderItem) {
+        if(orderItem.status == OrderState.DRAFT){
+          currentDraftOrdersList.add(orderItem);
+        }else if (orderItem.status == OrderState.ARCHIVED){
+          currentArchiviedWorkingOrdersList.add(orderItem);
+        }else{
+          currentUnderWorkingOrdersList.add(orderItem);
+        }
+      });
     }
     notifyListeners();
   }
@@ -238,6 +263,21 @@ class DataBundleNotifier extends ChangeNotifier {
       });
     }
 
+    List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
+    currentOrdersForCurrentBranch.clear();
+    currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
+    currentDraftOrdersList.clear();
+    currentArchiviedWorkingOrdersList.clear();
+    currentUnderWorkingOrdersList.clear();
+    currentOrdersForCurrentBranch.forEach((orderItem) {
+      if(orderItem.status == OrderState.DRAFT){
+        currentDraftOrdersList.add(orderItem);
+      }else if (orderItem.status == OrderState.ARCHIVED){
+        currentArchiviedWorkingOrdersList.add(orderItem);
+      }else{
+        currentUnderWorkingOrdersList.add(orderItem);
+      }
+    });
     notifyListeners();
   }
 
@@ -267,6 +307,12 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();
+    }
+    if(currentOrdersForCurrentBranch.isNotEmpty){
+      currentOrdersForCurrentBranch.clear();
+      currentDraftOrdersList.clear();
+      currentArchiviedWorkingOrdersList.clear();
+      currentUnderWorkingOrdersList.clear();
     }
 
     if(currentListSuppliers.isNotEmpty){
@@ -405,6 +451,24 @@ class DataBundleNotifier extends ChangeNotifier {
           unitMeasure: element.unitMeasure));
     });
 
+    notifyListeners();
+  }
+
+  Future<void> addCurrentOrdersList(List<OrderModel> orderModelList) async {
+    currentOrdersForCurrentBranch.clear();
+    currentOrdersForCurrentBranch.addAll(orderModelList);
+    currentDraftOrdersList.clear();
+    currentArchiviedWorkingOrdersList.clear();
+    currentUnderWorkingOrdersList.clear();
+    currentOrdersForCurrentBranch.forEach((orderItem) {
+      if(orderItem.status == OrderState.DRAFT){
+        currentDraftOrdersList.add(orderItem);
+      }else if (orderItem.status == OrderState.ARCHIVED){
+        currentArchiviedWorkingOrdersList.add(orderItem);
+      }else{
+        currentUnderWorkingOrdersList.add(orderItem);
+      }
+    });
     notifyListeners();
   }
 

@@ -4,11 +4,16 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
-import 'components/body_orders.dart';
+import 'components/archivied_order_page.dart';
+import 'components/draft_order_page.dart';
+import 'components/underworking_order_page.dart';
 
 class OrdersScreen extends StatefulWidget {
   static String routeName = "/ordersscreen";
 
+  final int initialIndex;
+
+  const OrdersScreen({Key key, this.initialIndex}) : super(key: key);
   @override
   State<OrdersScreen> createState() => _OrdersScreenState();
 }
@@ -16,20 +21,22 @@ class OrdersScreen extends StatefulWidget {
 class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMixin{
 
   TabController controller;
-  int _currentIndex = 0;
+  int _currentIndex;
 
   @override
   Widget build(BuildContext context) {
 
     final kPages = <Widget>[
-      Center(child: Text('Bozze Ordini' + controller.index.toString())),
-      Center(child: Text('Bozze Ordini' + controller.index.toString())),
+      UnderWorkingOrderPage(),
+      DraftOrderPage(),
+      ArchiviedOrderPage(),
     ];
 
 
     final kTab = <Tab>[
-      const Tab(child: Text('Ordini')),
-      const Tab(child: Text('Bozze Ordini')),
+      Tab(child: Text('In Lavorazione', style: TextStyle(color: _currentIndex == 0 ? Colors.blue : kCustomWhite),)),
+      Tab(child: Text('Bozze Ordini', style: TextStyle(color: _currentIndex == 1 ? Colors.orange : kCustomWhite))),
+      Tab(child: Text('Archiviati', style: TextStyle(color: _currentIndex == 2 ? Colors.redAccent : kCustomWhite))),
     ];
 
     return DefaultTabController(
@@ -49,7 +56,7 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
           bottom: TabBar(
             controller: controller,
             tabs: kTab,
-            indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 3.0, color: controller.index == 0 ? Colors.blueAccent : Colors.orange),
+            indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 3.0, color: controller.index == 0 ? Colors.blueAccent : controller.index == 1 ? Colors.orange : Colors.redAccent),
             ),
           ),
         ),
@@ -64,7 +71,13 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
 
   @override
   void initState() {
-    controller = TabController(length:2, initialIndex: _currentIndex, vsync: this);
+    if(widget.initialIndex == null){
+      _currentIndex = 0;
+    }else{
+      _currentIndex = widget.initialIndex;
+    }
+
+    controller = TabController(length:3, initialIndex: _currentIndex, vsync: this);
     controller.addListener(() {
       setState(() {
         _currentIndex = controller.index;

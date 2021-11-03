@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
@@ -247,11 +249,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             children: [
                               SizedBox(
                                 height: getProportionateScreenHeight(28),
-                                width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                width: dataBundleNotifier.currentOrdersForCurrentBranch.length > 90 ? 35 : 28,
                                 child: Card(
                                   color: Colors.blueAccent,
-                                  child: Center(child: Text('0'
-                                    , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                  child: Center(child: Text(getOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch), style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                 ),
                               ),
                               SizedBox(
@@ -259,7 +260,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                 child: Card(
                                   color: Colors.orange,
-                                  child: Center(child: Text('0'
+                                  child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
                                     , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                 ),
                               ),
@@ -577,5 +578,26 @@ class _CommonDrawerState extends State<CommonDrawer> {
     });
     return branchWidgetList;
   }
+
+  String getOrdersNumber(List<OrderModel> currentOrdersForCurrentBranch) {
+    int counter = 0;
+    currentOrdersForCurrentBranch.forEach((element) {
+      if(element.status != OrderState.ARCHIVED && element.status != OrderState.DRAFT){
+        counter = counter + 1;
+      }
+    });
+    return counter.toString();
+  }
+
+  String getDraftOrdersNumber(List<OrderModel> currentOrdersForCurrentBranch) {
+    int counter = 0;
+    currentOrdersForCurrentBranch.forEach((element) {
+      if(element.status.toString() == OrderState.DRAFT.toString()){
+        counter = counter + 1;
+      }
+    });
+    return counter.toString();
+  }
+
 }
 

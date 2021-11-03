@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
@@ -105,11 +107,11 @@ class CustomBottomNavBar extends StatelessWidget {
                                 color: Colors.blueAccent,
                               ),
                               Positioned(
-                                right: 5.0,
+                                right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,
                                 top: 3.0,
                                 child: Center(
                                   child: Text(
-                                    '0'.toString(),
+                                    dataBundleNotifier.currentUnderWorkingOrdersList.length.toString(),
                                     style: TextStyle(
                                         fontSize: 8.0,
                                         color: Colors.white,
@@ -131,11 +133,11 @@ class CustomBottomNavBar extends StatelessWidget {
                                 color: Colors.orange,
                               ),
                               Positioned(
-                                right: 4.0,
+                                right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 5.0,
                                 top: 3.0,
                                 child: Center(
                                   child: Text(
-                                    '10'.toString(),
+                                    dataBundleNotifier.currentDraftOrdersList.length.toString(),
                                     style: TextStyle(
                                         fontSize: 8.0,
                                         color: Colors.white,

@@ -153,7 +153,7 @@ class ClientVatService{
   }
 
   Future<Response> performSaveOrder(
-      OrderModel orderModel) async{
+      OrderModel orderModel) async {
 
     var dio = Dio();
 
@@ -292,6 +292,43 @@ class ClientVatService{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE + '): ' + post.data.toString());
+      }
+
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+
+  Future<Response> performSaveProductIntoOrder(
+      double amount,
+      int productId,
+      int orderId) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        {"amount" : amount,
+         "fk_product_id" : productId,
+         "fk_order_id" : orderId
+        });
+
+
+    print('Calling ' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_ORDER + '...');
+    print('Body Request Save product into order with id [' + orderId.toString() +' ]: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_SAVE_PRODUCT_INTO_ORDER,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_ORDER + '): ' + post.data.toString());
       }
 
 
@@ -589,6 +626,52 @@ class ClientVatService{
             ));
       });
       return recessedList;
+  }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<OrderModel>> retrieveOrdersByBranch(BranchModel currentBranch) async {
+    var dio = Dio();
+
+    List<OrderModel> ordersList = [];
+
+
+    String body = json.encode(
+        currentBranch.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCHES,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve recessed list by branch): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCHES + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((orderElement) {
+
+        ordersList.add(
+            OrderModel(
+                pk_order_id: orderElement['pk_order_id'],
+                code: orderElement['code'],
+                total: orderElement['total'],
+                delivery_date: orderElement['delivery_date'],
+                creation_date: orderElement['creation_date'],
+                fk_supplier_id: orderElement['fk_supplier_id'],
+                fk_user_id: orderElement['fk_user_id'],
+                fk_storage_id: orderElement['fk_storage_id'],
+                fk_branch_id: orderElement['fk_branch_id'],
+                details: orderElement['details'],
+                status: orderElement['status']));
+      });
+      return ordersList;
   }catch(e){
       print('Errore retrieving recessed : ');
       print(e);

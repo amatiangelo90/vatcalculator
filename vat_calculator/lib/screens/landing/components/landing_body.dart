@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
@@ -95,6 +96,10 @@ class LandingBody extends StatelessWidget {
                     dataBundleNotifier.addCurrentStorageList(_storageModelList);
                   }
 
+                  if(dataBundleNotifier.currentBranch != null){
+                    List<OrderModel> _orderModelList = await clientService.retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier.addCurrentOrdersList(_orderModelList);
+                  }
 
                   dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
                   EasyLoading.dismiss();
