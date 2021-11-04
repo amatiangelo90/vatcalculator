@@ -9,6 +9,7 @@ import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
 import 'model/order_model.dart';
 import 'model/product_model.dart';
+import 'model/product_order_amount_model.dart';
 import 'model/recessed_model.dart';
 import 'model/save_product_into_storage_request.dart';
 import 'model/storage_product_model.dart';
@@ -174,6 +175,58 @@ class ClientVatService{
       }
 
       return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+
+  }
+
+  Future<List<ProductOrderAmountModel>> retrieveProductByOrderId(
+      OrderModel orderModel) async {
+
+    var dio = Dio();
+
+    List<ProductOrderAmountModel> prodOrderList = [];
+    String body = json.encode(
+        orderModel.toMap());
+
+    Response post;
+    print('Retrieve products by order id: ' + body);
+    print('Calling retrieve method to get products by order id ' + VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID,
+        data: body,
+      );
+
+
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((productOrderElement) {
+
+        prodOrderList.add(
+            ProductOrderAmountModel(
+              pkProductId: productOrderElement['pkProductId'],
+              nome: productOrderElement['name'],
+              codice: productOrderElement['code'],
+              unita_misura: productOrderElement['measureUnit'],
+              iva_applicata: productOrderElement['vatApplied'],
+              prezzo_lordo: productOrderElement['price'],
+              descrizione: productOrderElement['description'],
+              categoria: productOrderElement['category'],
+              fkSupplierId: productOrderElement['fkSupplierId'],
+              amount: productOrderElement['amount'],
+              pkOrderProductId: productOrderElement['pkOrderProductId'],
+              fkOrderId: productOrderElement['fkOrderId'],
+            )
+        );
+      });
+      print('Response from ($VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID): ' + prodOrderList.toString());
+      return prodOrderList;
+
     }catch(e){
       print(e);
       rethrow;

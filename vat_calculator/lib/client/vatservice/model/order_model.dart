@@ -17,16 +17,16 @@ class OrderModel{
 
   OrderModel({
     @required this.pk_order_id,
-    @required this.code,
-    @required this.total,
-    @required this.status,
-    @required this.details,
-    @required this.creation_date,
-    @required this.delivery_date,
-    @required this.fk_user_id,
-    @required this.fk_supplier_id,
-    @required this.fk_branch_id,
-    @required this.fk_storage_id});
+    this.code,
+    this.total,
+    this.status,
+    this.details,
+    this.creation_date,
+    this.delivery_date,
+    this.fk_user_id,
+    this.fk_supplier_id,
+    this.fk_branch_id,
+    this.fk_storage_id});
 
   toMap(){
     return {

@@ -44,6 +44,15 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
       child: Scaffold(
         drawer: const CommonDrawer(),
         appBar: AppBar(
+          actions: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 0, getProportionateScreenWidth(10), 0),
+              child: Icon(
+                Icons.add,
+                size: getProportionateScreenWidth(30),
+              ),
+            ),
+          ],
           iconTheme: const IconThemeData(color: Colors.white),
           centerTitle: true,
           title: Text('Ordini',

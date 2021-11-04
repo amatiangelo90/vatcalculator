@@ -531,6 +531,7 @@ class _StorageScreenState extends State<StorageScreen>{
                   });
                   if(stockProductDiffentThan0 == 0){
                     Scaffold.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: kPinaColor,
                       content: Text('Immettere la quantità di scarico per almeno un prodotto'),
                     ));
                   }else{
@@ -641,9 +642,15 @@ class _StorageScreenState extends State<StorageScreen>{
                   child: CupertinoTextField(
                     controller: controller,
                     onChanged: (text) {
-                      if( double.tryParse(text) == null){
+                      if( double.tryParse(text) != null){
                         element.stock = double.parse(text);
+                      }else{
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          content: Text('Immettere un valore numerico corretto per ' + element.productName),
+                        ));
                       }
+
                     },
                     textInputAction: TextInputAction.next,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
@@ -686,22 +693,33 @@ class _StorageScreenState extends State<StorageScreen>{
               width: SizeConfig.screenWidth * 0.6,
               child: DefaultButton(
                 color: Colors.green.shade700,
-                text: 'Carico',
+                text: 'Effettua Carico',
                 press: () {
-
+                  int currentProductWithMorethan0Amount = 0;
                   dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
-                    dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
-                      if(standardElement.pkStorageProductId == element.pkStorageProductId){
-                        element.stock = standardElement.stock + element.stock;
-                      }
-                    });
+                    if(element.stock != 0){
+                      currentProductWithMorethan0Amount = currentProductWithMorethan0Amount + 1;
+                    }
                   });
-                  ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
-                  getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageLoad);
-                  dataBundleNotifier.clearUnloadProductList();
-                  dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                  refreshPage(dataBundleNotifier);
-
+                  if(currentProductWithMorethan0Amount == 0){
+                    Scaffold.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: kPinaColor,
+                      content: Text('Immettere la quantità di carico per almeno un prodotto'),
+                    ));
+                  }else{
+                    dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
+                      dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
+                        if(standardElement.pkStorageProductId == element.pkStorageProductId){
+                          element.stock = standardElement.stock + element.stock;
+                        }
+                      });
+                    });
+                    ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
+                    getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageLoad);
+                    dataBundleNotifier.clearUnloadProductList();
+                    dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
+                    refreshPage(dataBundleNotifier);
+                  }
                 },
               ),
             ),
@@ -770,7 +788,14 @@ class _StorageScreenState extends State<StorageScreen>{
                   child: CupertinoTextField(
                     controller: controller,
                     onChanged: (text) {
-                      element.stock = double.parse(text);
+                      if( double.tryParse(text) != null){
+                        element.stock = double.parse(text);
+                      }else{
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          content: Text('Immettere un valore numerico corretto per ' + element.productName),
+                        ));
+                      }
                     },
                     textInputAction: TextInputAction.next,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
@@ -781,7 +806,6 @@ class _StorageScreenState extends State<StorageScreen>{
                 ),
                 GestureDetector(
                   onTap: () {
-                    print('asd');
                     setState(() {
                       element.stock = element.stock + 1;
                     });

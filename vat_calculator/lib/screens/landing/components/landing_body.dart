@@ -99,6 +99,7 @@ class LandingBody extends StatelessWidget {
                   if(dataBundleNotifier.currentBranch != null){
                     List<OrderModel> _orderModelList = await clientService.retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
                     dataBundleNotifier.addCurrentOrdersList(_orderModelList);
+
                   }
 
                   dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();

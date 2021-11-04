@@ -6,6 +6,7 @@ import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
@@ -57,8 +58,13 @@ class DataBundleNotifier extends ChangeNotifier {
   ];
 
   List<OrderModel> currentUnderWorkingOrdersList = [];
+  //List<ProductOrderAmountModel> currentProductOrderModelAmountListForUnderWorkingtOrder = [];
+
   List<OrderModel> currentDraftOrdersList = [];
+  //List<ProductOrderAmountModel> currentProductOrderModelAmountListForDraftOrder = [];
+
   List<OrderModel> currentArchiviedWorkingOrdersList = [];
+  //List<ProductOrderAmountModel> currentProductOrderModelAmountListForArchiviedOrder = [];
 
   String currentPrivilegeType;
 
@@ -189,20 +195,41 @@ class DataBundleNotifier extends ChangeNotifier {
       List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
       currentOrdersForCurrentBranch.clear();
       currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
+
       currentDraftOrdersList.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
-      currentOrdersForCurrentBranch.forEach((orderItem) {
+
+      //currentProductOrderModelAmountListForDraftOrder.clear();
+      //currentProductOrderModelAmountListForUnderWorkingtOrder.clear();
+      //currentProductOrderModelAmountListForArchiviedOrder.clear();
+
+      currentOrdersForCurrentBranch.forEach((orderItem) async {
         if(orderItem.status == OrderState.DRAFT){
+
           currentDraftOrdersList.add(orderItem);
+          //currentProductOrderModelAmountListForDraftOrder = await getclientServiceInstance().retrieveProductByOrderId(
+          //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+          //);
+
         }else if (orderItem.status == OrderState.ARCHIVED){
           currentArchiviedWorkingOrdersList.add(orderItem);
+          //currentProductOrderModelAmountListForArchiviedOrder = await getclientServiceInstance().retrieveProductByOrderId(
+        //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+          //);
         }else{
           currentUnderWorkingOrdersList.add(orderItem);
+          //currentProductOrderModelAmountListForUnderWorkingtOrder = await getclientServiceInstance().retrieveProductByOrderId(
+        //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+          //);
         }
       });
     }
     notifyListeners();
+  }
+
+  setOrdersList(){
+
   }
 
   Future<void> setCurrentBranch(BranchModel branchModel) async {
@@ -264,18 +291,36 @@ class DataBundleNotifier extends ChangeNotifier {
     }
 
     List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
+
     currentOrdersForCurrentBranch.clear();
     currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
+
     currentDraftOrdersList.clear();
     currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
-    currentOrdersForCurrentBranch.forEach((orderItem) {
+
+    //currentProductOrderModelAmountListForDraftOrder.clear();
+    //currentProductOrderModelAmountListForUnderWorkingtOrder.clear();
+    //currentProductOrderModelAmountListForArchiviedOrder.clear();
+
+    currentOrdersForCurrentBranch.forEach((orderItem) async {
       if(orderItem.status == OrderState.DRAFT){
+
         currentDraftOrdersList.add(orderItem);
+        //currentProductOrderModelAmountListForDraftOrder = await getclientServiceInstance().retrieveProductByOrderId(
+      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+        //);
+
       }else if (orderItem.status == OrderState.ARCHIVED){
         currentArchiviedWorkingOrdersList.add(orderItem);
+        //currentProductOrderModelAmountListForArchiviedOrder = await getclientServiceInstance().retrieveProductByOrderId(
+      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+        //);
       }else{
         currentUnderWorkingOrdersList.add(orderItem);
+        //currentProductOrderModelAmountListForUnderWorkingtOrder = await getclientServiceInstance().retrieveProductByOrderId(
+      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+        //);
       }
     });
     notifyListeners();
@@ -460,15 +505,40 @@ class DataBundleNotifier extends ChangeNotifier {
     currentDraftOrdersList.clear();
     currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
-    currentOrdersForCurrentBranch.forEach((orderItem) {
+
+
+
+
+
+    currentOrdersForCurrentBranch.forEach((orderItem) async {
       if(orderItem.status == OrderState.DRAFT){
+
         currentDraftOrdersList.add(orderItem);
+        //currentProductOrderModelAmountListForDraftOrder.clear();
+        //currentProductOrderModelAmountListForDraftOrder = await getclientServiceInstance().retrieveProductByOrderId(
+        //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+        //);
+        //print('currentProductOrderModelAmountListForDraftOrder : ' + currentProductOrderModelAmountListForDraftOrder.length.toString());
       }else if (orderItem.status == OrderState.ARCHIVED){
         currentArchiviedWorkingOrdersList.add(orderItem);
+        //currentProductOrderModelAmountListForArchiviedOrder.clear();
+        //currentProductOrderModelAmountListForArchiviedOrder = await getclientServiceInstance().retrieveProductByOrderId(
+      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
+        //);
+        //print('currentProductOrderModelAmountListForArchiviedOrder : ' + currentProductOrderModelAmountListForArchiviedOrder.length.toString());
       }else{
         currentUnderWorkingOrdersList.add(orderItem);
+        //currentProductOrderModelAmountListForUnderWorkingtOrder.clear();
+        //currentProductOrderModelAmountListForUnderWorkingtOrder = await getclientServiceInstance().retrieveProductByOrderId(
+      // OrderModel(pk_order_id: orderItem.pk_order_id,),
+        //);
+        //print('currentProductOrderModelAmountListForUnderWorkingtOrder : ' + currentProductOrderModelAmountListForUnderWorkingtOrder.length.toString());
       }
     });
+
+
+
+
     notifyListeners();
   }
 
