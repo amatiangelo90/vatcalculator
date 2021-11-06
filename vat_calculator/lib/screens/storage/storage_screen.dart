@@ -37,38 +37,6 @@ class _StorageScreenState extends State<StorageScreen>{
 
     final kPages = <Widget>[
       Consumer<DataBundleNotifier>(
-    builder: (context, dataBundleNotifier, child) {
-      return SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: buildCurrentListProdutctTableForStockManagmentUnload(dataBundleNotifier, context),
-            ),
-            const SizedBox(height: 80,),
-          ],
-        ),
-      );
-        }
-      ),
-      Consumer<DataBundleNotifier>(
-    builder: (context, dataBundleNotifier, child) {
-      return SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: buildCurrentListProdutctTableForStockManagmentLoad(dataBundleNotifier, context),
-            ),
-            const SizedBox(height: 80,),
-          ],
-        ),
-      );
-        }
-      ),
-      Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -182,11 +150,43 @@ class _StorageScreenState extends State<StorageScreen>{
             );
           }
       ),
+      Consumer<DataBundleNotifier>(
+    builder: (context, dataBundleNotifier, child) {
+      return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: buildCurrentListProdutctTableForStockManagmentLoad(dataBundleNotifier, context),
+            ),
+            const SizedBox(height: 80,),
+          ],
+        ),
+      );
+        }
+      ),
+      Consumer<DataBundleNotifier>(
+          builder: (context, dataBundleNotifier, child) {
+            return SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: buildCurrentListProdutctTableForStockManagmentUnload(dataBundleNotifier, context),
+                  ),
+                  const SizedBox(height: 80,),
+                ],
+              ),
+            );
+          }
+      ),
     ];
     final kTab = <Tab>[
-      const Tab(child: Text('Scarico')),
-      const Tab(child: Text('Carico')),
       const Tab(child: Text('Area Gestione'),),
+      const Tab(child: Text('Carico')),
+      const Tab(child: Text('Scarico')),
     ];
 
     return DefaultTabController(

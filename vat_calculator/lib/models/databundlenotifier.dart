@@ -12,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import '../constants.dart';
+import '../size_config.dart';
 import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
@@ -363,6 +364,10 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentListSuppliers.isNotEmpty){
       currentListSuppliers.clear();
     }
+
+    if(currentStorageList.isNotEmpty){
+      currentStorageList.clear();
+    }
     setShowIvaButtonToFalse();
     indexIvaList = 0;
 
@@ -540,6 +545,18 @@ class DataBundleNotifier extends ChangeNotifier {
 
 
     notifyListeners();
+  }
+
+  getSupplierData(int fk_supplier_id) {
+    String currentSupplierName;
+    currentListSuppliers.forEach((currentSupplier) {
+      print('currentSupplier.pkSupplierId : ' + currentSupplier.pkSupplierId.toString());
+      print('fk_supplier_id : ' + fk_supplier_id.toString());
+      if(currentSupplier.pkSupplierId == fk_supplier_id){
+        currentSupplierName = currentSupplier.nome;
+      }
+    });
+    return Text('  ' + currentSupplierName, style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(17)),);
   }
 
   Future<void> addCurrentStorageList(List<StorageModel> storageModelList) async {

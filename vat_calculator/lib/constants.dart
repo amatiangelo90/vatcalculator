@@ -17,7 +17,7 @@ import 'package:vat_calculator/size_config.dart';
 // #e7e5e1	(231,229,225)
 // #a8acab	(168,172,171)
 // #d2c5b9	(210,197,185)
-const Color kPrimaryColor = Color(0XFF081730);
+const Color kPrimaryColor = Color(0XFF032733);
 const Color kWinterGreen = Color(0XFF2f4a36);
 const Color kPinaColor = Color(0XFF803037);
 const Color kBeigeColor = Color(0XFFd2c5b9);
@@ -73,6 +73,62 @@ OutlineInputBorder outlineInputBorder() {
     borderRadius: BorderRadius.circular(getProportionateScreenWidth(15)),
     borderSide: BorderSide(color: kTextColor),
   );
+}
+
+String getStringDateFromDateTime(DateTime dateTime) {
+  return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
+}
+
+String getDayFromWeekDay(int weekDay){
+  switch(weekDay){
+    case 1:
+      return 'Lunedi';
+    case 2:
+      return 'Martedi';
+    case 3:
+      return 'Mercoledi';
+    case 4:
+      return 'Giovedi';
+    case 5:
+      return 'Venerdi';
+    case 6:
+      return 'Sabato';
+    case 7:
+      return 'Domenica';
+    default:
+      return 'Error retrieve week day';
+  }
+}
+
+String getMonthFromMonthNumber(int month){
+  switch(month){
+    case 1:
+      return 'Gennaio';
+    case 2:
+      return 'Febbraio';
+    case 3:
+      return 'Marco';
+    case 4:
+      return 'Aprile';
+    case 5:
+      return 'Maggio';
+    case 6:
+      return 'Giugno';
+    case 7:
+      return 'Luglio';
+    case 8:
+      return 'Agosto';
+    case 9:
+      return 'Settembre';
+    case 10:
+      return 'Ottobre';
+    case 11:
+      return 'Novembre';
+    case 12:
+      return 'Dicembre';
+    default:
+      return 'Error retrieve week day';
+  }
 }
 
 String getNameDayFromWeekDay(int weekday) {

@@ -98,7 +98,7 @@ class CustomBottomNavBar extends StatelessWidget {
                             }),
                         Positioned(
                           top: 3.0,
-                          right: 6.0,
+                          right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,
                           child: Stack(
                             children: <Widget>[
                               const Icon(
@@ -107,7 +107,7 @@ class CustomBottomNavBar extends StatelessWidget {
                                 color: Colors.blueAccent,
                               ),
                               Positioned(
-                                right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,
+                                right: 5.0,
                                 top: 3.0,
                                 child: Center(
                                   child: Text(

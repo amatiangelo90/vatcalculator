@@ -27,9 +27,11 @@ const String VAT_SERVICE_URL_CHECK_SPECIAL_USER = 'http://$host:8080/vatservices
 
 //Update url
 const String VAT_SERVICE_URL_UPDATE_PRODUCT = 'http://$host:8080/vatservices/api/v1/update/product';
+const String VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID = 'http://$host:8080/vatservices/api/v1/update/orderstatus';
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';
+const String VAT_SERVICE_URL_DELETE_ORDER = 'http://$host:8080/vatservices/api/v1/delete/order';
 
 //Retrieve Aggregated Tables
 const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE = 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';

@@ -4,9 +4,9 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
-import 'components/archivied_order_page.dart';
-import 'components/draft_order_page.dart';
-import 'components/underworking_order_page.dart';
+import 'components/screens/archivied_order_page.dart';
+import 'components/screens/draft_order_page.dart';
+import 'components/screens/underworking_order_page.dart';
 
 class OrdersScreen extends StatefulWidget {
   static String routeName = "/ordersscreen";

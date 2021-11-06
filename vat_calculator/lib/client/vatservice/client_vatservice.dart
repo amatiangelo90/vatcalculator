@@ -938,4 +938,56 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
     }
   }
 
+  Future<void> deleteOrder(OrderModel orderModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        orderModel.toMap());
+
+    Response post;
+    print('Save order : ' + body);
+    print('Calling delete order method ' + VAT_SERVICE_URL_DELETE_ORDER + ' to delete order for branch with id ' + orderModel.fk_branch_id.toString());
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_ORDER,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_DELETE_ORDER + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  updateOrderStatus(OrderModel orderModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        orderModel.toMap());
+
+    Response post;
+    print('Update order with id : ' + orderModel.pk_order_id.toString() +  ' to status : ' + orderModel.status);
+    print('Calling update order method ' + VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID + ' to modify order for branch with id ' + orderModel.fk_branch_id.toString());
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
 }
