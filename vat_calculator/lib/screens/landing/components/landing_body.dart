@@ -1,11 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
@@ -15,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
@@ -53,7 +51,8 @@ class LandingBody extends StatelessWidget {
               child: DefaultButton(
                 text: "Procediamo",
                 press: () async {
-                  EasyLoading.show();
+
+                  context.loaderOverlay.show();
 
                   ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
                   UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
@@ -103,7 +102,9 @@ class LandingBody extends StatelessWidget {
                   }
 
                   dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
-                  EasyLoading.dismiss();
+
+                  context.loaderOverlay.hide();
+
                   Navigator.pushNamed(context, HomeScreen.routeName);
                 },
               ),

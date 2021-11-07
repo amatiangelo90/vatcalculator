@@ -1,8 +1,6 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -74,7 +72,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                             child: DefaultButton(
                               text: "Importa Lista Fornitori",
                               press: () async {
-                                EasyLoading.show();
+                                //EasyLoading.show();
                                 ClientVatService clientService = ClientVatService();
                                 FattureInCloudClient fattureInCloudClient = FattureInCloudClient();
                                 List<ResponseAnagraficaFornitori> listRichiestaFornitori
@@ -94,7 +92,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                                   List<ResponseAnagraficaFornitori> _suppliersModelList2 = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList2);
                                 }
-                                EasyLoading.dismiss();
+                                //EasyLoading.dismiss();
                               },
                             ),
                           ),

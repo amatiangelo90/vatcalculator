@@ -1,7 +1,6 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
@@ -436,9 +435,9 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
             ),
           ),
           onTap: () {
-            EasyLoading.show();
+            //EasyLoading.show();
             dataBundleNotifier.setCurrentStorage(currentStorageElement);
-            EasyLoading.dismiss();
+            //EasyLoading.dismiss();
             Navigator.pop(context);
           },
         ),
@@ -598,10 +597,10 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
                   (index) => DataRow(cells: [
                 DataCell(GestureDetector(
                     onTap: () {
-                      EasyLoading.show();
+                      //EasyLoading.show();
                       dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(dataBundleNotifier.currentStorageProductListForCurrentStorage[index]);
                       dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                      EasyLoading.dismiss();
+                      //EasyLoading.dismiss();
                     },
                     child: Row(
                       children: [
@@ -645,10 +644,10 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
                   (index) => DataRow(cells: [
                 DataCell(GestureDetector(
                     onTap: () {
-                      EasyLoading.show();
+                      //EasyLoading.show();
                       dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(dataBundleNotifier.currentStorageProductListForCurrentStorage[index]);
                       dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                      EasyLoading.dismiss();
+                      //EasyLoading.dismiss();
                     },
                     child: Row(
                       children: [

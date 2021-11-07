@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -568,9 +567,9 @@ class _CommonDrawerState extends State<CommonDrawer> {
             ),
           ),
           onTap: () {
-            EasyLoading.show();
+            //EasyLoading.show();
             dataBundleNotifier.setCurrentBranch(currentBranch);
-            EasyLoading.dismiss();
+            //EasyLoading.dismiss();
             Navigator.pop(context);
           },
         ),

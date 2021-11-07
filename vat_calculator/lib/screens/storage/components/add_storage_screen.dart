@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
@@ -10,7 +9,6 @@ import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -165,7 +163,7 @@ class AddStorageScreen extends StatelessWidget {
                         buildSnackBar(text: 'Esiste già un magazzino con questo nome : ' + _nameController.text, color: kPinaColor);
                       }else{
 
-                        EasyLoading.show();
+                        //EasyLoading.show();
 
                         ClientVatService vatService = ClientVatService();
                         StorageModel storageModel = StorageModel(
@@ -187,10 +185,10 @@ class AddStorageScreen extends StatelessWidget {
                           List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
                           dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
 
-                          EasyLoading.dismiss();
+                          //EasyLoading.dismiss();
                           buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
                         }else{
-                          EasyLoading.dismiss();
+                          //EasyLoading.dismiss();
                           buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveStorage.toString(), color: kPinaColor);
                         }
 

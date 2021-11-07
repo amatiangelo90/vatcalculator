@@ -1,9 +1,7 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -406,7 +404,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         buildSnackBar(text: 'Selezionare la categoria', color: kPinaColor);
                       }else{
 
-                        EasyLoading.show();
+                        //EasyLoading.show();
                         ProductModel productModel = ProductModel(
                             nome: _nameController.text,
                             categoria: _categoryController.text,
@@ -429,11 +427,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
                           List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
                           dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                          EasyLoading.dismiss();
+                          //EasyLoading.dismiss();
                           clearAll();
                           buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + widget.supplier.nome, color: Colors.green.shade700);
                         }else{
-                          EasyLoading.dismiss();
+                          //EasyLoading.dismiss();
                           buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
                         }
 

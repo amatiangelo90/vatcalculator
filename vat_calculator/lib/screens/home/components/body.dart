@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -10,7 +9,6 @@ import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -37,314 +35,323 @@ class _BodyState extends State<Body> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          color: kCustomWhite,
-          child: dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: getProportionateScreenWidth(13),
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 30,),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.6,
-                  child: DefaultButton(
-                    text: "Crea Attività",
-                    press: () async {
-                      Navigator.pushNamed(context, CompanyRegistration.routeName);
-                    },
-                  ),
-                ),
+          color: kPrimaryColor,
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(color: kPrimaryColor, spreadRadius: 3),
               ],
             ),
-          ) : SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(1.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: getProportionateScreenHeight(56),
-                    child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
+            child: dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Sembra che tu non abbia configurato ancora nessuna attività. ",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(13),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: IconButton(icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: kPrimaryColor,
-                      ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                  const SizedBox(height: 30,),
+                  SizedBox(
+                    width: SizeConfig.screenWidth * 0.6,
+                    child: DefaultButton(
+                      text: "Crea Attività",
+                      press: () async {
+                        Navigator.pushNamed(context, CompanyRegistration.routeName);
+                      },
                     ),
-                    GestureDetector(
-                        onTap: (){
-                            showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog (
-                                  contentPadding: EdgeInsets.zero,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  content: Builder(
-                                    builder: (context) {
-                                      var height = MediaQuery.of(context).size.height;
-                                      var width = MediaQuery.of(context).size.width;
-                                      return SizedBox(
-                                        height: height - 250,
-                                        width: width - 90,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.vertical,
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                decoration: const BoxDecoration(
-                                                  borderRadius: BorderRadius.only(
-                                                      topRight: Radius.circular(10.0),
-                                                      topLeft: Radius.circular(10.0) ),
-                                                  color: kPrimaryColor,
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text('  Calendario',style: TextStyle(
-                                                          fontSize: getProportionateScreenWidth(20),
-                                                          fontWeight: FontWeight.bold,
-                                                          color: kCustomWhite,
-                                                        ),),
-                                                        IconButton(icon: const Icon(
-                                                          Icons.clear,
-                                                          color: kCustomWhite,
-                                                        ), onPressed: () { Navigator.pop(context); },),
+                  ),
+                ],
+              ),
+            ) : SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: getProportionateScreenHeight(56),
+                      child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        child: IconButton(icon: const Icon(
+                          Icons.arrow_back_ios,
+                          color: kPrimaryColor,
+                        ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                      ),
+                      GestureDetector(
+                          onTap: (){
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog (
+                                    contentPadding: EdgeInsets.zero,
+                                    shape: const RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.all(
+                                            Radius.circular(10.0))),
+                                    content: Builder(
+                                      builder: (context) {
+                                        var height = MediaQuery.of(context).size.height;
+                                        var width = MediaQuery.of(context).size.width;
+                                        return SizedBox(
+                                          height: height - 250,
+                                          width: width - 90,
+                                          child: SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  decoration: const BoxDecoration(
+                                                    borderRadius: BorderRadius.only(
+                                                        topRight: Radius.circular(10.0),
+                                                        topLeft: Radius.circular(10.0) ),
+                                                    color: kPrimaryColor,
+                                                  ),
+                                                  child: Column(
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Text('  Calendario',style: TextStyle(
+                                                            fontSize: getProportionateScreenWidth(20),
+                                                            fontWeight: FontWeight.bold,
+                                                            color: kCustomWhite,
+                                                          ),),
+                                                          IconButton(icon: const Icon(
+                                                            Icons.clear,
+                                                            color: kCustomWhite,
+                                                          ), onPressed: () { Navigator.pop(context); },),
 
-                                                      ],
-                                                    ),
-                                                    Column(
-                                                      children: [
+                                                        ],
+                                                      ),
+                                                      Column(
+                                                        children: [
 
-                                                        Column(
-                                                          children: buildDateList(dataBundleNotifier, context),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
+                                                          Column(
+                                                            children: buildDateList(dataBundleNotifier, context),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              // buildDateList(),
-                                            ],
+                                                // buildDateList(),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                            );
-                        },
-                        child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: IconButton(icon: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: kPrimaryColor,
-                      ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Card(
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 2,
-                    child: Column(
-                      children: [
-                        const Text('Registra Incasso'),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                              child: IconButton(icon: const Icon(
-                                Icons.arrow_back_ios,
-                                color: kPrimaryColor,
-                              ), onPressed: () { dataBundleNotifier.previousIva(); },),
-                            ),
-                            Text('Iva ' + dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList].toString() + '%', style: const TextStyle(fontSize: 20),),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: IconButton(icon: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: kPrimaryColor,
-                              ), onPressed: () { dataBundleNotifier.nextIva(); },),
-                            ),
-                          ],
-                        ),
-                        Form(
-                          key: _formExpenceKey,
-                          child: Column(
+                                        );
+                                      },
+                                    ),
+                                  )
+                              );
+                          },
+                          child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                        child: IconButton(icon: const Icon(
+                          Icons.arrow_forward_ios,
+                          color: kPrimaryColor,
+                        ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Card(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          const Text('Registra Incasso'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: buildExpenceImportForField(),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: buildCasualeExpenceForField(),
-                              ),
-                              Padding(
                                 padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                child: FormError(errors: errors),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.previousIva(); },),
                               ),
-
+                              Text('Iva ' + dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList].toString() + '%', style: const TextStyle(fontSize: 20),),
                               Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: DefaultButton(
-                                  text: "Salva Importo",
-                                  press: () async {
-                                    if (_formExpenceKey.currentState.validate()) {
-                                      _formExpenceKey.currentState.save();
-                                      KeyboardUtil.hideKeyboard(context);
-                                      try{
-
-                                        ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                                        await clientService.performSaveRecessed(
-                                            double.parse(recessedController.text),
-                                            casualeRecessedController.text,
-                                            dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
-                                            dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
-                                            dataBundleNotifier.currentBranch.pkBranchId
-                                        );
-
-                                        List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-
-                                        recessedController.clear();
-                                        casualeRecessedController.clear();
-
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                            duration: Duration(milliseconds: 2000),
-                                            backgroundColor: Colors.green,
-                                            content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-
-                                      }catch(e){
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(SnackBar(
-                                            duration: const Duration(milliseconds: 6000),
-                                            backgroundColor: Colors.red,
-                                            content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                                      }
-                                    }
-                                  },
-                                ),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.nextIva(); },),
                               ),
                             ],
                           ),
-                        ),
+                          Form(
+                            key: _formExpenceKey,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: buildExpenceImportForField(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: buildCasualeExpenceForField(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                  child: FormError(errors: errors),
+                                ),
 
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Card(
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 2,
-                    child: Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Ultimi 10 incassi registrati'),
-                        ),
-                        const SizedBox(height: 15,),
-                        Column(
-                          children: buildRecessedLastTenDays(dataBundleNotifier),
-                        ),
+                                Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: DefaultButton(
+                                    text: "Salva Importo",
+                                    press: () async {
+                                      if (_formExpenceKey.currentState.validate()) {
+                                        _formExpenceKey.currentState.save();
+                                        KeyboardUtil.hideKeyboard(context);
+                                        try{
 
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: DefaultButton(
-                            text: "Dettaglio Incassi",
-                            press: () async {
+                                          ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+                                          await clientService.performSaveRecessed(
+                                              double.parse(recessedController.text),
+                                              casualeRecessedController.text,
+                                              dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
+                                              dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                              dataBundleNotifier.currentBranch.pkBranchId
+                                          );
 
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Card(
-                    shape: BeveledRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 2,
-                    child: Column(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text('Dettaglio settimanale'),
-                        ),
-                        const SizedBox(height: 15,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                              child: IconButton(icon: const Icon(
-                                Icons.arrow_back_ios,
-                                color: kPrimaryColor,
-                              ), onPressed: () { dataBundleNotifier.subtractWeekToDateTimeRange(); },),
+                                          List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                                          dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+
+                                          recessedController.clear();
+                                          casualeRecessedController.clear();
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                              duration: Duration(milliseconds: 2000),
+                                              backgroundColor: Colors.green,
+                                              content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+
+                                        }catch(e){
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              duration: const Duration(milliseconds: 6000),
+                                              backgroundColor: Colors.red,
+                                              content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
-                            Text(dataBundleNotifier.currentDateTimeRange.start.day.toString()
-                                + '/' + dataBundleNotifier.currentDateTimeRange.start.month.toString() + ' - ' +
-                                dataBundleNotifier.currentDateTimeRange.end.day.toString()
-                                + '/' + dataBundleNotifier.currentDateTimeRange.end.month.toString(), style: const TextStyle(fontSize: 20),),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                              child: IconButton(icon: const Icon(
-                                Icons.arrow_forward_ios,
-                                color: kPrimaryColor,
-                              ), onPressed: () { dataBundleNotifier.addWeekToDateTimeRange(); },),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [buildWeekDetailReceed(dataBundleNotifier),]
-                        ),
-
-                        Padding(
-                          padding: const EdgeInsets.all(18.0),
-                          child: DefaultButton(
-                            text: "Dettaglio Incassi",
-                            press: () async {
-                              Navigator.pushNamed(context, DetailsRecessed.routeName);
-                            },
                           ),
-                        ),
-                      ],
+
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Card(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Ultimi 10 incassi registrati'),
+                          ),
+                          const SizedBox(height: 15,),
+                          Column(
+                            children: buildRecessedLastTenDays(dataBundleNotifier),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: DefaultButton(
+                              text: "Dettaglio Incassi",
+                              press: () async {
+
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Card(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Dettaglio settimanale'),
+                          ),
+                          const SizedBox(height: 15,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.subtractWeekToDateTimeRange(); },),
+                              ),
+                              Text(dataBundleNotifier.currentDateTimeRange.start.day.toString()
+                                  + '/' + dataBundleNotifier.currentDateTimeRange.start.month.toString() + ' - ' +
+                                  dataBundleNotifier.currentDateTimeRange.end.day.toString()
+                                  + '/' + dataBundleNotifier.currentDateTimeRange.end.month.toString(), style: const TextStyle(fontSize: 20),),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.addWeekToDateTimeRange(); },),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [buildWeekDetailReceed(dataBundleNotifier),]
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: DefaultButton(
+                              text: "Dettaglio Incassi",
+                              press: () async {
+                                Navigator.pushNamed(context, DetailsRecessed.routeName);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -409,10 +416,13 @@ class _BodyState extends State<Body> {
                   );
                 },
                 child: Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
                   color: Colors.green.shade700,
                   elevation: 7,
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -420,11 +430,11 @@ class _BodyState extends State<Body> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                          child: Text('' + dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(16)),),
+                          child: Text('' + dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(15)),),
                         ),
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                          child: Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white,),
+                          child: Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: getProportionateScreenWidth(18),),
                         ),
                       ],
                     ),
@@ -453,7 +463,7 @@ class _BodyState extends State<Body> {
                   children: [
                     Text('   ' + currentBranch.companyName,
                       style: TextStyle(
-                      fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(20) : getProportionateScreenWidth(16),
+                      fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
                         color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : Colors.black,
                     ),),
                   ],
@@ -461,9 +471,9 @@ class _BodyState extends State<Body> {
               ),
             ),
             onTap: () {
-              EasyLoading.show();
+              //EasyLoading.show();
               dataBundleNotifier.setCurrentBranch(currentBranch);
-              EasyLoading.dismiss();
+              //EasyLoading.dismiss();
               Navigator.pop(context);
             },
         ),

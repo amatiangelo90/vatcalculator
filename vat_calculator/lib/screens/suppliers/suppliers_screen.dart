@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -10,7 +8,6 @@ import 'package:vat_calculator/components/item_menu.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
-
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'components/edit_supplier_screen.dart';
@@ -121,22 +118,45 @@ class SuppliersScreen extends StatelessWidget {
     List<Widget> listout = [];
 
     currentListSuppliers.currentListSuppliers.forEach((supplier) {
-      listout.add(ItemMenu(
-        text: supplier.nome,
-        icon: 'assets/icons/supplier.svg',
-        press: () async {
-          EasyLoading.show();
+      listout.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            padding: EdgeInsets.only(left: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: kBeigeColor,
+            ),
+            height: 50,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0)),
+                color: Colors.white,
+              ),
+              child: ItemMenu(
+                text: supplier.nome,
+                icon: 'assets/icons/supplier.svg',
+                press: () async {
+                  //context.loaderOverlay.show();
 
-          ClientVatService clientVatService = ClientVatService();
-          List<ProductModel> retrieveProductsBySupplier = await clientVatService.retrieveProductsBySupplier(supplier);
-          currentListSuppliers.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-          EasyLoading.dismiss();
-          Navigator.push(context,  MaterialPageRoute(builder: (context) => EditSuppliersScreen(currentSupplier: supplier,),),);
-        },
-        showArrow: true,
-        backgroundColor: kCustomWhite,
-      ),);
+                  ClientVatService clientVatService = ClientVatService();
+                  List<ProductModel> retrieveProductsBySupplier = await clientVatService.retrieveProductsBySupplier(supplier);
+                  currentListSuppliers.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+                  //context.loaderOverlay.hide();
+                  Navigator.push(context,  MaterialPageRoute(builder: (context) => EditSuppliersScreen(currentSupplier: supplier,),),);
+                },
+                showArrow: true,
+                backgroundColor: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
     });
+
+
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,

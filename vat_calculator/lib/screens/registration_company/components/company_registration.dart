@@ -1,5 +1,4 @@
-import 'dart:collection';
-import 'dart:io';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,14 +7,13 @@ import 'package:vat_calculator/client/aruba/client_aruba.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
-import 'package:vat_calculator/screens/registration_company/components/recap_data.dart';
 import 'package:vat_calculator/screens/registration_company/components/vatprovider.dart';
 import 'package:vat_calculator/theme.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import 'company_details.dart';
 
 class CompanyRegistration extends StatefulWidget {
 
@@ -33,97 +31,245 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
   @override
   Widget build(BuildContext context) {
 
-    var mapData = HashMap<String, String>();
-
-    mapData["piva"] = ContactState.controllerPIva.text;
-    mapData["email"] = ContactState.controllerEmail.text;
-    mapData["address"] = ContactState.controllerAddress.text;
-    mapData["company_name"] = ContactState.controllerCompanyName.text;
-    mapData["mobile_no"] = ContactState.controllerMobileNo.text;
-    mapData["city"] = ContactState.controllerCity.text;
-    mapData["cap"] = ContactState.controllerCap.text;
-
-    mapData["provider_name"] = VatProviderState.controllerProviderName.text;
-    mapData["apikey_or_user"] = VatProviderState.controllerApiKeyOrUser.text;
-    mapData["apiuid_or_password"] = VatProviderState.controllerApiUidOrPassword.text;
-
-
-    List<Step> steps = [
-      Step(
-        title: const Text('Dettagli Attività'),
-        content: const Contact(),
-        state: currentStep == 0 ? StepState.editing : StepState.indexed,
-        isActive: true,
-      ),
-      Step(
-        title: const Text('Provider Fatturazione Elettronica'),
-        content: const VatProvider(),
-        state: currentStep == 1 ? StepState.editing : StepState.indexed,
-        isActive: true,
-      ),
-      Step(
-        title: const Text('Abbiamo finito! Conferma i tuoi dati'),
-        content: RecapData(mapData),
-        state: StepState.complete,
-        isActive: true,
-      ),
-    ];
-
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return Theme(
-          data: themeStepper(),
-          child: Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
-                ),
-              ),
-              centerTitle: true,
-              title: Text('Registra la tua attività',
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(17),
-                  color: Colors.white,
-                ),
-              ),
-              backgroundColor: kPrimaryColor,
-            ),
-            body: Stepper(
-              currentStep: currentStep,
-              steps: steps,
-              type: StepperType.vertical,
-              onStepTapped: (step) {
-                setState(() {
-                  currentStep = step;
-                });
-              },
-              onStepContinue: () {
-                setState(() {
-                  if (currentStep < steps.length - 1) {
-                    if (currentStep == 0) {
-                      currentStep = currentStep + 1;
-                    } else {
-                      if (currentStep == 1) {
-                        currentStep = currentStep + 1;
+        GlobalKey key = GlobalKey();
+
+        TextEditingController controllerPIva = TextEditingController();
+        TextEditingController controllerCompanyName = TextEditingController();
+        TextEditingController controllerEmail;
+        if(dataBundleNotifier.dataBundleList.isEmpty){
+          controllerEmail = TextEditingController();
+        }else{
+          controllerEmail = TextEditingController(text: dataBundleNotifier.dataBundleList[0].email);
+        }
+
+        TextEditingController controllerAddress = TextEditingController();
+        TextEditingController controllerCity = TextEditingController();
+        TextEditingController controllerCap = TextEditingController();
+        TextEditingController controllerMobileNo = TextEditingController();
+
+        return Scaffold(
+          key: key,
+          bottomSheet: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CupertinoButton(
+                    color: kPrimaryColor,
+                    child: const Text('Salva Azienda'),
+                    onPressed: () async {
+                      if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
+                        print('Il nome dell\' azienda è obbligatorio');
+                        CoolAlert.show(
+                          onConfirmBtnTap: (){},
+                          confirmBtnColor: kPinaColor,
+                          backgroundColor: kPinaColor,
+                          context: context,
+                          title: 'Errore',
+                          type: CoolAlertType.error,
+                          text: 'Il nome dell\' azienda è obbligatorio',
+                          autoCloseDuration: Duration(seconds: 2),
+                            onCancelBtnTap: (){},
+                        );
+
+                      }else if(controllerEmail.text == null || controllerEmail.text == ''){
+                        print('L\'indirizzo email è obbligatorio');
+                        CoolAlert.show(
+                          backgroundColor: kPinaColor,
+                          context: context,
+                          title: 'Errore',
+                          type: CoolAlertType.error,
+                          text: 'L\'indirizzo email è obbligatorio',
+                          autoCloseDuration: Duration(seconds: 3),
+                            onCancelBtnTap: (){}
+                        );
+                      }else if(controllerAddress.text == null || controllerAddress.text == ''){
+                        print('Inserire indirizzo');
+                        CoolAlert.show(
+                          backgroundColor: kPinaColor,
+                          context: context,
+                          title: 'Errore',
+                          type: CoolAlertType.error,
+                          text: 'Indirizzo mancante',
+                          autoCloseDuration: Duration(seconds: 3),
+                            onCancelBtnTap: (){}
+                        );
+                      }else if(int.tryParse(controllerCap.text) == null){
+                        print('Il cap è errato. Inserire un numero corretto!');
+                        CoolAlert.show(
+                          backgroundColor: kPinaColor,
+                          context: context,
+                          title: 'Errore',
+                          type: CoolAlertType.error,
+                          text: 'Il cap è errato. Inserire un numero corretto',
+                          autoCloseDuration: Duration(seconds: 3),
+                            onCancelBtnTap: (){}
+                        );
+                      }else if(controllerCap.text.characters.length != 5){
+                        print('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
+                        CoolAlert.show(
+                          backgroundColor: kPinaColor,
+                          context: context,
+                          title: 'Errore',
+                          type: CoolAlertType.error,
+                          text: 'Il cap è errato. Inserire un numero corretto',
+                          autoCloseDuration: Duration(seconds: 3),
+                          onCancelBtnTap: (){}
+                        );
+                      }else{
+                        BranchModel company = BranchModel(
+                            eMail: controllerEmail.text,
+                            phoneNumber: controllerMobileNo.text,
+                            address: controllerAddress.text,
+                            apiKeyOrUser: '',
+                            apiUidOrPassword: '',
+                            companyName: controllerCompanyName.text,
+                            cap: int.parse(controllerCap.text),
+                            city: controllerCity.text,
+                            providerFatture: '',
+                            vatNumber: controllerPIva.text,
+                            pkBranchId: 0
+                        );
+
+                        ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+                        await clientService.performSaveBranch(company);
+
+                        List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
+                        dataBundleNotifier.addBranches(_branchList);
+
+                        Navigator.pushNamed(context, HomeScreen.routeName);
                       }
-                    }
-                  } else {
-                    saveCompanyData(mapData, dataBundleNotifier, context);
-                  }
-                });
-              },
-              onStepCancel: () {
-                setState(() {
-                  if (currentStep > 0) {
-                    currentStep = currentStep - 1;
-                  } else {
-                    currentStep = 0;
-                  }
-                });
-              },
+
+                    }),
+              ),
+            ],
+          ),
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+            title: Text('Registra la tua attività',
+              style: TextStyle(
+                fontSize: getProportionateScreenWidth(17),
+                color: Colors.white,
+              ),
+            ),
+            backgroundColor: kPrimaryColor,
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              autovalidate: false,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Text('Email'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    enabled: false,
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerEmail,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Email',
+                  ),
+                  Row(
+                    children: const [
+                      Text('Nome'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Nome Attività',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerCompanyName,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Nome Attività',
+                  ),
+                  Row(
+                    children: [
+                      Text('Cellulare'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Cellulare',
+                    keyboardType: TextInputType.number,
+                    controller: controllerMobileNo,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Cellulare',
+                  ),
+                  Row(
+                    children: [
+                      Text('Partita Iva'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Partita Iva',
+                    keyboardType: TextInputType.number,
+                    controller: controllerPIva,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Partita Iva',
+                  ),
+                  Row(
+                    children: [
+                      Text('Indirizzo'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Indirizzo',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerAddress,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Indirizzo',
+                  ),
+                  Row(
+                    children: [
+                      Text('Città'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Città',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerCity,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Città',
+                  ),
+                  Row(
+                    children: [
+                      Text('Cap'),
+                    ],
+                  ),
+                  CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Cap',
+                    keyboardType: TextInputType.number,
+                    controller: controllerCap,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Cap',
+                  ),
+                ],
+              ),
             ),
           ),
         );
@@ -176,51 +322,20 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
   Future<void> saveCompanyData(mapData, DataBundleNotifier dataBundleNotifier, context) async {
     bool resultValidation = await validateData(mapData, context);
-// TODO sistemare il cap
-    ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+
+
     if(resultValidation){
-      BranchModel company = BranchModel(
-          eMail: dataBundleNotifier.dataBundleList[0].email,
-          phoneNumber: mapData['mobile_no'],
-          address: mapData['address'],
-          apiKeyOrUser: mapData['apikey_or_user'],
-          apiUidOrPassword: mapData['apiuid_or_password'],
-          companyName: mapData['company_name'],
-          cap: 34,
-          city: mapData['city'],
-          providerFatture: mapData['provider_name'],
-          vatNumber: mapData['piva'],
-          pkBranchId: 0
-      );
+
 
 
       print('Saving the following company to database: ');
-      print(company.toMap());
-      await clientService.performSaveBranch(company);
 
 
-      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
 
-      dataBundleNotifier.addBranches(_branchList);
-      final snackBar =
-      SnackBar(
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.green,
-          content: Text('Azienda ' + ContactState.controllerCompanyName.text +' creata',
-          )
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-
-      ContactState.controllerPIva.clear();
-      ContactState.controllerAddress.clear();
-      ContactState.controllerCompanyName.clear();
-      ContactState.controllerMobileNo.clear();
-      ContactState.controllerCity.clear();
-      ContactState.controllerCap.clear();
       VatProviderState.controllerApiKeyOrUser.clear();
       VatProviderState.controllerApiUidOrPassword.clear();
-      Navigator.pushNamed(context, HomeScreen.routeName);
+
+
     }
   }
 

@@ -1,9 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
 class Contact extends StatefulWidget {
   const Contact({Key key}) : super(key: key);
+
+  static String routeName = 'companyregistration';
 
   @override
   State<StatefulWidget> createState() {
@@ -14,132 +17,110 @@ class Contact extends StatefulWidget {
 
 class ContactState extends State<Contact> {
 
-  GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
-  static TextEditingController controllerPIva = TextEditingController();
-  static TextEditingController controllerCompanyName = TextEditingController();
-  static TextEditingController controllerEmail = TextEditingController();
-  static TextEditingController controllerAddress = TextEditingController();
-  static TextEditingController controllerCity = TextEditingController();
-  static TextEditingController controllerCap = TextEditingController();
-  static TextEditingController controllerMobileNo = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return Form(
-          key: formKey,
-          autovalidate: false,
-          child: Column(
-            children: <Widget>[
-              TextFormField(
-                enabled: false,
-                maxLines: 1,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(
-                    Icons.email,
-                    color: Colors.grey,
-                  ),
-                  hintText: dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].email : '',
-                  hintStyle: const TextStyle(color: Colors.black),
-                  disabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1, color: Colors.transparent)),
-                ),
-                controller: controllerEmail,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                maxLines: 1,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.add_business,
-                    color: Colors.grey,
-                  ),
-                  hintText: 'Ragione Sociale',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+
+        TextEditingController controllerPIva = TextEditingController();
+        TextEditingController controllerCompanyName = TextEditingController();
+        TextEditingController controllerEmail = TextEditingController(text: dataBundleNotifier.dataBundleList[0].email);
+        TextEditingController controllerAddress = TextEditingController();
+        TextEditingController controllerCity = TextEditingController();
+        TextEditingController controllerCap = TextEditingController();
+        TextEditingController controllerMobileNo = TextEditingController();
+
+        return Scaffold(
+          body: Form(
+            autovalidate: false,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerEmail,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Email',
                   ),
                 ),
-                controller: controllerCompanyName,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                maxLines: 1,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.all_inbox,
-                    color: Colors.grey,
-                  ),
-                  hintText: 'Partita Iva',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Nome Attività',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerCompanyName,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Nome Attività',
                   ),
                 ),
-                controller: controllerPIva,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                minLines: 1,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.home,
-                    color: Colors.grey,
-                  ),
-                  hintText: 'Indirizzo',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Partita Iva',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerPIva,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Partita Iva',
                   ),
                 ),
-                controller: controllerAddress,
-              ),
-              const SizedBox(height: 20),TextFormField(
-                minLines: 1,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.home,
-                    color: Colors.grey,
-                  ),
-                  hintText: 'Città',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Indirizzo',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerAddress,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Indirizzo',
                   ),
                 ),
-                controller: controllerCity,
-              ),
-              const SizedBox(height: 20),TextFormField(
-                minLines: 1,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.home,
-                    color: Colors.grey,
-                  ),
-                  hintText: 'Cap',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Città',
+                    keyboardType: TextInputType.emailAddress,
+                    controller: controllerCity,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Città',
                   ),
                 ),
-                controller: controllerCap,
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                keyboardType: TextInputType.number,
-                maxLines: 1,
-                decoration: const InputDecoration(
-                  prefixIcon: Icon(
-                    Icons.phone,
-                    color: Colors.grey,
-                  ),
-                  hintText: 'Cellulare',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Cap',
+                    keyboardType: TextInputType.number,
+                    controller: controllerCap,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Cap',
                   ),
                 ),
-                controller: controllerMobileNo,
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Cellulare',
+                    keyboardType: TextInputType.number,
+                    controller: controllerMobileNo,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    autocorrect: false,
+                    placeholder: 'Cellulare',
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

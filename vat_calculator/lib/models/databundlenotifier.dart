@@ -200,29 +200,13 @@ class DataBundleNotifier extends ChangeNotifier {
       currentDraftOrdersList.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
-
-      //currentProductOrderModelAmountListForDraftOrder.clear();
-      //currentProductOrderModelAmountListForUnderWorkingtOrder.clear();
-      //currentProductOrderModelAmountListForArchiviedOrder.clear();
-
       currentOrdersForCurrentBranch.forEach((orderItem) async {
         if(orderItem.status == OrderState.DRAFT){
-
           currentDraftOrdersList.add(orderItem);
-          //currentProductOrderModelAmountListForDraftOrder = await getclientServiceInstance().retrieveProductByOrderId(
-          //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-          //);
-
         }else if (orderItem.status == OrderState.ARCHIVED){
           currentArchiviedWorkingOrdersList.add(orderItem);
-          //currentProductOrderModelAmountListForArchiviedOrder = await getclientServiceInstance().retrieveProductByOrderId(
-        //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-          //);
         }else{
           currentUnderWorkingOrdersList.add(orderItem);
-          //currentProductOrderModelAmountListForUnderWorkingtOrder = await getclientServiceInstance().retrieveProductByOrderId(
-        //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-          //);
         }
       });
     }

@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -428,7 +427,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           buildSnackBar(text: 'Selezionare la categoria', color: kPinaColor);
                         }else{
 
-                          EasyLoading.show();
+                          //EasyLoading.show();
                           ProductModel productModel = ProductModel(
                             pkProductId: widget.product.pkProductId,
                             nome: _nameController.text,
@@ -447,11 +446,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           if(performUpdateProduct != null && performUpdateProduct.statusCode == 200){
                             List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
                             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                            EasyLoading.dismiss();
+                            //EasyLoading.dismiss();
                             buildSnackBar(text: 'Prodotto ' + productModel.nome + ' aggiornato correttamente', color: Colors.green.shade700);
                             Navigator.of(context).pop();
                           }else{
-                            EasyLoading.dismiss();
+                            //EasyLoading.dismiss();
                             buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: kPinaColor);
                           }
                         }
@@ -464,7 +463,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.fromLTRB(30, 4, 30, 0),
                     child: DefaultButton(color: kPinaColor,
                       press: () async {
-                        EasyLoading.show();
+                        //EasyLoading.show();
                         ProductModel productModel = ProductModel(
                           pkProductId: widget.product.pkProductId,
                           nome: _nameController.text,
@@ -483,11 +482,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
                           List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
                           dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                          EasyLoading.dismiss();
+                          //EasyLoading.dismiss();
                           buildSnackBar(text: 'Prodotto eliminato correttamente', color: Colors.green.shade700);
                           Navigator.of(context).pop();
                         }else{
-                          EasyLoading.dismiss();
+                          //EasyLoading.dismiss();
                           buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: kPinaColor);
                         }
                       },
