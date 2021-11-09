@@ -218,6 +218,7 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   Future<void> setCurrentBranch(BranchModel branchModel) async {
+
     currentBranch = branchModel;
     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
     currentListRecessed.clear();
@@ -623,5 +624,13 @@ class DataBundleNotifier extends ChangeNotifier {
       element.stock = 0.0;
     });
     notifyListeners();
+  }
+
+  void addProviderFattureDetailsToCurrentBranch({String providerFatture, String apiKeyOrUser, String apiUidOrPassword}) {
+    currentBranch.providerFatture = providerFatture;
+    currentBranch.apiKeyOrUser = apiKeyOrUser;
+    currentBranch.apiUidOrPassword = apiUidOrPassword;
+    notifyListeners();
+
   }
 }

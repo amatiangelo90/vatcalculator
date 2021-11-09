@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
@@ -11,7 +12,7 @@ import 'package:vat_calculator/screens/registration_company/components/company_r
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'components/edit_supplier_screen.dart';
-import 'components/supplier_add_screen.dart';
+import 'components/add_supplier_screen.dart';
 
 class SuppliersScreen extends StatelessWidget {
   const SuppliersScreen({Key key}) : super(key: key);
@@ -119,36 +120,58 @@ class SuppliersScreen extends StatelessWidget {
 
     currentListSuppliers.currentListSuppliers.forEach((supplier) {
       listout.add(
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            padding: EdgeInsets.only(left: 12.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: kBeigeColor,
-            ),
-            height: 50,
+        GestureDetector(
+          onTap: () async {
+            ClientVatService clientVatService = ClientVatService();
+            List<ProductModel> retrieveProductsBySupplier = await clientVatService.retrieveProductsBySupplier(supplier);
+            currentListSuppliers.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+            //context.loaderOverlay.hide();
+            Navigator.push(context,  MaterialPageRoute(builder: (context) => EditSuppliersScreen(currentSupplier: supplier,),),);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(10, 5, 10, 2),
             child: Container(
+              padding: EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0)),
-                color: Colors.white,
+                borderRadius: BorderRadius.circular(10.0),
+                color: kBeigeColor,
               ),
-              child: ItemMenu(
-                text: supplier.nome,
-                icon: 'assets/icons/supplier.svg',
-                press: () async {
-                  //context.loaderOverlay.show();
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10.0),
+                      bottomRight: Radius.circular(10.0)),
+                  color: Colors.white,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(width: getProportionateScreenWidth(5)),
+                          SvgPicture.asset(
+                            'assets/icons/supplier.svg',
+                            color: kPrimaryColor,
+                            width: getProportionateScreenWidth(30),
+                          ),
+                          SizedBox(width: getProportionateScreenWidth(20)),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(supplier.nome, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15)),),
+                              Text('#' + supplier.extra,  style: TextStyle(color: kBeigeColor, fontSize: getProportionateScreenWidth(12),)),
+                            ],
+                          ),
+                        ],
+                      ),
 
-                  ClientVatService clientVatService = ClientVatService();
-                  List<ProductModel> retrieveProductsBySupplier = await clientVatService.retrieveProductsBySupplier(supplier);
-                  currentListSuppliers.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                  //context.loaderOverlay.hide();
-                  Navigator.push(context,  MaterialPageRoute(builder: (context) => EditSuppliersScreen(currentSupplier: supplier,),),);
-                },
-                showArrow: true,
-                backgroundColor: Colors.white,
+                      const Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),

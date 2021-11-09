@@ -286,8 +286,7 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
                 : TabBarView(
               children: kPages,
             ),
-            bottomNavigationBar:
-            const CustomBottomNavBar(selectedMenu: MenuState.storage),
+            bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.storage),
           );
         },
       ),

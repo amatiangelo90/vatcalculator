@@ -26,6 +26,7 @@ class BranchModel{
     @required this.apiKeyOrUser,
     @required this.apiUidOrPassword});
 
+
   toMap(){
     return {
       'pkBranchId' : pkBranchId,

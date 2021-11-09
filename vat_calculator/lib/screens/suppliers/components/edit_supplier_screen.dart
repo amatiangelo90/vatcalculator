@@ -1,9 +1,11 @@
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import '../../../constants.dart';
@@ -28,15 +30,15 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
   @override
   Widget build(BuildContext context) {
 
+    String whatsappUrl = 'https://api.whatsapp.com/send/?phone=${getRefactoredNumber(widget.currentSupplier.tel)}';
 
-
-    String whatsappUrl = 'https://api.whatsapp.com/send/?phone=${widget.currentSupplier.tel}';
-    TextEditingController nameController = TextEditingController(text: widget.currentSupplier.nome);
-    TextEditingController addressController = TextEditingController(text: widget.currentSupplier.indirizzo_via);
-    TextEditingController numberController = TextEditingController(text: widget.currentSupplier.tel);
-    TextEditingController addressCityController = TextEditingController(text: widget.currentSupplier.indirizzo_citta);
-    TextEditingController addressCapController = TextEditingController(text: widget.currentSupplier.indirizzo_cap);
-    TextEditingController emailController = TextEditingController(text: widget.currentSupplier.mail);
+    TextEditingController controllerSupplierName = TextEditingController(text: widget.currentSupplier.nome);
+    TextEditingController controllerAddress = TextEditingController(text: widget.currentSupplier.indirizzo_via);
+    TextEditingController controllerMobileNo = TextEditingController(text: widget.currentSupplier.tel);
+    TextEditingController controllerCity = TextEditingController(text: widget.currentSupplier.indirizzo_citta);
+    TextEditingController controllerCap = TextEditingController(text: widget.currentSupplier.indirizzo_cap);
+    TextEditingController controllerEmail = TextEditingController(text: widget.currentSupplier.mail);
+    TextEditingController controllerPIva = TextEditingController(text: widget.currentSupplier.piva);
 
     final kPages = <Widget>[
       Consumer<DataBundleNotifier>(
@@ -92,174 +94,183 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           );
         },
       ),
-      Center(child: const Text('Ordini')),
-      SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            isEditingEnabled ? Row(
-              children: const [
-                SizedBox(width: 10,),
-                Text('Nome'),
-              ],
-            ) : const SizedBox(width: 0,),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
-              child: CupertinoTextField(
-                enabled: isEditingEnabled,
-                controller: nameController,
-                textInputAction: TextInputAction.next,
-                restorationId: 'Nome',
-                keyboardType: TextInputType.text,
-                clearButtonMode: OverlayVisibilityMode.editing,
-                autocorrect: false,
-              ),
-            ),
-            isEditingEnabled ? Row(
-              children: const [
-                SizedBox(width: 10,),
-                Text('Email'),
-              ],
-            ) : const SizedBox(width: 0,),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
-              child: CupertinoTextField(
-                enabled: isEditingEnabled,
-                controller: emailController,
-                textInputAction: TextInputAction.next,
-                restorationId: 'Email',
-                keyboardType: TextInputType.text,
-                clearButtonMode: OverlayVisibilityMode.editing,
-                autocorrect: false,
-              ),
-            ),
-            isEditingEnabled ? Row(
-              children: const [
-                SizedBox(width: 10,),
-                Text('Cellulare'),
-              ],
-            ) : const SizedBox(width: 0,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      const Center(child: Text('Ordini')),
+      Consumer<DataBundleNotifier>(
+        builder: (context, dataBundleNotifier, child) {
+          return Scaffold(
+            bottomSheet: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 0,),
-                const Text('+39', style: TextStyle(color: Colors.black)),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 4, 10, 0),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: 33,
-                    child: SizedBox(
-                      width:  MediaQuery.of(context).size.width *0.9,
-                      height: MediaQuery.of(context).size.height *0.05,
-                      child: CupertinoTextField(
-                        enabled: isEditingEnabled,
-                        controller: numberController,
-                        textInputAction: TextInputAction.next,
-                        restorationId: 'Cell.',
-                        keyboardType: TextInputType.number,
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            isEditingEnabled ? Row(
-              children: const [
-                SizedBox(width: 10,),
-                Text('Via'),
-              ],
-            ) : const SizedBox(width: 0,),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
-              child: SizedBox(
-                width:  MediaQuery.of(context).size.width *0.9,
-                height: MediaQuery.of(context).size.height *0.05,
-                child: CupertinoTextField(
-                  enabled: isEditingEnabled,
-                  controller: addressController,
-                  textInputAction: TextInputAction.next,
-                  restorationId: 'Via',
-                  keyboardType: TextInputType.text,
-                  clearButtonMode: OverlayVisibilityMode.editing,
-                  autocorrect: false,
-                ),
-              ),
-            ),
-            isEditingEnabled ? Row(
-              children: const [
-                SizedBox(width: 10,),
-                Text('Città'),
-              ],
-            ) : const SizedBox(width: 0,),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
-              child: SizedBox(
-                width:  MediaQuery.of(context).size.width *0.9,
-                height: MediaQuery.of(context).size.height *0.05,
-                child: CupertinoTextField(
-                  enabled: isEditingEnabled,
-                  controller: addressCityController,
-                  textInputAction: TextInputAction.next,
-                  restorationId: 'Città',
-                  keyboardType: TextInputType.text,
-                  clearButtonMode: OverlayVisibilityMode.editing,
-                  autocorrect: false,
-                ),
-              ),
-            ),
-            isEditingEnabled ? Row(
-              children: const [
-                SizedBox(width: 10,),
-                Text('CAP'),
-              ],
-            ) : const SizedBox(width: 0,),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 4, 10, 0),
-              child: SizedBox(
-                width:  MediaQuery.of(context).size.width *0.9,
-                height: MediaQuery.of(context).size.height *0.05,
-                child: CupertinoTextField(
-                  enabled: isEditingEnabled,
-                  controller: addressCapController,
-                  textInputAction: TextInputAction.next,
-                  restorationId: 'CAP',
-                  keyboardType: TextInputType.text,
-                  clearButtonMode: OverlayVisibilityMode.editing,
-                  autocorrect: false,
-                ),
-              ),
-            ),
-            SizedBox(height: 20,),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 18,
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: const DefaultButton(
-                      color: kWinterGreen,
-                      text: 'Aggiorna',
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height / 18,
-                    width: MediaQuery.of(context).size.width / 3,
-                    child: const DefaultButton(
-                      color: kPinaColor,
-                      text: 'Cancella',
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+                  padding: const EdgeInsets.all(8.0),
+                  child: CupertinoButton(
+                      color: kPrimaryColor,
+                      child: const Text('Modifica Azienda'),
+                      onPressed: () async {
+                        if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
+                          print('Il nome del fornitore è obbligatorio');
+                          CoolAlert.show(
+                            onConfirmBtnTap: (){},
+                            confirmBtnColor: kPinaColor,
+                            backgroundColor: kPinaColor,
+                            context: context,
+                            title: 'Errore',
+                            type: CoolAlertType.error,
+                            text: 'Il nome del fornitore è obbligatorio',
+                            autoCloseDuration: Duration(seconds: 2),
+                            onCancelBtnTap: (){},
+                          );
 
-        ),
+                        }else if(controllerEmail.text == null || controllerEmail.text == ''){
+                          print('L\'indirizzo email è obbligatorio');
+                          CoolAlert.show(
+                              onConfirmBtnTap: (){},
+                              backgroundColor: kPinaColor,
+                              context: context,
+                              title: 'Errore',
+                              type: CoolAlertType.error,
+                              text: 'L\'indirizzo email è obbligatorio',
+                              autoCloseDuration: Duration(seconds: 3),
+                              onCancelBtnTap: (){}
+                          );
+                        }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
+                          print('Cellulare obbligatorio');
+                          CoolAlert.show(
+                              onConfirmBtnTap: (){},
+                              backgroundColor: kPinaColor,
+                              context: context,
+                              title: 'Errore',
+                              type: CoolAlertType.error,
+                              text: 'Inserire il numero di cellulare',
+                              autoCloseDuration: Duration(seconds: 3),
+                              onCancelBtnTap: (){}
+                          );
+                        }else{
+                          KeyboardUtil.hideKeyboard(context);
+                          try{
+                            //updateProviderData(dataBundleNotifier, context);
+                          }catch(e){
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                duration: const Duration(milliseconds: 5000),
+                                backgroundColor: Colors.red,
+                                content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                          }
+                        }
+
+                      }),
+                ),
+
+              ],
+            ),
+            body: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Form(
+                autovalidate: false,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: const [
+                          Text('Nome*'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Nome Attività',
+                        keyboardType: TextInputType.emailAddress,
+                        controller: controllerSupplierName,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Nome Attività',
+                      ),
+                      Row(
+                        children: const [
+                          Text('Email*'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Email',
+                        keyboardType: TextInputType.emailAddress,
+                        controller: controllerEmail,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Email',
+                      ),
+                      Row(
+                        children: const [
+                          Text('Cellulare*'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Cellulare',
+                        keyboardType: TextInputType.number,
+                        controller: controllerMobileNo,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Cellulare',
+                      ),
+                      Row(
+                        children: const [
+                          Text('Partita Iva'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Partita Iva',
+                        keyboardType: TextInputType.number,
+                        controller: controllerPIva,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Partita Iva',
+                      ),
+                      Row(
+                        children: const [
+                          Text('Indirizzo'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Indirizzo',
+                        keyboardType: TextInputType.emailAddress,
+                        controller: controllerAddress,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Indirizzo',
+                      ),
+                      Row(
+                        children: const [
+                          Text('Città'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Città',
+                        keyboardType: TextInputType.emailAddress,
+                        controller: controllerCity,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Città',
+                      ),
+                      Row(
+                        children: const [
+                          Text('Cap'),
+                        ],
+                      ),
+                      CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Cap',
+                        keyboardType: TextInputType.number,
+                        controller: controllerCap,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Cap',
+                      ),
+                      const Text('*campo obbligatorio'),
+                      SizedBox(height: getProportionateScreenHeight(50),),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     ];
 
@@ -301,9 +312,10 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   IconButton(
                       icon: const Icon(Icons.phone),
                       onPressed: () => {
-                        launch('tel://${widget.currentSupplier.tel}')
+                        launch('tel://${getRefactoredNumber(widget.currentSupplier.tel)}')
                       }
                   ),
+
                   IconButton(
                       icon: const Icon(Icons.message),
                       onPressed: () => {
@@ -386,5 +398,12 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
       ],
     ));
     return list;
+  }
+
+  getRefactoredNumber(String tel) {
+    if(tel.contains('+39') || tel.contains('0039')){
+      return tel;
+    }
+    return '+39' + tel;
   }
 }

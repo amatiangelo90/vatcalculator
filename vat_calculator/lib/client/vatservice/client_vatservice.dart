@@ -990,4 +990,99 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
     }
   }
 
+  Future<Response> addProviderDetailsToBranch({BranchModel branchModel}) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        branchModel.toMap());
+
+    Response post;
+    print('Add provider configuration to  : ' + branchModel.pkBranchId.toString());
+    print('Calling update order method ' + VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE + ' to modify provider for branch with id ' + branchModel.pkBranchId.toString());
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByCode({String code}) async {
+    var dio = Dio();
+
+    List<ResponseAnagraficaFornitori> suppliersList = [];
+
+    String body = json.encode(
+        ResponseAnagraficaFornitori(
+          pkSupplierId: 0,
+          cf: '',
+          extra: code,
+          fax: '',
+          id: '',
+          indirizzo_cap:'',
+          indirizzo_citta: '',
+          indirizzo_extra: '',
+          indirizzo_provincia: '',
+          indirizzo_via: '',
+          mail: '',
+          nome: '',
+          paese: '',
+          pec: '',
+          piva: '',
+          referente: '',
+          tel: '',
+          fkBranchId: 0,
+        ).toMap());
+
+    Response post;
+    print('Request body for Vat Service (Retrieve Suppliers list by branch): ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_SUPPLIER_BY_CODE_ALIAS_EXTRA,
+        data: body,
+      );
+
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_SUPPLIER_BY_CODE_ALIAS_EXTRA + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((supplierElement) {
+
+        suppliersList.add(ResponseAnagraficaFornitori(
+          pkSupplierId: supplierElement['pk_supplier_id'],
+          cf: supplierElement['cf'],
+          extra: supplierElement['extra'],
+          fax: supplierElement['fax'],
+          id: supplierElement['id'],
+          indirizzo_cap: supplierElement['indirizzo_cap'],
+          indirizzo_citta: supplierElement['indirizzo_citta'],
+          indirizzo_extra: supplierElement['indirizzo_extra'],
+          indirizzo_provincia: supplierElement['indirizzo_provincia'],
+          indirizzo_via: supplierElement['indirizzo_via'],
+          mail: supplierElement['mail'],
+          nome: supplierElement['name'],
+          paese: supplierElement['paese'],
+          pec: supplierElement['pec'],
+          piva: supplierElement['piva'],
+          referente: supplierElement['referente'],
+          tel: supplierElement['tel'],
+          fkBranchId: supplierElement['fkBranchId'],
+        ));
+      });
+      return suppliersList;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
 }

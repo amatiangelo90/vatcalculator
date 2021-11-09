@@ -5,11 +5,16 @@ import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fatture_api.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart';
+import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
+import 'package:vat_calculator/components/custom_surfix_icon.dart';
 import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/components/form_error.dart';
+import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
 import 'package:vat_calculator/components/item_menu.dart';
+import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
 import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
@@ -24,6 +29,15 @@ class VatFattureInCloudCalculatorBody extends StatefulWidget {
 
 class _VatFattureInCloudCalculatorBodyState
     extends State<VatFattureInCloudCalculatorBody> {
+
+  final List<String> errors = [];
+  String importExpences;
+  final _formExpenceKey = GlobalKey<FormState>();
+
+  TextEditingController recessedController = TextEditingController();
+  TextEditingController casualeRecessedController = TextEditingController();
+
+
   DateTimeRange _currentDateTimeRange;
   FattureInCloudClient iCloudClient;
   DateTime _currentDateForDateRangePicker;
@@ -85,6 +99,188 @@ class _VatFattureInCloudCalculatorBodyState
             children: [
               Column(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Card(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          const Text('Registra Incasso'),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.previousIva(); },),
+                              ),
+                              Text('Iva ' + dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList].toString() + '%', style: const TextStyle(fontSize: 20),),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.nextIva(); },),
+                              ),
+                            ],
+                          ),
+                          Form(
+                            key: _formExpenceKey,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: buildExpenceImportForField(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: buildCasualeExpenceForField(),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                  child: FormError(errors: errors),
+                                ),
+
+                                Padding(
+                                  padding: const EdgeInsets.all(18.0),
+                                  child: DefaultButton(
+                                    text: "Salva Importo",
+                                    press: () async {
+                                      if (_formExpenceKey.currentState.validate()) {
+                                        _formExpenceKey.currentState.save();
+                                        KeyboardUtil.hideKeyboard(context);
+                                        try{
+
+                                          ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+                                          await clientService.performSaveRecessed(
+                                              double.parse(recessedController.text),
+                                              casualeRecessedController.text,
+                                              dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
+                                              dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                              dataBundleNotifier.currentBranch.pkBranchId
+                                          );
+
+                                          List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                                          dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+
+                                          recessedController.clear();
+                                          casualeRecessedController.clear();
+
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                              duration: Duration(milliseconds: 2000),
+                                              backgroundColor: Colors.green,
+                                              content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+
+                                        }catch(e){
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              duration: const Duration(milliseconds: 6000),
+                                              backgroundColor: Colors.red,
+                                              content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                                        }
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Card(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Ultimi 10 incassi registrati'),
+                          ),
+                          const SizedBox(height: 15,),
+                          Column(
+                            children: buildRecessedLastTenDays(dataBundleNotifier),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: DefaultButton(
+                              text: "Dettaglio Incassi",
+                              press: () async {
+
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Card(
+                      shape: BeveledRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 2,
+                      child: Column(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Dettaglio settimanale'),
+                          ),
+                          const SizedBox(height: 15,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_back_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.subtractWeekToDateTimeRange(); },),
+                              ),
+                              Text(dataBundleNotifier.currentDateTimeRange.start.day.toString()
+                                  + '/' + dataBundleNotifier.currentDateTimeRange.start.month.toString() + ' - ' +
+                                  dataBundleNotifier.currentDateTimeRange.end.day.toString()
+                                  + '/' + dataBundleNotifier.currentDateTimeRange.end.month.toString(), style: const TextStyle(fontSize: 20),),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                                child: IconButton(icon: const Icon(
+                                  Icons.arrow_forward_ios,
+                                  color: kPrimaryColor,
+                                ), onPressed: () { dataBundleNotifier.addWeekToDateTimeRange(); },),
+                              ),
+                            ],
+                          ),
+                          Column(
+                              children: [buildWeekDetailReceed(dataBundleNotifier),]
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(18.0),
+                            child: DefaultButton(
+                              text: "Dettaglio Incassi",
+                              press: () async {
+                                Navigator.pushNamed(context, DetailsRecessed.routeName);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   Column(
                     children: [
                       TextButton(
@@ -865,5 +1061,164 @@ class _VatFattureInCloudCalculatorBodyState
       print(e);
       return 0;
     }
+  }
+
+  void addError({String error}) {
+    if (!errors.contains(error)) {
+      setState(() {
+        errors.add(error);
+      });
+    }
+  }
+
+  void removeError({String error}) {
+    if (errors.contains(error)) {
+      setState(() {
+        errors.remove(error);
+      });
+    }
+  }
+
+  TextFormField buildExpenceImportForField() {
+
+    return TextFormField(
+      textAlign: TextAlign.center,
+      keyboardType: const TextInputType.numberWithOptions(signed: true, decimal: true),
+      onSaved: (newValue) => importExpences = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          removeError(error: kImportNullError);
+        }else if (value.isNotEmpty) {
+          removeError(error: kInvalidImportNullError);
+        }
+        return null;
+      },
+      validator: (value) {
+        if (value.isEmpty) {
+          addError(error: kImportNullError);
+          return "";
+        }else if(double.tryParse(value) == null){
+          addError(error: kInvalidImportNullError);
+          return "";
+        }
+        return null;
+      },
+      controller: recessedController,
+      decoration: const InputDecoration(
+        labelText: "Incasso",
+        hintText: "Inserisci importo",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/euro.svg"),
+      ),
+    );
+  }
+
+  TextFormField buildCasualeExpenceForField() {
+
+    return TextFormField(
+      textAlign: TextAlign.center,
+      onSaved: (newValue) => importExpences = newValue,
+      onChanged: (value) {
+        if (value.isNotEmpty) {
+          removeError(error: kCasualeExpenceNullError);
+        }
+        return null;
+      },
+      validator: (value) {
+        if (value.isEmpty) {
+          addError(error: kCasualeExpenceNullError);
+          return "";
+        }
+        return null;
+      },
+      controller: casualeRecessedController,
+      decoration: const InputDecoration(
+
+        labelText: "Casuale",
+        hintText: "Inserisci casuale",
+        // If  you are using latest version of flutter then lable text and hint text shown like this
+        // if you r using flutter less then 1.20.* then maybe this is not working properly
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/receipt.svg"),
+      ),
+    );
+  }
+
+  buildRecessedLastTenDays(DataBundleNotifier dataBundleNotifier) {
+    List<Widget> recessedList = [];
+
+    if (dataBundleNotifier
+        .getCurrentListRecessed()
+        .isEmpty) {
+      return recessedList;
+    }
+
+    Table table = Table(
+      border: TableBorder.symmetric(inside: BorderSide(width: 1, color: kCustomWhite)),
+      children: [
+        TableRow(children: [
+          Column(children: const [
+            Text('Importo(€)')
+          ]),
+          Column(children: const [
+            Text('Casuale')
+          ]),
+          Column(children: const [
+            Text('Data')
+          ]),
+        ]),
+      ],
+    );
+
+    if (dataBundleNotifier
+        .getCurrentListRecessed()
+        .length > 9) {
+      dataBundleNotifier.getCurrentListRecessed().sublist(0, 10).forEach((
+          recessedModel) {
+        buildTableRowFromRecessData(table, recessedModel);
+      });
+    }else {
+      dataBundleNotifier.getCurrentListRecessed().sublist(0, dataBundleNotifier
+          .getCurrentListRecessed()
+          .length).forEach((recessedModel) {
+        buildTableRowFromRecessData(table, recessedModel);
+      });
+    }
+    recessedList.add(
+        table
+    );
+    return recessedList;
+  }
+
+  void buildTableRowFromRecessData(Table table, RecessedModel recessedModel) {
+    table.children.add(
+        TableRow(
+            children: [
+              Column(children: [
+                Text(recessedModel.amount.toString())
+              ]),
+              Column(children: [
+                Text(recessedModel.description)
+              ]),
+              Column(children: [
+                Text(DateTime.fromMillisecondsSinceEpoch(recessedModel.dateTimeRecessed).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(recessedModel.dateTimeRecessed).month.toString())
+              ]),
+            ])
+    );
+  }
+
+  buildWeekDetailReceed(DataBundleNotifier dataBundleNotifier) {
+    double total = 0.0;
+
+    dataBundleNotifier.getRecessedListByRangeDate(
+        dataBundleNotifier.currentDateTimeRange.start,
+        dataBundleNotifier.currentDateTimeRange.end).forEach((recessedItem) {
+      total = total + recessedItem.amount;
+    });
+
+    return Text(total.toString());
+
   }
 }

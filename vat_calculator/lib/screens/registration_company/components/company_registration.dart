@@ -10,7 +10,7 @@ import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
-import 'package:vat_calculator/screens/registration_company/components/vatprovider.dart';
+import 'package:vat_calculator/screens/registration_company/components/fatture_provider_registration.dart';
 import 'package:vat_calculator/theme.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -171,7 +171,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
                 children: <Widget>[
                   Row(
                     children: [
-                      Text('Email'),
+                      Text('Email*'),
                     ],
                   ),
                   CupertinoTextField(
@@ -186,7 +186,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
                   ),
                   Row(
                     children: const [
-                      Text('Nome'),
+                      Text('Nome*'),
                     ],
                   ),
                   CupertinoTextField(
@@ -200,7 +200,7 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
                   ),
                   Row(
                     children: [
-                      Text('Cellulare'),
+                      Text('Cellulare*'),
                     ],
                   ),
                   CupertinoTextField(
@@ -268,6 +268,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
                     autocorrect: false,
                     placeholder: 'Cap',
                   ),
+                  const Text('*campo obbligatorio'),
+                  SizedBox(height: getProportionateScreenHeight(50),),
                 ],
               ),
             ),
@@ -332,8 +334,8 @@ class _CompanyRegistrationState extends State<CompanyRegistration> {
 
 
 
-      VatProviderState.controllerApiKeyOrUser.clear();
-      VatProviderState.controllerApiUidOrPassword.clear();
+      RegisterFattureProviderScreenState.controllerApiKeyOrUser.clear();
+      RegisterFattureProviderScreenState.controllerApiUidOrPassword.clear();
 
 
     }

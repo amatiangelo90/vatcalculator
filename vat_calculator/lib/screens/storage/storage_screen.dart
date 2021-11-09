@@ -2,6 +2,7 @@ import 'package:data_table_2/data_table_2.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
@@ -432,20 +433,29 @@ class _StorageScreenState extends State<StorageScreen>{
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     '   ' + currentStorageElement.name,
                     style: TextStyle(
                       fontSize: dataBundleNotifier.currentStorage.name ==
                               currentStorageElement.name
-                          ? getProportionateScreenWidth(20)
-                          : getProportionateScreenWidth(16),
+                          ? getProportionateScreenWidth(16)
+                          : getProportionateScreenWidth(13),
                       color: dataBundleNotifier.currentStorage.name ==
                               currentStorageElement.name
                           ? Colors.white
                           : Colors.black,
                     ),
                   ),
+                  dataBundleNotifier.currentStorage.name ==
+                      currentStorageElement.name ? Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
+                        child: SvgPicture.asset(
+                    'assets/icons/success-green.svg',
+                    width: 22,
+                  ),
+                      ) : SizedBox(height: 0,),
                 ],
               ),
             ),
