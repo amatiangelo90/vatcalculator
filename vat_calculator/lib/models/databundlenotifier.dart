@@ -29,6 +29,10 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  List<ResponseAnagraficaFornitori> currentListSuppliersDuplicated = [
+
+  ];
+
   List<StorageModel> currentStorageList = [
 
   ];
@@ -226,8 +230,10 @@ class DataBundleNotifier extends ChangeNotifier {
 
     List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
+    currentListSuppliersDuplicated.clear();
     sleep(const Duration(seconds: 1));
     currentListSuppliers.addAll(_supplierModelList);
+    currentListSuppliersDuplicated.addAll(_supplierModelList);
 
     List<StorageModel> _storageModel = await clientService.retrieveStorageListByBranch(currentBranch);
     currentStorageList.clear();
@@ -349,6 +355,9 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentListSuppliers.isNotEmpty){
       currentListSuppliers.clear();
     }
+    if(currentListSuppliersDuplicated.isNotEmpty){
+      currentListSuppliers.clear();
+    }
 
     if(currentStorageList.isNotEmpty){
       currentStorageList.clear();
@@ -395,9 +404,10 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void addCurrentSuppliersList(List<ResponseAnagraficaFornitori> suppliersModelList) {
-
     currentListSuppliers.clear();
+    currentListSuppliersDuplicated.clear();
     currentListSuppliers.addAll(suppliersModelList);
+    currentListSuppliersDuplicated.addAll(suppliersModelList);
     notifyListeners();
   }
 
@@ -632,5 +642,26 @@ class DataBundleNotifier extends ChangeNotifier {
     currentBranch.apiUidOrPassword = apiUidOrPassword;
     notifyListeners();
 
+  }
+
+  void filterCurrentListSupplierByName(String currentText) {
+    if(currentText == ''){
+      currentListSuppliersDuplicated.clear();
+      currentListSuppliersDuplicated.addAll(currentListSuppliers);
+    }else {
+
+      List<ResponseAnagraficaFornitori> listTemp = [];
+      currentListSuppliers.forEach((element) {
+        if(element.nome.contains(currentText) || element.extra.contains(currentText)){
+          listTemp.add(
+              element
+          );
+        }
+      });
+
+      currentListSuppliersDuplicated.clear();
+      currentListSuppliersDuplicated.addAll(listTemp);
+    }
+    notifyListeners();
   }
 }

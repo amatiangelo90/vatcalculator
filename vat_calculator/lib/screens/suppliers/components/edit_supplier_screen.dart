@@ -98,7 +98,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            bottomSheet: Row(
+            bottomSheet: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
@@ -160,9 +160,8 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
 
                       }),
                 ),
-
               ],
-            ),
+            ) : const SizedBox(width: 0,),
             body: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Form(
@@ -171,6 +170,10 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: <Widget>[
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('Dettagli Fornitore'),
+                      ),
                       Row(
                         children: const [
                           Text('Nome*'),
@@ -178,6 +181,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       ),
                       CupertinoTextField(
                         textInputAction: TextInputAction.next,
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         restorationId: 'Nome Attività',
                         keyboardType: TextInputType.emailAddress,
                         controller: controllerSupplierName,
@@ -192,6 +196,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       CupertinoTextField(
                         textInputAction: TextInputAction.next,
                         restorationId: 'Email',
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         keyboardType: TextInputType.emailAddress,
                         controller: controllerEmail,
                         clearButtonMode: OverlayVisibilityMode.editing,
@@ -203,6 +208,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Cellulare',
                         keyboardType: TextInputType.number,
@@ -216,6 +222,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Partita Iva',
                         keyboardType: TextInputType.number,
@@ -229,6 +236,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Indirizzo',
                         keyboardType: TextInputType.emailAddress,
@@ -242,6 +250,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Città',
                         keyboardType: TextInputType.emailAddress,
@@ -255,6 +264,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
+                        enabled: dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Cap',
                         keyboardType: TextInputType.number,
@@ -262,7 +272,8 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         clearButtonMode: OverlayVisibilityMode.editing,
                         placeholder: 'Cap',
                       ),
-                      const Text('*campo obbligatorio'),
+                      dataBundleNotifier.dataBundleList[0].id.toString() == widget.currentSupplier.id ?
+                      const Text('*campo obbligatorio') : SizedBox(width: 0,),
                       SizedBox(height: getProportionateScreenHeight(50),),
                     ],
                   ),

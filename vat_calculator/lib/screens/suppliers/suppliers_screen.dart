@@ -24,6 +24,23 @@ class SuppliersScreen extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
+            bottomSheet: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Row(
+                  children: const [
+                    Icon(Icons.circle, color: kPinaColor,),
+                    Text(' Importati'),
+                  ],
+                ),
+                Row(
+                  children: const [
+                    Icon(Icons.circle, color: kBeigeColor,),
+                    Text(' Creati dall\'utente'),
+                  ],
+                ),
+              ],
+            ),
             backgroundColor: kCustomWhite,
             appBar: AppBar(
               leading: IconButton(
@@ -115,26 +132,39 @@ class SuppliersScreen extends StatelessWidget {
         });
   }
 
-  Widget buildListSuppliers(DataBundleNotifier currentListSuppliers, context) {
+  Widget buildListSuppliers(DataBundleNotifier dataBundleNotifier, context) {
     List<Widget> listout = [];
 
-    currentListSuppliers.currentListSuppliers.forEach((supplier) {
+    listout.add(
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+        child: CupertinoTextField(
+          textInputAction: TextInputAction.next,
+          restorationId: 'Ricerca Fornitore',
+          keyboardType: TextInputType.text,
+          clearButtonMode: OverlayVisibilityMode.editing,
+          placeholder: 'Ricerca Fornitore per nome o codice',
+          onChanged: (currentText) {
+            dataBundleNotifier.filterCurrentListSupplierByName(currentText);
+          },
+        ),
+      ),
+    );
+    dataBundleNotifier.currentListSuppliersDuplicated.forEach((supplier) {
       listout.add(
         GestureDetector(
           onTap: () async {
-            ClientVatService clientVatService = ClientVatService();
-            List<ProductModel> retrieveProductsBySupplier = await clientVatService.retrieveProductsBySupplier(supplier);
-            currentListSuppliers.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-            //context.loaderOverlay.hide();
+            List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier.getclientServiceInstance().retrieveProductsBySupplier(supplier);
+            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
             Navigator.push(context,  MaterialPageRoute(builder: (context) => EditSuppliersScreen(currentSupplier: supplier,),),);
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 5, 10, 2),
             child: Container(
-              padding: EdgeInsets.only(left: 12.0),
+              padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: kBeigeColor,
+                color: dataBundleNotifier.dataBundleList[0].id.toString() == supplier.id ? kBeigeColor : kPinaColor,
               ),
               child: Container(
                 decoration: const BoxDecoration(
@@ -180,7 +210,9 @@ class SuppliersScreen extends StatelessWidget {
     });
 
 
-
+    listout.add(SizedBox(
+      height: getProportionateScreenHeight(50),
+    ));
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
