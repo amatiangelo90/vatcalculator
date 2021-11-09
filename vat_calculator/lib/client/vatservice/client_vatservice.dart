@@ -1111,4 +1111,32 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
+
+  removeSupplierFromCurrentBranch(ResponseAnagraficaFornitori requestRemoveSupplierFromBranch) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        requestRemoveSupplierFromBranch.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH + '...');
+    print('Body Request remove supplier from branch: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH,
+        data: body,
+      );
+
+      if(post != null && post.data){
+        print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH + '): ' + post.data);
+      }
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
 }

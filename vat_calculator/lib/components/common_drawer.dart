@@ -579,6 +579,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
           ),
           onTap: () async {
             context.loaderOverlay.show();
+
             Navigator.pop(context);
 
             await dataBundleNotifier.setCurrentBranch(currentBranch);

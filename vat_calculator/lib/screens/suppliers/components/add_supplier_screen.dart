@@ -642,7 +642,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
             children: <Widget>[
               Flexible(
                 child: TextButton(
-                  child: Text("Clear",style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(13)),),
+                  child: Text("Clear", style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(13)),),
                   onPressed: () {
                     supplierCodeControllerSearch.clear();
                   },

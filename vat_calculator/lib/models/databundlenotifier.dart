@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:vat_calculator/client/email_sender/emailservice.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
@@ -41,6 +42,10 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  List<ProductModel> currentProductModelListForSupplierDuplicated = [
+
+  ];
+
   List<StorageProductModel> currentStorageProductListForCurrentStorage = [
 
   ];
@@ -74,6 +79,7 @@ class DataBundleNotifier extends ChangeNotifier {
   String currentPrivilegeType;
 
   ClientVatService clientService = ClientVatService();
+  EmailSenderService emailService = EmailSenderService();
 
   bool isSpecialUser = false;
 
@@ -107,6 +113,14 @@ class DataBundleNotifier extends ChangeNotifier {
     }
   }
 
+  EmailSenderService getEmailServiceInstance(){
+    if(emailService == null){
+      return EmailSenderService();
+    }else{
+      return emailService;
+    }
+  }
+
   void enableSpecialUser(){
     isSpecialUser = true;
     notifyListeners();
@@ -115,6 +129,8 @@ class DataBundleNotifier extends ChangeNotifier {
   void addAllCurrentProductSupplierList(List<ProductModel> listProduct){
     currentProductModelListForSupplier.clear();
     currentProductModelListForSupplier.addAll(listProduct);
+    currentProductModelListForSupplierDuplicated.clear();
+    currentProductModelListForSupplierDuplicated.addAll(listProduct);
     notifyListeners();
   }
 
@@ -652,15 +668,38 @@ class DataBundleNotifier extends ChangeNotifier {
 
       List<ResponseAnagraficaFornitori> listTemp = [];
       currentListSuppliers.forEach((element) {
-        if(element.nome.contains(currentText) || element.extra.contains(currentText)){
+        if(element.nome.toLowerCase().contains(currentText.toLowerCase())
+            || element.extra.toLowerCase().contains(currentText.toLowerCase())){
           listTemp.add(
               element
           );
         }
       });
-
       currentListSuppliersDuplicated.clear();
       currentListSuppliersDuplicated.addAll(listTemp);
+    }
+    notifyListeners();
+  }
+
+  void filterCurrentListProductByName(String currentText) {
+
+    if(currentText == ''){
+      currentProductModelListForSupplierDuplicated.clear();
+      currentProductModelListForSupplierDuplicated.addAll(currentProductModelListForSupplier);
+    }else{
+
+
+      List<ProductModel> listTemp = [];
+      currentProductModelListForSupplier.forEach((element) {
+        print(currentText + ' on ' + element.nome);
+
+
+        if(element.nome.toLowerCase().contains(currentText.toLowerCase())){
+          listTemp.add(element);
+        }
+      });
+      currentProductModelListForSupplierDuplicated.clear();
+      currentProductModelListForSupplierDuplicated.addAll(listTemp);
     }
     notifyListeners();
   }

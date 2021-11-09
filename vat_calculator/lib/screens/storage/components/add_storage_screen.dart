@@ -52,7 +52,7 @@ class AddStorageScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: CupertinoButton(
                 color: kPrimaryColor,
-                child: const Text('Salva Azienda'),
+                child: const Text('Crea Magazzino'),
                 onPressed: () async {
                   if(_nameController.text.isEmpty || _nameController.text == ''){
                     buildSnackBar(text: 'Inserire il nome del magazzino', color: kPinaColor);

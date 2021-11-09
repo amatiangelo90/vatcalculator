@@ -1,6 +1,7 @@
 import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -11,6 +12,7 @@ import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
+import '../suppliers_screen.dart';
 import 'edit_product.dart';
 
 class EditSuppliersScreen extends StatefulWidget {
@@ -105,7 +107,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: CupertinoButton(
                       color: kPrimaryColor,
-                      child: const Text('Modifica Azienda'),
+                      child: const Text('Modifica Fornitore'),
                       onPressed: () async {
                         if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
                           print('Il nome del fornitore è obbligatorio');
@@ -306,33 +308,133 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 ),
                 iconTheme: const IconThemeData(color: Colors.white),
                 backgroundColor: kPrimaryColor,
-                centerTitle: true,
-                title: Column(
-                  children: [
-                    Text(
-                      widget.currentSupplier.nome,
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(15),
-                        color: kCustomWhite,
-                      ),
-                    ),
-                  ],
+                title: Text(
+                  widget.currentSupplier.nome,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(17),
+                    color: kCustomWhite,
+                  ),
                 ),
                 elevation: 2,
                 actions: [
                   IconButton(
-                      icon: const Icon(Icons.phone),
+                      icon: SvgPicture.asset(
+                        'assets/icons/Phone.svg',
+                        color: kCustomWhite,
+                        height: getProportionateScreenHeight(23),
+                      ),
                       onPressed: () => {
                         launch('tel://${getRefactoredNumber(widget.currentSupplier.tel)}')
                       }
                   ),
-
                   IconButton(
-                      icon: const Icon(Icons.message),
+                      icon: SvgPicture.asset(
+                        'assets/icons/ws.svg',
+                        height: getProportionateScreenHeight(25),
+                      ),
                       onPressed: () => {
                         launch(whatsappUrl)
                       }
                   ),
+                  IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/remove-icon.svg',
+                        color: Colors.red,
+                        height: getProportionateScreenHeight(26),
+                      ),
+                      onPressed: () async {
+
+                        Widget cancelButton = TextButton(
+                          child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+                          onPressed:  () {
+                            Navigator.of(context).pop();
+                          },
+                        );
+
+                        Widget continueButton = TextButton(
+                          child: const Text("Elimina", style: TextStyle(color: kPinaColor)),
+                          onPressed:  () async {
+                            ResponseAnagraficaFornitori requestRemoveSupplierFromBranch = widget.currentSupplier;
+                            requestRemoveSupplierFromBranch.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
+                            await dataBundleNotifier.getclientServiceInstance().removeSupplierFromCurrentBranch(requestRemoveSupplierFromBranch);
+                            List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
+                                .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                            dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
+                            Navigator.pushNamed(context, SuppliersScreen.routeName);
+                          },
+                        );
+
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog (
+                              actions: [
+                                ButtonBar(
+                                  alignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    cancelButton,
+                                    continueButton,
+                                  ],
+                                ),
+                              ],
+                              contentPadding: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              content: Builder(
+                                builder: (context) {
+                                  var height = MediaQuery.of(context).size.height;
+                                  var width = MediaQuery.of(context).size.width;
+                                  return SizedBox(
+                                    height: getProportionateScreenHeight(200),
+                                    width: width - 90,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topRight: Radius.circular(10.0),
+                                                  topLeft: Radius.circular(10.0) ),
+                                              color: kPrimaryColor,
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text('      Elimina Fornitore',
+                                                textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: getProportionateScreenWidth(15),
+                                                      fontWeight: FontWeight.bold,
+                                                      color: kCustomWhite,
+                                                    )),
+                                                IconButton(icon: const Icon(
+                                                  Icons.clear,
+                                                  color: kCustomWhite,
+                                                ), onPressed: () { Navigator.pop(context); },),
+
+                                              ],
+                                            ),
+                                          ),
+                                          const Text(''),
+                                          const Text(''),
+                                          Center(
+                                            child: Text('Vuoi davvero eliminare il fornitore ' + widget.currentSupplier.nome, textAlign: TextAlign.center,),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                        );
+
+
+                      }
+                  ),
+                  SizedBox(width: 5,),
                 ],
                 bottom: TabBar(
                   tabs: kTab,
@@ -373,13 +475,28 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
       return list;
     }
 
-    dataBundleNotifier.currentProductModelListForSupplier.forEach((currentProduct) {
-      list.add(Padding(
-        padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
-        child: GestureDetector(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(product: currentProduct,supplier: widget.currentSupplier,),),);
+    list.add(
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        child: CupertinoTextField(
+          textInputAction: TextInputAction.next,
+          restorationId: 'Ricerca prodotto',
+          keyboardType: TextInputType.text,
+          clearButtonMode: OverlayVisibilityMode.editing,
+          placeholder: 'Ricerca prodotto',
+          onChanged: (currentText) {
+            dataBundleNotifier.filterCurrentListProductByName(currentText);
           },
+        ),
+      ),
+    );
+    dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
+      list.add(GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(product: currentProduct,supplier: widget.currentSupplier,),),);
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
              children: [
@@ -390,7 +507,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                    Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
                  ],
                ),
-               Text(currentProduct.prezzo_lordo.toString()),
+               Text('€ ' + currentProduct.prezzo_lordo.toString()),
              ],
           ),
         ),

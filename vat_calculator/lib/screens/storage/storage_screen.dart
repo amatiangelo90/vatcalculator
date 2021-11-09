@@ -209,7 +209,8 @@ class _StorageScreenState extends State<StorageScreen>{
                   buildStorageChooserDialog(context, dataBundleNotifier);
                 },
                 child: Text(
-                  dataBundleNotifier.currentStorage != null ? dataBundleNotifier.currentStorage.name : 'Crea Magazzino',
+                  dataBundleNotifier.currentStorageList.isNotEmpty ?
+                  dataBundleNotifier.currentStorage.name : 'Crea Magazzino',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
                     color: kCustomWhite,
