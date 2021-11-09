@@ -26,6 +26,8 @@ const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID = 'http://$host:8080/
 
 const String VAT_SERVICE_URL_CHECK_SPECIAL_USER = 'http://$host:8080/vatservices/api/v1/check/specialuser';
 
+const String VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH = 'http://$host:8080/vatservices/api/v1/create/relationbranchsupplier';
+
 //Update url
 const String VAT_SERVICE_URL_UPDATE_PRODUCT = 'http://$host:8080/vatservices/api/v1/update/product';
 const String VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID = 'http://$host:8080/vatservices/api/v1/update/orderstatus';

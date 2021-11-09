@@ -1085,4 +1085,30 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
+
+  Future<int> addSupplierToCurrentBranch(ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier) async {
+    var dio = Dio();
+
+    List<ResponseAnagraficaFornitori> suppliersList = [];
+
+    String body = json.encode(
+        supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.toMap());
+
+    Response post;
+    print('Request body for Vat Service (Add supplier to brancg): ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH,
+        data: body,
+      );
+
+      print('Response From Vat Service (' + VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH + '): ' + post.data.toString());
+
+      int result = post.data;
+      return result;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
 }
