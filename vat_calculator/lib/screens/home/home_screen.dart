@@ -27,12 +27,12 @@ class HomeScreen extends StatelessWidget {
           child: Scaffold(
             drawer: const CommonDrawer(),
             appBar: AppBar(
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              iconTheme: const IconThemeData(color: kPrimaryColor),
+              backgroundColor: kCustomWhite,
               actions: [
                 SvgPicture.asset(
                   'assets/icons/User Icon.svg',
-                  color: kCustomWhite,
+                  color: kPrimaryColor,
                   width: 25,
                 ),
                 const SizedBox(width: 15,),
@@ -44,14 +44,14 @@ class HomeScreen extends StatelessWidget {
                     "Ciao ${dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''}",
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(17),
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                     ),
                   ),
                   Text(
                     dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].email : '',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(7),
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                     ),
                   ),
                 ],

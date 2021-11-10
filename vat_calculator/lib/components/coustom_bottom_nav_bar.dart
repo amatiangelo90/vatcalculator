@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../constants.dart';
@@ -33,11 +34,11 @@ class CustomBottomNavBar extends StatelessWidget {
             ),
           ),
           child: SafeArea(
-              bottom: true,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Row(
+                  Stack(
+                    alignment: Alignment.bottomCenter,
                     children: [
                       IconButton(
                           icon: SvgPicture.asset(
@@ -53,10 +54,16 @@ class CustomBottomNavBar extends StatelessWidget {
                           },
                       ),
                       MenuState.home == selectedMenu
-                          ? Text('Home', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(11)),) : SizedBox(height: 0,)
+                          ? Card(
+                        color: kPrimaryColor,
+                          child: Text(' Home ',
+                            style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                          ),
+                      ) : const SizedBox(height: 0,)
                     ],
                   ),
-                  Row(
+                  Stack(
+                    alignment: Alignment.bottomCenter,
                     children: [
                       IconButton(
                           icon: SvgPicture.asset(
@@ -71,28 +78,16 @@ class CustomBottomNavBar extends StatelessWidget {
                             Navigator.pushNamed(context, StorageScreen.routeName);
                           }),
                       MenuState.storage == selectedMenu
-                          ? Text('Magazzino', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(11)),) : SizedBox(height: 0,)
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: SvgPicture.asset(
-                          "assets/icons/party.svg",
-                          color: MenuState.vatcalc == selectedMenu
-                              ? kPrimaryColor
-                              : inActiveIconColor,
-                          width: 30,
+                          ? Card(
+                        color: kPrimaryColor,
+                        child: Text(' Magazzino ',
+                          style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
                         ),
-                        onPressed: () {
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                        },
-                      ),
-                      MenuState.vatcalc == selectedMenu
-                          ? Text('Eventi', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(11)),) : SizedBox(height: 0,)
-                    ],
+                      ) : const SizedBox(height: 0,)
+                     ],
                   ),
-                  Row(
+                  Stack(
+                    alignment: Alignment.bottomCenter,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -115,7 +110,7 @@ class CustomBottomNavBar extends StatelessWidget {
                                       context, OrdersScreen.routeName);
                                 }),
                             Positioned(
-                              top: 3.0,
+                              top: 1.0,
                               right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,
                               child: Stack(
                                 children: <Widget>[
@@ -140,7 +135,7 @@ class CustomBottomNavBar extends StatelessWidget {
                               ),
                             ),
                             Positioned(
-                              top: 15.0,
+                              top: 13.0,
                               right: 6.0,
                               child: Stack(
                                 children: <Widget>[
@@ -168,7 +163,38 @@ class CustomBottomNavBar extends StatelessWidget {
                         ),
                       ),
                       MenuState.orders == selectedMenu
-                          ? Text('Ordini', style: TextStyle(color: kPrimaryColor,  fontSize: getProportionateScreenHeight(11)),) : const SizedBox(height: 0,)
+                          ? Card(
+                        color: kPrimaryColor,
+                        child: Text(' Ordini ',
+                          style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                        ),
+                      ) : const SizedBox(height: 0,)],
+                  ),
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 3),
+                        child: IconButton(
+                            icon: SvgPicture.asset(
+                              "assets/icons/User Icon.svg",
+                              color: MenuState.profile == selectedMenu
+                                  ? kPrimaryColor
+                                  : inActiveIconColor,
+                              width: 30,
+                            ),
+                            onPressed: () {
+                              dataBundleNotifier.setShowIvaButtonToFalse();
+                              Navigator.pushNamed(context, ProfileEditiScreen.routeName);
+                            }),
+                      ),
+                      MenuState.profile == selectedMenu
+                          ? Card(
+                        color: kPrimaryColor,
+                        child: Text(' Profilo ',
+                          style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                        ),
+                      ) : const SizedBox(height: 0,)
                     ],
                   ),
                 ],

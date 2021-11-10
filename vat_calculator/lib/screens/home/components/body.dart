@@ -22,11 +22,12 @@ class _BodyState extends State<Body> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          color: kPrimaryColor,
+          color: Colors.white,
           child: Container(
+            height: getProportionateScreenHeight(150),
             decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-              color: Colors.white,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40.0)),
+              color: kCustomWhite,
             ),
             child: dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
               padding: const EdgeInsets.all(8.0),
@@ -233,7 +234,8 @@ class _BodyState extends State<Body> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                          child: Text('' + dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(15)),),
+                          child: Text('' + dataBundleNotifier.currentBranch.companyName,
+                            style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(15)),),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),

@@ -247,7 +247,7 @@ class DataBundleNotifier extends ChangeNotifier {
     List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
     currentListSuppliersDuplicated.clear();
-    sleep(const Duration(seconds: 1));
+
     currentListSuppliers.addAll(_supplierModelList);
     currentListSuppliersDuplicated.addAll(_supplierModelList);
 

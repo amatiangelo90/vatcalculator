@@ -43,7 +43,6 @@ class ArubaCalculatorScreen extends StatelessWidget {
             ],
           ),
           body: const VatArubaCalculatorBody(),
-          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.vatcalc),
         );
       },
     );

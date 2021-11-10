@@ -88,7 +88,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                                 if(dataBundleNotifier.currentBranch != null){
                                   List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
-                                  sleep(Duration(seconds: 2));
+                                  // sleep(Duration(seconds: 2));
                                   List<ResponseAnagraficaFornitori> _suppliersModelList2 = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList2);
                                 }

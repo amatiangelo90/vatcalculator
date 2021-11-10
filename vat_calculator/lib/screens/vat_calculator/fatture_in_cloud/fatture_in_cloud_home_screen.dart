@@ -32,7 +32,6 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
             elevation: 0,
           ),
           body: const VatFattureInCloudCalculatorBody(),
-          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.vatcalc),
         );
       },
     );

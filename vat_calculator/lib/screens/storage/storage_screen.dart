@@ -40,112 +40,121 @@ class _StorageScreenState extends State<StorageScreen>{
           builder: (context, dataBundleNotifier, child) {
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: getProportionateScreenHeight(56),
-                    child: buildGestureDetectorStoragesSelector(
-                        context, dataBundleNotifier),
+              child: Container(
+                color: kPrimaryColor,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                    color: Colors.white,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: DefaultButton(
-                      text: 'Aggiungi Prodotti',
-                      press: () {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              contentPadding: EdgeInsets.zero,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                              content: Builder(
-                                builder: (context) {
-                                  var height = MediaQuery.of(context).size.height;
-                                  var width = MediaQuery.of(context).size.width;
-                                  return SizedBox(
-                                    height: height - 350,
-                                    width: width,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(10.0),
-                                                  topLeft: Radius.circular(10.0)),
-                                              color: kPrimaryColor,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '  Lista Prodotti',
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                    getProportionateScreenWidth(17),
-                                                    color: Colors.white,
-                                                  ),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        width: double.infinity,
+                        height: getProportionateScreenHeight(56),
+                        child: buildGestureDetectorStoragesSelector(
+                            context, dataBundleNotifier),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: DefaultButton(
+                          text: 'Aggiungi Prodotti',
+                          press: () {
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var height = MediaQuery.of(context).size.height;
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        height: height - 350,
+                                        width: width,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10.0),
+                                                      topLeft: Radius.circular(10.0)),
+                                                  color: kPrimaryColor,
                                                 ),
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.clear,
-                                                    color: Colors.white,
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          FutureBuilder(
-                                            initialData: <dynamic>[
-                                              const Center(
-                                                  child: CircularProgressIndicator(
-                                                    color: kPinaColor,
-                                                  )),
-                                              const SizedBox(),
-                                              Column(
-                                                children: const [
-                                                  Center(
-                                                    child: Text(
-                                                      'Caricamento prodotti..',
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '  Lista Prodotti',
                                                       style: TextStyle(
-                                                          fontSize: 16.0,
-                                                          color: kPrimaryColor,
-                                                          fontFamily: 'LoraFont'),
+                                                        fontSize:
+                                                        getProportionateScreenWidth(17),
+                                                        color: Colors.white,
+                                                      ),
                                                     ),
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.clear,
+                                                        color: Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              FutureBuilder(
+                                                initialData: <dynamic>[
+                                                  const Center(
+                                                      child: CircularProgressIndicator(
+                                                        color: kPinaColor,
+                                                      )),
+                                                  const SizedBox(),
+                                                  Column(
+                                                    children: const [
+                                                      Center(
+                                                        child: Text(
+                                                          'Caricamento prodotti..',
+                                                          style: TextStyle(
+                                                              fontSize: 16.0,
+                                                              color: kPrimaryColor,
+                                                              fontFamily: 'LoraFont'),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ],
+                                                future: buildListProducts(dataBundleNotifier, context),
+                                                builder: (context, snapshot) {
+                                                  if (snapshot.hasData) {
+                                                    return DismissableWidgetProducts();
+                                                  } else {
+                                                    return const CircularProgressIndicator();
+                                                  }
+                                                },
                                               ),
                                             ],
-                                            future: buildListProducts(dataBundleNotifier, context),
-                                            builder: (context, snapshot) {
-                                              if (snapshot.hasData) {
-                                                return DismissableWidgetProducts();
-                                              } else {
-                                                return const CircularProgressIndicator();
-                                              }
-                                            },
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ));
-                      },
-                      color: kPrimaryColor,
-                    ),
-                  ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ));
+                          },
+                          color: kPrimaryColor,
+                        ),
+                      ),
 
-                  buildCurrentListProductTable(dataBundleNotifier, context),
-                  const SizedBox(height: 80,),
-                ],
+                      buildCurrentListProductTable(dataBundleNotifier, context),
+                      const SizedBox(height: 80,),
+                    ],
+                  ),
+                ),
               ),
             );
           }
@@ -154,14 +163,23 @@ class _StorageScreenState extends State<StorageScreen>{
     builder: (context, dataBundleNotifier, child) {
       return SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: buildCurrentListProdutctTableForStockManagmentLoad(dataBundleNotifier, context),
+        child: Container(
+          color: kPrimaryColor,
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+              color: Colors.white,
             ),
-            const SizedBox(height: 80,),
-          ],
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: buildCurrentListProdutctTableForStockManagmentLoad(dataBundleNotifier, context),
+                ),
+                const SizedBox(height: 80,),
+              ],
+            ),
+          ),
         ),
       );
         }
@@ -170,19 +188,29 @@ class _StorageScreenState extends State<StorageScreen>{
           builder: (context, dataBundleNotifier, child) {
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: buildCurrentListProdutctTableForStockManagmentUnload(dataBundleNotifier, context),
+              child: Container(
+                color: kPrimaryColor,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 80,),
-                ],
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: buildCurrentListProdutctTableForStockManagmentUnload(dataBundleNotifier, context),
+                      ),
+                      const SizedBox(height: 80,),
+                    ],
+                  ),
+                ),
               ),
             );
           }
       ),
     ];
+
     final kTab = <Tab>[
       const Tab(child: Text('Area Gestione'),),
       const Tab(child: Text('Carico')),
@@ -190,7 +218,6 @@ class _StorageScreenState extends State<StorageScreen>{
     ];
 
     return DefaultTabController(
-
       length: kTab.length,
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
@@ -199,10 +226,12 @@ class _StorageScreenState extends State<StorageScreen>{
             appBar: AppBar(
               bottom: TabBar(
                 tabs: kTab,
-                indicator: const UnderlineTabIndicator(borderSide: BorderSide(width: 3.0, color: kPinaColor),
+                indicator: const UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 3.0, color: kPrimaryLightColor),
+
                 ),
               ),
-              iconTheme: const IconThemeData(color: Colors.white),
+              iconTheme: const IconThemeData(color: kPrimaryLightColor),
               centerTitle: true,
               title: GestureDetector(
                 onTap: () {
@@ -319,33 +348,34 @@ class _StorageScreenState extends State<StorageScreen>{
         buildStorageChooserDialog(context, dataBundleNotifier);
       },
       child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
         color: kPinaColor,
-        elevation: 4,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                child: Text(
-                  '' + dataBundleNotifier.currentStorage.name + ' (' + dataBundleNotifier.currentStorageProductListForCurrentStorage.length.toString() + ')',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: getProportionateScreenWidth(17)),
-                ),
+        elevation: 7,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
+              child: Text(
+                '   ' + dataBundleNotifier.currentStorage.name
+                    + ' (' + dataBundleNotifier.currentStorageProductListForCurrentStorage.length.toString() + ')',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: getProportionateScreenWidth(15)),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: Colors.white,
-                ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 4, 0, 0),
+              child: Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Colors.white,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

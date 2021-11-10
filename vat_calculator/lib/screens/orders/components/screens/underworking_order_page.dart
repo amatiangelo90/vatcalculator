@@ -23,11 +23,11 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
 
   ValueNotifier<List<OrderModel>> _selectedEvents;
-  CalendarFormat _calendarFormat = CalendarFormat.twoWeeks;
+  CalendarFormat _calendarFormat = CalendarFormat.week;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff;
 
-  LinkedHashMap<DateTime, List<OrderModel>> _kOrders = LinkedHashMap();
+  final LinkedHashMap<DateTime, List<OrderModel>> _kOrders = LinkedHashMap();
 
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay;
@@ -97,60 +97,85 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
               return Column(
                 children: [
-                  SizedBox(height: 3,),
-                  Text('Calendario previste consegne'),
-                  TableCalendar<OrderModel>(
-                    headerStyle: const HeaderStyle(
-                      formatButtonTextStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                      titleTextStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                    ),
-                    daysOfWeekStyle: const DaysOfWeekStyle(
-                      weekdayStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                      weekendStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-
-                    ),
-                    firstDay: kFirstDay,
-                    lastDay: kLastDay,
-                    focusedDay: _focusedDay,
-                    selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                    calendarFormat: _calendarFormat,
-                    rangeSelectionMode: _rangeSelectionMode,
-                    eventLoader: _getEventsForDay,
-                    startingDayOfWeek: StartingDayOfWeek.monday,
-                    calendarStyle: CalendarStyle(
-                      markerSize: 10,
-                      selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                      defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                      weekendTextStyle:  const TextStyle(fontSize: 14.0, color: kPinaColor),
-
-                      selectedDecoration: const BoxDecoration(
+                  Container(
+                    decoration: BoxDecoration(
                         color: kPrimaryColor,
-                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: kPrimaryColor,
+                        ),
+                    ),
+
+                    child: TableCalendar<OrderModel>(
+                      headerStyle: HeaderStyle(
+                        formatButtonTextStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        titleTextStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        formatButtonDecoration: BoxDecoration(
+                          color: kBeigeColor,
+                          borderRadius: BorderRadius.circular(22.0),
+                        ),
+                        leftChevronIcon: Icon(
+                          Icons.arrow_back_ios,
+                          color: kCustomWhite,
+                          size: getProportionateScreenHeight(16),
+                        ),
+                        rightChevronIcon: Icon(
+                          Icons.arrow_forward_ios,
+                          color: kCustomWhite,
+                          size: getProportionateScreenHeight(16),
+                        ),
                       ),
-                      markerDecoration: BoxDecoration(
-                        color: Colors.blueAccent,
-                        borderRadius: BorderRadius.circular(3),
+                      daysOfWeekStyle: const DaysOfWeekStyle(
+                        weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
 
                       ),
-                      outsideDaysVisible: false,
-                      canMarkersOverflow: true,
-                      isTodayHighlighted: true,
+
+                      firstDay: kFirstDay,
+                      lastDay: kLastDay,
+                      focusedDay: _focusedDay,
+                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                      calendarFormat: _calendarFormat,
+                      rangeSelectionMode: _rangeSelectionMode,
+                      eventLoader: _getEventsForDay,
+                      startingDayOfWeek: StartingDayOfWeek.monday,
+                      calendarStyle: CalendarStyle(
+                        markerSize: 10,
+                        selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kBeigeColor),
+                        weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
+
+                        selectedDecoration: const BoxDecoration(
+                          color: Colors.lightGreen,
+                          shape: BoxShape.circle,
+                        ),
+                        markerDecoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadius.circular(3),
+
+                        ),
+                        outsideDaysVisible: false,
+                        canMarkersOverflow: true,
+                        isTodayHighlighted: true,
+                      ),
+                      onDaySelected: _onDaySelected,
+                      onFormatChanged: (format) {
+                        if (_calendarFormat != format) {
+                          setState(() {
+                            _calendarFormat = format;
+                          });
+                        }
+                      },
+                      onPageChanged: (focusedDay) {
+                        _focusedDay = focusedDay;
+                      },
                     ),
-                    onDaySelected: _onDaySelected,
-                    onFormatChanged: (format) {
-                      if (_calendarFormat != format) {
-                        setState(() {
-                          _calendarFormat = format;
-                        });
-                      }
-                    },
-                    onPageChanged: (focusedDay) {
-                      _focusedDay = focusedDay;
-                    },
                   ),
-                  Divider(
-                    color: kBeigeColor,
-                    height: getProportionateScreenHeight(20),
+                  Container(
+                    height: 6,
+                    decoration: const BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                    ),
                   ),
                   Expanded(
                     child: ValueListenableBuilder<List<OrderModel>>(
@@ -170,76 +195,72 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                               // ${orderList[order].code}
                               child: Card(
                                 elevation: 4,
-                                child: Padding(
-                                  padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 4,),
-                                      Row(
-                                        children: [
-                                          SizedBox(width: 3,),
-                                          Icon(Icons.shopping_cart_outlined, size: getProportionateScreenHeight(13),color: kPrimaryColor,),
-                                          Text(' #' + orderList[order].code, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
-                                        ],
-                                      ),
-                                      SizedBox(height: getProportionateScreenHeight(10),),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SizedBox(width: 3,),
+                                        Icon(Icons.shopping_cart_outlined, size: getProportionateScreenHeight(13),color: kPrimaryColor,),
+                                        Text(' #' + orderList[order].code, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
+                                      ],
+                                    ),
+                                    SizedBox(height: getProportionateScreenHeight(10),),
 
-                                      Row(
-                                        children: [
-                                          Icon(Icons.person, size: getProportionateScreenHeight(20),color: kPrimaryColor,),
-                                          dataBundleNotifier.getSupplierData(orderList[order].fk_supplier_id),
-                                        ]
-                                      ),
-                                      SizedBox(height: getProportionateScreenHeight(15),),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.category, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
-                                          Text('   Prodotti', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                          Text(' x ' + orderIdProductListMap[orderList[order].pk_order_id].length.toString(), style: TextStyle(color: kPinaColor ,fontSize: getProportionateScreenHeight(14)),),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.monetization_on_sharp, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
-                                          Text('   Prezzo Stimato ', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                          Text('€ ' + calculatePriceFromProductList(orderIdProductListMap[orderList[order].pk_order_id]), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.calendar_today_outlined, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
-                                          Text('   Effettuato in data: ', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                          Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
-                                        ],
-                                      ),
-                                      SizedBox(height: 10,),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.9,
-                                        child: CupertinoButton(
-                                            child: Text('Dettagli', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                            pressedOpacity: 0.9,
-                                            color: kBeigeColor,
-                                            onPressed: (){
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
+                                    Row(
+                                      children: [
+                                        Icon(Icons.person, size: getProportionateScreenHeight(20),color: kPrimaryColor,),
+                                        dataBundleNotifier.getSupplierData(orderList[order].fk_supplier_id),
+                                      ]
+                                    ),
+                                    SizedBox(height: getProportionateScreenHeight(15),),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.category, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
+                                        Text('   Prodotti', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
+                                        Text(' x ' + orderIdProductListMap[orderList[order].pk_order_id].length.toString(), style: TextStyle(color: kPinaColor ,fontSize: getProportionateScreenHeight(14)),),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.monetization_on_sharp, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
+                                        Text('   Prezzo Stimato ', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
+                                        Text('€ ' + calculatePriceFromProductList(orderIdProductListMap[orderList[order].pk_order_id]), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_today_outlined, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
+                                        Text('   Effettuato in data: ', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
+                                        Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10,),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.9,
+                                      child: CupertinoButton(
+                                          child: Text('Dettagli', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
+                                          pressedOpacity: 0.9,
+                                          color: kBeigeColor,
+                                          onPressed: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
 
-                                            }),
-                                      ),SizedBox(height: 3,),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width * 0.9,
-                                        child: CupertinoButton(
-                                            child: Text('Contrassegna come Ricevuto e Archivia', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                            pressedOpacity: 0.9,
-                                            color: Colors.green,
-                                            onPressed: (){
-                                              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
+                                          }),
+                                    ),SizedBox(height: 3,),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width * 0.9,
+                                      child: CupertinoButton(
+                                          child: Text('Contrassegna come Ricevuto e Archivia', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
+                                          pressedOpacity: 0.9,
+                                          color: Colors.green,
+                                          onPressed: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
 
-                                            }),
-                                      ),
-                                      Divider(endIndent: 20,indent: 20,),
-                                    ],
-                                  ),
+                                          }),
+                                    ),
+                                    Divider(endIndent: 20,indent: 20,),
+                                  ],
                                 ),
                               ),
                             );

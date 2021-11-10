@@ -44,34 +44,20 @@ class _CommonDrawerState extends State<CommonDrawer> {
       overlayOpacity: 0.9,
       overlayWidget: const LoaderOverlayWidget(),
       child: Drawer(
-        elevation: 3.0,
+        elevation: 6.0,
         child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Container(
-              color: kPrimaryColor,
+              color: kCustomWhite,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children: [
                     Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          stops: [0.1, 0.4, 0.7, 0.9],
-                          colors: [
-                            Colors.black54,
-                            kPrimaryColor,
-                            kPrimaryColor,
-                            kPrimaryColor,
-                          ],
-                        ),
-                          border: Border.all(color: Colors.black),
-                          borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), bottomLeft: Radius.circular(20)),
-                      ),
+                      color: kPrimaryColor,
                       child: Column(
                         children: [
-                          const SizedBox(height: 60,),
+                          SizedBox(height: getProportionateScreenHeight(100),),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -185,14 +171,15 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 30,),
+                    Divider(),
                     buildDrawerRow('assets/icons/home.svg','Home',(){
                       dataBundleNotifier.setShowIvaButtonToFalse();
                       Navigator.pushNamed(context, HomeScreen.routeName);
                     },
                         kPrimaryColor,
-                    kCustomWhite,
-                    kPrimaryColor),
+                        kCustomWhite,
+                        kPrimaryColor),
+                    const Divider(),
                     buildDrawerRow('assets/icons/Parcel.svg','Calcola Iva',(){
                       if(dataBundleNotifier.currentPrivilegeType == Privileges.USER){
                         showDialog(
@@ -233,13 +220,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                     }, kPrimaryColor,
                         kCustomWhite,
                         kPrimaryColor),
-
+                    const Divider(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(1),
                           backgroundColor: kCustomWhite,
                         ),
                         onPressed: (){
@@ -280,12 +267,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
+                    const Divider(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(1),
                           backgroundColor: kCustomWhite,
                         ),
                         onPressed: (){
@@ -319,12 +307,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
+                    const Divider(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(1),
                           backgroundColor: kCustomWhite,
                         ),
                         onPressed: (){
@@ -358,12 +347,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
+                    const Divider(),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(1),
                           backgroundColor: kCustomWhite,
                         ),
                         onPressed: (){
@@ -396,12 +386,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
+                    const Divider(),
                  Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(1),
                           backgroundColor: kCustomWhite,
                         ),
                         onPressed: (){
@@ -440,6 +431,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
+                    const Divider(),
                     showBranchStuff ? Padding(
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Crea',(){
@@ -459,7 +451,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           kPrimaryColor),
                     ) : SizedBox(width: 0,),
                     showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
-
+                    const Divider(),
                     buildDrawerRow('assets/icons/User Icon.svg',
                         'Profilo',
                             (){
@@ -469,14 +461,15 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         kPrimaryColor,
                         kCustomWhite,
                         kPrimaryColor),
-
+                    const Divider(),
                     buildDrawerRow(
                         'assets/icons/Question mark.svg',
                         'Hai bisogno di aiuto?',(){
                     }, kPrimaryColor,
                         kCustomWhite,
                         kPrimaryColor),
-                    SizedBox(height: 50,),
+                    const Divider(),
+                    SizedBox(height: 40,),
                     buildDrawerRow('assets/icons/Log out.svg','Log Out',(){
                       FirebaseAuth _auth = FirebaseAuth.instance;
                       if(_auth!=null){
@@ -489,9 +482,9 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           backgroundColor: kPinaColor,
                           content: Text('Logging out...', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                       Navigator.pushNamed(context, SplashScreen.routeName);
-                    }, kCustomWhite,
-                        kPinaColor,
-                        kCustomWhite),
+                    }, kPinaColor,
+                        kCustomWhite,
+                        kPinaColor),
                     SizedBox(height: 90,),
                     Text('Developed by Angelo Amati', style: TextStyle(fontSize: 10)),
                     SizedBox(height: 20,),
@@ -507,11 +500,11 @@ class _CommonDrawerState extends State<CommonDrawer> {
 
   buildDrawerRow(String icon,String description, Function onPress, Color iconColor, Color backgroundColor, Color textColor){
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: TextButton(
         style: TextButton.styleFrom(
           primary: textColor,
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(1),
           backgroundColor: backgroundColor,
         ),
         onPressed: onPress,

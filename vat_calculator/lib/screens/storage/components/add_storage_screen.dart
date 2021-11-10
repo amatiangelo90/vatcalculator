@@ -80,7 +80,7 @@ class AddStorageScreen extends StatelessWidget {
                         pkStorageId: 0
                     );
                     Response performSaveStorage = await vatService.performSaveStorage(storageModel);
-                    sleep(const Duration(seconds: 1));
+                    //sleep(const Duration(seconds: 1));
 
 
                     if(performSaveStorage != null && performSaveStorage.statusCode == 200){
