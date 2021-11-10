@@ -90,6 +90,7 @@ class DataBundleNotifier extends ChangeNotifier {
   DateTimeRange currentDateTimeRange;
 
   bool cupertinoSwitch = false;
+  bool editProfile = false;
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -700,6 +701,15 @@ class DataBundleNotifier extends ChangeNotifier {
       });
       currentProductModelListForSupplierDuplicated.clear();
       currentProductModelListForSupplierDuplicated.addAll(listTemp);
+    }
+    notifyListeners();
+  }
+
+  void changeEditProfileBoolValue() {
+    if(editProfile){
+      editProfile = false;
+    }else{
+      editProfile = true;
     }
     notifyListeners();
   }

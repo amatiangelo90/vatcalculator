@@ -41,11 +41,11 @@ class _StorageScreenState extends State<StorageScreen>{
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Container(
-                color: kPrimaryColor,
+                color: kCustomWhite,
                 child: Container(
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                    color: Colors.white,
+                    color: kCustomWhite,
                   ),
                   child: Column(
                     children: [
@@ -164,11 +164,11 @@ class _StorageScreenState extends State<StorageScreen>{
       return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
-          color: kPrimaryColor,
+          color: kCustomWhite,
           child: Container(
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-              color: Colors.white,
+              color: kCustomWhite,
             ),
             child: Column(
               children: [
@@ -189,11 +189,11 @@ class _StorageScreenState extends State<StorageScreen>{
             return SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Container(
-                color: kPrimaryColor,
+                color: kCustomWhite,
                 child: Container(
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                    color: Colors.white,
+                    color: kCustomWhite,
                   ),
                   child: Column(
                     children: [
@@ -212,9 +212,9 @@ class _StorageScreenState extends State<StorageScreen>{
     ];
 
     final kTab = <Tab>[
-      const Tab(child: Text('Area Gestione'),),
-      const Tab(child: Text('Carico')),
-      const Tab(child: Text('Scarico')),
+      const Tab(child: Text('Area Gestione', style: TextStyle(color: kPrimaryColor),),),
+      const Tab(child: Text('Carico', style: TextStyle(color: kPrimaryColor),),),
+      const Tab(child: Text('Scarico', style: TextStyle(color: kPrimaryColor),),),
     ];
 
     return DefaultTabController(
@@ -227,11 +227,10 @@ class _StorageScreenState extends State<StorageScreen>{
               bottom: TabBar(
                 tabs: kTab,
                 indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 3.0, color: kPrimaryLightColor),
-
+                  borderSide: BorderSide(width: 3.0, color: kPrimaryColor),
                 ),
               ),
-              iconTheme: const IconThemeData(color: kPrimaryLightColor),
+              iconTheme: const IconThemeData(color: kPrimaryColor),
               centerTitle: true,
               title: GestureDetector(
                 onTap: () {
@@ -242,16 +241,16 @@ class _StorageScreenState extends State<StorageScreen>{
                   dataBundleNotifier.currentStorage.name : 'Crea Magazzino',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
-                    color: kCustomWhite,
+                    color: kPrimaryColor,
                   ),
                 ),
               ),
-              backgroundColor: kPrimaryColor,
+              backgroundColor: kCustomWhite,
               actions: [
                 IconButton(
                     icon: Icon(
                       Icons.refresh_sharp,
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                       size: getProportionateScreenHeight(25),
                     ),
                     onPressed: () {
