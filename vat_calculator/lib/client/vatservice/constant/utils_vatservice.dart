@@ -39,7 +39,8 @@ const String VAT_SERVICE_URL_DELETE_ORDER = 'http://$host:8080/vatservices/api/v
 const String VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/remove/relationbranchsupplier';
 
 //Retrieve Aggregated Tables
-const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE = 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';
+const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE
+= 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';
 
 //Remove product from storage
 const String VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE = 'http://217.160.242.158:8080/vatservices/api/v1/delete/removeproductfromstorage';

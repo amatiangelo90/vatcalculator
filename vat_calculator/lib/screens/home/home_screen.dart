@@ -28,14 +28,19 @@ class HomeScreen extends StatelessWidget {
             drawer: const CommonDrawer(),
             appBar: AppBar(
               iconTheme: const IconThemeData(color: kPrimaryColor),
-              backgroundColor: kCustomWhite,
+              backgroundColor: Colors.white,
               actions: [
-                SvgPicture.asset(
-                  'assets/icons/User Icon.svg',
-                  color: kPrimaryColor,
-                  width: 25,
+                IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/chat-cust.svg',
+                    color: kPrimaryColor,
+                    width: 25,
+                  ),
+                  onPressed: () {
+
+                  },
                 ),
-                const SizedBox(width: 15,),
+                const SizedBox(width: 5,),
               ],
               centerTitle: true,
               title: Column(

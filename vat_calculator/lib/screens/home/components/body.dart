@@ -21,142 +21,132 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return Container(
-          color: Colors.white,
-          child: Container(
-            height: getProportionateScreenHeight(150),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40.0)),
-              color: kCustomWhite,
-            ),
-            child: dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(13),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 30,),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.6,
-                    child: DefaultButton(
-                      text: "Crea Attività",
-                      press: () async {
-                        Navigator.pushNamed(context, CompanyRegistration.routeName);
-                      },
-                    ),
-                  ),
-                ],
+        return dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Sembra che tu non abbia configurato ancora nessuna attività. ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(13),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
-            ) : SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
+              const SizedBox(height: 30,),
+              SizedBox(
+                width: SizeConfig.screenWidth * 0.6,
+                child: DefaultButton(
+                  text: "Crea Attività",
+                  press: () async {
+                    Navigator.pushNamed(context, CompanyRegistration.routeName);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ) : SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: getProportionateScreenHeight(56),
+                  child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: getProportionateScreenHeight(56),
-                      child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
-                    ),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                    child: IconButton(icon: const Icon(
+                      Icons.arrow_back_ios,
+                      color: kPrimaryColor,
+                    ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: IconButton(icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: kPrimaryColor,
-                        ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
-                      ),
-                      GestureDetector(
-                          onTap: (){
-                              showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog (
-                                    contentPadding: EdgeInsets.zero,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.all(
-                                            Radius.circular(10.0))),
-                                    content: Builder(
-                                      builder: (context) {
-                                        var height = MediaQuery.of(context).size.height;
-                                        var width = MediaQuery.of(context).size.width;
-                                        return SizedBox(
-                                          height: height - 250,
-                                          width: width - 90,
-                                          child: SingleChildScrollView(
-                                            scrollDirection: Axis.vertical,
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  decoration: const BoxDecoration(
-                                                    borderRadius: BorderRadius.only(
-                                                        topRight: Radius.circular(10.0),
-                                                        topLeft: Radius.circular(10.0) ),
-                                                    color: kPrimaryColor,
-                                                  ),
-                                                  child: Column(
+                  GestureDetector(
+                      onTap: (){
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog (
+                                contentPadding: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                content: Builder(
+                                  builder: (context) {
+                                    var height = MediaQuery.of(context).size.height;
+                                    var width = MediaQuery.of(context).size.width;
+                                    return SizedBox(
+                                      height: height - 250,
+                                      width: width - 90,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(10.0),
+                                                    topLeft: Radius.circular(10.0) ),
+                                                color: kPrimaryColor,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: [
-                                                          Text('  Calendario',style: TextStyle(
-                                                            fontSize: getProportionateScreenWidth(20),
-                                                            fontWeight: FontWeight.bold,
-                                                            color: kCustomWhite,
-                                                          ),),
-                                                          IconButton(icon: const Icon(
-                                                            Icons.clear,
-                                                            color: kCustomWhite,
-                                                          ), onPressed: () { Navigator.pop(context); },),
+                                                      Text('  Calendario',style: TextStyle(
+                                                        fontSize: getProportionateScreenWidth(20),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: kCustomWhite,
+                                                      ),),
+                                                      IconButton(icon: const Icon(
+                                                        Icons.clear,
+                                                        color: kCustomWhite,
+                                                      ), onPressed: () { Navigator.pop(context); },),
 
-                                                        ],
-                                                      ),
+                                                    ],
+                                                  ),
+                                                  Column(
+                                                    children: [
+
                                                       Column(
-                                                        children: [
-
-                                                          Column(
-                                                            children: buildDateList(dataBundleNotifier, context),
-                                                          ),
-                                                        ],
+                                                        children: buildDateList(dataBundleNotifier, context),
                                                       ),
                                                     ],
                                                   ),
-                                                ),
-                                                // buildDateList(),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  )
-                              );
-                          },
-                          child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                        child: IconButton(icon: const Icon(
-                          Icons.arrow_forward_ios,
-                          color: kPrimaryColor,
-                        ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
-                      ),
-                    ],
+                                            // buildDateList(),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          );
+                      },
+                      child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                    child: IconButton(icon: const Icon(
+                      Icons.arrow_forward_ios,
+                      color: kPrimaryColor,
+                    ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
                   ),
-
                 ],
               ),
-            ),
+
+            ],
           ),
         );
       },

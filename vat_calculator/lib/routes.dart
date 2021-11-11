@@ -11,7 +11,9 @@ import 'package:vat_calculator/screens/registration_company/components/fatture_p
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/components/add_storage_screen.dart';
+import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
+import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_product.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_supplier_screen.dart';
@@ -46,4 +48,6 @@ final Map<String, WidgetBuilder> routes = {
   AddStorageScreen.routeName: (context) => AddStorageScreen(),
   ProfileEditiScreen.routeName: (context) => ProfileEditiScreen(),
   RegisterFattureProviderScreen.routeName: (context) => RegisterFattureProviderScreen(),
+  LoadStorageScreen.routeName: (context) => LoadStorageScreen(),
+  UnloadStorageScreen.routeName: (context) => UnloadStorageScreen(),
 };

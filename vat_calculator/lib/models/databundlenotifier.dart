@@ -50,6 +50,8 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
+  List<StorageProductModel> currentStorageProductListForCurrentStorageDuplicated = [];
+
   List<StorageProductModel> currentStorageProductListForCurrentStorageUnload = [
 
   ];
@@ -91,6 +93,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   bool cupertinoSwitch = false;
   bool editProfile = false;
+  bool searchStorageButton = false;
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -264,6 +267,9 @@ class DataBundleNotifier extends ChangeNotifier {
       currentStorageProductListForCurrentStorage.clear();
       currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
 
+      currentStorageProductListForCurrentStorageDuplicated.clear();
+      currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
+
       currentStorageProductListForCurrentStorageUnload.clear();
       currentStorageProductListForCurrentStorageUnload = [];
       currentStorageProductListForCurrentStorage.forEach((element) {
@@ -434,6 +440,9 @@ class DataBundleNotifier extends ChangeNotifier {
     currentStorageProductListForCurrentStorage.clear();
     currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
 
+    currentStorageProductListForCurrentStorageDuplicated.clear();
+    currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
+
     currentStorageProductListForCurrentStorageUnload.clear();
     currentStorageProductListForCurrentStorageUnload = [];
     currentStorageProductListForCurrentStorage.forEach((element) {
@@ -477,6 +486,9 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentStorageProductListForCurrentStorage.clear();
     currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+
+    currentStorageProductListForCurrentStorageDuplicated.clear();
+    currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
 
     currentStorageProductListForCurrentStorageUnload.clear();
     currentStorageProductListForCurrentStorageUnload = [];
@@ -583,6 +595,10 @@ class DataBundleNotifier extends ChangeNotifier {
       List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorageList[0].pkStorageId);
       currentStorageProductListForCurrentStorage.clear();
       currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+
+      currentStorageProductListForCurrentStorageDuplicated.clear();
+      currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
+
       currentStorageProductListForCurrentStorageUnload.clear();
       currentStorageProductListForCurrentStorageUnload = [];
       currentStorageProductListForCurrentStorage.forEach((element) {
@@ -710,6 +726,37 @@ class DataBundleNotifier extends ChangeNotifier {
       editProfile = false;
     }else{
       editProfile = true;
+    }
+    notifyListeners();
+  }
+
+  void filterStorageProductList(String currentText) {
+
+    if(currentText == ''){
+      currentStorageProductListForCurrentStorageDuplicated.clear();
+      currentStorageProductListForCurrentStorageDuplicated.addAll(currentStorageProductListForCurrentStorage);
+    }else{
+
+
+      List<StorageProductModel> listTemp = [];
+      currentStorageProductListForCurrentStorage.forEach((element) {
+
+        if(element.productName.toLowerCase().contains(currentText.toLowerCase()) ||
+            element.supplierName.toLowerCase().contains(currentText.toLowerCase())){
+          listTemp.add(element);
+        }
+      });
+      currentStorageProductListForCurrentStorageDuplicated.clear();
+      currentStorageProductListForCurrentStorageDuplicated.addAll(listTemp);
+    }
+    notifyListeners();
+  }
+
+  void switchSearchProductStorageButton() {
+    if(searchStorageButton){
+      searchStorageButton = false;
+    }else{
+      searchStorageButton = true;
     }
     notifyListeners();
   }

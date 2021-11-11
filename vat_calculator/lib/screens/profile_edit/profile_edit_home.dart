@@ -302,6 +302,8 @@ class ProfileEditiScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: getProportionateScreenHeight(30),),
+                      const Text('Version 1.0.0'),
                     ],
                   ),
                 ),
