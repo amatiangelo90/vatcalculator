@@ -157,6 +157,13 @@ class _StorageScreenState extends State<StorageScreen>{
             ),
             backgroundColor: kCustomWhite,
             actions: [
+              dataBundleNotifier.searchStorageButton ? IconButton(
+                  icon: dataBundleNotifier.isZtoAOrderded ? SvgPicture.asset('assets/icons/sort_a_to_z.svg') : SvgPicture.asset('assets/icons/sort_z_to_a.svg'),
+                  onPressed: () {
+                    dataBundleNotifier.sortCurrentStorageListDuplicatedFromAToZ();
+                  }
+              ) : SizedBox(width: 0,),
+
               IconButton(
                   icon: Icon(
                     dataBundleNotifier.searchStorageButton ? Icons.cancel_outlined : Icons.search,
@@ -168,6 +175,7 @@ class _StorageScreenState extends State<StorageScreen>{
                     dataBundleNotifier.switchSearchProductStorageButton();
                   }
               ),
+
               dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
                   icon: Icon(
                     Icons.arrow_circle_down_outlined,

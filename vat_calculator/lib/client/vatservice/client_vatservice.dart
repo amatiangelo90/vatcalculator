@@ -288,7 +288,6 @@ class ClientVatService{
     }catch(e){
       rethrow;
     }
-
   }
 
   Future<Response> performSaveProduct(

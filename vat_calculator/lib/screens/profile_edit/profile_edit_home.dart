@@ -22,10 +22,10 @@ class ProfileEditiScreen extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
 
-          TextEditingController _nameController = TextEditingController(text: dataBundleNotifier.dataBundleList[0].firstName);
-          TextEditingController _lastNameController = TextEditingController(text: dataBundleNotifier.dataBundleList[0].lastName);
-          TextEditingController _phoneController = TextEditingController(text: dataBundleNotifier.dataBundleList[0].phone);
-          TextEditingController _eMailController = TextEditingController(text: dataBundleNotifier.dataBundleList[0].email);
+          TextEditingController _nameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].firstName);
+          TextEditingController _lastNameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].lastName);
+          TextEditingController _phoneController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].phone);
+          TextEditingController _eMailController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].email);
 
           return Scaffold(
             drawer: const CommonDrawer(),
@@ -199,11 +199,11 @@ class ProfileEditiScreen extends StatelessWidget {
                                             Text('Dati Profilo'),
                                           ],
                                         ),
-                                        getCustomDetailRow(dataBundleNotifier.dataBundleList[0].firstName, Icons.person),
-                                        getCustomDetailRow(dataBundleNotifier.dataBundleList[0].lastName, Icons.person),
-                                        getCustomDetailRow(dataBundleNotifier.dataBundleList[0].email, Icons.email),
-                                        getCustomDetailRow(dataBundleNotifier.dataBundleList[0].phone, Icons.phone),
-                                        getCustomDetailRow(dataBundleNotifier.dataBundleList[0].privilege, Icons.vpn_key_outlined),
+                                        getCustomDetailRow( dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].firstName, Icons.person),
+                                        getCustomDetailRow( dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].lastName, Icons.person),
+                                        getCustomDetailRow( dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].email, Icons.email),
+                                        getCustomDetailRow( dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].phone, Icons.phone),
+                                        getCustomDetailRow( dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].privilege, Icons.vpn_key_outlined),
                                       ],
                                     ),
                                   ),
@@ -236,7 +236,7 @@ class ProfileEditiScreen extends StatelessWidget {
                                 width: 22,
                               ),
                               const SizedBox(width: 20),
-                              Expanded(child: Text('Cosa posso fare come ${dataBundleNotifier.dataBundleList[0].privilege}?')),
+                              Expanded(child: Text('Cosa posso fare come ${ dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].privilege}?')),
                               const Icon(Icons.arrow_forward_ios),
                             ],
                           ),

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/components/no_account_text.dart';
 import 'package:vat_calculator/components/socal_card.dart';
@@ -7,6 +8,7 @@ import 'sign_form.dart';
 class Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return SizedBox(
       width: double.infinity,
       child: Padding(
@@ -40,7 +42,9 @@ class Body extends StatelessWidget {
                   ),
                   SocialCard(
                     icon: "assets/icons/facebook-2.svg",
-                    press: () {},
+                    press: () {
+
+                    },
                   ),
                 ],
               ),

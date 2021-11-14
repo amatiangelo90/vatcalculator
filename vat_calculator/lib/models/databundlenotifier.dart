@@ -94,6 +94,7 @@ class DataBundleNotifier extends ChangeNotifier {
   bool cupertinoSwitch = false;
   bool editProfile = false;
   bool searchStorageButton = false;
+  bool isZtoAOrderded = false;
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -758,6 +759,20 @@ class DataBundleNotifier extends ChangeNotifier {
     }else{
       searchStorageButton = true;
     }
+    notifyListeners();
+  }
+
+  void sortCurrentStorageListDuplicatedFromAToZ() {
+
+    if(isZtoAOrderded){
+      currentStorageProductListForCurrentStorageDuplicated.sort((a, b) => a.productName.toLowerCase().compareTo(b.productName.toLowerCase()));
+      isZtoAOrderded = false;
+    }else{
+      currentStorageProductListForCurrentStorageDuplicated.sort((a, b) => b.productName.toLowerCase().compareTo(a.productName.toLowerCase()));
+      isZtoAOrderded = true;
+    }
+
+
     notifyListeners();
   }
 }
