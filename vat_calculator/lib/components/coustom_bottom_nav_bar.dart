@@ -49,6 +49,7 @@ class CustomBottomNavBar extends StatelessWidget {
                             width: 30,
                           ),
                           onPressed: () {
+                            dataBundleNotifier.refreshSearchButtonStoreConfiguration();
                             dataBundleNotifier.setShowIvaButtonToFalse();
                             Navigator.pushNamed(context, HomeScreen.routeName);
                           },
@@ -75,6 +76,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           ),
                           onPressed: () {
                             dataBundleNotifier.setShowIvaButtonToFalse();
+                            dataBundleNotifier.refreshSearchButtonStoreConfiguration();
                             Navigator.pushNamed(context, StorageScreen.routeName);
                           }),
                       MenuState.storage == selectedMenu
@@ -91,6 +93,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          dataBundleNotifier.refreshSearchButtonStoreConfiguration();
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(context, OrdersScreen.routeName);
                         },
@@ -184,6 +187,7 @@ class CustomBottomNavBar extends StatelessWidget {
                               width: 30,
                             ),
                             onPressed: () {
+                              dataBundleNotifier.refreshSearchButtonStoreConfiguration();
                               dataBundleNotifier.setShowIvaButtonToFalse();
                               Navigator.pushNamed(context, ProfileEditiScreen.routeName);
                             }),

@@ -753,6 +753,11 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  refreshSearchButtonStoreConfiguration(){
+    searchStorageButton = false;
+    isZtoAOrderded = false;
+    notifyListeners();
+  }
   void switchSearchProductStorageButton() {
     if(searchStorageButton){
       searchStorageButton = false;
