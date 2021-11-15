@@ -10,7 +10,6 @@ class StorageModel {
   String cap;
   int fkBranchId;
 
-
   StorageModel({
     @required this.pkStorageId,
     @required this.name,
@@ -19,7 +18,7 @@ class StorageModel {
     @required this.address,
     @required this.city,
     @required this.cap,
-    @required this.fkBranchId
+    @required this.fkBranchId,
   });
 
   factory StorageModel.fromJson(dynamic json){

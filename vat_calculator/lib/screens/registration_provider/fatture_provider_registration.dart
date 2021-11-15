@@ -12,8 +12,8 @@ import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
-import '../../../constants.dart';
-import '../../../size_config.dart';
+import '../../constants.dart';
+import '../../size_config.dart';
 
 class RegisterFattureProviderScreen extends StatefulWidget {
   const RegisterFattureProviderScreen({Key key}) : super(key: key);
@@ -297,7 +297,6 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                                ),
                                                const Text('Contatta il supporto'),
                                                SizedBox(width: getProportionateScreenWidth(30),),
-
                                              ],
                                            ),
                                          ),

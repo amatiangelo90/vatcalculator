@@ -402,7 +402,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Text('      Elimina Fornitore',
+                                                Text('  Elimina Fornitore?',
                                                 textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                       fontSize: getProportionateScreenWidth(15),

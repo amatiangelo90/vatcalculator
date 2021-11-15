@@ -13,6 +13,7 @@ import 'model/product_order_amount_model.dart';
 import 'model/recessed_model.dart';
 import 'model/save_product_into_storage_request.dart';
 import 'model/storage_product_model.dart';
+import 'model/user_branch_relation_model.dart';
 import 'model/user_model.dart';
 
 class ClientVatService{
@@ -298,7 +299,6 @@ class ClientVatService{
     String body = json.encode(
         product.toMap());
 
-
     print('Calling ' + VAT_SERVICE_URL_SAVE_PRODUCT + '...');
     print('Body Request Save product: ' + body);
 
@@ -573,7 +573,9 @@ class ClientVatService{
                 phoneNumber: branchElement['phone'],
                 providerFatture: branchElement['provider'],
                 apiKeyOrUser: branchElement['idKeyUser'],
-                apiUidOrPassword: branchElement['idUidPassword']));
+                apiUidOrPassword: branchElement['idUidPassword'],
+                accessPrivilege: branchElement['accessPrivilege']
+            ));
       });
       return branchList;
 
@@ -1137,5 +1139,97 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
 
+  }
+
+  Future<List<BranchModel>> retrieveBranchByBranchId(String codeBranch) async {
+    var dio = Dio();
+
+    List<BranchModel> branchList = [];
+
+    print('Retrieve branch by id ' + codeBranch);
+    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_BRANCH_ID);
+    String body = json.encode(
+        BranchModel(
+          pkBranchId: int.parse(codeBranch),
+          accessPrivilege: '',
+          providerFatture: '',
+          apiKeyOrUser: '',
+          apiUidOrPassword: '',
+          eMail: '',
+          phoneNumber: '',
+          companyName: '',
+          vatNumber: '',
+          address: '',
+          cap: 00000,
+          city: ''
+        ).toMap());
+
+    print('Retrieve branches body request: '  + body);
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_BRANCH_ID,
+        data: body,
+      );
+
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_BRANCH_ID + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((branchElement) {
+
+        branchList.add(
+            BranchModel(
+                pkBranchId: branchElement['pkBranchId'],
+                companyName: branchElement['name'],
+                eMail: branchElement['email'],
+                vatNumber: branchElement['vatNumber'],
+                address: branchElement['address'],
+                city: branchElement['city'],
+                cap: branchElement['cap'],
+                phoneNumber: branchElement['phone'],
+                providerFatture: branchElement['provider'],
+                apiKeyOrUser: branchElement['idKeyUser'],
+                apiUidOrPassword: branchElement['idUidPassword'],
+                accessPrivilege: branchElement['accessPrivilege']
+            ));
+      });
+      return branchList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<Response> createUserBranchRelation({int fkUserId,
+    int fkBranchId,
+    String accessPrivilege}) async {
+
+    var dio = Dio();
+
+    print('Create relation between User with id $fkUserId and branch with id $fkBranchId. Access level : $accessPrivilege');
+    String body = json.encode(
+        UserBranchRelationModel(
+            pkUserBranchId: 0,
+            fkUserId: fkUserId,
+            fkBranchId: fkBranchId,
+            accessPrivilege: accessPrivilege
+        ).toMap());
+    print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH with body request $body');
+
+    Response post;
+    try {
+      post = await dio.post(
+        VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH,
+        data: body,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      return null;
+    }
   }
 }

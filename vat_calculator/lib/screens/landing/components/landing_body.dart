@@ -75,7 +75,7 @@ class LandingBody extends StatelessWidget {
                       userModelRetrieved.phone,
                       userModelRetrieved.privilege,
                       []);
-                  dataBundleNotifier.setCurrentPrivilegeType(userModelRetrieved.privilege);
+
 
                   List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
                   dataBundleNotifier.addDataBundle(dataBundle);

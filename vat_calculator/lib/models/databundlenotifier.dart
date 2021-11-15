@@ -70,13 +70,10 @@ class DataBundleNotifier extends ChangeNotifier {
   ];
 
   List<OrderModel> currentUnderWorkingOrdersList = [];
-  //List<ProductOrderAmountModel> currentProductOrderModelAmountListForUnderWorkingtOrder = [];
 
   List<OrderModel> currentDraftOrdersList = [];
-  //List<ProductOrderAmountModel> currentProductOrderModelAmountListForDraftOrder = [];
 
   List<OrderModel> currentArchiviedWorkingOrdersList = [];
-  //List<ProductOrderAmountModel> currentProductOrderModelAmountListForArchiviedOrder = [];
 
   String currentPrivilegeType;
 
@@ -218,6 +215,7 @@ class DataBundleNotifier extends ChangeNotifier {
     dataBundleList[0].companyList = branchList;
     if(dataBundleList[0].companyList.isNotEmpty){
       currentBranch = dataBundleList[0].companyList[0];
+      setCurrentPrivilegeType(currentBranch.accessPrivilege);
       List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
       currentOrdersForCurrentBranch.clear();
       currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
@@ -238,13 +236,10 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  setOrdersList(){
-
-  }
-
   Future<void> setCurrentBranch(BranchModel branchModel) async {
 
     currentBranch = branchModel;
+    setCurrentPrivilegeType(currentBranch.accessPrivilege);
     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
     currentListRecessed.clear();
     currentListRecessed.addAll(_recessedModelList);
@@ -365,6 +360,7 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentBranch != null){
       currentBranch = null;
+      currentPrivilegeType = null;
     }
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();

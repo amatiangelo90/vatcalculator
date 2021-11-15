@@ -12,6 +12,7 @@ class BranchModel{
   String providerFatture;
   String apiKeyOrUser;
   String apiUidOrPassword;
+  String accessPrivilege;
 
   BranchModel({
     @required this.pkBranchId,
@@ -24,7 +25,9 @@ class BranchModel{
     @required this.phoneNumber,
     @required this.providerFatture,
     @required this.apiKeyOrUser,
-    @required this.apiUidOrPassword});
+    @required this.apiUidOrPassword,
+    @required this.accessPrivilege
+  });
 
 
   toMap(){
@@ -41,6 +44,7 @@ class BranchModel{
       'idKeyUser' : apiKeyOrUser,
       'idUidPassword' : apiUidOrPassword,
       'fkUserId' : 0,
+      'accessPrivilege' : accessPrivilege,
     };
   }
 }

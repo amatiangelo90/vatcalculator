@@ -15,7 +15,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
 import 'package:vat_calculator/components/item_menu.dart';
 import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
-import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
@@ -86,7 +86,7 @@ class _VatFattureInCloudCalculatorBodyState
                 child: DefaultButton(
                   text: "Crea Attività",
                   press: () async {
-                    Navigator.pushNamed(context, CompanyRegistration.routeName);
+                    Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                   },
                 ),
               ),

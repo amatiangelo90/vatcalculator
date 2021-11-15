@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -41,7 +42,7 @@ class _BodyState extends State<Body> {
                 child: DefaultButton(
                   text: "Crea Attività",
                   press: () async {
-                    Navigator.pushNamed(context, CompanyRegistration.routeName);
+                    Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                   },
                 ),
               ),
@@ -167,11 +168,9 @@ class _BodyState extends State<Body> {
                                 Radius.circular(10.0))),
                         content: Builder(
                           builder: (context) {
-                            var height = MediaQuery.of(context).size.height;
-                            var width = MediaQuery.of(context).size.width;
+
                             return SizedBox(
-                              height: height - 350,
-                              width: width,
+                              width: getProportionateScreenWidth(800),
                               child: SingleChildScrollView(
                                 scrollDirection: Axis.vertical,
                                 child: Column(
@@ -200,6 +199,7 @@ class _BodyState extends State<Body> {
                                     Column(
                                       children: buildListBranches(dataBundleNotifier),
                                     ),
+                                    SizedBox(height: getProportionateScreenHeight(10),),
                                   ],
                                 ),
                               ),
@@ -256,6 +256,8 @@ class _BodyState extends State<Body> {
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: [
+                    Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
+                    Icon(currentBranch.accessPrivilege == Privileges.USER ? Icons.person : Icons.vpn_key_outlined, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
                     Text('   ' + currentBranch.companyName,
                       style: TextStyle(
                       fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),

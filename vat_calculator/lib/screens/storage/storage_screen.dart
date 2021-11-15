@@ -9,7 +9,7 @@ import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import '../../constants.dart';
@@ -220,7 +220,7 @@ class _StorageScreenState extends State<StorageScreen>{
                         text: "Crea Attività",
                         press: () async {
                           Navigator.pushNamed(
-                              context, CompanyRegistration.routeName);
+                              context, BranchChoiceCreationEnjoy.routeName);
                         },
                       ),
                     ),

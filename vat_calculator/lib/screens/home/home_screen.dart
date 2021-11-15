@@ -59,6 +59,15 @@ class HomeScreen extends StatelessWidget {
                       color: kPrimaryColor,
                     ),
                   ),
+                  Text(
+                    dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty ?
+                    dataBundleNotifier.currentBranch.accessPrivilege + ' per ' + dataBundleNotifier.currentBranch.companyName : '',
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(5),
+                      color: kPrimaryColor,
+                    ),
+                  ),
+
                 ],
               ),
 

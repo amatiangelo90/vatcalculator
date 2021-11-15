@@ -12,8 +12,8 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
-import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
-import 'package:vat_calculator/screens/registration_company/components/fatture_provider_registration.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
+import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
@@ -155,7 +155,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     const SizedBox(width: 20,),
                                     GestureDetector(
                                         onTap: () {
-                                          Navigator.pushNamed(context, CompanyRegistration.routeName);
+                                          Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                                         },
                                         child: const Icon(Icons.add_circle_outline_rounded, color: kBeigeColor,size: 29,)
                                     ),
@@ -200,7 +200,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   )),
                             )
                         );
-                      }else{
+                      } else{
                         dataBundleNotifier.setShowIvaButtonToFalse();
                         if(dataBundleNotifier.currentBranch == null){
                           Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
@@ -436,7 +436,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Crea',(){
                         dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, CompanyRegistration.routeName);
+                        Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                       }, kPrimaryColor,
                           kCustomWhite,
                           kPrimaryColor),
@@ -445,7 +445,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Associa tramite Codice',(){
                         dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, CompanyRegistration.routeName);
+                        Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                       }, kPrimaryColor,
                           kCustomWhite,
                           kPrimaryColor),
@@ -533,7 +533,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
             padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
             child: buildDrawerRow('',element.companyName,(){
               dataBundleNotifier.setShowIvaButtonToFalse();
-              Navigator.pushNamed(context, CompanyRegistration.routeName);
+              Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
             }, kPrimaryColor,
                 kCustomWhite,
                 kPinaColor),

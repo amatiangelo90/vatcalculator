@@ -8,7 +8,7 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/item_menu.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
-import 'package:vat_calculator/screens/registration_company/components/company_registration.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'components/edit_supplier_screen.dart';
@@ -93,7 +93,7 @@ class SuppliersScreen extends StatelessWidget {
                     child: DefaultButton(
                       text: "Crea Attività",
                       press: () async {
-                        Navigator.pushNamed(context, CompanyRegistration.routeName);
+                        Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                       },
                     ),
                   ),
