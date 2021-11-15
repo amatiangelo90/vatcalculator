@@ -11,9 +11,11 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import '../constants.dart';
 import '../size_config.dart';
+import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
@@ -37,6 +39,9 @@ class DataBundleNotifier extends ChangeNotifier {
   List<StorageModel> currentStorageList = [
 
   ];
+  Map<int, BundleUserStorageSupplier> currentMapBranchIdBundleSupplierStorageUsers = {
+
+  };
 
   List<ProductModel> currentProductModelListForSupplier = [
 
@@ -133,12 +138,14 @@ class DataBundleNotifier extends ChangeNotifier {
     currentProductModelListForSupplier.addAll(listProduct);
     currentProductModelListForSupplierDuplicated.clear();
     currentProductModelListForSupplierDuplicated.addAll(listProduct);
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
   void addAllCurrentListProductToProductListToAddToStorage(List<ProductModel> listProduct){
     productToAddToStorage.clear();
     productToAddToStorage.addAll(listProduct);
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -150,6 +157,7 @@ class DataBundleNotifier extends ChangeNotifier {
       end: currentDateTime.add(Duration(
           days: DateTime.daysPerWeek - currentDateTime.weekday)),
     );
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -207,6 +215,7 @@ class DataBundleNotifier extends ChangeNotifier {
   void addDataBundle(DataBundle bundle){
     print('Adding bundle to Notifier' + bundle.email.toString());
     dataBundleList.add(bundle);
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -233,6 +242,8 @@ class DataBundleNotifier extends ChangeNotifier {
         }
       });
     }
+
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -254,6 +265,7 @@ class DataBundleNotifier extends ChangeNotifier {
     List<StorageModel> _storageModel = await clientService.retrieveStorageListByBranch(currentBranch);
     currentStorageList.clear();
     currentStorageList.addAll(_storageModel);
+
     if(currentStorageList.isNotEmpty){
       currentStorage = currentStorageList[0];
     }
@@ -310,30 +322,18 @@ class DataBundleNotifier extends ChangeNotifier {
     currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
 
-    //currentProductOrderModelAmountListForDraftOrder.clear();
-    //currentProductOrderModelAmountListForUnderWorkingtOrder.clear();
-    //currentProductOrderModelAmountListForArchiviedOrder.clear();
-
     currentOrdersForCurrentBranch.forEach((orderItem) async {
       if(orderItem.status == OrderState.DRAFT){
 
         currentDraftOrdersList.add(orderItem);
-        //currentProductOrderModelAmountListForDraftOrder = await getclientServiceInstance().retrieveProductByOrderId(
-      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-        //);
 
       }else if (orderItem.status == OrderState.ARCHIVED){
         currentArchiviedWorkingOrdersList.add(orderItem);
-        //currentProductOrderModelAmountListForArchiviedOrder = await getclientServiceInstance().retrieveProductByOrderId(
-      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-        //);
       }else{
         currentUnderWorkingOrdersList.add(orderItem);
-        //currentProductOrderModelAmountListForUnderWorkingtOrder = await getclientServiceInstance().retrieveProductByOrderId(
-      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-        //);
       }
     });
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -630,6 +630,7 @@ class DataBundleNotifier extends ChangeNotifier {
             unitMeasure: element.unitMeasure));
       });
     }
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -774,6 +775,26 @@ class DataBundleNotifier extends ChangeNotifier {
     }
 
 
+    notifyListeners();
+  }
+
+  void clearAndUpdateMapBundle() {
+    currentMapBranchIdBundleSupplierStorageUsers.clear();
+    dataBundleList[0].companyList.forEach((currentBranch) async {
+
+      List<StorageModel> listStorages = await getclientServiceInstance().retrieveStorageListByBranch(BranchModel(
+          pkBranchId: currentBranch.pkBranchId
+      ));
+
+      List<ResponseAnagraficaFornitori> listSuppliers = await getclientServiceInstance().retrieveSuppliersListByBranch(BranchModel(
+          pkBranchId: currentBranch.pkBranchId
+      ));
+
+      List<UserModel> listUsers = await getclientServiceInstance().retrieveUserListRelatedWithBranchByBranchId(BranchModel(
+          pkBranchId: currentBranch.pkBranchId
+      ));
+      currentMapBranchIdBundleSupplierStorageUsers[currentBranch.pkBranchId] = BundleUserStorageSupplier(currentBranch.pkBranchId, listStorages, listUsers, listSuppliers);
+    });
     notifyListeners();
   }
 }

@@ -259,6 +259,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
       List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
       dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
+      dataBundleNotifier.clearAndUpdateMapBundle();
       final snackBar =
       SnackBar(
           duration: const Duration(seconds: 3),
@@ -436,6 +437,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                           List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                               .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                           dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
+                          dataBundleNotifier.clearAndUpdateMapBundle();
                           Navigator.pushNamed(context, SuppliersScreen.routeName);
                         },
                       );

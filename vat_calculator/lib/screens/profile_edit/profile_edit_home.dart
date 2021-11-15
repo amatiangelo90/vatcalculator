@@ -6,9 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
+import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 
@@ -338,8 +342,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                   ),
                 ),
               ),
-              buildBranchList(
-                  dataBundleNotifier.dataBundleList[0].companyList),
+              buildBranchList(dataBundleNotifier.dataBundleList[0].companyList, dataBundleNotifier),
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
                 child: TextButton(
@@ -417,7 +420,8 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
     });
   }
 
-  buildBranchList(List<BranchModel> companyList) {
+  buildBranchList(List<BranchModel> companyList, DataBundleNotifier dataBundleNotifier) {
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -480,6 +484,42 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   ),
                                 ],
                               ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString() + ' x ', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          width: getProportionateScreenHeight(25),
+                                          height: getProportionateScreenHeight(25),
+                                          child: SvgPicture.asset('assets/icons/people-branch.svg', fit: BoxFit.contain,color: kCustomWhite,)),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList.length.toString() + ' x', style: const TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          width: getProportionateScreenHeight(25),
+                                          height: getProportionateScreenHeight(25),
+                                          child: SvgPicture.asset('assets/icons/supplier.svg', fit: BoxFit.contain,color: kCustomWhite,)),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList.length.toString() + ' x ', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          width: getProportionateScreenHeight(20),
+                                          height: getProportionateScreenHeight(20),
+
+                                          child: SvgPicture.asset('assets/icons/storage.svg',
+                                            fit: BoxFit.contain,
+                                            color: kCustomWhite,
+                                          )),
+                                    ],
+                                  ),
+                                ],
+                              ),
                               SizedBox(
                                 width: getProportionateScreenWidth(300),
                                 height: getProportionateScreenHeight(50),
@@ -501,6 +541,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   ),
                                 ),
                               ),
+
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
@@ -630,7 +671,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         companyList.length,
-                        (index) => buildDot(index: index),
+                            (index) => buildDot(index: index),
                       ),
                     ),
                     const Spacer(flex: 3),

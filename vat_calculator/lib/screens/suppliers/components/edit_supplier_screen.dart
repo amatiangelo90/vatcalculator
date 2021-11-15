@@ -332,6 +332,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                             List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                                 .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                             dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
+                            dataBundleNotifier.clearAndUpdateMapBundle();
                             Navigator.pushNamed(context, SuppliersScreen.routeName);
                           },
                         );

@@ -51,4 +51,6 @@ const String VAT_SERVICE_URL_UPDATE_STOCK = 'http://217.160.242.158:8080/vatserv
 
 //Create relation between user and branch
 const String VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH = 'http://$host:8080/vatservices/api/v1/create/userbranchrelation';
+//Retrieve related users list on branch by branch id
+const String VAT_SERVICE_URL_RETRIEVE_USERS_LIST_RELATIONED_ON_BRANCH_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/userslistbybranchid';
 

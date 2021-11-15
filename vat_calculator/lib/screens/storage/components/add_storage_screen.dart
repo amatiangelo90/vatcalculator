@@ -87,7 +87,7 @@ class AddStorageScreen extends StatelessWidget {
 
                       List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
                       dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
-
+                      dataBundleNotifier.clearAndUpdateMapBundle();
                       //EasyLoading.dismiss();
                       buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
                     }else{

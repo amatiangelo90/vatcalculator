@@ -1232,4 +1232,50 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       return null;
     }
   }
+
+  Future<List<UserModel>> retrieveUserListRelatedWithBranchByBranchId(BranchModel branchModel) async {
+
+    var dio = Dio();
+
+    List<UserModel> userModelList = [];
+    String body = json.encode(
+        branchModel.toMap());
+
+    Response post;
+    print('Retrieve users list, related on the same branch, by branch id: ' + body);
+    print('Calling' + VAT_SERVICE_URL_RETRIEVE_USERS_LIST_RELATIONED_ON_BRANCH_BY_BRANCH_ID);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_USERS_LIST_RELATIONED_ON_BRANCH_BY_BRANCH_ID,
+        data: body,
+      );
+
+
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((userElement) {
+
+        userModelList.add(
+            UserModel(
+                id: userElement['id'],
+                name: userElement['name'],
+                lastName: userElement['lastName'],
+                phone: userElement['phone'],
+                mail: userElement['mail'],
+                privilege: userElement['privilege'],
+                relatedUserId: userElement['relatedUserId'])
+        );
+      });
+      print('Response from ($VAT_SERVICE_URL_RETRIEVE_USERS_LIST_RELATIONED_ON_BRANCH_BY_BRANCH_ID): ' + userModelList.toString());
+      return userModelList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+    
+    
+  }
 }
