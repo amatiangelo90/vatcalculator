@@ -1,12 +1,9 @@
 import 'dart:async';
-
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
@@ -60,42 +57,13 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                         onPressed: () async {
                           if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
                             print('Il nome del fornitore è obbligatorio');
-                            CoolAlert.show(
-                              onConfirmBtnTap: (){},
-                              confirmBtnColor: kPinaColor,
-                              backgroundColor: kPinaColor,
-                              context: context,
-                              title: 'Errore',
-                              type: CoolAlertType.error,
-                              text: 'Il nome del fornitore è obbligatorio',
-                              autoCloseDuration: Duration(seconds: 2),
-                              onCancelBtnTap: (){},
-                            );
-
+                            buildShowErrorDialog('Il nome del fornitore è obbligatorio');
                           }else if(controllerEmail.text == null || controllerEmail.text == ''){
                             print('L\'indirizzo email è obbligatorio');
-                            CoolAlert.show(
-                                onConfirmBtnTap: (){},
-                                backgroundColor: kPinaColor,
-                                context: context,
-                                title: 'Errore',
-                                type: CoolAlertType.error,
-                                text: 'L\'indirizzo email è obbligatorio',
-                                autoCloseDuration: Duration(seconds: 3),
-                                onCancelBtnTap: (){}
-                            );
+                            buildShowErrorDialog('L\'indirizzo email è obbligatorio');
                           }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
                             print('Cellulare obbligatorio');
-                            CoolAlert.show(
-                                onConfirmBtnTap: (){},
-                                backgroundColor: kPinaColor,
-                                context: context,
-                                title: 'Errore',
-                                type: CoolAlertType.error,
-                                text: 'Inserire il numero di cellulare',
-                                autoCloseDuration: Duration(seconds: 3),
-                                onCancelBtnTap: (){}
-                            );
+                            buildShowErrorDialog('Inserire un numero di cellulare');
                           }else{
                             KeyboardUtil.hideKeyboard(context);
                             try{
@@ -652,6 +620,83 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
           ),
         ],
       ),
+    );
+  }
+
+
+  void buildShowErrorDialog(String text) {
+    Widget cancelButton = TextButton(
+      child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+      onPressed:  () {
+        Navigator.of(context).pop();
+      },
+    );
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          actions: [
+            cancelButton
+          ],
+          contentPadding: EdgeInsets.zero,
+          shape: const RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.all(
+                  Radius.circular(10.0))),
+          content: Builder(
+            builder: (context) {
+              var height = MediaQuery.of(context).size.height;
+              var width = MediaQuery.of(context).size.width;
+              return SizedBox(
+                height: getProportionateScreenHeight(150),
+                width: width - 90,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(10.0),
+                              topLeft: Radius.circular(10.0) ),
+                          color: kPinaColor,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('  Errore ',style: TextStyle(
+                                  fontSize: getProportionateScreenWidth(14),
+                                  fontWeight: FontWeight.bold,
+                                  color: kCustomWhite,
+                                ),),
+                                IconButton(icon: const Icon(
+                                  Icons.clear,
+                                  color: kCustomWhite,
+                                ), onPressed: () { Navigator.pop(context); },),
+
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(18.0),
+                          child: Text(text,
+                            style: TextStyle(fontSize: 14),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        )
     );
   }
 

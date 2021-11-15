@@ -7,6 +7,7 @@ import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -155,7 +156,8 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                       padding: const EdgeInsets.all(3.0),
                       child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),),
                     ),
-                    Text(element.price.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                    dataBundleNotifier.currentPrivilegeType == Privileges.USER ? Text('',style:
+                    TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(element.price.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
                   ],
                 ),
               ],

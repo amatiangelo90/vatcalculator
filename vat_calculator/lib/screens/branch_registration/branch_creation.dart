@@ -1,4 +1,3 @@
-import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,6 +32,82 @@ class BranchCreationScreen extends StatelessWidget {
         TextEditingController controllerCap = TextEditingController();
         TextEditingController controllerMobileNo = TextEditingController();
 
+        void buildShowErrorDialog(String text) {
+          Widget cancelButton = TextButton(
+            child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+            onPressed:  () {
+              Navigator.of(context).pop();
+            },
+          );
+
+          showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                actions: [
+                  cancelButton
+                ],
+                contentPadding: EdgeInsets.zero,
+                shape: const RoundedRectangleBorder(
+                    borderRadius:
+                    BorderRadius.all(
+                        Radius.circular(10.0))),
+                content: Builder(
+                  builder: (context) {
+                    var height = MediaQuery.of(context).size.height;
+                    var width = MediaQuery.of(context).size.width;
+                    return SizedBox(
+                      height: getProportionateScreenHeight(150),
+                      width: width - 90,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    topLeft: Radius.circular(10.0) ),
+                                color: kPinaColor,
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('  Errore ',style: TextStyle(
+                                        fontSize: getProportionateScreenWidth(14),
+                                        fontWeight: FontWeight.bold,
+                                        color: kCustomWhite,
+                                      ),),
+                                      IconButton(icon: const Icon(
+                                        Icons.clear,
+                                        color: kCustomWhite,
+                                      ), onPressed: () { Navigator.pop(context); },),
+
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(18.0),
+                                child: Text(text,
+                                  style: TextStyle(fontSize: 14),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              )
+          );
+        }
+
         return Scaffold(
           key: key,
           bottomSheet: Row(
@@ -46,62 +121,20 @@ class BranchCreationScreen extends StatelessWidget {
                     onPressed: () async {
                       if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
                         print('Il nome dell\' azienda è obbligatorio');
-                        CoolAlert.show(
-                          onConfirmBtnTap: (){},
-                          confirmBtnColor: kPinaColor,
-                          backgroundColor: kPinaColor,
-                          context: context,
-                          title: 'Errore',
-                          type: CoolAlertType.error,
-                          text: 'Il nome dell\' azienda è obbligatorio',
-                          autoCloseDuration: Duration(seconds: 2),
-                          onCancelBtnTap: (){},
-                        );
+                        buildShowErrorDialog('Il nome dell\' azienda è obbligatorio');
 
                       }else if(controllerEmail.text == null || controllerEmail.text == ''){
                         print('L\'indirizzo email è obbligatorio');
-                        CoolAlert.show(
-                            backgroundColor: kPinaColor,
-                            context: context,
-                            title: 'Errore',
-                            type: CoolAlertType.error,
-                            text: 'L\'indirizzo email è obbligatorio',
-                            autoCloseDuration: Duration(seconds: 3),
-                            onCancelBtnTap: (){}
-                        );
+                        buildShowErrorDialog('L\'indirizzo email è obbligatorio');
                       }else if(controllerAddress.text == null || controllerAddress.text == ''){
                         print('Inserire indirizzo');
-                        CoolAlert.show(
-                            backgroundColor: kPinaColor,
-                            context: context,
-                            title: 'Errore',
-                            type: CoolAlertType.error,
-                            text: 'Indirizzo mancante',
-                            autoCloseDuration: Duration(seconds: 3),
-                            onCancelBtnTap: (){}
-                        );
+                        buildShowErrorDialog('Inserire indirizzo');
                       }else if(int.tryParse(controllerCap.text) == null){
                         print('Il cap è errato. Inserire un numero corretto!');
-                        CoolAlert.show(
-                            backgroundColor: kPinaColor,
-                            context: context,
-                            title: 'Errore',
-                            type: CoolAlertType.error,
-                            text: 'Il cap è errato. Inserire un numero corretto',
-                            autoCloseDuration: Duration(seconds: 3),
-                            onCancelBtnTap: (){}
-                        );
+                        buildShowErrorDialog('Il cap è errato. Inserire un numero corretto');
                       }else if(controllerCap.text.characters.length != 5){
                         print('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
-                        CoolAlert.show(
-                            backgroundColor: kPinaColor,
-                            context: context,
-                            title: 'Errore',
-                            type: CoolAlertType.error,
-                            text: 'Il cap è errato. Inserire un numero corretto',
-                            autoCloseDuration: Duration(seconds: 3),
-                            onCancelBtnTap: (){}
-                        );
+                        buildShowErrorDialog('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
                       }else{
                         BranchModel company = BranchModel(
                             eMail: controllerEmail.text,

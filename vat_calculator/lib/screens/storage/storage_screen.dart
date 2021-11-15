@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -496,136 +497,10 @@ class _StorageScreenState extends State<StorageScreen>{
     return storagesWidgetList;
   }
 
-
-
-  buildCurrentListProductTableToReplace(DataBundleNotifier dataBundleNotifier, context) {
-    DataTable dataTable2;
-
-    if(dataBundleNotifier.cupertinoSwitch){
-      dataTable2 = DataTable2(
-          columnSpacing: 12,
-          horizontalMargin: 12,
-          minWidth: 500,
-          columns: [
-            DataColumn2(
-              label: dataBundleNotifier.currentPrivilegeType == 'User' ? const SizedBox(width: 0,) : CupertinoSwitch(
-                activeColor: Colors.green.shade700,
-                value: dataBundleNotifier.cupertinoSwitch,
-                onChanged: (bool value) { dataBundleNotifier.switchCupertino(); },
-              ),
-              size: ColumnSize.S,
-            ),
-            const DataColumn2(
-              label: Text('Prodotto'),
-              size: ColumnSize.L,
-            ),
-            const DataColumn(
-              label: Text('Stock'),
-            ),
-            const DataColumn(
-              label: Text('Misura'),
-            ),
-            const DataColumn(
-              label: Text('Prezzo Lordo'),
-            ),
-            const DataColumn(
-              label: Text('Iva'),
-            ),
-            const DataColumn(
-              label: Text('Fornitore'),
-              numeric: true,
-            ),
-          ],
-          rows: List<DataRow>.generate(
-              dataBundleNotifier.currentStorageProductListForCurrentStorage.length,
-                  (index) => DataRow(cells: [
-                DataCell(GestureDetector(
-                    onTap: () {
-                      //EasyLoading.show();
-                      dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(dataBundleNotifier.currentStorageProductListForCurrentStorage[index]);
-                      dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                      //EasyLoading.dismiss();
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(width: 3,),
-                        Icon(FontAwesomeIcons.trash, size: getProportionateScreenHeight(16),color: kPinaColor,),
-                      ],
-                    )),
-                ),
-                DataCell(
-                    SizedBox(
-                        width: getProportionateScreenWidth(200),
-                        child: Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].productName)
-                    ),
-                ),
-                DataCell(Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].stock.toString())),
-                DataCell(Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].unitMeasure)),
-                DataCell(Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].price.toString() + ' €')),
-                DataCell(Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].vatApplied.toString() + '%'),),
-                DataCell(Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].supplierName),),
-
-              ]))
-      );
-    }else{
-      dataTable2 = DataTable2(
-          columnSpacing: 12,
-          horizontalMargin: 12,
-          minWidth: 500,
-          columns: [
-            DataColumn2(
-              label: dataBundleNotifier.currentPrivilegeType == 'User' ? SizedBox(width: 0,) : CupertinoSwitch(
-                activeColor: Colors.green.shade700,
-                value: dataBundleNotifier.cupertinoSwitch,
-                onChanged: (bool value) { dataBundleNotifier.switchCupertino(); },
-              ),
-              size: ColumnSize.S,
-            ),
-            const DataColumn2(
-              label: Text('Prodotto'),
-              size: ColumnSize.L,
-            ),
-            DataColumn(
-              label: Text('Stock'),
-            ),
-          ],
-          rows: List<DataRow>.generate(
-              dataBundleNotifier.currentStorageProductListForCurrentStorage.length,
-                  (index) => DataRow(cells: [
-                DataCell(
-                  GestureDetector(
-                    onTap: () {
-                      //EasyLoading.show();
-                      dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(dataBundleNotifier.currentStorageProductListForCurrentStorage[index]);
-                      dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                      //EasyLoading.dismiss();
-                    },
-                    child: Row(
-                      children: [
-                        SizedBox(width: 3,),
-                        Icon(FontAwesomeIcons.trash, size: getProportionateScreenHeight(16),color: kPinaColor,),
-                      ],
-                    ),
-                  ),
-                ),
-                DataCell(Column(
-                  children: [
-                    Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].productName),
-                  ],
-                )),
-                DataCell(Text(dataBundleNotifier.currentStorageProductListForCurrentStorage[index].stock.toString())),
-
-              ]))
-      );
-    }
-    return dataTable2;
-  }
-
   buildCurrentListProductTable(
       DataBundleNotifier dataBundleNotifier, context) {
 
     List<Row> rows = [
-
     ];
 
     if(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.isEmpty){
@@ -677,7 +552,8 @@ class _StorageScreenState extends State<StorageScreen>{
                         size: getProportionateScreenWidth(3),
                       ),
                     ),
-                    Text(
+                    dataBundleNotifier.currentPrivilegeType == Privileges.USER ? Text('',style:
+                      TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
                       element.price.toString() + ' €',
                       style:
                       TextStyle(fontSize: getProportionateScreenWidth(8)),

@@ -56,7 +56,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       ),
                       MenuState.home == selectedMenu
                           ? Card(
-                        color: kPrimaryColor,
+                        color: kCustomGreyBlue,
                           child: Text(' Home ',
                             style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
                           ),
@@ -81,7 +81,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           }),
                       MenuState.storage == selectedMenu
                           ? Card(
-                        color: kPrimaryColor,
+                        color: kCustomGreyBlue,
                         child: Text(' Magazzino ',
                           style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
                         ),
@@ -167,7 +167,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       ),
                       MenuState.orders == selectedMenu
                           ? Card(
-                        color: kPrimaryColor,
+                        color: kCustomGreyBlue,
                         child: Text(' Ordini ',
                           style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
                         ),
@@ -194,7 +194,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       ),
                       MenuState.profile == selectedMenu
                           ? Card(
-                        color: kPrimaryColor,
+                        color: kCustomGreyBlue,
                         child: Text(' Profilo ',
                           style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
                         ),

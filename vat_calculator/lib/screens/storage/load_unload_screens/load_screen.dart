@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
@@ -161,7 +162,8 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                         size: getProportionateScreenWidth(3),
                       ),
                     ),
-                    Text(
+                    dataBundleNotifier.currentPrivilegeType == Privileges.USER ? Text('',style:
+                    TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
                       element.price.toString() + ' €',
                       style:
                           TextStyle(fontSize: getProportionateScreenWidth(8)),

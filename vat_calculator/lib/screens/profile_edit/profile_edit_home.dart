@@ -15,6 +15,7 @@ import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
+import 'managment_pages/branch_edit_screen.dart';
 
 class ProfileEditiScreen extends StatefulWidget {
   const ProfileEditiScreen({Key key}) : super(key: key);
@@ -425,7 +426,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
         child: Column(
           children: <Widget>[
             Expanded(
-              flex: 3,
+              flex: 4,
               child: PageView.builder(
                 onPageChanged: (value) {
                   setState(() {
@@ -434,81 +435,183 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                 },
                 itemCount: companyList.length,
                 itemBuilder: (context, index) => Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Card(
-                      elevation: 1,
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10.0),
-                              bottomRight: Radius.circular(10.0)),
-                          color: Colors.white,
+                  child: Stack(
+                    children: [
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                        child: Stack(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      IconButton(
-                                        icon: SvgPicture.asset(
-                                          'assets/icons/Trash.svg',
-                                          width: getProportionateScreenWidth(25),
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () {},
+                        elevation: 16,
+                        child: Container(
+                          padding: EdgeInsets.only(bottom: getProportionateScreenHeight(60)),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: kBeigeColor,
+                          ),
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(10.0),
+                                  topLeft: Radius.circular(10.0)),
+                              color: kCustomGreyBlue,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(companyList[index].companyName,
+                                        style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w200, fontSize: getProportionateScreenHeight(22))),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Text('Sei ' + companyList[index].accessPrivilege + ' per ' + companyList[index].companyName,
+                                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.w200, fontSize: getProportionateScreenHeight(12))),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: getProportionateScreenWidth(300),
+                                height: getProportionateScreenHeight(50),
+                                child: CupertinoButton(
+                                  color: Colors.deepOrange,
+                                  onPressed: (){
+                                    Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) => EditBranchScreen(pkBranchId: companyList[index].pkBranchId),
                                       ),
-                                      IconButton(
-                                        icon: SvgPicture.asset(
-                                          'assets/icons/edit-cust.svg',
-                                          width: getProportionateScreenWidth(25),
-                                          color: kPrimaryColor,
-                                        ),
-                                        onPressed: () {},
-                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Icon(Icons.settings),
+                                      SizedBox(width: 10,),
+                                      Text('Gestisci'),
                                     ],
                                   ),
                                 ),
-                              ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(companyList[index].companyName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15))),
-                                  Text(companyList[index].address),
-                                  Text(companyList[index].city),
-                                  Text(companyList[index].cap.toString()),
                                   Row(
                                     children: [
-                                      Text('Codice: ' + buildCodeForCurrentBranch(companyList[index].pkBranchId)),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
+                                        child: Text(buildCodeForCurrentBranch(companyList[index].pkBranchId), style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20))),
+                                      ),
                                       IconButton(
-                                          icon: Icon(Icons.share),
-                                        onPressed: (){
-                                          launch('https://api.whatsapp.com/send/?text=Ciao,'
-                                              '%0aassocia il tuo account alla '
-                                              'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
-                                              ''
-                                              + companyList[index].companyName);
+                                        icon: SvgPicture.asset('assets/icons/Question mark.svg',color: Colors.blue,),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) => AlertDialog(
+                                                contentPadding: EdgeInsets.zero,
+                                                shape: const RoundedRectangleBorder(
+                                                    borderRadius:
+                                                    BorderRadius.all(
+                                                        Radius.circular(10.0))),
+                                                content: Builder(
+                                                  builder: (context) {
+                                                    var height = MediaQuery.of(context).size.height;
+                                                    var width = MediaQuery.of(context).size.width;
+                                                    return SizedBox(
+                                                      height: height - 450,
+                                                      width: width - 90,
+                                                      child: SingleChildScrollView(
+                                                        scrollDirection: Axis.vertical,
+                                                        child: Column(
+                                                          children: [
+                                                            Container(
+                                                              decoration: const BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10.0),
+                                                                    topLeft: Radius.circular(10.0) ),
+                                                                color: kCustomGreyBlue,
+                                                              ),
+                                                              child: Column(
+                                                                children: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      Text('  Cosa rappresenta questo codice?',style: TextStyle(
+                                                                        fontSize: getProportionateScreenWidth(14),
+                                                                        fontWeight: FontWeight.bold,
+                                                                        color: kCustomWhite,
+                                                                      ),),
+                                                                      IconButton(icon: const Icon(
+                                                                        Icons.clear,
+                                                                        color: kCustomWhite,
+                                                                      ), onPressed: () { Navigator.pop(context); },),
+
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            const Padding(
+                                                              padding: EdgeInsets.all(18.0),
+                                                              child: Text('Questo è un codice che identifica la tua attività. Puoi distribuirlo ai tuoi soci o dipendenti. '
+                                                                  'In base al tipo di utenza creata e ai permessi assegnati, potranno accedere ai tuoi dati, aiutandoti nella gestione della tua attività.',
+                                                                style: TextStyle(fontSize: 14),
+                                                                textAlign: TextAlign.center,
+                                                              ),
+                                                            ),
+                                                            Text(companyList[index].companyName, style: TextStyle(color: Colors.lightBlue),),
+                                                            SizedBox(
+                                                              height: getProportionateScreenHeight(50),
+                                                              width: getProportionateScreenWidth(300),
+                                                              child: Center(child: Text(buildCodeForCurrentBranch(companyList[index].pkBranchId,), style: TextStyle(fontSize: getProportionateScreenWidth(30)),)),
+                                                            ),
+                                                            IconButton(
+                                                              icon: Icon(Icons.share, color: kCustomGreyBlue,),
+                                                              onPressed: (){
+                                                                launch('https://api.whatsapp.com/send/?text=Ciao,'
+                                                                    '%0aassocia il tuo account alla '
+                                                                    'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                                                    ''
+                                                                    + companyList[index].companyName + '%0a');
+                                                              },
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              )
+                                          );
                                         },
                                       ),
                                     ],
                                   ),
+                                  IconButton(
+                                    icon: Icon(Icons.share, color: kCustomGreyBlue,),
+                                    onPressed: (){
+                                      launch('https://api.whatsapp.com/send/?text=Ciao,'
+                                          '%0aassocia il tuo account alla '
+                                          'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                          ''
+                                          + companyList[index].companyName);
+                                    },
+                                  ),
                                 ],
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -549,7 +652,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
       height: 10,
       width: currentPage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentPage == index ? kPrimaryColor : const Color(0xFFD8D8D8),
+        color: currentPage == index ? kCustomGreyBlue : kBeigeColor,
         borderRadius: BorderRadius.circular(15),
       ),
     );
