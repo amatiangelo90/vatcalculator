@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
@@ -82,8 +83,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                         child: Text(
                       'Gestione Profilo',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryColor),
+                          fontWeight: FontWeight.bold, color: kPrimaryColor),
                     )),
                   ),
                 ),
@@ -147,14 +147,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 4, 20, 0),
                                       child: SizedBox(
-                                        height: MediaQuery.of(context)
-                                                .size
-                                                .height *
-                                            0.05,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
                                         child: CupertinoTextField(
                                           controller: _nameController,
-                                          textInputAction:
-                                              TextInputAction.next,
+                                          textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.text,
                                           clearButtonMode:
                                               OverlayVisibilityMode.editing,
@@ -178,14 +176,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 4, 20, 0),
                                       child: SizedBox(
-                                        height: MediaQuery.of(context)
-                                                .size
-                                                .height *
-                                            0.05,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
                                         child: CupertinoTextField(
                                           controller: _lastNameController,
-                                          textInputAction:
-                                              TextInputAction.next,
+                                          textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.text,
                                           clearButtonMode:
                                               OverlayVisibilityMode.editing,
@@ -210,14 +206,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 4, 20, 0),
                                       child: SizedBox(
-                                        height: MediaQuery.of(context)
-                                                .size
-                                                .height *
-                                            0.05,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
                                         child: CupertinoTextField(
                                           controller: _phoneController,
-                                          textInputAction:
-                                              TextInputAction.next,
+                                          textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.text,
                                           clearButtonMode:
                                               OverlayVisibilityMode.editing,
@@ -242,14 +236,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       padding: const EdgeInsets.fromLTRB(
                                           20, 4, 20, 0),
                                       child: SizedBox(
-                                        height: MediaQuery.of(context)
-                                                .size
-                                                .height *
-                                            0.05,
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.05,
                                         child: CupertinoTextField(
                                           controller: _eMailController,
-                                          textInputAction:
-                                              TextInputAction.next,
+                                          textInputAction: TextInputAction.next,
                                           keyboardType: TextInputType.text,
                                           clearButtonMode:
                                               OverlayVisibilityMode.editing,
@@ -260,8 +252,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     CupertinoButton(
                                         child: const Text(
                                           'Salva',
-                                          style: TextStyle(
-                                              color: Colors.green),
+                                          style: TextStyle(color: Colors.green),
                                         ),
                                         onPressed: () {}),
                                   ],
@@ -288,16 +279,14 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                   .dataBundleList.isEmpty
                                               ? ''
                                               : dataBundleNotifier
-                                                  .dataBundleList[0]
-                                                  .firstName,
+                                                  .dataBundleList[0].firstName,
                                           Icons.person),
                                       getCustomDetailRow(
                                           dataBundleNotifier
                                                   .dataBundleList.isEmpty
                                               ? ''
                                               : dataBundleNotifier
-                                                  .dataBundleList[0]
-                                                  .lastName,
+                                                  .dataBundleList[0].lastName,
                                           Icons.person),
                                       getCustomDetailRow(
                                           dataBundleNotifier
@@ -336,13 +325,13 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                         child: Text(
                       'Gestione Attività',
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: kPrimaryColor),
+                          fontWeight: FontWeight.bold, color: kPrimaryColor),
                     )),
                   ),
                 ),
               ),
-              buildBranchList(dataBundleNotifier.dataBundleList[0].companyList, dataBundleNotifier),
+              buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
+                  dataBundleNotifier),
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
                 child: TextButton(
@@ -380,16 +369,14 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                       _auth.signOut();
                     }
                     dataBundleNotifier.clearAll();
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(const SnackBar(
-                            duration: Duration(milliseconds: 2700),
-                            backgroundColor: kPinaColor,
-                            content: Text(
-                              'Logging out...',
-                              style: TextStyle(
-                                  fontFamily: 'LoraFont',
-                                  color: Colors.white),
-                            )));
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        duration: Duration(milliseconds: 2700),
+                        backgroundColor: kPinaColor,
+                        content: Text(
+                          'Logging out...',
+                          style: TextStyle(
+                              fontFamily: 'LoraFont', color: Colors.white),
+                        )));
                     Navigator.pushNamed(context, SplashScreen.routeName);
                   },
                   child: Row(
@@ -420,7 +407,8 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
     });
   }
 
-  buildBranchList(List<BranchModel> companyList, DataBundleNotifier dataBundleNotifier) {
+  buildBranchList(
+      List<BranchModel> companyList, DataBundleNotifier dataBundleNotifier) {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -447,7 +435,8 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                         ),
                         elevation: 16,
                         child: Container(
-                          padding: EdgeInsets.only(bottom: getProportionateScreenHeight(60)),
+                          padding: EdgeInsets.only(
+                              bottom: getProportionateScreenHeight(60)),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
                             color: kBeigeColor,
@@ -475,59 +464,140 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(companyList[index].companyName,
-                                        style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w200, fontSize: getProportionateScreenHeight(22))),
+                                        style: TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.w200,
+                                            fontSize:
+                                                getProportionateScreenHeight(
+                                                    22))),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(3.0),
-                                    child: Text('Sei ' + companyList[index].accessPrivilege + ' per ' + companyList[index].companyName,
-                                        style: TextStyle(color: Colors.green, fontWeight: FontWeight.w200, fontSize: getProportionateScreenHeight(12))),
+                                    child: Text(
+                                        'Sei ' +
+                                            companyList[index].accessPrivilege +
+                                            ' per ' +
+                                            companyList[index].companyName,
+                                        style: TextStyle(
+                                            color: Colors.green,
+                                            fontWeight: FontWeight.w200,
+                                            fontSize:
+                                                getProportionateScreenHeight(
+                                                    12))),
                                   ),
                                 ],
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
+                                  (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
+                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList != null &&
+                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.isNotEmpty) ?
                                   Row(
                                     children: [
-                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString() + ' x ', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold)),
+                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString() +
+                                              ' x ',
+                                          style: TextStyle(
+                                              color: kCustomWhite,
+                                              fontWeight: FontWeight.bold)),
                                       SizedBox(
-                                          width: getProportionateScreenHeight(25),
-                                          height: getProportionateScreenHeight(25),
-                                          child: SvgPicture.asset('assets/icons/people-branch.svg', fit: BoxFit.contain,color: kCustomWhite,)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList.length.toString() + ' x', style: const TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: getProportionateScreenHeight(25),
-                                          height: getProportionateScreenHeight(25),
-                                          child: SvgPicture.asset('assets/icons/supplier.svg', fit: BoxFit.contain,color: kCustomWhite,)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList.length.toString() + ' x ', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold)),
-                                      SizedBox(
-                                          width: getProportionateScreenHeight(20),
-                                          height: getProportionateScreenHeight(20),
-
-                                          child: SvgPicture.asset('assets/icons/storage.svg',
+                                          width:
+                                              getProportionateScreenHeight(25),
+                                          height:
+                                              getProportionateScreenHeight(25),
+                                          child: SvgPicture.asset(
+                                            'assets/icons/people-branch.svg',
                                             fit: BoxFit.contain,
                                             color: kCustomWhite,
                                           )),
                                     ],
-                                  ),
+                                  ) : SizedBox(width: 0,),
+                                  (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
+                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList != null &&
+                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList.isNotEmpty) ? Row(
+                                    children: [
+                                      Text(
+                                          dataBundleNotifier
+                                                  .currentMapBranchIdBundleSupplierStorageUsers[
+                                                      companyList[index]
+                                                          .pkBranchId]
+                                                  .supplierModelList
+                                                  .length
+                                                  .toString() +
+                                              ' x',
+                                          style: const TextStyle(
+                                              color: kCustomWhite,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          width:
+                                              getProportionateScreenHeight(25),
+                                          height:
+                                              getProportionateScreenHeight(25),
+                                          child: SvgPicture.asset(
+                                            'assets/icons/supplier.svg',
+                                            fit: BoxFit.contain,
+                                            color: kCustomWhite,
+                                          )),
+                                    ],
+                                  )
+                                      : SizedBox(width: 0,),
+                                  (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
+                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList != null &&
+                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList.isNotEmpty) ? Row(
+                                    children: [
+                                      Text(
+                                          dataBundleNotifier
+                                                  .currentMapBranchIdBundleSupplierStorageUsers[
+                                                      companyList[index]
+                                                          .pkBranchId]
+                                                  .storageModelList
+                                                  .length
+                                                  .toString() +
+                                              ' x ',
+                                          style: TextStyle(
+                                              color: kCustomWhite,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(
+                                          width:
+                                              getProportionateScreenHeight(20),
+                                          height:
+                                              getProportionateScreenHeight(20),
+                                          child: SvgPicture.asset(
+                                            'assets/icons/storage.svg',
+                                            fit: BoxFit.contain,
+                                            color: kCustomWhite,
+                                          )),
+                                    ],
+                                  ) :
+                                      SizedBox(width: 0,)
                                 ],
                               ),
-                              SizedBox(
+                              companyList[index].accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
                                 width: getProportionateScreenWidth(300),
                                 height: getProportionateScreenHeight(50),
                                 child: CupertinoButton(
                                   color: Colors.deepOrange,
-                                  onPressed: (){
-                                    Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) => EditBranchScreen(pkBranchId: companyList[index].pkBranchId),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditBranchScreen(
+                                          currentBranch:
+                                              companyList[index],
+                                          listStorageModel: dataBundleNotifier
+                                              .currentMapBranchIdBundleSupplierStorageUsers[
+                                                  companyList[index].pkBranchId]
+                                              .storageModelList,
+                                          listSuppliersModel: dataBundleNotifier
+                                              .currentMapBranchIdBundleSupplierStorageUsers[
+                                                  companyList[index].pkBranchId]
+                                              .supplierModelList,
+                                          listUserModel: dataBundleNotifier
+                                              .currentMapBranchIdBundleSupplierStorageUsers[
+                                                  companyList[index].pkBranchId]
+                                              .userModelList,
+                                        ),
                                       ),
                                     );
                                   },
@@ -535,115 +605,194 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
                                       Icon(Icons.settings),
-                                      SizedBox(width: 10,),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
                                       Text('Gestisci'),
                                     ],
                                   ),
                                 ),
                               ),
-
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.fromLTRB(0, 0, 2, 2),
-                                        child: Text(buildCodeForCurrentBranch(companyList[index].pkBranchId), style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20))),
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 2, 2),
+                                        child: Text(
+                                            buildCodeForCurrentBranch(
+                                                companyList[index].pkBranchId),
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize:
+                                                    getProportionateScreenHeight(
+                                                        20))),
                                       ),
                                       IconButton(
-                                        icon: SvgPicture.asset('assets/icons/Question mark.svg',color: Colors.blue,),
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/Question mark.svg',
+                                          color: Colors.blue,
+                                        ),
                                         onPressed: () {
                                           showDialog(
                                               context: context,
                                               builder: (_) => AlertDialog(
-                                                contentPadding: EdgeInsets.zero,
-                                                shape: const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                    BorderRadius.all(
-                                                        Radius.circular(10.0))),
-                                                content: Builder(
-                                                  builder: (context) {
-                                                    var height = MediaQuery.of(context).size.height;
-                                                    var width = MediaQuery.of(context).size.width;
-                                                    return SizedBox(
-                                                      height: height - 450,
-                                                      width: width - 90,
-                                                      child: SingleChildScrollView(
-                                                        scrollDirection: Axis.vertical,
-                                                        child: Column(
-                                                          children: [
-                                                            Container(
-                                                              decoration: const BoxDecoration(
-                                                                borderRadius: BorderRadius.only(
-                                                                    topRight: Radius.circular(10.0),
-                                                                    topLeft: Radius.circular(10.0) ),
-                                                                color: kCustomGreyBlue,
-                                                              ),
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
+                                                    shape: const RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    10.0))),
+                                                    content: Builder(
+                                                      builder: (context) {
+                                                        var height =
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .height;
+                                                        var width =
+                                                            MediaQuery.of(
+                                                                    context)
+                                                                .size
+                                                                .width;
+                                                        return SizedBox(
+                                                          height: height - 450,
+                                                          width: width - 90,
+                                                          child:
+                                                              SingleChildScrollView(
+                                                            scrollDirection:
+                                                                Axis.vertical,
+                                                            child: Column(
+                                                              children: [
+                                                                Container(
+                                                                  decoration:
+                                                                      const BoxDecoration(
+                                                                    borderRadius: BorderRadius.only(
+                                                                        topRight:
+                                                                            Radius.circular(
+                                                                                10.0),
+                                                                        topLeft:
+                                                                            Radius.circular(10.0)),
+                                                                    color:
+                                                                        kCustomGreyBlue,
+                                                                  ),
+                                                                  child: Column(
                                                                     children: [
-                                                                      Text('  Cosa rappresenta questo codice?',style: TextStyle(
-                                                                        fontSize: getProportionateScreenWidth(14),
-                                                                        fontWeight: FontWeight.bold,
-                                                                        color: kCustomWhite,
-                                                                      ),),
-                                                                      IconButton(icon: const Icon(
-                                                                        Icons.clear,
-                                                                        color: kCustomWhite,
-                                                                      ), onPressed: () { Navigator.pop(context); },),
-
+                                                                      Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          Text(
+                                                                            '  Cosa rappresenta questo codice?',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: getProportionateScreenWidth(14),
+                                                                              fontWeight: FontWeight.bold,
+                                                                              color: kCustomWhite,
+                                                                            ),
+                                                                          ),
+                                                                          IconButton(
+                                                                            icon:
+                                                                                const Icon(
+                                                                              Icons.clear,
+                                                                              color: kCustomWhite,
+                                                                            ),
+                                                                            onPressed:
+                                                                                () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ],
                                                                   ),
-                                                                ],
-                                                              ),
+                                                                ),
+                                                                const Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              18.0),
+                                                                  child: Text(
+                                                                    'Questo è un codice che identifica la tua attività. Puoi distribuirlo ai tuoi soci o dipendenti. '
+                                                                    'In base al tipo di utenza creata e ai permessi assegnati, potranno accedere ai tuoi dati, aiutandoti nella gestione della tua attività.',
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            14),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  companyList[
+                                                                          index]
+                                                                      .companyName,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .lightBlue),
+                                                                ),
+                                                                SizedBox(
+                                                                  height:
+                                                                      getProportionateScreenHeight(
+                                                                          50),
+                                                                  width:
+                                                                      getProportionateScreenWidth(
+                                                                          300),
+                                                                  child: Center(
+                                                                      child:
+                                                                          Text(
+                                                                    buildCodeForCurrentBranch(
+                                                                      companyList[
+                                                                              index]
+                                                                          .pkBranchId,
+                                                                    ),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            getProportionateScreenWidth(30)),
+                                                                  )),
+                                                                ),
+                                                                IconButton(
+                                                                  icon: Icon(
+                                                                    Icons.share,
+                                                                    color:
+                                                                        kCustomGreyBlue,
+                                                                  ),
+                                                                  onPressed:
+                                                                      () {
+                                                                    launch('https://api.whatsapp.com/send/?text=Ciao,'
+                                                                            '%0aassocia il tuo account alla '
+                                                                            'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                                                            '' +
+                                                                        companyList[index].companyName +
+                                                                        '%0a');
+                                                                  },
+                                                                ),
+                                                              ],
                                                             ),
-                                                            const Padding(
-                                                              padding: EdgeInsets.all(18.0),
-                                                              child: Text('Questo è un codice che identifica la tua attività. Puoi distribuirlo ai tuoi soci o dipendenti. '
-                                                                  'In base al tipo di utenza creata e ai permessi assegnati, potranno accedere ai tuoi dati, aiutandoti nella gestione della tua attività.',
-                                                                style: TextStyle(fontSize: 14),
-                                                                textAlign: TextAlign.center,
-                                                              ),
-                                                            ),
-                                                            Text(companyList[index].companyName, style: TextStyle(color: Colors.lightBlue),),
-                                                            SizedBox(
-                                                              height: getProportionateScreenHeight(50),
-                                                              width: getProportionateScreenWidth(300),
-                                                              child: Center(child: Text(buildCodeForCurrentBranch(companyList[index].pkBranchId,), style: TextStyle(fontSize: getProportionateScreenWidth(30)),)),
-                                                            ),
-                                                            IconButton(
-                                                              icon: Icon(Icons.share, color: kCustomGreyBlue,),
-                                                              onPressed: (){
-                                                                launch('https://api.whatsapp.com/send/?text=Ciao,'
-                                                                    '%0aassocia il tuo account alla '
-                                                                    'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
-                                                                    ''
-                                                                    + companyList[index].companyName + '%0a');
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                              )
-                                          );
+                                                          ),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ));
                                         },
                                       ),
                                     ],
                                   ),
                                   IconButton(
-                                    icon: Icon(Icons.share, color: kCustomGreyBlue,),
-                                    onPressed: (){
+                                    icon: Icon(
+                                      Icons.share,
+                                      color: kCustomGreyBlue,
+                                    ),
+                                    onPressed: () {
                                       launch('https://api.whatsapp.com/send/?text=Ciao,'
-                                          '%0aassocia il tuo account alla '
-                                          'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
-                                          ''
-                                          + companyList[index].companyName);
+                                              '%0aassocia il tuo account alla '
+                                              'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                              '' +
+                                          companyList[index].companyName);
                                     },
                                   ),
                                 ],
@@ -671,7 +820,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(
                         companyList.length,
-                            (index) => buildDot(index: index),
+                        (index) => buildDot(index: index),
                       ),
                     ),
                     const Spacer(flex: 3),
@@ -701,11 +850,10 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
 
   String buildCodeForCurrentBranch(int id) {
     String currentCode = '';
-    for(int i = 0; i < (8 - (id*169).toString().length); i++){
+    for (int i = 0; i < (8 - (id * 169).toString().length); i++) {
       currentCode = currentCode + '0';
     }
-    return currentCode + (id*169).toString();
-
+    return currentCode + (id * 169).toString();
   }
 }
 

@@ -80,7 +80,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                         content: Text('Grazie $firstName, il tuo profilo è stato creato e presto verrai reindirizzato alla home page.', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
 
                     ClientVatService clientService = ClientVatService();
-                    await clientService.performSaveUser(firstName, lastName, phoneNumber, widget.email, Privileges.SUPER_ADMIN, 0);
+                    await clientService.performSaveUser(firstName, lastName, phoneNumber, widget.email, Privileges.OWNER, 0);
                     Timer(const Duration(milliseconds: 2500), ()=> Navigator.push(context, MaterialPageRoute(builder: (context) =>LandingScreen(email: widget.email,),),),);
 
                   }else{

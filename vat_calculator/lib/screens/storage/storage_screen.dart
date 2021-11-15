@@ -552,7 +552,7 @@ class _StorageScreenState extends State<StorageScreen>{
                         size: getProportionateScreenWidth(3),
                       ),
                     ),
-                    dataBundleNotifier.currentPrivilegeType == Privileges.USER ? Text('',style:
+                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
                       TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
                       element.price.toString() + ' €',
                       style:

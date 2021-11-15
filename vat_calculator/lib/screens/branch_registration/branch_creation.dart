@@ -148,7 +148,7 @@ class BranchCreationScreen extends StatelessWidget {
                             providerFatture: '',
                             vatNumber: controllerPIva.text,
                             pkBranchId: 0,
-                            accessPrivilege: Privileges.SUPER_ADMIN
+                            accessPrivilege: Privileges.OWNER
                         );
 
                         ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();

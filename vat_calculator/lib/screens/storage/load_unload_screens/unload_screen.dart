@@ -156,7 +156,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                       padding: const EdgeInsets.all(3.0),
                       child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),),
                     ),
-                    dataBundleNotifier.currentPrivilegeType == Privileges.USER ? Text('',style:
+                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
                     TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(element.price.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
                   ],
                 ),

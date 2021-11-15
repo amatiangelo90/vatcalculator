@@ -346,7 +346,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                         child: const Text("Unisciti", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                                         onPressed:  () async {
                                           Response response = await dataBundleNotifier.getclientServiceInstance().createUserBranchRelation(
-                                            accessPrivilege: Privileges.USER,
+                                            accessPrivilege: Privileges.EMPLOYEE,
                                             fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
                                             fkUserId: dataBundleNotifier.dataBundleList[0].id
                                           );

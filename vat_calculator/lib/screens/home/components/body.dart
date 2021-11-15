@@ -257,7 +257,7 @@ class _BodyState extends State<Body> {
                 child: Row(
                   children: [
                     Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
-                    Icon(currentBranch.accessPrivilege == Privileges.USER ? Icons.person : Icons.vpn_key_outlined, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
+                    Icon(currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Icons.person : Icons.vpn_key_outlined, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
                     Text('   ' + currentBranch.companyName,
                       style: TextStyle(
                       fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),

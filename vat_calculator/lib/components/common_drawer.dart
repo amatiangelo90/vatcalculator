@@ -181,7 +181,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         kPrimaryColor),
                     const Divider(),
                     buildDrawerRow('assets/icons/Parcel.svg','Calcola Iva',(){
-                      if(dataBundleNotifier.currentPrivilegeType == Privileges.USER){
+                      if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog (
