@@ -1,23 +1,27 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class EditBranchScreen extends StatefulWidget {
-  const EditBranchScreen({Key key, this.currentBranch, this.listStorageModel, this.listUserModel, this.listSuppliersModel}) : super(key: key);
+  const EditBranchScreen({Key key, this.currentBranch, this.listStorageModel, this.listUserModel, this.listSuppliersModel, this.callBackFuntion}) : super(key: key);
 
   final BranchModel currentBranch;
   final List<UserModel> listUserModel;
   final List<ResponseAnagraficaFornitori> listSuppliersModel;
   final List<StorageModel> listStorageModel;
-
+  final Function callBackFuntion;
   @override
   _EditBranchScreenState createState() => _EditBranchScreenState();
 }
@@ -44,7 +48,8 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
             title: Text(widget.currentBranch.companyName,
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: Colors.white,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold
               ),
             ),
             backgroundColor: kPrimaryColor,
@@ -58,13 +63,31 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children: [
-                    SizedBox(height: 5,),
-                    Center(child: Text(
-                      'Personale', style: TextStyle(fontSize: getProportionateScreenWidth(15)),
+                    const SizedBox(height: 5,),
+                    Center(child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset('assets/icons/people-branch.svg',
+                          width: getProportionateScreenWidth(30),
+                          color: kCustomWhite,),
+                        SizedBox(width: 5,),
+                        Text(
+                          'Personale', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18)),
+                        ),
+                      ],
                     )),
                     buildListUsersForCurrentBranch(widget.listUserModel, widget.currentBranch, dataBundleNotifier),
-                    Center(child: Text(
-                      'Magazzini', style: TextStyle(fontSize: getProportionateScreenWidth(15)),
+                    Center(child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset('assets/icons/storage.svg',
+                          width: getProportionateScreenWidth(27),
+                          color: kCustomWhite,),
+                        SizedBox(width: 5,),
+                        Text(
+                          'Magazzini', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18)),
+                        ),
+                      ],
                     )),
                     buildListStoragesForCurrentBranch(widget.listStorageModel, widget.currentBranch, dataBundleNotifier),
 
@@ -82,7 +105,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 50,),
+                    const SizedBox(height: 50,),
                   ],
                 ),
               ),
@@ -96,6 +119,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
   buildListUsersForCurrentBranch(List<UserModel> listUserModel,
       BranchModel currentBranch,
       DataBundleNotifier dataBundleNotifier) {
+
     return SizedBox(
       width: getProportionateScreenWidth(500),
       height: getProportionateScreenHeight(400),
@@ -146,20 +170,56 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(listUserModel[index].privilege, style: TextStyle(color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
-
                               listUserModel[index].id == dataBundleNotifier.dataBundleList[0].id ? SizedBox(height: 0,) :
-                                  Column(
+                              listUserModel[index].privilege == Privileges.OWNER ? SizedBox(width: 0,) : Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      SizedBox(
+                                      listUserModel[index].privilege == Privileges.EMPLOYEE ? SizedBox(
                                         height: getProportionateScreenHeight(50),
                                         width: getProportionateScreenWidth(300),
                                         child: CupertinoButton(
-                                          child: Text('Rendi Amministratore'),
+                                          child: const Text('Rendi Amministratore'),
                                           color: Colors.green,
-                                          onPressed: (){},
+                                          onPressed: () async {
+                                            Response response = await dataBundleNotifier
+                                                .getclientServiceInstance()
+                                                .updatePrivilegeForUserBranchRelation(
+                                              branchId: currentBranch.pkBranchId,
+                                              userId: listUserModel[index].id,
+                                              privilegeType: Privileges.ADMIN);
+
+                                            setState(() {
+                                              if(response.data > 0){
+                                                listUserModel[index].privilege = Privileges.ADMIN;
+                                              }
+                                            });
+
+                                            //dataBundleNotifier.clearAndUpdateMapBundle();
+
+                                          },
                                         ),
-                                      ),
+                                      ) : SizedBox(
+                                        height: getProportionateScreenHeight(50),
+                                        width: getProportionateScreenWidth(300),
+                                        child: CupertinoButton(
+                                          child: const Text('Rendi Utente Base'),
+                                          color: Colors.green,
+                                          onPressed: () async {
+                                            Response response = await dataBundleNotifier
+                                                .getclientServiceInstance()
+                                                .updatePrivilegeForUserBranchRelation(
+                                                branchId: currentBranch.pkBranchId,
+                                                userId: listUserModel[index].id,
+                                                privilegeType: Privileges.EMPLOYEE);
+                                            setState(() {
+                                              if(response.data > 0){
+                                                listUserModel[index].privilege = Privileges.EMPLOYEE;
+                                              }
+                                            });
+                                            //dataBundleNotifier.clearAndUpdateMapBundle();
+                                          },
+                                        ),
+                                      )
                                     ],
                                   ),
                               Row(
@@ -173,7 +233,152 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                               ],
                           ),
                         ),
-                      )
+                      ),
+                      listUserModel[index].id == dataBundleNotifier.dataBundleList[0].id ? const SizedBox(width: 0,) : Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              listUserModel[index].privilege == Privileges.OWNER ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(''),
+                              ) : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                IconButton(
+                                    onPressed: () async {
+
+                                      Widget cancelButton = TextButton(
+                                        child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+                                        onPressed:  () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      );
+
+                                      Widget continueButton = TextButton(
+                                        child: const Text("Elimina", style: TextStyle(color: kPinaColor)),
+                                        onPressed:  () async {
+                                          Response response = await dataBundleNotifier
+                                              .getclientServiceInstance()
+                                              .removeUserBranchRelation(
+                                              branchId: currentBranch.pkBranchId,
+                                              userId: listUserModel[index].id);
+
+                                          if(response == null || response.data == null){
+
+                                          }else{
+                                            setState(() {
+                                              dataBundleNotifier
+                                                  .currentMapBranchIdBundleSupplierStorageUsers[currentBranch.pkBranchId]
+                                                  .userModelList.removeWhere((element) => element.id == listUserModel[index].id);
+                                              widget.callBackFuntion();
+                                            });
+                                          }
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog (
+                                            actions: [
+                                              ButtonBar(
+                                                alignment: MainAxisAlignment.spaceAround,
+                                                children: [
+                                                  cancelButton,
+                                                  continueButton,
+                                                ],
+                                              ),
+                                            ],
+                                            contentPadding: EdgeInsets.zero,
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.all(
+                                                    Radius.circular(10.0))),
+                                            content: Builder(
+                                              builder: (context) {
+                                                var height = MediaQuery.of(context).size.height;
+                                                var width = MediaQuery.of(context).size.width;
+                                                return SizedBox(
+                                                  height: getProportionateScreenHeight(180),
+                                                  width: width - 90,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.vertical,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          decoration: const BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                                topRight: Radius.circular(10.0),
+                                                                topLeft: Radius.circular(10.0) ),
+                                                            color: kPrimaryColor,
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Text('  Elimina Utente?',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    fontSize: getProportionateScreenWidth(15),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: kCustomWhite,
+                                                                  )),
+                                                              IconButton(icon: const Icon(
+                                                                Icons.clear,
+                                                                color: kCustomWhite,
+                                                              ), onPressed: () { Navigator.pop(context); },),
+
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        const Text(''),
+                                                        const Text(''),
+                                                        Center(
+                                                          child: Text('Rimuovere ${listUserModel[index].name} ${listUserModel[index].lastName} dalla lista dipendenti di \'${currentBranch.companyName}\'? ', textAlign: TextAlign.center,),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          )
+                                      );
+                                    },
+                                    icon: SvgPicture.asset('assets/icons/Trash.svg', width: getProportionateScreenWidth(20),)),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    IconButton(
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/Phone.svg',
+                                          color: kCustomWhite,
+                                          height: getProportionateScreenHeight(23),
+                                        ),
+                                        onPressed: () => {
+                                          launch('tel://${getRefactoredNumber(listUserModel[index].phone)}')
+                                        }
+                                    ),
+                                    IconButton(
+                                        icon: SvgPicture.asset(
+                                          'assets/icons/ws.svg',
+                                          height: getProportionateScreenHeight(25),
+                                        ),
+                                        onPressed: () => {
+                                          launch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}')
+                                        }
+                                    ),
+                                    SizedBox(width: 10,),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -262,13 +467,78 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text('Codice: ', style: TextStyle(color: kCustomWhite,  fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].pkStorageId.toString(), style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text('Data Creazione: ', style: TextStyle(color: kCustomWhite,  fontSize: getProportionateScreenWidth(18))),
+                                          Text(
+                                              listStorageModel[index].creationDate.day.toString() + '/' +
+                                              listStorageModel[index].creationDate.month.toString() + '/' +
+                                              listStorageModel[index].creationDate.year.toString()
+
+                                              ,style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text('Indirizzo: ', style: TextStyle(color: kCustomWhite,  fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].address, style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text('Città: ', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18) )),
+                                          Text(listStorageModel[index].city, style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Text('Cap: ', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].cap, style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
                                 ],
                               ),
                               Text(listStorageModel[index].name, style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
                             ],
                           ),
                         ),
-                      )
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: IconButton(
+                              icon: SvgPicture.asset('assets/icons/Trash.svg', width: getProportionateScreenWidth(20),),
+                              color: Colors.red,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: IconButton(
+                              icon: SvgPicture.asset('assets/icons/edit-cust.svg', width: getProportionateScreenWidth(25), color: kCustomWhite,),
+                              color: kCustomWhite,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -310,7 +580,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
       height: 10,
       width: currentUserPage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentUserPage == index ? kCustomGreyBlue : kBeigeColor,
+        color: currentUserPage == index ? Colors.deepOrangeAccent : kBeigeColor,
         borderRadius: BorderRadius.circular(15),
       ),
     );
@@ -323,10 +593,17 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
       height: 10,
       width: currentStoragePage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentStoragePage == index ? kCustomGreyBlue : kBeigeColor,
+        color: currentStoragePage == index ? kPinaColor : kBeigeColor,
         borderRadius: BorderRadius.circular(15),
       ),
     );
+  }
+
+  getRefactoredNumber(String tel) {
+    if(tel.contains('+39') || tel.contains('0039')){
+      return tel;
+    }
+    return '+39' + tel;
   }
 
 }

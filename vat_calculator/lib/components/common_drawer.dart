@@ -546,7 +546,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
   buildListBranches(DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> branchWidgetList = [];
-
     dataBundleNotifier.dataBundleList[0].companyList.forEach((currentBranch) {
       branchWidgetList.add(
         GestureDetector(
@@ -561,6 +560,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 children: [
+                  Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
+                  Icon(currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Icons.person : Icons.vpn_key_outlined, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
                   Text('   ' + currentBranch.companyName,
                     style: TextStyle(
                       fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
@@ -572,11 +573,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
           ),
           onTap: () async {
             context.loaderOverlay.show();
-
             Navigator.pop(context);
-
             await dataBundleNotifier.setCurrentBranch(currentBranch);
             context.loaderOverlay.hide();
+
           },
         ),
       );

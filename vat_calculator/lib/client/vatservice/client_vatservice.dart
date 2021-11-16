@@ -1278,4 +1278,67 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
     
     
   }
+
+  Future<Response> updatePrivilegeForUserBranchRelation({int branchId, int userId, String privilegeType}) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        UserBranchRelationModel(pkUserBranchId: 0,
+            fkBranchId: branchId,
+            fkUserId: userId,
+            accessPrivilege: privilegeType)
+            .toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE + '...');
+    print('Body Request update user branches table with new access privilege for current user: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  Future<Response> removeUserBranchRelation({int branchId, int userId}) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        UserBranchRelationModel(pkUserBranchId: 0,
+            fkBranchId: branchId,
+            fkUserId: userId,
+            accessPrivilege: '').toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION + '...');
+    print('Body Request delete user branch relation: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION,
+        data: body,
+      );
+
+      if(post != null && post.data){
+        print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION + '): ' + post.data);
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
 }

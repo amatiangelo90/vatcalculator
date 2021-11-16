@@ -1,22 +1,15 @@
-import 'dart:math';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
-import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
-
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
@@ -34,6 +27,11 @@ class ProfileEditiScreen extends StatefulWidget {
 class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
   int currentPage = 0;
 
+  void refreshPage(){
+    setState(() {
+
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
@@ -58,6 +56,8 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
       return Scaffold(
         drawer: const CommonDrawer(),
         appBar: AppBar(
+          actions: [
+          ],
           iconTheme: const IconThemeData(color: kPrimaryColor),
           centerTitle: true,
           title: Text(
@@ -330,8 +330,9 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                   ),
                 ),
               ),
-              buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
-                  dataBundleNotifier),
+              (dataBundleNotifier.dataBundleList != null && dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty) ? buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
+                  dataBundleNotifier) : const SizedBox(width: 50,
+              child: Center(child: Text('Nessuna Attività creata')),),
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
                 child: TextButton(
@@ -491,13 +492,13 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
                                 children: [
-                                  (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
-                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList != null &&
-                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.isNotEmpty) ?
                                   Row(
                                     children: [
-                                      Text(dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString() +
-                                              ' x ',
+                                      Text((dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
+                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList != null &&
+                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.isNotEmpty)
+                                          ? dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString()
+                                          + ' x ' : '0 x ',
                                           style: TextStyle(
                                               color: kCustomWhite,
                                               fontWeight: FontWeight.bold)),
@@ -512,20 +513,20 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                             color: kCustomWhite,
                                           )),
                                     ],
-                                  ) : SizedBox(width: 0,),
-                                  (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
-                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList != null &&
-                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList.isNotEmpty) ? Row(
+                                  ),
+                                  Row(
                                     children: [
                                       Text(
+                                          (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList != null &&
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList.isNotEmpty) ?
                                           dataBundleNotifier
                                                   .currentMapBranchIdBundleSupplierStorageUsers[
                                                       companyList[index]
                                                           .pkBranchId]
                                                   .supplierModelList
                                                   .length
-                                                  .toString() +
-                                              ' x',
+                                                  .toString() + ' x' : '0 x',
                                           style: const TextStyle(
                                               color: kCustomWhite,
                                               fontWeight: FontWeight.bold)),
@@ -540,21 +541,20 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                             color: kCustomWhite,
                                           )),
                                     ],
-                                  )
-                                      : SizedBox(width: 0,),
-                                  (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
-                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList != null &&
-                                      dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList.isNotEmpty) ? Row(
+                                  ),
+                                  Row(
                                     children: [
                                       Text(
+                                          (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList != null &&
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList.isNotEmpty) ?
                                           dataBundleNotifier
                                                   .currentMapBranchIdBundleSupplierStorageUsers[
                                                       companyList[index]
                                                           .pkBranchId]
                                                   .storageModelList
                                                   .length
-                                                  .toString() +
-                                              ' x ',
+                                                  .toString() + ' x ' : '0 x ',
                                           style: TextStyle(
                                               color: kCustomWhite,
                                               fontWeight: FontWeight.bold)),
@@ -569,8 +569,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                             color: kCustomWhite,
                                           )),
                                     ],
-                                  ) :
-                                      SizedBox(width: 0,)
+                                  )
                                 ],
                               ),
                               companyList[index].accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
@@ -583,6 +582,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => EditBranchScreen(
+                                          callBackFuntion: refreshPage,
                                           currentBranch:
                                               companyList[index],
                                           listStorageModel: dataBundleNotifier

@@ -359,7 +359,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                   var height = MediaQuery.of(context).size.height;
                                   var width = MediaQuery.of(context).size.width;
                                   return SizedBox(
-                                    height: getProportionateScreenHeight(200),
+                                    height: getProportionateScreenHeight(180),
                                     width: width - 90,
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
