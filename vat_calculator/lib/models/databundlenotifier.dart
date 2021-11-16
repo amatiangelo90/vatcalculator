@@ -97,6 +97,7 @@ class DataBundleNotifier extends ChangeNotifier {
   bool editProfile = false;
   bool searchStorageButton = false;
   bool isZtoAOrderded = false;
+  bool editOrder = false;
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -795,6 +796,21 @@ class DataBundleNotifier extends ChangeNotifier {
       ));
       currentMapBranchIdBundleSupplierStorageUsers[currentBranch.pkBranchId] = BundleUserStorageSupplier(currentBranch.pkBranchId, listStorages, listUsers, listSuppliers);
     });
+    notifyListeners();
+  }
+
+  void switchEditOrder() {
+    if(editOrder){
+      editOrder = false;
+    }else{
+      editOrder = true;
+    }
+    notifyListeners();
+  }
+
+  void setEditOrderToFalse(){
+    editOrder = false;
+
     notifyListeners();
   }
 }
