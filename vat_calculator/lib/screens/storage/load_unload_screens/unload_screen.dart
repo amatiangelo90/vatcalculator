@@ -74,7 +74,9 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                     orderedMapBySuppliers.forEach((key, value) async {
                       Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(OrderModel(
                           code: DateTime.now().microsecondsSinceEpoch.toString().substring(3,16),
-                          details: 'Ordine Bozza per fornitore con id ' + key.toString(),
+                          details: 'Ordine eseguito da ' + dataBundleNotifier.dataBundleList[0].firstName + ' ' +
+                              dataBundleNotifier.dataBundleList[0].lastName + ' per ' +
+                              dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
                           total: 0.0,
                           status: OrderState.DRAFT,
                           creation_date: DateTime.now().millisecondsSinceEpoch,

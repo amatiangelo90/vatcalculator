@@ -1,9 +1,12 @@
+import 'package:chips_choice/chips_choice.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
@@ -28,13 +31,18 @@ class StorageScreen extends StatefulWidget{
 
 class _StorageScreenState extends State<StorageScreen>{
 
+  String supplierChoiced = '';
+  List<String> suppliersList;
+
   @override
   Widget build(BuildContext context) {
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
+        suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
+
         return Scaffold(
-          floatingActionButton: FloatingActionButton(
+          floatingActionButton: dataBundleNotifier.currentStorageList.isEmpty ? SizedBox(width: 0,) : FloatingActionButton(
             onPressed: () {
               showDialog(
                   context: context,
@@ -281,6 +289,31 @@ class _StorageScreenState extends State<StorageScreen>{
                         child: buildGestureDetectorStoragesSelector(
                             context, dataBundleNotifier),
                       ),
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Column(
+                          children: [
+                            Content(
+                              child: ChipsChoice<String>.single(
+                                choiceActiveStyle: C2ChoiceStyle(
+                                  color: kPinaColor
+                                ),
+                                value: supplierChoiced,
+                                onChanged: (val) => setState(() {
+                                  supplierChoiced = val;
+                                  dataBundleNotifier.filterStorageProductList(val);
+                                }),
+                                choiceItems: C2Choice.listFrom<String, String>(
+                                  source: suppliersList,
+                                  value: (i, v) => v,
+                                  label: (i, v) => v,
+                                  tooltip: (i, v) => v,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       buildCurrentListProductTable(dataBundleNotifier, context),
                     ],
                   ),
@@ -348,7 +381,7 @@ class _StorageScreenState extends State<StorageScreen>{
                   var height = MediaQuery.of(context).size.height;
                   var width = MediaQuery.of(context).size.width;
                   return SizedBox(
-                    height: height - 350,
+
                     width: width,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
@@ -421,18 +454,23 @@ class _StorageScreenState extends State<StorageScreen>{
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '   ' + currentStorageElement.name,
-                    style: TextStyle(
-                      fontSize: dataBundleNotifier.currentStorage.name ==
-                              currentStorageElement.name
-                          ? getProportionateScreenWidth(16)
-                          : getProportionateScreenWidth(13),
-                      color: dataBundleNotifier.currentStorage.name ==
-                              currentStorageElement.name
-                          ? Colors.white
-                          : Colors.black,
-                    ),
+                  Row(
+                    children: [
+                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', width: getProportionateScreenWidth(16),), ),
+                      Text(
+                        '   ' + currentStorageElement.name,
+                        style: TextStyle(
+                          fontSize: dataBundleNotifier.currentStorage.name ==
+                                  currentStorageElement.name
+                              ? getProportionateScreenWidth(16)
+                              : getProportionateScreenWidth(13),
+                          color: dataBundleNotifier.currentStorage.name ==
+                                  currentStorageElement.name
+                              ? Colors.white
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
                   ),
                   dataBundleNotifier.currentStorage.name ==
                       currentStorageElement.name ? Padding(
@@ -456,42 +494,27 @@ class _StorageScreenState extends State<StorageScreen>{
       );
     });
     storagesWidgetList.add(
-      GestureDetector(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.green,
-              border: const Border(
-                bottom: BorderSide(width: 1.0, color: Colors.grey),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                ' Crea Nuovo  ',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-
-                  fontSize: getProportionateScreenWidth(16),
-                  color : Colors.white,
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: getProportionateScreenHeight(50),
+          width: getProportionateScreenWidth(250),
+          child: CupertinoButton(
+            child: Text('Crea Magazzino'),
+            color: Colors.green,
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AddStorageScreen(
+                    branch: dataBundleNotifier.currentBranch,
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
-        onTap: () {
-          Navigator.pop(context);
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => AddStorageScreen(
-                branch: dataBundleNotifier.currentBranch,
-              ),
-            ),
-          );
-
-        },
       ),
     );
     return storagesWidgetList;
@@ -526,41 +549,46 @@ class _StorageScreenState extends State<StorageScreen>{
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(200),
-                  child: Text(
+            Padding(
+              padding: const EdgeInsets.only(left: 9),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
                     element.productName,
                     overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(16)),
+                    style: TextStyle(fontSize: getProportionateScreenWidth(18)),
                   ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      element.unitMeasure,
-                      style:
-                      TextStyle(fontSize: getProportionateScreenWidth(8)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Icon(
-                        FontAwesomeIcons.dotCircle,
-                        size: getProportionateScreenWidth(3),
+                  Text(
+                    element.supplierName,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(fontSize: getProportionateScreenWidth(8)),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        element.unitMeasure,
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(8)),
                       ),
-                    ),
-                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
-                      TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
-                      element.price.toString() + ' €',
-                      style:
-                      TextStyle(fontSize: getProportionateScreenWidth(8)),
-                    ),
-                  ],
-                ),
-              ],
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          FontAwesomeIcons.dotCircle,
+                          size: getProportionateScreenWidth(3),
+                        ),
+                      ),
+                      dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
+                        TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
+                        element.price.toString() + ' €',
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(8)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             Row(
               children: [
@@ -589,6 +617,7 @@ class _StorageScreenState extends State<StorageScreen>{
                     dataBundleNotifier.getclientServiceInstance()
                         .removeProductFromStorage(element);
                     dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                    suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
                     //EasyLoading.dismiss();
                   },
                 ),
@@ -633,5 +662,49 @@ class _StorageScreenState extends State<StorageScreen>{
 
       dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
 
+  }
+
+  retrieveListSuppliers(List<ResponseAnagraficaFornitori> currentListSuppliers) {
+    List<String> currentListNameSuppliers = ['Tutti i fornitori'];
+    currentListSuppliers.forEach((element) {
+      currentListNameSuppliers.add(element.nome);
+    });
+    return currentListNameSuppliers;
+  }
+}
+
+
+
+class Content extends StatefulWidget {
+
+  final Widget child;
+
+  Content({
+    Key key,
+    @required this.child,
+  }) : super(key: key);
+
+  @override
+  _ContentState createState() => _ContentState();
+}
+
+class _ContentState extends State<Content> with AutomaticKeepAliveClientMixin<Content>  {
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Flexible(
+            fit: FlexFit.loose,
+            child: widget.child,
+        ),
+      ],
+    );
   }
 }

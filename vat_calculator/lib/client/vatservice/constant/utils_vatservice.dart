@@ -36,6 +36,7 @@ const String VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE = 'http://$host:
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';
+const String VAT_SERVICE_URL_DELETE_STORAGE = 'http://$host:8080/vatservices/api/v1/delete/storage';
 const String VAT_SERVICE_URL_DELETE_ORDER = 'http://$host:8080/vatservices/api/v1/delete/order';
 const String VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/remove/relationbranchsupplier';
 

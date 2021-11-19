@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
@@ -38,7 +40,10 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
         return Scaffold(
           appBar: AppBar(
             leading: IconButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                widget.callBackFuntion();
+                Navigator.of(context).pop();
+              },
               icon: const Icon(
                 Icons.arrow_back_ios,
                 color: Colors.white,
@@ -83,7 +88,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                         SvgPicture.asset('assets/icons/storage.svg',
                           width: getProportionateScreenWidth(27),
                           color: kCustomWhite,),
-                        SizedBox(width: 5,),
+                        const SizedBox(width: 5,),
                         Text(
                           'Magazzini', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18)),
                         ),
@@ -528,6 +533,112 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                             child: IconButton(
                               icon: SvgPicture.asset('assets/icons/Trash.svg', width: getProportionateScreenWidth(20),),
                               color: Colors.red,
+                              onPressed: () {
+                                Widget cancelButton = TextButton(
+                                  child: Text("Indietro", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
+                                  onPressed:  () {
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+
+                                Widget continueButton = TextButton(
+                                  child: Text("Elimina", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
+                                  onPressed:  () async {
+
+                                    dataBundleNotifier.getclientServiceInstance().deleteStorage(listStorageModel[index]);
+
+                                    listStorageModel.removeAt(index);
+                                    if(dataBundleNotifier.currentBranch != null){
+                                      List<RecessedModel> _recessedModelList = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                                      dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                                    }
+
+                                    if(dataBundleNotifier.currentBranch != null){
+                                      List<ResponseAnagraficaFornitori> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                                      dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
+                                    }
+                                    if(dataBundleNotifier.currentBranch != null){
+                                      List<StorageModel> _storageModelList = await dataBundleNotifier.getclientServiceInstance().retrieveStorageListByBranch(dataBundleNotifier.currentBranch);
+                                      dataBundleNotifier.addCurrentStorageList(_storageModelList);
+                                    }
+
+                                    if(dataBundleNotifier.currentBranch != null){
+                                      List<OrderModel> _orderModelList = await dataBundleNotifier.getclientServiceInstance().retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
+                                      dataBundleNotifier.addCurrentOrdersList(_orderModelList);
+                                    }
+                                    widget.callBackFuntion();
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog (
+                                      actions: [
+                                        ButtonBar(
+                                          alignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            cancelButton,
+                                            continueButton,
+                                          ],
+                                        ),
+                                      ],
+                                      contentPadding: EdgeInsets.zero,
+                                      shape: const RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius.all(
+                                              Radius.circular(10.0))),
+                                      content: Builder(
+                                        builder: (context) {
+                                          var width = MediaQuery.of(context).size.width;
+                                          return SizedBox(
+                                            width: width - 90,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    decoration: const BoxDecoration(
+                                                      borderRadius: BorderRadius.only(
+                                                          topRight: Radius.circular(10.0),
+                                                          topLeft: Radius.circular(10.0) ),
+                                                      color: kPrimaryColor,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text('  Elimina ${listStorageModel[index].name}?',
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                              fontSize: getProportionateScreenWidth(15),
+                                                              fontWeight: FontWeight.bold,
+                                                              color: kCustomWhite,
+                                                            )),
+                                                        IconButton(icon: const Icon(
+                                                          Icons.clear,
+                                                          color: kCustomWhite,
+                                                        ), onPressed: () { Navigator.pop(context); },),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  const Text(''),
+                                                  const Text(''),
+                                                  Center(
+                                                    child: Text('Ti ricordo che eliminando il magazzino perderai i dati per quanto riguarda:', textAlign: TextAlign.center,),
+                                                  ),
+                                                  Text(' - Dettagli Giacenza', textAlign: TextAlign.center,),
+                                                  Text(' - Ordini in Stato BOZZA/LAVORAZIONE associati al magazzino che si intende eliminare', textAlign: TextAlign.center,),
+                                                  Text(''),
+                                                  Text('Continuare?', style: TextStyle(fontWeight: FontWeight.bold,),),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                );
+                              },
                             ),
                           ),
                           Padding(

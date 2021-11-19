@@ -731,7 +731,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void filterStorageProductList(String currentText) {
 
-    if(currentText == ''){
+    if(currentText == '' || currentText == 'Tutti i fornitori'){
       currentStorageProductListForCurrentStorageDuplicated.clear();
       currentStorageProductListForCurrentStorageDuplicated.addAll(currentStorageProductListForCurrentStorage);
     }else{

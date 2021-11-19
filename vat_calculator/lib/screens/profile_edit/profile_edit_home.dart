@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -27,13 +30,15 @@ class ProfileEditiScreen extends StatefulWidget {
 class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
   int currentPage = 0;
 
-  void refreshPage(){
+  refreshPage(){
     setState(() {
 
     });
   }
   @override
   Widget build(BuildContext context) {
+
+
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
       TextEditingController _nameController = TextEditingController(
@@ -56,8 +61,6 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
       return Scaffold(
         drawer: const CommonDrawer(),
         appBar: AppBar(
-          actions: [
-          ],
           iconTheme: const IconThemeData(color: kPrimaryColor),
           centerTitle: true,
           title: Text(
@@ -69,336 +72,348 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
           ),
           backgroundColor: kCustomWhite,
         ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: getProportionateScreenWidth(400),
-                  child: Card(
-                    color: kBeigeColor,
-                    child: Center(
-                        child: Text(
-                      'Gestione Profilo',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: kPrimaryColor),
-                    )),
-                  ),
-                ),
-              ),
-              Center(
-                child: Padding(
+        body: RefreshIndicator(
+
+          onRefresh: (){
+            setState(() {
+
+            });
+            return Future.delayed(Duration(milliseconds: 500));
+          },
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    width: getProportionateScreenWidth(830),
+                    width: getProportionateScreenWidth(400),
                     child: Card(
-                      elevation: dataBundleNotifier.editProfile ? 5 : 2,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      color: Colors.white,
-                      child: Stack(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: IconButton(
-                                  icon: SvgPicture.asset(
-                                    'assets/icons/edit-cust.svg',
-                                    width: dataBundleNotifier.editProfile
-                                        ? getProportionateScreenWidth(30)
-                                        : getProportionateScreenWidth(25),
-                                    color: kPrimaryColor,
-                                  ),
-                                  onPressed: () {
-                                    dataBundleNotifier
-                                        .changeEditProfileBoolValue();
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          dataBundleNotifier.editProfile
-                              ? Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text('Modifica profilo'),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 11,
-                                        ),
-                                        Text('   Nome',
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        12))),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 4, 20, 0),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                        child: CupertinoTextField(
-                                          controller: _nameController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: TextInputType.text,
-                                          clearButtonMode:
-                                              OverlayVisibilityMode.editing,
-                                        ),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 11,
-                                        ),
-                                        Text('   Cognome',
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        12))),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 4, 20, 0),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                        child: CupertinoTextField(
-                                          controller: _lastNameController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: TextInputType.text,
-                                          clearButtonMode:
-                                              OverlayVisibilityMode.editing,
-                                          autocorrect: false,
-                                        ),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 11,
-                                        ),
-                                        Text('   Cellulare',
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        12))),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 4, 20, 0),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                        child: CupertinoTextField(
-                                          controller: _phoneController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: TextInputType.text,
-                                          clearButtonMode:
-                                              OverlayVisibilityMode.editing,
-                                          autocorrect: false,
-                                        ),
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const SizedBox(
-                                          width: 11,
-                                        ),
-                                        Text('   Email',
-                                            style: TextStyle(
-                                                color: kPrimaryColor,
-                                                fontSize:
-                                                    getProportionateScreenWidth(
-                                                        12))),
-                                      ],
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          20, 4, 20, 0),
-                                      child: SizedBox(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.05,
-                                        child: CupertinoTextField(
-                                          controller: _eMailController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: TextInputType.text,
-                                          clearButtonMode:
-                                              OverlayVisibilityMode.editing,
-                                          autocorrect: false,
-                                        ),
-                                      ),
-                                    ),
-                                    CupertinoButton(
-                                        child: const Text(
-                                          'Salva',
-                                          style: TextStyle(color: Colors.green),
-                                        ),
-                                        onPressed: () {}),
-                                  ],
-                                )
-                              : Padding(
+                      color: kBeigeColor,
+                      child: Center(
+                          child: Text(
+                        'Gestione Profilo',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      )),
+                    ),
+                  ),
+                ),
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: getProportionateScreenWidth(830),
+                      child: Card(
+                        elevation: dataBundleNotifier.editProfile ? 5 : 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        color: Colors.white,
+                        child: Stack(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  child: IconButton(
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/edit-cust.svg',
+                                      width: dataBundleNotifier.editProfile
+                                          ? getProportionateScreenWidth(30)
+                                          : getProportionateScreenWidth(25),
+                                      color: kPrimaryColor,
+                                    ),
+                                    onPressed: () {
+                                      dataBundleNotifier
+                                          .changeEditProfileBoolValue();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            dataBundleNotifier.editProfile
+                                ? Column(
                                     children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('Modifica profilo'),
+                                      ),
                                       Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
                                         children: [
-                                          Text('Dati Profilo'),
+                                          const SizedBox(
+                                            width: 11,
+                                          ),
+                                          Text('   Nome',
+                                              style: TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontSize:
+                                                      getProportionateScreenWidth(
+                                                          12))),
                                         ],
                                       ),
-                                      getCustomDetailRow(
-                                          dataBundleNotifier
-                                                  .dataBundleList.isEmpty
-                                              ? ''
-                                              : dataBundleNotifier
-                                                  .dataBundleList[0].firstName,
-                                          Icons.person),
-                                      getCustomDetailRow(
-                                          dataBundleNotifier
-                                                  .dataBundleList.isEmpty
-                                              ? ''
-                                              : dataBundleNotifier
-                                                  .dataBundleList[0].lastName,
-                                          Icons.person),
-                                      getCustomDetailRow(
-                                          dataBundleNotifier
-                                                  .dataBundleList.isEmpty
-                                              ? ''
-                                              : dataBundleNotifier
-                                                  .dataBundleList[0].email,
-                                          Icons.email),
-                                      getCustomDetailRow(
-                                          dataBundleNotifier
-                                                  .dataBundleList.isEmpty
-                                              ? ''
-                                              : dataBundleNotifier
-                                                  .dataBundleList[0].phone,
-                                          Icons.phone),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 4, 20, 0),
+                                        child: SizedBox(
+                                          height:
+                                              MediaQuery.of(context).size.height *
+                                                  0.05,
+                                          child: CupertinoTextField(
+                                            controller: _nameController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.text,
+                                            clearButtonMode:
+                                                OverlayVisibilityMode.editing,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          const SizedBox(
+                                            width: 11,
+                                          ),
+                                          Text('   Cognome',
+                                              style: TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontSize:
+                                                      getProportionateScreenWidth(
+                                                          12))),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 4, 20, 0),
+                                        child: SizedBox(
+                                          height:
+                                              MediaQuery.of(context).size.height *
+                                                  0.05,
+                                          child: CupertinoTextField(
+                                            controller: _lastNameController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.text,
+                                            clearButtonMode:
+                                                OverlayVisibilityMode.editing,
+                                            autocorrect: false,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          const SizedBox(
+                                            width: 11,
+                                          ),
+                                          Text('   Cellulare',
+                                              style: TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontSize:
+                                                      getProportionateScreenWidth(
+                                                          12))),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 4, 20, 0),
+                                        child: SizedBox(
+                                          height:
+                                              MediaQuery.of(context).size.height *
+                                                  0.05,
+                                          child: CupertinoTextField(
+                                            controller: _phoneController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.text,
+                                            clearButtonMode:
+                                                OverlayVisibilityMode.editing,
+                                            autocorrect: false,
+                                          ),
+                                        ),
+                                      ),
+                                      Row(
+                                        children: [
+                                          const SizedBox(
+                                            width: 11,
+                                          ),
+                                          Text('   Email',
+                                              style: TextStyle(
+                                                  color: kPrimaryColor,
+                                                  fontSize:
+                                                      getProportionateScreenWidth(
+                                                          12))),
+                                        ],
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            20, 4, 20, 0),
+                                        child: SizedBox(
+                                          height:
+                                              MediaQuery.of(context).size.height *
+                                                  0.05,
+                                          child: CupertinoTextField(
+                                            controller: _eMailController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.text,
+                                            clearButtonMode:
+                                                OverlayVisibilityMode.editing,
+                                            autocorrect: false,
+                                          ),
+                                        ),
+                                      ),
+                                      CupertinoButton(
+                                          child: const Text(
+                                            'Salva',
+                                            style: TextStyle(color: Colors.green),
+                                          ),
+                                          onPressed: () {}),
                                     ],
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceAround,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text('Dati Profilo'),
+                                          ],
+                                        ),
+                                        getCustomDetailRow(
+                                            dataBundleNotifier
+                                                    .dataBundleList.isEmpty
+                                                ? ''
+                                                : dataBundleNotifier
+                                                    .dataBundleList[0].firstName,
+                                            Icons.person),
+                                        getCustomDetailRow(
+                                            dataBundleNotifier
+                                                    .dataBundleList.isEmpty
+                                                ? ''
+                                                : dataBundleNotifier
+                                                    .dataBundleList[0].lastName,
+                                            Icons.person),
+                                        getCustomDetailRow(
+                                            dataBundleNotifier
+                                                    .dataBundleList.isEmpty
+                                                ? ''
+                                                : dataBundleNotifier
+                                                    .dataBundleList[0].email,
+                                            Icons.email),
+                                        getCustomDetailRow(
+                                            dataBundleNotifier
+                                                    .dataBundleList.isEmpty
+                                                ? ''
+                                                : dataBundleNotifier
+                                                    .dataBundleList[0].phone,
+                                            Icons.phone),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Divider(
-                endIndent: getProportionateScreenWidth(40),
-                indent: getProportionateScreenWidth(40),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: getProportionateScreenWidth(400),
-                  child: const Card(
-                    color: kBeigeColor,
-                    child: Center(
-                        child: Text(
-                      'Gestione Attività',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: kPrimaryColor),
-                    )),
+                Divider(
+                  endIndent: getProportionateScreenWidth(40),
+                  indent: getProportionateScreenWidth(40),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: getProportionateScreenWidth(400),
+                    child: const Card(
+                      color: kBeigeColor,
+                      child: Center(
+                          child: Text(
+                        'Gestione Attività',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, color: kPrimaryColor),
+                      )),
+                    ),
                   ),
                 ),
-              ),
-              (dataBundleNotifier.dataBundleList != null && dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty) ? buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
-                  dataBundleNotifier) : const SizedBox(width: 50,
-              child: Center(child: Text('Nessuna Attività creata')),),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    primary: kPrimaryColor,
-                    padding: const EdgeInsets.all(15),
-                    backgroundColor: Colors.white,
-                  ),
-                  onPressed: () {},
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/Question mark.svg',
-                        color: kPrimaryColor,
-                        width: 22,
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(child: const Text('Hai bisogno di aiuto?')),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    primary: kCustomWhite,
-                    padding: const EdgeInsets.all(15),
-                    backgroundColor: kPinaColor,
-                  ),
-                  onPressed: () {
-                    FirebaseAuth _auth = FirebaseAuth.instance;
-                    if (_auth != null) {
-                      _auth.signOut();
-                    }
-                    dataBundleNotifier.clearAll();
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        duration: Duration(milliseconds: 2700),
-                        backgroundColor: kPinaColor,
-                        content: Text(
-                          'Logging out...',
-                          style: TextStyle(
-                              fontFamily: 'LoraFont', color: Colors.white),
-                        )));
-                    Navigator.pushNamed(context, SplashScreen.routeName);
-                  },
-                  child: Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/Log out.svg',
-                        color: kCustomWhite,
-                        width: 22,
-                      ),
-                      const SizedBox(width: 20),
-                      const Expanded(child: Text('Log Out')),
-                      const Icon(Icons.arrow_forward_ios),
-                    ],
+                (dataBundleNotifier.dataBundleList != null && dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty) ? buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
+                    dataBundleNotifier) : const SizedBox(width: 50,
+                child: Center(child: Text('Nessuna Attività creata')),),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      primary: kPrimaryColor,
+                      padding: const EdgeInsets.all(15),
+                      backgroundColor: Colors.white,
+                    ),
+                    onPressed: () {},
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/Question mark.svg',
+                          color: kPrimaryColor,
+                          width: 22,
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(child: const Text('Hai bisogno di aiuto?')),
+                        const Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: getProportionateScreenHeight(30),
-              ),
-              const Text('Version 1.0.0'),
-            ],
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      primary: kCustomWhite,
+                      padding: const EdgeInsets.all(15),
+                      backgroundColor: kPinaColor,
+                    ),
+                    onPressed: () {
+                      FirebaseAuth _auth = FirebaseAuth.instance;
+                      if (_auth != null) {
+                        _auth.signOut();
+                      }
+                      dataBundleNotifier.clearAll();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(milliseconds: 2700),
+                          backgroundColor: kPinaColor,
+                          content: Text(
+                            'Logging out...',
+                            style: TextStyle(
+                                fontFamily: 'LoraFont', color: Colors.white),
+                          )));
+                      Navigator.pushNamed(context, SplashScreen.routeName);
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/icons/Log out.svg',
+                          color: kCustomWhite,
+                          width: 22,
+                        ),
+                        const SizedBox(width: 20),
+                        const Expanded(child: Text('Log Out')),
+                        const Icon(Icons.arrow_forward_ios),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: getProportionateScreenHeight(30),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(38.0),
+                  child: const Text('Version 1.0.0'),
+                ),
+              ],
+            ),
           ),
         ),
         bottomNavigationBar: const CustomBottomNavBar(

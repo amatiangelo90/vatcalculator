@@ -216,7 +216,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                           Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
                                         ],
                                       ),
-                                      SizedBox(height: 10,),
+                                      const SizedBox(height: 10,),
                                       SizedBox(
                                         width: MediaQuery.of(context).size.width * 0.9,
                                         child: CupertinoButton(
@@ -226,7 +226,8 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                             onPressed: (){
                                               Navigator.push(context, MaterialPageRoute(builder: (context) => EditDraftOrderScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
 
-                                            }),
+                                            },
+                                        ),
                                       ),
                                       const SizedBox(height: 3,),
                                       SizedBox(

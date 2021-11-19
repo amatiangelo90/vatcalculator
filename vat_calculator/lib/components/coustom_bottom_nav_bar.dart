@@ -119,11 +119,11 @@ class CustomBottomNavBar extends StatelessWidget {
                                 children: <Widget>[
                                   const Icon(
                                     Icons.brightness_1,
-                                    size: 15,
+                                    size: 16,
                                     color: Colors.blueAccent,
                                   ),
                                   Positioned(
-                                    right: 5.0,
+                                    right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,
                                     top: 2.0,
                                     child: Center(
                                       child: Text(
@@ -139,16 +139,16 @@ class CustomBottomNavBar extends StatelessWidget {
                             ),
                             Positioned(
                               top: 13.0,
-                              right: 6.0,
+                              right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 5.0,
                               child: Stack(
                                 children: <Widget>[
                                   const Icon(
                                     Icons.brightness_1,
-                                    size: 15,
+                                    size: 16,
                                     color: Colors.orange,
                                   ),
                                   Positioned(
-                                    right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 4.0,
+                                    right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 5.0,
                                     top: 2,
                                     child: Center(
                                       child: Text(

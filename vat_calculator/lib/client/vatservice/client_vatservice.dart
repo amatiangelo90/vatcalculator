@@ -946,7 +946,7 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
         orderModel.toMap());
 
     Response post;
-    print('Save order : ' + body);
+    print('Delete order : ' + body);
     print('Calling delete order method ' + VAT_SERVICE_URL_DELETE_ORDER + ' to delete order for branch with id ' + orderModel.fk_branch_id.toString());
     try{
       post = await dio.post(
@@ -956,6 +956,31 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_DELETE_ORDER + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> deleteStorage(StorageModel storageModel) async{
+    var dio = Dio();
+
+    String body = json.encode(
+        storageModel.toMap());
+
+    Response post;
+    print('Calling delete storage method ' + VAT_SERVICE_URL_DELETE_STORAGE + ' to delete storage ${storageModel.name} from current branch ');
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_STORAGE,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_DELETE_STORAGE + '): ' + post.data.toString());
       }
 
       return post;
@@ -1341,4 +1366,5 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
+
 }

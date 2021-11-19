@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
@@ -68,12 +70,66 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.width * 0.45,
                       width: MediaQuery.of(context).size.width * 0.95,
                       child: Card(
                         child: Column(
                           children: [
-                            Text('#' + widget.orderModel.code, style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('#' + widget.orderModel.code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
+                            Divider(endIndent: 40, indent: 40,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(getUserDetailsById(widget.orderModel.fk_user_id, widget.orderModel.fk_branch_id, dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Ordine creato il: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(buildDateFromMilliseconds(widget.orderModel.creation_date), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            Divider(endIndent: 40, indent: 40,),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Da consegnare a: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(dataBundleNotifier.currentBranch.companyName, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('In via: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(dataBundleNotifier.currentBranch.address, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Città: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(dataBundleNotifier.currentBranch.city, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('CAP : ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(dataBundleNotifier.currentBranch.cap.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Da consegnare il: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(buildDateFromMilliseconds(widget.orderModel.delivery_date), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                              ],
+                            ),
+                            const Divider(endIndent: 40, indent: 40,),
+                            const Text('Dettagli'),
+                            Text(widget.orderModel.details, style: TextStyle(fontWeight: FontWeight.bold),),
+                            SizedBox(height: 10,),
                           ],
                         ),
                       ),
@@ -220,4 +276,29 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
       return string;
     }
   }
+
+  String getUserDetailsById(
+      int fkUserId,
+      int fkBranchId,
+      Map<int, BundleUserStorageSupplier> currentMapBranchIdBundleSupplierStorageUsers) {
+
+    String currentUserName = '';
+    currentMapBranchIdBundleSupplierStorageUsers.forEach((key, value) {
+      if(key == fkBranchId){
+        value.userModelList.forEach((user) {
+          if(user.id == fkUserId){
+            currentUserName = user.name + ' ' + user.lastName;
+          }
+        });
+      }
+    });
+    return currentUserName;
+  }
+
+  String buildDateFromMilliseconds(int date) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+    return dateTime.day.toString() + '/' + dateTime.month.toString() + '/' + dateTime.year.toString();
+  }
+
+
 }

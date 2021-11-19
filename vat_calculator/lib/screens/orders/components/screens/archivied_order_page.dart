@@ -10,25 +10,22 @@ class ArchiviedOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
-        builder: (context, dataBundleNotifier, child){
-         return Padding(
-           padding: const EdgeInsets.all(18.0),
-           child: SfCalendar(
-             view: CalendarView.month,
-             dataSource: MeetingDataSource(_getDataSource()),
-             // by default the month appointment display mode set as Indicator, we can
-             // change the display mode as appointment using the appointment display
-             // mode property
-
-             monthViewSettings: const MonthViewSettings(
-                 appointmentDisplayMode: MonthAppointmentDisplayMode.appointment),
-           ),
-         );
+        builder: (context, dataBundleNotifier, child) {
+          return Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: SfCalendar(
+                view: CalendarView.month,
+                dataSource: MeetingDataSource(_getDataSource()),
+                monthViewSettings: const MonthViewSettings(
+                    appointmentDisplayMode: MonthAppointmentDisplayMode
+                        .appointment),
+              ));
         }
     );
   }
 
   List<Meeting> _getDataSource() {
+
     final List<Meeting> meetings = <Meeting>[];
     final DateTime today = DateTime.now();
     final DateTime startTime =
@@ -83,16 +80,10 @@ class MeetingDataSource extends CalendarDataSource {
 }
 
 class Meeting {
-  /// Creates a meeting class with required details.
+
   Meeting(this.eventName, this.from, this.to, this.background, this.isAllDay);
-
-  /// Event name which is equivalent to subject property of [Appointment].
   String eventName;
-
-  /// From which is equivalent to start time property of [Appointment].
   DateTime from;
-
-  /// To which is equivalent to end time property of [Appointment].
   DateTime to;
 
   /// Background which is equivalent to color property of [Appointment].
