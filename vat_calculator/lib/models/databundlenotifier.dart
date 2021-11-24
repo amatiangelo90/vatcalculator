@@ -569,7 +569,7 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  getSupplierData(int fk_supplier_id) {
+  String getSupplierName(int fk_supplier_id) {
     String currentSupplierName;
     currentListSuppliers.forEach((currentSupplier) {
       print('currentSupplier.pkSupplierId : ' + currentSupplier.pkSupplierId.toString());
@@ -578,7 +578,7 @@ class DataBundleNotifier extends ChangeNotifier {
         currentSupplierName = currentSupplier.nome;
       }
     });
-    return Text('  ' + currentSupplierName, style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(17)),);
+    return currentSupplierName;
   }
 
   Future<void> addCurrentStorageList(List<StorageModel> storageModelList) async {
@@ -811,6 +811,11 @@ class DataBundleNotifier extends ChangeNotifier {
   void setEditOrderToFalse(){
     editOrder = false;
 
+    notifyListeners();
+  }
+
+  void removeObjectFromStorageProductList(StorageProductModel element) {
+    currentStorageProductListForCurrentStorageDuplicated.remove(element);
     notifyListeners();
   }
 }

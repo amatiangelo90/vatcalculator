@@ -111,7 +111,8 @@ class CustomBottomNavBar extends StatelessWidget {
                                   dataBundleNotifier.setShowIvaButtonToFalse();
                                   Navigator.pushNamed(
                                       context, OrdersScreen.routeName);
-                                }),
+                                }
+                                ),
                             Positioned(
                               top: 1.0,
                               right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,

@@ -42,7 +42,9 @@ class _StorageScreenState extends State<StorageScreen>{
         suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
 
         return Scaffold(
-          floatingActionButton: dataBundleNotifier.currentStorageList.isEmpty ? SizedBox(width: 0,) : FloatingActionButton(
+          floatingActionButton: dataBundleNotifier.currentStorageList.isEmpty
+              ? SizedBox(width: 0,) :
+          FloatingActionButton(
             onPressed: () {
               showDialog(
                   context: context,
@@ -166,13 +168,6 @@ class _StorageScreenState extends State<StorageScreen>{
             ),
             backgroundColor: kCustomWhite,
             actions: [
-              dataBundleNotifier.searchStorageButton ? IconButton(
-                  icon: dataBundleNotifier.isZtoAOrderded ? SvgPicture.asset('assets/icons/sort_a_to_z.svg') : SvgPicture.asset('assets/icons/sort_z_to_a.svg'),
-                  onPressed: () {
-                    dataBundleNotifier.sortCurrentStorageListDuplicatedFromAToZ();
-                  }
-              ) : SizedBox(width: 0,),
-
               IconButton(
                   icon: Icon(
                     dataBundleNotifier.searchStorageButton ? Icons.cancel_outlined : Icons.search,
@@ -291,12 +286,21 @@ class _StorageScreenState extends State<StorageScreen>{
                       ),
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Column(
+                        child: Row(
                           children: [
+                            SizedBox(width: 5,),
+                            IconButton(
+                                icon: dataBundleNotifier.isZtoAOrderded ? SvgPicture.asset('assets/icons/sort_a_to_z.svg') : SvgPicture.asset('assets/icons/sort_z_to_a.svg'),
+                                onPressed: () {
+                                  dataBundleNotifier.sortCurrentStorageListDuplicatedFromAToZ();
+                                }
+                            ),
                             Content(
                               child: ChipsChoice<String>.single(
                                 choiceActiveStyle: C2ChoiceStyle(
-                                  color: kPinaColor
+                                  color: kPinaColor,
+                                  elevation: 2,
+                                  showCheckmark: false,
                                 ),
                                 value: supplierChoiced,
                                 onChanged: (val) => setState(() {
@@ -523,7 +527,7 @@ class _StorageScreenState extends State<StorageScreen>{
   buildCurrentListProductTable(
       DataBundleNotifier dataBundleNotifier, context) {
 
-    List<Row> rows = [
+    List<Widget> rows = [
     ];
 
     if(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.isEmpty){
@@ -546,84 +550,102 @@ class _StorageScreenState extends State<StorageScreen>{
       TextEditingController controller =
       TextEditingController(text: element.stock.toString());
       rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 9),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    element.productName,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(18)),
-                  ),
-                  Text(
-                    element.supplierName,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(8)),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        element.unitMeasure,
-                        style:
-                        TextStyle(fontSize: getProportionateScreenWidth(8)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Icon(
-                          FontAwesomeIcons.dotCircle,
-                          size: getProportionateScreenWidth(3),
-                        ),
-                      ),
-                      dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
-                        TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
-                        element.price.toString() + ' €',
-                        style:
-                        TextStyle(fontSize: getProportionateScreenWidth(8)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Row(
+        Dismissible(
+          direction: DismissDirection.endToStart,
+          background: Container(
+            color: kPinaColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ConstrainedBox(
-                  constraints: BoxConstraints.loose(Size(
-                      getProportionateScreenWidth(70),
-                      getProportionateScreenWidth(60))),
-                  child: CupertinoTextField(
-                    enabled: false,
-                    controller: controller,
-                    onChanged: (text) {
-                    },
-                    textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
-                    clearButtonMode: OverlayVisibilityMode.never,
-                    textAlign: TextAlign.center,
-                    autocorrect: false,
-                  ),
-                ),
+                Text('Elimina ' + element.productName + '?', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),),
+                SizedBox(width: 10,),
                 IconButton(
                   color: kPinaColor,
-                  icon: Icon(FontAwesomeIcons.trash, size: getProportionateScreenHeight(16),color: kPinaColor,),
+                  icon: Icon(FontAwesomeIcons.trash, size: getProportionateScreenHeight(16),color: kCustomWhite,),
                   onPressed: () {
-                    //EasyLoading.show();
-                    dataBundleNotifier.getclientServiceInstance()
-                        .removeProductFromStorage(element);
-                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                    suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
-                    //EasyLoading.dismiss();
                   },
                 ),
               ],
             ),
-          ],
+          ),
+          key: Key(element.pkStorageProductId.toString()),
+          onDismissed: (value){
+            dataBundleNotifier.removeObjectFromStorageProductList(element);
+            dataBundleNotifier.getclientServiceInstance()
+                .removeProductFromStorage(element);
+            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+            dataBundleNotifier.getclientServiceInstance()
+                .removeProductFromStorage(element);
+            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+            suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
+          },
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 9),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      element.productName,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(fontSize: getProportionateScreenWidth(18)),
+                    ),
+                    Text(
+                      element.supplierName,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(fontSize: getProportionateScreenWidth(8)),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          element.unitMeasure,
+                          style:
+                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Icon(
+                            FontAwesomeIcons.dotCircle,
+                            size: getProportionateScreenWidth(3),
+                          ),
+                        ),
+                        dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
+                          TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
+                          element.price.toString() + ' €',
+                          style:
+                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  ConstrainedBox(
+                    constraints: BoxConstraints.loose(Size(
+                        getProportionateScreenWidth(70),
+                        getProportionateScreenWidth(60))),
+                    child: CupertinoTextField(
+                      enabled: false,
+                      controller: controller,
+                      onChanged: (text) {
+                      },
+                      textInputAction: TextInputAction.next,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true, signed: true),
+                      clearButtonMode: OverlayVisibilityMode.never,
+                      textAlign: TextAlign.center,
+                      autocorrect: false,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       );
     });

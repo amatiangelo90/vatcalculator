@@ -6,6 +6,7 @@ import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
 import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/landing/landing_page.dart';
+import 'package:vat_calculator/screens/orders/components/screens/draft_order_page.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
@@ -54,4 +55,5 @@ final Map<String, WidgetBuilder> routes = {
   UnloadStorageScreen.routeName: (context) => UnloadStorageScreen(),
   BranchCreationScreen.routeName: (context) => BranchCreationScreen(),
   BranchJoinScreen.routeName: (context) => BranchJoinScreen(),
+  DraftOrderPage.routeName: (context) => DraftOrderPage(),
 };

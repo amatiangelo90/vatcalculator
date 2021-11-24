@@ -140,8 +140,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const OrdersScreen(
-                          initialIndex: 1,),
+                        builder: (context) => const OrdersScreen(),
                     ),
                     );
                   }else{
@@ -216,9 +215,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const OrdersScreen(
-                      initialIndex: 1,
-                    ),
+                    builder: (context) => const OrdersScreen(),
                   ),
                 );
               }),

@@ -73,7 +73,6 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
           backgroundColor: kCustomWhite,
         ),
         body: RefreshIndicator(
-
           onRefresh: (){
             setState(() {
 

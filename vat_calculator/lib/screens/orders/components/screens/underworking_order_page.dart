@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -190,8 +191,6 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                 horizontal: 0.0,
                                 vertical: 4.0,
                               ),
-
-                              // ${orderList[order].code}
                               child: Card(
                                 elevation: 4,
                                 child: Column(
@@ -210,7 +209,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                     Row(
                                       children: [
                                         Icon(Icons.person, size: getProportionateScreenHeight(20),color: kPrimaryColor,),
-                                        dataBundleNotifier.getSupplierData(orderList[order].fk_supplier_id),
+                                        Text(dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id)),
                                       ]
                                     ),
                                     SizedBox(height: getProportionateScreenHeight(15),),
@@ -328,6 +327,118 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
     });
 
     return total.toStringAsFixed(2);
+  }
+
+  buildProductListWidget(List<ProductOrderAmountModel> productList,
+      DataBundleNotifier dataBundleNotifier) {
+
+    List<Row> rows = [];
+    productList.forEach((element) {
+      TextEditingController controller = TextEditingController(text: element.amount.toString());
+      rows.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: getProportionateScreenWidth(200),
+                  child: Text(element.nome, overflow: TextOverflow.clip, style: TextStyle(fontSize: getProportionateScreenWidth(16)),),
+                ),
+                Row(
+                  children: [
+                    Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),),
+                    ),
+                    Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if(element.amount <= 0){
+                      }else{
+                        element.amount --;
+                      }
+                    });
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Icon(FontAwesomeIcons.minus, color: kPinaColor,),
+                  ),
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
+                  child: CupertinoTextField(
+                    controller: controller,
+                    onChanged: (text) {
+                      if( double.tryParse(text) != null){
+                        element.amount = double.parse(text);
+                      }else{
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          content: Text('Immettere un valore numerico corretto per ' + element.nome),
+                        ));
+                      }
+                    },
+                    textInputAction: TextInputAction.next,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                    clearButtonMode: OverlayVisibilityMode.never,
+                    textAlign: TextAlign.center,
+                    autocorrect: false,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      element.amount = element.amount + 1;
+                    });
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(FontAwesomeIcons.plus, color: Colors.green.shade900),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    });
+
+    return Column(
+      children: rows,
+    );
+  }
+
+  String getNiceNumber(String string) {
+    if(string.contains('.00')){
+      return string.replaceAll('.00', '');
+    }else if(string.contains('.0')){
+      return string.replaceAll('.0', '');
+    }else {
+      return string;
+    }
+  }
+
+  String buildMessageFromCurrentOrder(List<ProductOrderAmountModel> productList) {
+    String orderString = '';
+    productList.forEach((currentProductOrderAmount) {
+
+      orderString = orderString + currentProductOrderAmount.amount.toString() +
+          ' X ' + currentProductOrderAmount.nome +
+          '(${currentProductOrderAmount.unita_misura})'+ '';
+
+    });
+    return orderString;
   }
 
 }
