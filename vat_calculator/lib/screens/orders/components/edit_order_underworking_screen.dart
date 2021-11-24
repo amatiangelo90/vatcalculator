@@ -11,17 +11,17 @@ import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.da
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
-class OrderDetailsScreen extends StatefulWidget {
-  const OrderDetailsScreen({Key key, this.orderModel, this.productList, }) : super(key: key);
+class OrderCompletionScreen extends StatefulWidget {
+  const OrderCompletionScreen({Key key, this.orderModel, this.productList, }) : super(key: key);
 
   final OrderModel orderModel;
   final List<ProductOrderAmountModel> productList;
 
   @override
-  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+  State<OrderCompletionScreen> createState() => _OrderCompletionScreenState();
 }
 
-class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
@@ -30,23 +30,20 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           bottomSheet: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoButton(
-                    color: Colors.green,
-                    child:
-                    Text('Ricevuto', style: const TextStyle(color: kCustomWhite),), onPressed: (){
+              Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 30,
+                    child: CupertinoButton(
+                        color: Colors.green,
+                        child:
+                        Text('Ricevuto', style: const TextStyle(color: kCustomWhite),),
+                        onPressed: (){
 
-                }),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CupertinoButton(
-                    color: kPinaColor,
-                    child: Text('Archivia', style: const TextStyle(color: kCustomWhite),),
-                    onPressed: (){
-
-                    }),
+                        }),
+                  ),
+                ),
               ),
             ],
           ),
@@ -74,7 +71,9 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       child: Card(
                         child: Column(
                           children: [
-                            Text('#' + widget.orderModel.code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
+
+                            Text(dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id), style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25)),),
+                            Text('#' + widget.orderModel.code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
                             Divider(endIndent: 40, indent: 40,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,8 +126,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                               ],
                             ),
                             const Divider(endIndent: 40, indent: 40,),
-                            const Text('Dettagli'),
-                            Text(widget.orderModel.details, style: TextStyle(fontWeight: FontWeight.bold),),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: const Text('Dettagli'),
+                            ),
+                            Text(widget.orderModel.details,textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),
                             SizedBox(height: 10,),
                           ],
                         ),

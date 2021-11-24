@@ -8,6 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 import 'package:vat_calculator/size_config.dart';
@@ -37,9 +38,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
   @override
   void initState() {
     super.initState();
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay));
-
+    _selectedEvents = ValueNotifier(_getEventsForDay(_focusedDay));
   }
 
   List<OrderModel> _getEventsForDay(DateTime day){
@@ -98,35 +97,29 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
               return Column(
                 children: [
                   Container(
-                    decoration: BoxDecoration(
-                        color: kPrimaryColor,
-                        border: Border.all(
-                          color: kPrimaryColor,
-                        ),
-                    ),
-
+                    color: kCustomWhite,
                     child: TableCalendar<OrderModel>(
                       headerStyle: HeaderStyle(
-                        formatButtonTextStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
-                        titleTextStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        titleTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
                         formatButtonDecoration: BoxDecoration(
-                          color: kBeigeColor,
+                          color: kPrimaryColor,
                           borderRadius: BorderRadius.circular(22.0),
                         ),
                         leftChevronIcon: Icon(
                           Icons.arrow_back_ios,
-                          color: kCustomWhite,
+                          color: kPrimaryColor,
                           size: getProportionateScreenHeight(16),
                         ),
                         rightChevronIcon: Icon(
                           Icons.arrow_forward_ios,
-                          color: kCustomWhite,
+                          color: kPrimaryColor,
                           size: getProportionateScreenHeight(16),
                         ),
                       ),
                       daysOfWeekStyle: const DaysOfWeekStyle(
-                        weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
-                        weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
+                        weekdayStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
+                        weekendStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
 
                       ),
 
@@ -141,15 +134,15 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                       calendarStyle: CalendarStyle(
                         markerSize: 10,
                         selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                        defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kBeigeColor),
+                        defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
                         weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
 
                         selectedDecoration: const BoxDecoration(
-                          color: Colors.lightGreen,
+                          color: Colors.blue,
                           shape: BoxShape.circle,
                         ),
                         markerDecoration: BoxDecoration(
-                          color: Colors.green,
+                          color: kPinaColor,
                           borderRadius: BorderRadius.circular(3),
 
                         ),
@@ -171,9 +164,9 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                     ),
                   ),
                   Container(
-                    height: 6,
+                    height: 16,
                     decoration: const BoxDecoration(
-                        color: kPrimaryColor,
+                        color: kCustomWhite,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                     ),
                   ),
@@ -191,74 +184,183 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                 horizontal: 0.0,
                                 vertical: 4.0,
                               ),
-                              child: Card(
-                                elevation: 4,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        SizedBox(width: 3,),
-                                        Icon(Icons.shopping_cart_outlined, size: getProportionateScreenHeight(13),color: kPrimaryColor,),
-                                        Text(' #' + orderList[order].code, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
-                                      ],
-                                    ),
-                                    SizedBox(height: getProportionateScreenHeight(10),),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  color: Colors.white,
+                                  elevation: 14,
+                                  child: orderIdProductListMap[orderList[order].pk_order_id] == null
+                                      ? const SizedBox(
+                                    width: 0,
+                                  )
+                                      : Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 12,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Text(dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id),
+                                                style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: Text(
+                                                  '#' + orderList[order].code,
+                                                  style: TextStyle(
+                                                      fontSize: getProportionateScreenHeight(13)),
+                                                ),
+                                              ), ],
+                                          ),
+                                          Divider(
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Prodotti',
+                                                    style: TextStyle(
+                                                        fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Text(orderIdProductListMap[
+                                                  orderList[order].pk_order_id]
+                                                      .length
+                                                      .toString(),
+                                                    style: TextStyle(
+                                                        color: kPinaColor,
+                                                        fontSize: getProportionateScreenHeight(20)),
+                                                  ),
+                                                ],
+                                              ),
+                                              Column(
+                                                children: [
+                                                  Text(
+                                                    'Prezzo Stimato ',
+                                                    style: TextStyle(
+                                                        fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    '€ ' +
+                                                        calculatePriceFromProductList(
+                                                            orderIdProductListMap[
+                                                            orderList[order].pk_order_id]),
+                                                    style: TextStyle(
+                                                        color: kPinaColor,
+                                                        fontSize: getProportionateScreenHeight(20)),
+                                                  ),
+                                                ],
+                                              ),
 
-                                    Row(
-                                      children: [
-                                        Icon(Icons.person, size: getProportionateScreenHeight(20),color: kPrimaryColor,),
-                                        Text(dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id)),
-                                      ]
-                                    ),
-                                    SizedBox(height: getProportionateScreenHeight(15),),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.category, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
-                                        Text('   Prodotti', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                        Text(' x ' + orderIdProductListMap[orderList[order].pk_order_id].length.toString(), style: TextStyle(color: kPinaColor ,fontSize: getProportionateScreenHeight(14)),),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.monetization_on_sharp, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
-                                        Text('   Prezzo Stimato ', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                        Text('€ ' + calculatePriceFromProductList(orderIdProductListMap[orderList[order].pk_order_id]), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
-                                      ],
-                                    ),
-                                    Row(
-                                      children: [
-                                        Icon(Icons.calendar_today_outlined, size: getProportionateScreenHeight(15),color: kPrimaryColor,),
-                                        Text('   Effettuato in data: ', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                        Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)), style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(14)),),
-                                      ],
-                                    ),
-                                    SizedBox(height: 10,),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.9,
-                                      child: CupertinoButton(
-                                          child: Text('Dettagli', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                          pressedOpacity: 0.9,
-                                          color: kBeigeColor,
-                                          onPressed: (){
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
+                                            ],
+                                          ),
 
-                                          }),
-                                    ),SizedBox(height: 3,),
-                                    SizedBox(
-                                      width: MediaQuery.of(context).size.width * 0.9,
-                                      child: CupertinoButton(
-                                          child: Text('Contrassegna come Ricevuto e Archivia', style: TextStyle(fontSize: getProportionateScreenHeight(13)),),
-                                          pressedOpacity: 0.9,
-                                          color: Colors.green,
-                                          onPressed: (){
-                                            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: ExpansionTile(
+                                              title: Text(
+                                                'Mostra Dettagli',
+                                                style: TextStyle(
+                                                    fontSize: getProportionateScreenHeight(13)),
+                                              ),
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(width: getProportionateScreenWidth(10),),
+                                                        const Text('Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(getUserDetailsById(orderList[order].fk_user_id, orderList[order].fk_branch_id,
+                                                            dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
+                                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                                        SizedBox(width: getProportionateScreenWidth(10),),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
 
-                                          }),
-                                    ),
-                                    Divider(endIndent: 20,indent: 20,),
-                                  ],
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(width: getProportionateScreenWidth(10),),
+                                                        Text('Effettuato: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)),
+                                                          style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
+                                                        SizedBox(width: getProportionateScreenWidth(10),),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        SizedBox(width: getProportionateScreenWidth(10),),
+                                                        Text('Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                      ],
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].delivery_date)),
+                                                          style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
+                                                        SizedBox(width: getProportionateScreenWidth(10),),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(height: getProportionateScreenHeight(20),),
+                                                Text('Carrello'),
+                                                buildProductListWidget(orderIdProductListMap[orderList[order].pk_order_id], dataBundleNotifier),
+                                                SizedBox(height: getProportionateScreenHeight(20),),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 50,
+                                            width: getProportionateScreenWidth(500),
+                                            child: CupertinoButton(
+                                              child: Text(
+                                                'Completa Ordine',
+                                                style: TextStyle(
+                                                    fontSize: getProportionateScreenHeight(13)),
+                                              ),
+                                              pressedOpacity: 0.9,
+                                              color: Colors.blue,
+                                              onPressed: () {
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
+                                              },
+                                            ),
+                                            decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(10.0),
+                                                  bottomRight: Radius.circular(10.0)),
+                                              color: Colors.blue,
+
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                 ),
                               ),
                             );
@@ -337,7 +439,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
       TextEditingController controller = TextEditingController(text: element.amount.toString());
       rows.add(
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -359,55 +461,17 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if(element.amount <= 0){
-                      }else{
-                        element.amount --;
-                      }
-                    });
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.minus, color: kPinaColor,),
-                  ),
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
-                  child: CupertinoTextField(
-                    controller: controller,
-                    onChanged: (text) {
-                      if( double.tryParse(text) != null){
-                        element.amount = double.parse(text);
-                      }else{
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          content: Text('Immettere un valore numerico corretto per ' + element.nome),
-                        ));
-                      }
-                    },
-                    textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                    clearButtonMode: OverlayVisibilityMode.never,
-                    textAlign: TextAlign.center,
-                    autocorrect: false,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      element.amount = element.amount + 1;
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.plus, color: Colors.green.shade900),
-                  ),
-                ),
-              ],
+            ConstrainedBox(
+              constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
+              child: CupertinoTextField(
+                enabled: false,
+                controller: controller,
+                textInputAction: TextInputAction.next,
+                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                clearButtonMode: OverlayVisibilityMode.never,
+                textAlign: TextAlign.center,
+                autocorrect: false,
+              ),
             ),
           ],
         ),
@@ -427,6 +491,24 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
     }else {
       return string;
     }
+  }
+
+  String getUserDetailsById(
+      int fkUserId,
+      int fkBranchId,
+      Map<int, BundleUserStorageSupplier> currentMapBranchIdBundleSupplierStorageUsers) {
+
+    String currentUserName = '';
+    currentMapBranchIdBundleSupplierStorageUsers.forEach((key, value) {
+      if(key == fkBranchId){
+        value.userModelList.forEach((user) {
+          if(user.id == fkUserId){
+            currentUserName = user.name + ' ' + user.lastName;
+          }
+        });
+      }
+    });
+    return currentUserName;
   }
 
   String buildMessageFromCurrentOrder(List<ProductOrderAmountModel> productList) {

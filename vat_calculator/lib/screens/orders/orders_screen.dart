@@ -29,6 +29,21 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
           drawer: const CommonDrawer(),
           appBar: AppBar(
             actions: [
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/icons/archive.svg",
+                      width: 25,
+                    ),
+                    onPressed: () {
+                      dataBundleNotifier.setShowIvaButtonToFalse();
+                      Navigator.pushNamed(
+                          context, DraftOrderPage.routeName);
+                    }
+                ),
+              ),
               Stack(
                 children: [
                   Padding(
@@ -72,32 +87,10 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: IconButton(
-                    icon: SvgPicture.asset(
-                      "assets/icons/archive.svg",
-                      width: 25,
-                    ),
-                    onPressed: () {
-                      dataBundleNotifier.setShowIvaButtonToFalse();
-                      Navigator.pushNamed(
-                          context, DraftOrderPage.routeName);
-                    }
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(0, 0, getProportionateScreenWidth(10), 0),
-                child: Icon(
-                  Icons.add,
-                  size: getProportionateScreenWidth(30),
-                ),
-              ),
-
             ],
             iconTheme: const IconThemeData(color: kPrimaryColor),
             centerTitle: true,
-            title: Text('Gestione Ordini',
+            title: Text('Ordini',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
                 color: kPrimaryColor,
@@ -105,7 +98,7 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
             ),
             backgroundColor: kCustomWhite,
           ),
-          body: UnderWorkingOrderPage(),
+          body: const UnderWorkingOrderPage(),
           bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.orders),
         );
       },

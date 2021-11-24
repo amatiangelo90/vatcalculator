@@ -11,6 +11,7 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
+import '../../orders_screen.dart';
 import '../edit_order_draft_screen.dart';
 
 class DraftOrderPage extends StatefulWidget {
@@ -36,7 +37,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
           //list of draft order not renderized untill setState is performed. I put timeToRegresh to 60000 after the first refresh because otherways is workins as batch script for refreshing page
           Timer(Duration(milliseconds: timeToRefresh), (){
             setState(() {
-              timeToRefresh = 60000;
+              timeToRefresh = 5000000;
             });
           } );
 
@@ -85,233 +86,259 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
 
   SingleChildScrollView buildRowItems(DataBundleNotifier dataBundleNotifier) {
     List<Widget> list = [];
-    dataBundleNotifier.currentDraftOrdersList.forEach((currentOrder) {
-      list.add(
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Card(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-            color: Colors.white,
-            elevation: 14,
-            child: orderIdProductListMap[currentOrder.pk_order_id] == null
-                ? const SizedBox(
-                    width: 0,
-                  )
-                : Stack(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                  IconButton(
-                    icon: SvgPicture.asset('assets/icons/Trash.svg', width: getProportionateScreenWidth(20),),
-                    color: Colors.red,
-                    onPressed: () {
-                      Widget cancelButton = TextButton(
-                        child: Text("Indietro", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
-                        onPressed:  () {
-                          Navigator.of(context).pop();
-                        },
-                      );
+    if(dataBundleNotifier.currentDraftOrdersList.isNotEmpty){
+      dataBundleNotifier.currentDraftOrdersList.forEach((currentOrder) {
+        list.add(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              color: Colors.white,
+              elevation: 14,
+              child: orderIdProductListMap[currentOrder.pk_order_id] == null
+                  ? const SizedBox(
+                width: 0,
+              )
+                  : Stack(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                          icon: SvgPicture.asset('assets/icons/Trash.svg', width: getProportionateScreenWidth(20),),
+                          color: Colors.red,
+                          onPressed: () {
+                            Widget cancelButton = TextButton(
+                              child: Text("Indietro", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
+                              onPressed:  () {
+                                Navigator.of(context).pop();
+                              },
+                            );
 
-                      Widget continueButton = TextButton(
-                        child: Text("Elimina", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
-                        onPressed:  () async {
-                          await dataBundleNotifier.getclientServiceInstance().deleteOrder(
-                              currentOrder
-                          );
-                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                          Navigator.of(context).pop();
-                        },
-                      );
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog (
-                            actions: [
-                              ButtonBar(
-                                alignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  cancelButton,
-                                  continueButton,
-                                ],
-                              ),
-                            ],
-                            contentPadding: EdgeInsets.zero,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(
-                                    Radius.circular(10.0))),
-                            content: Builder(
-                              builder: (context) {
-                                var width = MediaQuery.of(context).size.width;
-                                return SizedBox(
-                                  width: width - 90,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
+                            Widget continueButton = TextButton(
+                              child: Text("Elimina", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
+                              onPressed:  () async {
+                                await dataBundleNotifier.getclientServiceInstance().deleteOrder(
+                                    currentOrder
+                                );
+                                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                                Navigator.of(context).pop();
+                              },
+                            );
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog (
+                                  actions: [
+                                    ButtonBar(
+                                      alignment: MainAxisAlignment.spaceAround,
                                       children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10.0),
-                                                topLeft: Radius.circular(10.0) ),
-                                            color: kPrimaryColor,
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        cancelButton,
+                                        continueButton,
+                                      ],
+                                    ),
+                                  ],
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        width: width - 90,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
                                             children: [
-                                              Text('  Elimina ordine?',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: getProportionateScreenWidth(15),
-                                                    fontWeight: FontWeight.bold,
-                                                    color: kCustomWhite,
-                                                  )),
-                                              IconButton(icon: const Icon(
-                                                Icons.clear,
-                                                color: kCustomWhite,
-                                              ), onPressed: () { Navigator.pop(context); },),
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10.0),
+                                                      topLeft: Radius.circular(10.0) ),
+                                                  color: kPrimaryColor,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text('  Elimina ordine?',
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: getProportionateScreenWidth(15),
+                                                          fontWeight: FontWeight.bold,
+                                                          color: kCustomWhite,
+                                                        )),
+                                                    IconButton(icon: const Icon(
+                                                      Icons.clear,
+                                                      color: kCustomWhite,
+                                                    ), onPressed: () { Navigator.pop(context); },),
 
+                                                  ],
+                                                ),
+                                              ),
+                                              const Text(''),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Text('Stai eliminando bozza di ordine con codice #${currentOrder.code.toString()} per fornitore ${dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id)}.',
+                                                  textAlign: TextAlign.center,),
+                                              ),
+                                              const Text(''),
+                                              Text('Continuare?', style: TextStyle(fontWeight: FontWeight.bold,),),
                                             ],
                                           ),
                                         ),
-                                        const Text(''),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text('Stai eliminando bozza di ordine con codice #${currentOrder.code.toString()} per fornitore ${dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id)}.',
-                                          textAlign: TextAlign.center,),
-                                        ),
-                                        const Text(''),
-                                        Text('Continuare?', style: TextStyle(fontWeight: FontWeight.bold,),),
-                                      ],
-                                    ),
+                                      );
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                          )
-                      );
-                    },
-                  ),
-                ],),
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text('    ' + dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id),style: TextStyle(fontSize: getProportionateScreenHeight(19)),),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          '      #' + currentOrder.code,
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(13)),
-                        ), ],
-                    ),
-                    Divider(
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Text(
-                              'Prodotti',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(13)),
-                            ),
-                            Text(orderIdProductListMap[
-                            currentOrder.pk_order_id]
-                                .length
-                                .toString(),
-                              style: TextStyle(
-                                  color: kPinaColor,
-                                  fontSize: getProportionateScreenHeight(14)),
-                            ),
-                          ],
+                                )
+                            );
+                          },
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              'Prezzo Stimato ',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(13)),
-                            ),
-                            Text(
-                              '€ ' +
-                                  calculatePriceFromProductList(
-                                      orderIdProductListMap[
-                                      currentOrder.pk_order_id]),
-                              style: TextStyle(
-                                  color: kPinaColor,
-                                  fontSize: getProportionateScreenHeight(14)),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ExpansionTile(
-                        title: Text(
-                          'Mostra Dettagli',
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(13)),
-                        ),
+                      ),
+                    ],),
+                  Column(
+                    children: [
+                      const SizedBox(
+                        height: 12,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          buildProductListWidget(orderIdProductListMap[
-                          currentOrder.pk_order_id], dataBundleNotifier),
+                          Text('    ' + dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id),style: TextStyle(fontSize: getProportionateScreenHeight(19)),),
                         ],
                       ),
-                    ),
-                    Container(
-                      height: 50,
-                      width: getProportionateScreenWidth(500),
-                      child: CupertinoButton(
-                        child: Text(
-                          'Modifica ed Inoltra',
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(13)),
-                        ),
-                        pressedOpacity: 0.9,
-                        color: Colors.orange,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EditDraftOrderScreen(
-                                orderModel: currentOrder,
-                                productList: orderIdProductListMap[
-                                currentOrder.pk_order_id],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            '      #' + currentOrder.code,
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(13)),
+                          ), ],
+                      ),
+                      Divider(
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'Prodotti',
+                                style: TextStyle(
+                                    fontSize: getProportionateScreenHeight(13)),
                               ),
-                            ),
-                          );
-                        },
+                              Text(orderIdProductListMap[
+                              currentOrder.pk_order_id]
+                                  .length
+                                  .toString(),
+                                style: TextStyle(
+                                    color: kPinaColor,
+                                    fontSize: getProportionateScreenHeight(14)),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                'Prezzo Stimato ',
+                                style: TextStyle(
+                                    fontSize: getProportionateScreenHeight(13)),
+                              ),
+                              Text(
+                                '€ ' +
+                                    calculatePriceFromProductList(
+                                        orderIdProductListMap[
+                                        currentOrder.pk_order_id]),
+                                style: TextStyle(
+                                    color: kPinaColor,
+                                    fontSize: getProportionateScreenHeight(14)),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(10.0),
-                            bottomRight: Radius.circular(10.0)),
-                        color: Colors.orange,
 
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ExpansionTile(
+                          title: Text(
+                            'Mostra Dettagli',
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(13)),
+                          ),
+                          children: [
+                            buildProductListWidget(orderIdProductListMap[
+                            currentOrder.pk_order_id], dataBundleNotifier),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      Container(
+                        height: 50,
+                        width: getProportionateScreenWidth(500),
+                        child: CupertinoButton(
+                          child: Text(
+                            'Modifica ed Inoltra',
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(13)),
+                          ),
+                          pressedOpacity: 0.9,
+                          color: Colors.orange,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditDraftOrderScreen(
+                                  orderModel: currentOrder,
+                                  productList: orderIdProductListMap[
+                                  currentOrder.pk_order_id],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10.0),
+                              bottomRight: Radius.circular(10.0)),
+                          color: Colors.orange,
+
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
+        );
+      });
+    }else{
+      list.add(
+        Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: getProportionateScreenHeight(300),),
+            Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Center(child: Text('Nessuna bozza presente')),
+            ),
+
+            CupertinoButton(
+                color: Colors.orange,
+                child: Text('Torna alla pagina Ordini'), onPressed: (){
+              Navigator.pushNamed(context, OrdersScreen.routeName);
+            }),
+          ],
         ),
       );
-    });
+    }
+
 
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
