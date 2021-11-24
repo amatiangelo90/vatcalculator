@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -10,7 +11,6 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
-import '../../orders_screen.dart';
 import '../edit_order_draft_screen.dart';
 
 class DraftOrderPage extends StatefulWidget {
@@ -25,14 +25,25 @@ class DraftOrderPage extends StatefulWidget {
 class _DraftOrderPageState extends State<DraftOrderPage> {
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
+  int timeToRefresh = 1500;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
+
+          buildDraftOrderList(dataBundleNotifier);
+          //list of draft order not renderized untill setState is performed. I put timeToRegresh to 60000 after the first refresh because otherways is workins as batch script for refreshing page
+          Timer(Duration(milliseconds: timeToRefresh), (){
+            setState(() {
+              timeToRefresh = 60000;
+            });
+          } );
+
       return RefreshIndicator(
         onRefresh: () {
           setState(() {});
-          return Future.delayed(Duration(milliseconds: 500));
+          return Future.delayed(const Duration(milliseconds: 500));
         },
         child: Scaffold(
           backgroundColor: kCustomWhite,
@@ -52,32 +63,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                FutureBuilder(
-                  initialData: <Widget>[
-                    const Center(
-                        child: CircularProgressIndicator(
-                      color: kPinaColor,
-                    )),
-                    const SizedBox(),
-                    Column(
-                      children: const [
-                        Center(
-                          child: Text(
-                            'Caricamento Ordini..',
-                            style: TextStyle(
-                                fontSize: 16.0,
-                                color: kPrimaryColor,
-                                fontFamily: 'LoraFont'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                  future: buildDraftOrderList(dataBundleNotifier),
-                  builder: (context, snapshot) {
-                    return snapshot.data;
-                  },
-                ),
+                Container(child: buildRowItems(dataBundleNotifier)),
               ],
             ),
           ),
@@ -335,7 +321,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
     );
   }
 
-  Future<Widget> buildDraftOrderList(
+  Future<List<Widget>> buildDraftOrderList(
       DataBundleNotifier dataBundleNotifier) async {
 
     dataBundleNotifier.currentDraftOrdersList.forEach((element) async {
@@ -349,7 +335,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
       orderIdProductListMap[element.pk_order_id] = list;
     });
 
-    return Container(child: buildRowItems(dataBundleNotifier));
+    return [];
   }
 
   buildProductListWidget(List<ProductOrderAmountModel> productList,
