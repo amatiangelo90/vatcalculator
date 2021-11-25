@@ -23,7 +23,7 @@ class _BodyState extends State<Body> {
     },
     {
       "text": "Ivano è integrato con Aruba e FattureInCloud..\n e molti altri ne arriveranno!:)",
-      "image": "assets/images/aruba.png"
+      "image": "assets/images/aruba-fcloud.jpeg"
     },
   ];
   @override

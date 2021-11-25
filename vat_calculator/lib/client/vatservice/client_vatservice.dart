@@ -929,7 +929,7 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
         data: body,
       );
 
-      print('Request body for Vat Service (Update Branch): ' + body);
+      print('Request body for Vat Service (Update Stock): ' + body);
       print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
 
     }catch(e){

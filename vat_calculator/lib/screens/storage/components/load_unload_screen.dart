@@ -434,9 +434,9 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
             ),
           ),
           onTap: () {
-            //EasyLoading.show();
-            dataBundleNotifier.setCurrentStorage(currentStorageElement);
-            //EasyLoading.dismiss();
+
+              dataBundleNotifier.setCurrentStorage(currentStorageElement);
+
             Navigator.pop(context);
           },
         ),

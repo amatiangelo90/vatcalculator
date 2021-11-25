@@ -31,15 +31,15 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
             color: Colors.green.shade700,
             text: 'Effettua Carico',
             press: () {
+
               int currentProductWithMorethan0Amount = 0;
-              dataBundleNotifier
-                  .currentStorageProductListForCurrentStorageLoad
-                  .forEach((element) {
+
+              dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
                 if (element.stock != 0) {
-                  currentProductWithMorethan0Amount =
-                      currentProductWithMorethan0Amount + 1;
+                  currentProductWithMorethan0Amount = currentProductWithMorethan0Amount + 1;
                 }
               });
+
               if (currentProductWithMorethan0Amount == 0) {
                 Scaffold.of(context).showSnackBar(const SnackBar(
                   backgroundColor: kPinaColor,
@@ -47,25 +47,18 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                       'Immettere la quantità di carico per almeno un prodotto'),
                 ));
               } else {
-                dataBundleNotifier
-                    .currentStorageProductListForCurrentStorageLoad
-                    .forEach((element) {
-                  dataBundleNotifier
-                      .currentStorageProductListForCurrentStorage
-                      .forEach((standardElement) {
+                dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
+                  dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
                     if (standardElement.pkStorageProductId ==
                         element.pkStorageProductId) {
                       element.stock = standardElement.stock + element.stock;
                     }
                   });
                 });
-                ClientVatService getclientServiceInstance =
-                dataBundleNotifier.getclientServiceInstance();
-                getclientServiceInstance.updateStock(dataBundleNotifier
-                    .currentStorageProductListForCurrentStorageLoad);
+                ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
+                getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageLoad);
                 dataBundleNotifier.clearUnloadProductList();
-                dataBundleNotifier
-                    .refreshProductListAfterInsertProductIntoStorage();
+                dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
                 refreshPage(dataBundleNotifier);
               }
             },

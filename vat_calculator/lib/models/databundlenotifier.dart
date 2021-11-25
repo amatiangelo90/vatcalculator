@@ -70,9 +70,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   ];
 
-  List<OrderModel> currentOrdersForCurrentBranch = [
-
-  ];
+  List<OrderModel> currentOrdersForCurrentBranch = [];
 
   List<OrderModel> currentUnderWorkingOrdersList = [];
 
@@ -233,15 +231,31 @@ class DataBundleNotifier extends ChangeNotifier {
       currentDraftOrdersList.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
+
       currentOrdersForCurrentBranch.forEach((orderItem) async {
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+        print('Order status POPOPOPO: ' + orderItem.status);
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
         if(orderItem.status == OrderState.DRAFT){
           currentDraftOrdersList.add(orderItem);
-        }else if (orderItem.status == OrderState.ARCHIVED){
+        }else if (orderItem.status == OrderState.ARCHIVED
+            || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED
+            || orderItem.status == OrderState.RECEIVED_ARCHIVED
+            || orderItem.status == OrderState.REFUSED_ARCHIVED){
           currentArchiviedWorkingOrdersList.add(orderItem);
         }else{
           currentUnderWorkingOrdersList.add(orderItem);
         }
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+        print('currentUnderWorkingOrdersList: ' + currentUnderWorkingOrdersList.length.toString());
+        print('currentArchiviedWorkingOrdersList: ' + currentArchiviedWorkingOrdersList.length.toString());
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
       });
+
     }
 
     clearAndUpdateMapBundle();
@@ -324,13 +338,22 @@ class DataBundleNotifier extends ChangeNotifier {
     currentUnderWorkingOrdersList.clear();
 
     currentOrdersForCurrentBranch.forEach((orderItem) async {
+      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+      print('Order status : ' + orderItem.status);
+      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
       if(orderItem.status == OrderState.DRAFT){
 
         currentDraftOrdersList.add(orderItem);
 
-      }else if (orderItem.status == OrderState.ARCHIVED){
+      }else if (orderItem.status == OrderState.ARCHIVED
+          || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED
+          || orderItem.status == OrderState.RECEIVED_ARCHIVED
+          || orderItem.status == OrderState.REFUSED_ARCHIVED){
+
         currentArchiviedWorkingOrdersList.add(orderItem);
-      }else{
+      }else {
         currentUnderWorkingOrdersList.add(orderItem);
       }
     });
@@ -533,33 +556,17 @@ class DataBundleNotifier extends ChangeNotifier {
     currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
 
-
-
-
-
     currentOrdersForCurrentBranch.forEach((orderItem) async {
       if(orderItem.status == OrderState.DRAFT){
 
         currentDraftOrdersList.add(orderItem);
-        //currentProductOrderModelAmountListForDraftOrder.clear();
-        //currentProductOrderModelAmountListForDraftOrder = await getclientServiceInstance().retrieveProductByOrderId(
-        //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-        //);
-        //print('currentProductOrderModelAmountListForDraftOrder : ' + currentProductOrderModelAmountListForDraftOrder.length.toString());
-      }else if (orderItem.status == OrderState.ARCHIVED){
+      }else if (orderItem.status == OrderState.ARCHIVED
+              || orderItem.status == OrderState.REFUSED_ARCHIVED
+              || orderItem.status == OrderState.RECEIVED_ARCHIVED
+              || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED){
         currentArchiviedWorkingOrdersList.add(orderItem);
-        //currentProductOrderModelAmountListForArchiviedOrder.clear();
-        //currentProductOrderModelAmountListForArchiviedOrder = await getclientServiceInstance().retrieveProductByOrderId(
-      //  OrderModel(pk_order_id: orderItem.pk_order_id,),
-        //);
-        //print('currentProductOrderModelAmountListForArchiviedOrder : ' + currentProductOrderModelAmountListForArchiviedOrder.length.toString());
       }else{
         currentUnderWorkingOrdersList.add(orderItem);
-        //currentProductOrderModelAmountListForUnderWorkingtOrder.clear();
-        //currentProductOrderModelAmountListForUnderWorkingtOrder = await getclientServiceInstance().retrieveProductByOrderId(
-      // OrderModel(pk_order_id: orderItem.pk_order_id,),
-        //);
-        //print('currentProductOrderModelAmountListForUnderWorkingtOrder : ' + currentProductOrderModelAmountListForUnderWorkingtOrder.length.toString());
       }
     });
 
@@ -572,8 +579,6 @@ class DataBundleNotifier extends ChangeNotifier {
   String getSupplierName(int fk_supplier_id) {
     String currentSupplierName;
     currentListSuppliers.forEach((currentSupplier) {
-      print('currentSupplier.pkSupplierId : ' + currentSupplier.pkSupplierId.toString());
-      print('fk_supplier_id : ' + fk_supplier_id.toString());
       if(currentSupplier.pkSupplierId == fk_supplier_id){
         currentSupplierName = currentSupplier.nome;
       }
@@ -816,6 +821,34 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void removeObjectFromStorageProductList(StorageProductModel element) {
     currentStorageProductListForCurrentStorageDuplicated.remove(element);
+    notifyListeners();
+  }
+
+  StorageModel getStorageFromCurrentStorageListByStorageId(int storageId) {
+    StorageModel storageResult;
+    currentStorageList.forEach((storage) {
+      if(storage.pkStorageId == storageId){
+        storageResult = storage;
+      }
+    });
+    return storageResult;
+  }
+
+  void updateOrderStatusById(int pk_order_id, String received_archived, int millisecondsSinceEpoch) {
+
+    List<OrderModel> orderModelToRemove = [];
+
+    currentUnderWorkingOrdersList.forEach((currentUnderWorkingOrderItem) {
+      if(currentUnderWorkingOrderItem.pk_order_id == pk_order_id){
+        orderModelToRemove.add(currentUnderWorkingOrderItem);
+        currentUnderWorkingOrderItem.delivery_date = millisecondsSinceEpoch;
+        currentUnderWorkingOrderItem.status = received_archived;
+        currentArchiviedWorkingOrdersList.add(
+            currentUnderWorkingOrderItem
+        );
+      }
+    });
+    currentUnderWorkingOrdersList.removeWhere((element) => element.pk_order_id == pk_order_id);
     notifyListeners();
   }
 }

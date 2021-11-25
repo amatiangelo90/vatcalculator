@@ -25,8 +25,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
   ValueNotifier<List<OrderModel>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.week;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .toggledOff;
+  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
   final LinkedHashMap<DateTime, List<OrderModel>> _kOrders = LinkedHashMap();
 
@@ -54,7 +53,6 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
         _focusedDay = focusedDay;
         _rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
-
       _selectedEvents.value = _getEventsForDay(selectedDay);
     }
   }
@@ -64,9 +62,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child){
-
           _kOrders.addAll(getKOrders(dataBundleNotifier.currentUnderWorkingOrdersList));
-
           return FutureBuilder(
             initialData: <Widget>[
               const Center(
@@ -173,7 +169,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                   Expanded(
                     child: ValueListenableBuilder<List<OrderModel>>(
                       valueListenable: _selectedEvents,
-                      builder: (context, orderList, _) {
+                      builder: (context, orderList, child) {
                         return ListView.builder(
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
@@ -199,25 +195,22 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                       : Column(
                                         children: [
                                           const SizedBox(
-                                            height: 12,
+                                            height: 5,
                                           ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Text(dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id),
-                                                style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),),
+                                                style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),),
                                             ],
                                           ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Padding(
-                                                padding: const EdgeInsets.all(10.0),
-                                                child: Text(
-                                                  '#' + orderList[order].code,
-                                                  style: TextStyle(
-                                                      fontSize: getProportionateScreenHeight(13)),
-                                                ),
+                                              Text(
+                                                '#' + orderList[order].code,
+                                                style: TextStyle(
+                                                    fontSize: getProportionateScreenHeight(12)),
                                               ), ],
                                           ),
                                           Divider(
@@ -264,77 +257,91 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                             ],
                                           ),
 
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ExpansionTile(
-                                              title: Text(
-                                                'Mostra Dettagli',
-                                                style: TextStyle(
-                                                    fontSize: getProportionateScreenHeight(13)),
-                                              ),
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        SizedBox(width: getProportionateScreenWidth(10),),
-                                                        const Text('Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(getUserDetailsById(orderList[order].fk_user_id, orderList[order].fk_branch_id,
-                                                            dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
-                                                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                                                        SizedBox(width: getProportionateScreenWidth(10),),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-
-                                                    Row(
-                                                      children: [
-                                                        SizedBox(width: getProportionateScreenWidth(10),),
-                                                        Text('Effettuato: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)),
-                                                          style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
-                                                        SizedBox(width: getProportionateScreenWidth(10),),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        SizedBox(width: getProportionateScreenWidth(10),),
-                                                        Text('Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].delivery_date)),
-                                                          style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
-                                                        SizedBox(width: getProportionateScreenWidth(10),),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                SizedBox(height: getProportionateScreenHeight(20),),
-                                                Text('Carrello'),
-                                                buildProductListWidget(orderIdProductListMap[orderList[order].pk_order_id], dataBundleNotifier),
-                                                SizedBox(height: getProportionateScreenHeight(20),),
-                                              ],
+                                          ExpansionTile(
+                                            title: Text(
+                                              'Mostra Dettagli',
+                                              style: TextStyle(
+                                                  fontSize: getProportionateScreenHeight(13)),
                                             ),
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                      const Text('Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(getUserDetailsById(orderList[order].fk_user_id, orderList[order].fk_branch_id,
+                                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
+                                                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                      const Text('Stato: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(orderList[order].status,
+                                                        style: TextStyle(color: Colors.green.shade900),),
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                      Text('Effettuato: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)),
+                                                        style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                      Text('Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    children: [
+                                                      Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].delivery_date)),
+                                                        style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
+                                                      SizedBox(width: getProportionateScreenWidth(10),),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(height: getProportionateScreenHeight(20),),
+                                              Text('Carrello'),
+                                              buildProductListWidget(orderIdProductListMap[orderList[order].pk_order_id], dataBundleNotifier),
+                                              SizedBox(height: getProportionateScreenHeight(20),),
+                                            ],
                                           ),
                                           Container(
                                             height: 50,
