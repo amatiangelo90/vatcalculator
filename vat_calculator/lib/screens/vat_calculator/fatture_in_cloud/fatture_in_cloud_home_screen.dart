@@ -17,8 +17,17 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
-          drawer: const CommonDrawer(),
           appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: kCustomWhite,
+                size: getProportionateScreenHeight(20),
+              ),
+            ),
             iconTheme: const IconThemeData(color: Colors.white),
             backgroundColor: kPrimaryColor,
             centerTitle: true,

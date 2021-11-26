@@ -14,6 +14,7 @@ class OrderModel{
   int fk_supplier_id;
   int fk_branch_id;
   int fk_storage_id;
+  String closedby;
 
   OrderModel({
     @required this.pk_order_id,
@@ -26,7 +27,9 @@ class OrderModel{
     this.fk_user_id,
     this.fk_supplier_id,
     this.fk_branch_id,
-    this.fk_storage_id});
+    this.fk_storage_id,
+    this.closedby
+  });
 
   toMap(){
     return {
@@ -40,7 +43,10 @@ class OrderModel{
       'fk_user_id' : fk_user_id,
       'fk_supplier_id' : fk_supplier_id,
       'fk_branch_id' : fk_branch_id,
-      'fk_storage_id' : fk_storage_id
+      'fk_storage_id' : fk_storage_id,
+      'closedby' : closedby
+
+
     };
   }
 }

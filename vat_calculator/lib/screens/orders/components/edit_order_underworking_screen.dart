@@ -89,10 +89,11 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                   OrderModel(
                                       pk_order_id: widget.orderModel.pk_order_id,
                                       status: OrderState.RECEIVED_ARCHIVED,
-                                      delivery_date: DateTime.now().millisecondsSinceEpoch
+                                      delivery_date: DateTime.now().millisecondsSinceEpoch,
+                                      closedby: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName
                                   ),
                                 );
-                                dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch);
+                                dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName);
                                 dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
 
                                 Navigator.push(
@@ -212,7 +213,6 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                         child: Card(
                           child: Column(
                             children: [
-
                               Text(dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id), style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25)),),
                               Text('#' + widget.orderModel.code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
                               Divider(endIndent: 40, indent: 40,),
@@ -235,6 +235,13 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 children: [
                                   const Text('Magazzino: ', style: TextStyle(fontWeight: FontWeight.bold),),
                                   Text(dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id).name, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Stato: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                  Text(widget.orderModel.status, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),
                               Divider(endIndent: 40, indent: 40,),

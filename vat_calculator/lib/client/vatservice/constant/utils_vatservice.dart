@@ -58,3 +58,5 @@ const String VAT_SERVICE_URL_RETRIEVE_USERS_LIST_RELATIONED_ON_BRANCH_BY_BRANCH_
 const String VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE = 'http://$host:8080/vatservices/api/v1/update/userbranch/privilege';
 // remove user branch relation
 const String VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION = 'http://$host:8080/vatservices/api/v1/remove/userbranchrelation';
+// remove user branch relation
+const String VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/removeprovider';

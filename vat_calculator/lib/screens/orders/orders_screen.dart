@@ -7,6 +7,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
+import 'components/screens/archivied_order_page.dart';
 import 'components/screens/draft_order_page.dart';
 import 'components/screens/underworking_order_page.dart';
 
@@ -18,31 +19,63 @@ class OrdersScreen extends StatefulWidget {
   State<OrdersScreen> createState() => _OrdersScreenState();
 }
 
-class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMixin{
-
+class _OrdersScreenState extends State<OrdersScreen>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-
     return Consumer<DataBundleNotifier>(
-      builder: (context, dataBundleNotifier, child){
+      builder: (context, dataBundleNotifier, child) {
         return Scaffold(
           drawer: const CommonDrawer(),
           appBar: AppBar(
             actions: [
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: IconButton(
-                    icon: SvgPicture.asset(
-                      "assets/icons/archive.svg",
-                      width: 25,
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    child: IconButton(
+                        icon: SvgPicture.asset(
+                          "assets/icons/archive.svg",
+                          width: 25,
+                        ),
+                        onPressed: () {
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(
+                              context, ArchiviedOrderPage.routeName);
+                        }),
+                  ),
+                  Positioned(
+                    top: 13.0,
+                    right: dataBundleNotifier.currentArchiviedWorkingOrdersList.length > 9
+                        ? 5.0
+                        : 8.0,
+                    child: Stack(
+                      children: <Widget>[
+                        const Icon(
+                          Icons.brightness_1,
+                          size: 16,
+                          color: Colors.redAccent,
+                        ),
+                        Positioned(
+                          right:
+                              dataBundleNotifier.currentArchiviedWorkingOrdersList.length >
+                                      9
+                                  ? 3.0
+                                  : 5.0,
+                          top: 2,
+                          child: Center(
+                            child: Text(
+                              dataBundleNotifier.currentArchiviedWorkingOrdersList.length
+                                  .toString(),
+                              style: const TextStyle(
+                                  fontSize: 8.0, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      dataBundleNotifier.setShowIvaButtonToFalse();
-                      Navigator.pushNamed(
-                          context, DraftOrderPage.routeName);
-                    }
-                ),
+                  ),
+                ],
               ),
               Stack(
                 children: [
@@ -57,12 +90,13 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(
                               context, DraftOrderPage.routeName);
-                        }
-                    ),
+                        }),
                   ),
                   Positioned(
                     top: 13.0,
-                    right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 5.0 : 8.0,
+                    right: dataBundleNotifier.currentDraftOrdersList.length > 9
+                        ? 5.0
+                        : 8.0,
                     child: Stack(
                       children: <Widget>[
                         const Icon(
@@ -71,14 +105,18 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
                           color: Colors.orange,
                         ),
                         Positioned(
-                          right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 5.0,
+                          right:
+                              dataBundleNotifier.currentDraftOrdersList.length >
+                                      9
+                                  ? 3.0
+                                  : 5.0,
                           top: 2,
                           child: Center(
                             child: Text(
-                              dataBundleNotifier.currentDraftOrdersList.length.toString(),
+                              dataBundleNotifier.currentDraftOrdersList.length
+                                  .toString(),
                               style: const TextStyle(
-                                  fontSize: 8.0,
-                                  color: Colors.white),
+                                  fontSize: 8.0, color: Colors.white),
                             ),
                           ),
                         ),
@@ -90,7 +128,8 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
             ],
             iconTheme: const IconThemeData(color: kPrimaryColor),
             centerTitle: true,
-            title: Text('Ordini',
+            title: Text(
+              'Ordini',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
                 color: kPrimaryColor,
@@ -99,7 +138,8 @@ class _OrdersScreenState extends State<OrdersScreen> with TickerProviderStateMix
             backgroundColor: kCustomWhite,
           ),
           body: const UnderWorkingOrderPage(),
-          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.orders),
+          bottomNavigationBar:
+              const CustomBottomNavBar(selectedMenu: MenuState.orders),
         );
       },
     );

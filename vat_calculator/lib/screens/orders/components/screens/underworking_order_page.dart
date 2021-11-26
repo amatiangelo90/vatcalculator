@@ -353,7 +353,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                                     fontSize: getProportionateScreenHeight(13)),
                                               ),
                                               pressedOpacity: 0.9,
-                                              color: Colors.blue,
+                                              color: Colors.green.shade700,
                                               onPressed: () {
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
                                               },
@@ -362,7 +362,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                               borderRadius: BorderRadius.only(
                                                   bottomLeft: Radius.circular(10.0),
                                                   bottomRight: Radius.circular(10.0)),
-                                              color: Colors.blue,
+                                              color: Colors.green.shade700,
 
                                             ),
                                           ),

@@ -18,14 +18,7 @@ import 'model/user_model.dart';
 
 class ClientVatService{
 
-  Future<Response> performSaveUser(
-      String firstName,
-      String lastName,
-      String phoneNumber,
-      String eMail,
-      String privileges,
-      int relatedUserId
-      ) async {
+  Future<Response> performSaveUser(String firstName,String lastName, String phoneNumber, String eMail, String privileges, int relatedUserId) async {
 
     var dio = Dio();
 
@@ -56,9 +49,7 @@ class ClientVatService{
     }
     return post;
   }
-
-  Future<Response> checkSpecialUser(
-      UserModel usermodel) async {
+  Future<Response> checkSpecialUser(UserModel usermodel) async {
 
     var dio = Dio();
 
@@ -83,13 +74,7 @@ class ClientVatService{
     }
     return post;
   }
-
-  Future<Response> performSaveRecessed(
-      double amount,
-      String description,
-      int iva,
-      int dateTimeRecessed,
-      int pkBranchId) async{
+  Future<Response> performSaveRecessed(double amount, String description, int iva, int dateTimeRecessed, int pkBranchId) async{
 
     var dio = Dio();
 
@@ -123,12 +108,8 @@ class ClientVatService{
     }
 
   }
-
-  Future<Response> performSaveStorage(
-      StorageModel storageModel) async{
-
+  Future<Response> performSaveStorage(StorageModel storageModel) async{
     var dio = Dio();
-
     String body = json.encode(
         storageModel.toMap());
 
@@ -151,14 +132,10 @@ class ClientVatService{
       print(e);
       rethrow;
     }
-
   }
-
-  Future<Response> performSaveOrder(
-      OrderModel orderModel) async {
+  Future<Response> performSaveOrder(OrderModel orderModel) async {
 
     var dio = Dio();
-
     String body = json.encode(
         orderModel.toMap());
 
@@ -180,11 +157,8 @@ class ClientVatService{
       print(e);
       rethrow;
     }
-
   }
-
-  Future<List<ProductOrderAmountModel>> retrieveProductByOrderId(
-      OrderModel orderModel) async {
+  Future<List<ProductOrderAmountModel>> retrieveProductByOrderId(OrderModel orderModel) async {
 
     var dio = Dio();
 
@@ -232,11 +206,8 @@ class ClientVatService{
       print(e);
       rethrow;
     }
-
   }
-
-  Future<Response> performSaveSupplier(ResponseAnagraficaFornitori anagraficaFornitore
-      ) async{
+  Future<Response> performSaveSupplier(ResponseAnagraficaFornitori anagraficaFornitore) async{
 
     var dio = Dio();
 
@@ -260,11 +231,8 @@ class ClientVatService{
       print(e);
       rethrow;
     }
-
   }
-
-  Future<Response> performSaveBranch(
-      BranchModel company) async {
+  Future<Response> performSaveBranch(BranchModel company) async {
 
     var dio = Dio();
 
@@ -290,9 +258,7 @@ class ClientVatService{
       rethrow;
     }
   }
-
-  Future<Response> performSaveProduct(
-      ProductModel product) async {
+  Future<Response> performSaveProduct(ProductModel product) async {
 
     var dio = Dio();
 
@@ -319,11 +285,8 @@ class ClientVatService{
     }catch(e){
       rethrow;
     }
-
   }
-
-  Future<Response> performSaveProductIntoStorage(
-      SaveProductToStorageRequest saveProductToStorageRequest) async {
+  Future<Response> performSaveProductIntoStorage(SaveProductToStorageRequest saveProductToStorageRequest) async {
 
     var dio = Dio();
 
@@ -351,13 +314,8 @@ class ClientVatService{
     }catch(e){
       rethrow;
     }
-
   }
-
-  Future<Response> performSaveProductIntoOrder(
-      double amount,
-      int productId,
-      int orderId) async {
+  Future<Response> performSaveProductIntoOrder(double amount, int productId, int orderId) async {
 
     var dio = Dio();
 
@@ -388,11 +346,8 @@ class ClientVatService{
     }catch(e){
       rethrow;
     }
-
   }
-
-  Future<Response> performUpdateProduct(
-      ProductModel product) async {
+  Future<Response> performUpdateProduct(ProductModel product) async {
 
     var dio = Dio();
 
@@ -421,9 +376,7 @@ class ClientVatService{
     }
 
   }
-
-  Future<Response> performDeleteProduct(
-      ProductModel product) async {
+  Future<Response> performDeleteProduct(ProductModel product) async {
 
     var dio = Dio();
 
@@ -450,11 +403,8 @@ class ClientVatService{
     }catch(e){
       rethrow;
     }
-
   }
-
-  Future<Response> removeProductFromStorage(
-      StorageProductModel storageProductModel) async {
+  Future<Response> removeProductFromStorage(StorageProductModel storageProductModel) async {
 
     var dio = Dio();
 
@@ -481,11 +431,8 @@ class ClientVatService{
     }catch(e){
       rethrow;
     }
-
   }
-
-  Future<UserModel> retrieveUserByEmail(
-      String eMail) async {
+  Future<UserModel> retrieveUserByEmail(String eMail) async {
 
     var dio = Dio();
 
@@ -525,11 +472,8 @@ class ClientVatService{
       print(e);
       rethrow;
     }
-
   }
-
-  Future<List<BranchModel>> retrieveBranchesByUserId(
-      int id) async {
+  Future<List<BranchModel>> retrieveBranchesByUserId(int id) async {
 
     var dio = Dio();
 
@@ -584,9 +528,7 @@ class ClientVatService{
       rethrow;
     }
   }
-
-  Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(
-      int pkStorageId) async {
+  Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(int pkStorageId) async {
 
     var dio = Dio();
 
@@ -643,7 +585,6 @@ class ClientVatService{
       rethrow;
     }
   }
-
   Future<List<RecessedModel>> retrieveRecessedListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -686,7 +627,6 @@ class ClientVatService{
       rethrow;
     }
   }
-
   Future<List<OrderModel>> retrieveOrdersByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -723,7 +663,9 @@ class ClientVatService{
                 fk_storage_id: orderElement['fk_storage_id'],
                 fk_branch_id: orderElement['fk_branch_id'],
                 details: orderElement['details'],
-                status: orderElement['status']));
+                status: orderElement['status'],
+                closedby: orderElement['closedby']
+            ));
       });
       return ordersList;
   }catch(e){
@@ -732,7 +674,6 @@ class ClientVatService{
       rethrow;
     }
   }
-
   Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -784,7 +725,6 @@ class ClientVatService{
       rethrow;
     }
   }
-
   Future<List<ProductModel>> retrieveProductsBySupplier(ResponseAnagraficaFornitori currentSupplier) async {
     var dio = Dio();
     List<ProductModel> productsList = [];
@@ -826,9 +766,7 @@ class ClientVatService{
       rethrow;
     }
   }
-
-
-Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) async {
+  Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) async {
     var dio = Dio();
     List<ProductModel> productsList = [];
 
@@ -869,7 +807,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<List<StorageModel>> retrieveStorageListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
     List<StorageModel> storageList = [];
@@ -911,7 +848,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<void> updateStock(List<StorageProductModel> currentStorageProductListForCurrentStorageUnload) async {
     var dio = Dio();
     String body = '[';
@@ -938,7 +874,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<void> deleteOrder(OrderModel orderModel) async {
     var dio = Dio();
 
@@ -964,7 +899,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<void> deleteStorage(StorageModel storageModel) async{
     var dio = Dio();
 
@@ -989,7 +923,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   updateOrderStatus(OrderModel orderModel) async {
     var dio = Dio();
 
@@ -1015,7 +948,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<Response> addProviderDetailsToBranch({BranchModel branchModel}) async {
     var dio = Dio();
 
@@ -1034,14 +966,12 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE + '): ' + post.data.toString());
       }
-
       return post;
     }catch(e){
       print(e);
       rethrow;
     }
   }
-
   Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByCode({String code}) async {
     var dio = Dio();
 
@@ -1111,7 +1041,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<int> addSupplierToCurrentBranch(ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier) async {
     var dio = Dio();
 
@@ -1137,7 +1066,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   removeSupplierFromCurrentBranch(ResponseAnagraficaFornitori requestRemoveSupplierFromBranch) async {
 
     var dio = Dio();
@@ -1163,9 +1091,29 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
     }catch(e){
       rethrow;
     }
-
   }
+  Future<Response> removeProviderFromBranch(BranchModel branchModel) async {
+    var dio = Dio();
+    String body = json.encode(
+        branchModel.toMap());
+    print('Calling ' + VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH + '...');
+    print('Body Request remove provider from branch: ' + body);
 
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH,
+        data: body,
+      );
+
+      if(post != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH + '). Rows Affected: ' + post.data.toString());
+      }
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
   Future<List<BranchModel>> retrieveBranchByBranchId(String codeBranch) async {
     var dio = Dio();
 
@@ -1227,10 +1175,7 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
-  Future<Response> createUserBranchRelation({int fkUserId,
-    int fkBranchId,
-    String accessPrivilege}) async {
+  Future<Response> createUserBranchRelation({int fkUserId, int fkBranchId, String accessPrivilege}) async {
 
     var dio = Dio();
 
@@ -1257,7 +1202,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       return null;
     }
   }
-
   Future<List<UserModel>> retrieveUserListRelatedWithBranchByBranchId(BranchModel branchModel) async {
 
     var dio = Dio();
@@ -1300,10 +1244,7 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       print(e);
       rethrow;
     }
-    
-    
   }
-
   Future<Response> updatePrivilegeForUserBranchRelation({int branchId, int userId, String privilegeType}) async {
     var dio = Dio();
 
@@ -1335,7 +1276,6 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
   Future<Response> removeUserBranchRelation({int branchId, int userId}) async {
     var dio = Dio();
 
@@ -1366,5 +1306,4 @@ Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) asy
       rethrow;
     }
   }
-
 }

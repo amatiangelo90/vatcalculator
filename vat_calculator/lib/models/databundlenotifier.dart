@@ -834,7 +834,7 @@ class DataBundleNotifier extends ChangeNotifier {
     return storageResult;
   }
 
-  void updateOrderStatusById(int pk_order_id, String received_archived, int millisecondsSinceEpoch) {
+  void updateOrderStatusById(int pk_order_id, String received_archived, int millisecondsSinceEpoch, String closedByUser) {
 
     List<OrderModel> orderModelToRemove = [];
 
@@ -843,6 +843,7 @@ class DataBundleNotifier extends ChangeNotifier {
         orderModelToRemove.add(currentUnderWorkingOrderItem);
         currentUnderWorkingOrderItem.delivery_date = millisecondsSinceEpoch;
         currentUnderWorkingOrderItem.status = received_archived;
+        currentUnderWorkingOrderItem.closedby = closedByUser;
         currentArchiviedWorkingOrdersList.add(
             currentUnderWorkingOrderItem
         );
@@ -850,5 +851,13 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     currentUnderWorkingOrdersList.removeWhere((element) => element.pk_order_id == pk_order_id);
     notifyListeners();
+  }
+
+  void removeProviderFromCurrentBranch() {
+    currentBranch.providerFatture = '';
+    currentBranch.apiUidOrPassword = '';
+    currentBranch.apiKeyOrUser = '';
+    notifyListeners();
+
   }
 }

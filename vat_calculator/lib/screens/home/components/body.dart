@@ -279,8 +279,6 @@ class _BodyState extends State<Body> {
     });
     return branchWidgetList;
   }
-
-
   buildDateList(DataBundleNotifier dataBundleNotifier, BuildContext context) {
     List<Widget> branchWidgetList = [];
     List<DateTime> dateTimeList = [
