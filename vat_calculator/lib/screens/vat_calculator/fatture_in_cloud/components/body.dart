@@ -7,7 +7,9 @@ import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.
 import 'package:vat_calculator/client/fattureICloud/model/response_fatture_api.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/custom_surfix_icon.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
@@ -301,7 +303,16 @@ class _VatFattureInCloudCalculatorBodyState
                                                             color: Colors.redAccent,
                                                             onPressed: () async {
                                                               Response response = await dataBundleNotifier.getclientServiceInstance()
-                                                                  .removeProviderFromBranch(dataBundleNotifier.currentBranch);
+                                                                  .removeProviderFromBranch(
+                                                                    branchModel: dataBundleNotifier.currentBranch,
+                                                                  actionModel: ActionModel(
+                                                                      date: DateTime.now().millisecondsSinceEpoch,
+                                                                      description: 'Ha rimosso il provider per la fatturazione elettronica ${dataBundleNotifier.currentBranch.providerFatture} dall\'attività ${dataBundleNotifier.currentBranch.companyName}',
+                                                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                                    type: ActionType.PROVIDER_DELETE
+                                                                  )
+                                                              );
                                                               if(response.data > 0){
                                                                 print('Provider Rimosso');
                                                                 dataBundleNotifier.removeProviderFromCurrentBranch();
@@ -449,7 +460,14 @@ class _VatFattureInCloudCalculatorBodyState
                                               casualeRecessedController.text,
                                               dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
                                               dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
-                                              dataBundleNotifier.currentBranch.pkBranchId
+                                              dataBundleNotifier.currentBranch.pkBranchId,
+                                              ActionModel(
+                                                  date: DateTime.now().millisecondsSinceEpoch,
+                                                  description: 'Ha registrato incasso ${recessedController.text} € con casuale [${casualeRecessedController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                type: ActionType.RECESSED_CREATION
+                                              )
                                           );
 
                                           List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);

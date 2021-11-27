@@ -6,11 +6,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -545,7 +547,16 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                   child: Text("Elimina", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
                                   onPressed:  () async {
 
-                                    dataBundleNotifier.getclientServiceInstance().deleteStorage(listStorageModel[index]);
+                                    dataBundleNotifier.getclientServiceInstance().deleteStorage(
+                                        storageModel: listStorageModel[index],
+                                        actionModel: ActionModel(
+                                            date: DateTime.now().millisecondsSinceEpoch,
+                                            description: 'Ha eliminato il magazzino ${listStorageModel[index].name}.',
+                                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                            type: ActionType.STORAGE_DELETE
+                                        )
+                                    );
 
                                     listStorageModel.removeAt(index);
                                     if(dataBundleNotifier.currentBranch != null){

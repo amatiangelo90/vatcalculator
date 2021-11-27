@@ -5,8 +5,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/constants.dart';
@@ -15,7 +17,11 @@ import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 
 class EditDraftOrderScreen extends StatefulWidget {
-  const EditDraftOrderScreen({Key key, this.orderModel, this.productList, }) : super(key: key);
+  const EditDraftOrderScreen({
+    Key key,
+    this.orderModel,
+    this.productList,
+  }) : super(key: key);
 
   final OrderModel orderModel;
   final List<ProductOrderAmountModel> productList;
@@ -25,7 +31,6 @@ class EditDraftOrderScreen extends StatefulWidget {
 }
 
 class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
-
   DateTime currentDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
@@ -44,181 +49,248 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
-      builder: (context, dataBundleNotifier, child){
-        return  LoaderOverlay(
-          useDefaultLoading: false,
-          overlayOpacity: 0.9,
-          overlayWidget: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: getProportionateScreenHeight(130),
-                  width: getProportionateScreenWidth(250),
-                  child: Card(
-                    color: Colors.white,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            SizedBox(height: getProportionateScreenHeight(15),),
-                            SpinKitRing(
-                              lineWidth: 3,
-                              color: kPrimaryColor,
-                              size: getProportionateScreenHeight(50),
-                            ),
-                            SizedBox(height: getProportionateScreenHeight(4),),
-                            const Text('Invio ordine in corso..'),
-                          ],
-                        ),
+        builder: (context, dataBundleNotifier, child) {
+      return LoaderOverlay(
+        useDefaultLoading: false,
+        overlayOpacity: 0.9,
+        overlayWidget: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: getProportionateScreenHeight(130),
+                width: getProportionateScreenWidth(250),
+                child: Card(
+                  color: Colors.white,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            height: getProportionateScreenHeight(15),
+                          ),
+                          SpinKitRing(
+                            lineWidth: 3,
+                            color: kPrimaryColor,
+                            size: getProportionateScreenHeight(50),
+                          ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(4),
+                          ),
+                          const Text('Invio ordine in corso..'),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          child: Scaffold(
+        ),
+        child: Scaffold(
           bottomSheet: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              CupertinoButton(child: Text('Invia', style: const TextStyle(color: Colors.green),),
+              CupertinoButton(
+                  child: Text(
+                    'Invia',
+                    style: const TextStyle(color: Colors.green),
+                  ),
                   onPressed: () async {
+                    if (currentDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          duration: Duration(milliseconds: 5000),
+                          backgroundColor: Colors.red,
+                          content: Text(
+                            'Selezionare la data di consegna ordine',
+                            style: TextStyle(
+                                fontFamily: 'LoraFont', color: Colors.white),
+                          )));
+                    } else {
+                      print('Invio mail');
+                      // TODO send mail to supplier
+                      String currentSupplierEmail = '';
+                      String currentSupplierName = '';
+                      dataBundleNotifier.currentListSuppliers
+                          .forEach((supplier) {
+                        if (supplier.pkSupplierId ==
+                            widget.orderModel.fk_supplier_id) {
+                          currentSupplierEmail = supplier.mail;
+                          currentSupplierName = supplier.nome;
+                        }
+                      });
 
-                if(currentDate == null){
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(const SnackBar(
-                      duration: Duration(milliseconds: 5000),
-                      backgroundColor: Colors.red,
-                      content: Text('Selezionare la data di consegna ordine', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                      Response sendEmailResponse = await dataBundleNotifier
+                          .getEmailServiceInstance()
+                          .sendEmail(
+                              supplierName: currentSupplierName,
+                              branchName:
+                                  dataBundleNotifier.currentBranch.companyName,
+                              message: buildMessageFromCurrentOrder(
+                                  widget.productList),
+                              orderCode: widget.orderModel.code,
+                              supplierEmail: currentSupplierEmail,
+                              userEmail:
+                                  dataBundleNotifier.dataBundleList[0].email,
+                              userName: dataBundleNotifier
+                                  .dataBundleList[0].firstName,
+                              addressBranch:
+                                  dataBundleNotifier.currentBranch.address +
+                                      ' ' +
+                                      dataBundleNotifier.currentBranch.city +
+                                      ' ' +
+                                      dataBundleNotifier.currentBranch.cap
+                                          .toString(),
+                              deliveryDate:
+                                  getDayFromWeekDay(currentDate.weekday) +
+                                      ' ' +
+                                      currentDate.day.toString() +
+                                      '/' +
+                                      currentDate.month.toString() +
+                                      '/' +
+                                      currentDate.year.toString());
 
-                }else{
-
-                  print('Invio mail');
-                  // TODO send mail to supplier
-                  String currentSupplierEmail = '';
-                  String currentSupplierName = '';
-                  dataBundleNotifier.currentListSuppliers.forEach((supplier) {
-                    if(supplier.pkSupplierId == widget.orderModel.fk_supplier_id){
-                      currentSupplierEmail = supplier.mail;
-                      currentSupplierName = supplier.nome;
+                      if (sendEmailResponse.data == 'OK') {
+                        await dataBundleNotifier
+                            .getclientServiceInstance()
+                            .updateOrderStatus(
+                                orderModel: OrderModel(
+                                    pk_order_id: widget.orderModel.pk_order_id,
+                                    status: OrderState.SENT,
+                                    delivery_date:
+                                        currentDate.millisecondsSinceEpoch,
+                                    closedby: dataBundleNotifier
+                                        .retrieveNameLastNameCurrentUser()),
+                                actionModel: ActionModel(
+                                    date: DateTime.now().millisecondsSinceEpoch,
+                                    description:
+                                        'Ha inviato l\'ordine #${widget.orderModel.code} '
+                                        'al fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
+                                    fkBranchId: dataBundleNotifier
+                                        .currentBranch.pkBranchId,
+                                    user: dataBundleNotifier
+                                        .retrieveNameLastNameCurrentUser(),
+                                    type: ActionType.SENT_ORDER));
+                        dataBundleNotifier
+                            .setCurrentBranch(dataBundleNotifier.currentBranch);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrdersScreen(),
+                          ),
+                        );
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var height =
+                                          MediaQuery.of(context).size.height;
+                                      var width =
+                                          MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        height: height - 250,
+                                        width: width - 90,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  10.0),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  10.0)),
+                                                  color: kPrimaryColor,
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          '  Errore invio ordine',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                getProportionateScreenWidth(
+                                                                    20),
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: kCustomWhite,
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          icon: const Icon(
+                                                            Icons.clear,
+                                                            color: kCustomWhite,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      children: [],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              // buildDateList(),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ));
+                      }
                     }
-                  });
+                  }),
+              CupertinoButton(
+                  child: const Text(
+                    'Cancella Bozza',
+                    style: TextStyle(color: kPinaColor),
+                  ),
+                  onPressed: () async {
+                    await dataBundleNotifier
+                        .getclientServiceInstance()
+                        .deleteOrder(
+                            orderModel: widget.orderModel,
+                            actionModel: ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description:
+                                    'Ha elininato l\'ordine #${widget.orderModel.code} '
+                                    'per il fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
+                                fkBranchId:
+                                    dataBundleNotifier.currentBranch.pkBranchId,
+                                user: dataBundleNotifier
+                                    .retrieveNameLastNameCurrentUser(),
+                                type: ActionType.ORDER_DELETE));
 
-
-
-                  Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
-                    supplierName: currentSupplierName,
-                    branchName: dataBundleNotifier.currentBranch.companyName,
-                    message: buildMessageFromCurrentOrder(
-                      widget.productList
-                    ),
-                    orderCode: widget.orderModel.code,
-                    supplierEmail: currentSupplierEmail,
-                    userEmail: dataBundleNotifier.dataBundleList[0].email,
-                    userName: dataBundleNotifier.dataBundleList[0].firstName,
-                    addressBranch: dataBundleNotifier.currentBranch.address + ' '
-                        + dataBundleNotifier.currentBranch.city + ' '
-                        + dataBundleNotifier.currentBranch.cap.toString(),
-                    deliveryDate: getDayFromWeekDay(currentDate.weekday)
-                        + ' ' + currentDate.day.toString()
-                        + '/' + currentDate.month.toString()
-                        + '/' + currentDate.year.toString()
-                  );
-
-                  if(sendEmailResponse.data == 'OK'){
-                    await dataBundleNotifier.getclientServiceInstance().updateOrderStatus(
-                      OrderModel(
-                          pk_order_id: widget.orderModel.pk_order_id,
-                          status: OrderState.SENT,
-                          delivery_date: currentDate.millisecondsSinceEpoch
-                     ),
-                     );
-                    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier
+                        .setCurrentBranch(dataBundleNotifier.currentBranch);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const OrdersScreen(),
-                    ),
+                      ),
                     );
-                  }else{
-                    showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog (
-                          contentPadding: EdgeInsets.zero,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.all(
-                                  Radius.circular(10.0))),
-                          content: Builder(
-                            builder: (context) {
-                              var height = MediaQuery.of(context).size.height;
-                              var width = MediaQuery.of(context).size.width;
-                              return SizedBox(
-                                height: height - 250,
-                                width: width - 90,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(10.0),
-                                              topLeft: Radius.circular(10.0) ),
-                                          color: kPrimaryColor,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text('  Errore invio ordine',style: TextStyle(
-                                                  fontSize: getProportionateScreenWidth(20),
-                                                  fontWeight: FontWeight.bold,
-                                                  color: kCustomWhite,
-                                                ),),
-                                                IconButton(icon: const Icon(
-                                                  Icons.clear,
-                                                  color: kCustomWhite,
-                                                ), onPressed: () { Navigator.pop(context); },),
-
-                                              ],
-                                            ),
-                                            Column(
-                                              children: [
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      // buildDateList(),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                    );
-                  }
-                }
-              }),
-              CupertinoButton(child: const Text('Cancella Bozza', style: TextStyle(color: kPinaColor),), onPressed: () async {
-                await dataBundleNotifier.getclientServiceInstance().deleteOrder(
-                    widget.orderModel
-                );
-
-                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OrdersScreen(),
-                  ),
-                );
-              }),
+                  }),
             ],
           ),
           appBar: AppBar(
@@ -230,7 +302,8 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             centerTitle: true,
             automaticallyImplyLeading: true,
             title: const Text(
-              'Dettaglio Ordine', style: TextStyle(color: kPrimaryColor),
+              'Dettaglio Ordine',
+              style: TextStyle(color: kPrimaryColor),
             ),
           ),
           body: SingleChildScrollView(
@@ -248,20 +321,26 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                         child: Card(
                           child: Column(
                             children: [
-                              Text('#' + widget.orderModel.code, style: TextStyle(fontWeight: FontWeight.bold),),
+                              Text(
+                                '#' + widget.orderModel.code,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
                               Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     CupertinoButton(
-                                      child: const Text('Seleziona data consegna'),
+                                      child:
+                                          const Text('Seleziona data consegna'),
                                       color: Colors.blueAccent,
                                       onPressed: () => _selectDate(context),
                                     ),
                                     const Text('Data consegna'),
-                                    currentDate == null ? Text(''
-                                        'Nessuna Data selezionata')
-                                        : Text('Data consegna : ' + currentDate.toString()),
+                                    currentDate == null
+                                        ? Text(''
+                                            'Nessuna Data selezionata')
+                                        : Text('Data consegna : ' +
+                                            currentDate.toString()),
                                   ],
                                 ),
                               ),
@@ -273,28 +352,35 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                   ),
                   Row(
                     children: [
-                      Text('Carrello', style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.bold)),
+                      Text('Carrello',
+                          style: TextStyle(
+                              color: kPinaColor,
+                              fontSize: getProportionateScreenHeight(20),
+                              fontWeight: FontWeight.bold)),
                     ],
                   ),
-
-                  buildProductListWidget(widget.productList, dataBundleNotifier),
-                  const Divider(height: 40, indent: 20, endIndent: 20,),
+                  buildProductListWidget(
+                      widget.productList, dataBundleNotifier),
+                  const Divider(
+                    height: 40,
+                    indent: 20,
+                    endIndent: 20,
+                  ),
                 ],
               ),
             ),
           ),
-      ),
-        );
-  }
-    );
+        ),
+      );
+    });
   }
 
   buildProductListWidget(List<ProductOrderAmountModel> productList,
       DataBundleNotifier dataBundleNotifier) {
-
     List<Row> rows = [];
     productList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.amount.toString());
+      TextEditingController controller =
+          TextEditingController(text: element.amount.toString());
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -305,16 +391,31 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
               children: [
                 SizedBox(
                   width: getProportionateScreenWidth(200),
-                  child: Text(element.nome, overflow: TextOverflow.clip, style: TextStyle(fontSize: getProportionateScreenWidth(16)),),
+                  child: Text(
+                    element.nome,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(fontSize: getProportionateScreenWidth(16)),
+                  ),
                 ),
                 Row(
                   children: [
-                    Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                    Text(
+                      element.unita_misura,
+                      style:
+                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),),
+                      child: Icon(
+                        FontAwesomeIcons.dotCircle,
+                        size: getProportionateScreenWidth(3),
+                      ),
                     ),
-                    Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                    Text(
+                      element.prezzo_lordo.toString() + ' €',
+                      style:
+                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                    ),
                   ],
                 ),
               ],
@@ -324,33 +425,41 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      if(element.amount <= 0){
-                      }else{
-                        element.amount --;
+                      if (element.amount <= 0) {
+                      } else {
+                        element.amount--;
                       }
                     });
                   },
                   child: const Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.minus, color: kPinaColor,),
+                    child: Icon(
+                      FontAwesomeIcons.minus,
+                      color: kPinaColor,
+                    ),
                   ),
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
+                  constraints: BoxConstraints.loose(Size(
+                      getProportionateScreenWidth(70),
+                      getProportionateScreenWidth(60))),
                   child: CupertinoTextField(
                     controller: controller,
                     onChanged: (text) {
-                      if( double.tryParse(text) != null){
+                      if (double.tryParse(text) != null) {
                         element.amount = double.parse(text);
-                      }else{
+                      } else {
                         Scaffold.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
-                          content: Text('Immettere un valore numerico corretto per ' + element.nome),
+                          content: Text(
+                              'Immettere un valore numerico corretto per ' +
+                                  element.nome),
                         ));
                       }
                     },
                     textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true, signed: true),
                     clearButtonMode: OverlayVisibilityMode.never,
                     textAlign: TextAlign.center,
                     autocorrect: false,
@@ -364,7 +473,8 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.plus, color: Colors.green.shade900),
+                    child: Icon(FontAwesomeIcons.plus,
+                        color: Colors.green.shade900),
                   ),
                 ),
               ],
@@ -380,23 +490,25 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
   }
 
   String getNiceNumber(String string) {
-    if(string.contains('.00')){
+    if (string.contains('.00')) {
       return string.replaceAll('.00', '');
-    }else if(string.contains('.0')){
+    } else if (string.contains('.0')) {
       return string.replaceAll('.0', '');
-    }else {
+    } else {
       return string;
     }
   }
 
-  String buildMessageFromCurrentOrder(List<ProductOrderAmountModel> productList) {
+  String buildMessageFromCurrentOrder(
+      List<ProductOrderAmountModel> productList) {
     String orderString = '';
     productList.forEach((currentProductOrderAmount) {
-
-      orderString = orderString + currentProductOrderAmount.amount.toString() +
-          ' X ' + currentProductOrderAmount.nome +
-          '(${currentProductOrderAmount.unita_misura})'+ '';
-
+      orderString = orderString +
+          currentProductOrderAmount.amount.toString() +
+          ' X ' +
+          currentProductOrderAmount.nome +
+          '(${currentProductOrderAmount.unita_misura})' +
+          '';
     });
     return orderString;
   }

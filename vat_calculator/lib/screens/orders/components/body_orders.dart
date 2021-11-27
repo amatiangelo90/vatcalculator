@@ -72,7 +72,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                             child: DefaultButton(
                               text: "Importa Lista Fornitori",
                               press: () async {
-                                //EasyLoading.show();
+
                                 ClientVatService clientService = ClientVatService();
                                 FattureInCloudClient fattureInCloudClient = FattureInCloudClient();
                                 List<ResponseAnagraficaFornitori> listRichiestaFornitori
@@ -82,17 +82,17 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
 
                                 listRichiestaFornitori.forEach((currentFornitore) {
                                   currentFornitore.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
-                                  clientService.performSaveSupplier(currentFornitore);
+                                  clientService.performSaveSupplier(
+                                      anagraficaFornitore: currentFornitore,
+                                      actionModel: null);
                                 });
 
                                 if(dataBundleNotifier.currentBranch != null){
                                   List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
-                                  // sleep(Duration(seconds: 2));
                                   List<ResponseAnagraficaFornitori> _suppliersModelList2 = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList2);
                                 }
-                                //EasyLoading.dismiss();
                               },
                             ),
                           ),

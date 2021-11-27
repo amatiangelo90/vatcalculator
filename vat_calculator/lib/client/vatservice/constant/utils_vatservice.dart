@@ -41,15 +41,11 @@ const String VAT_SERVICE_URL_DELETE_ORDER = 'http://$host:8080/vatservices/api/v
 const String VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/remove/relationbranchsupplier';
 
 //Retrieve Aggregated Tables
-const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE
-= 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';
-
+const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE = 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';
 //Remove product from storage
 const String VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE = 'http://217.160.242.158:8080/vatservices/api/v1/delete/removeproductfromstorage';
-
 //Update Stock
 const String VAT_SERVICE_URL_UPDATE_STOCK = 'http://217.160.242.158:8080/vatservices/api/v1/update/stock';
-
 //Create relation between user and branch
 const String VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH = 'http://$host:8080/vatservices/api/v1/create/userbranchrelation';
 //Retrieve related users list on branch by branch id
@@ -60,3 +56,7 @@ const String VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_P
 const String VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION = 'http://$host:8080/vatservices/api/v1/remove/userbranchrelation';
 // remove user branch relation
 const String VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/removeprovider';
+// save action each time user perform operation on db
+const String VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH = 'http://$host:8080/vatservices/api/v1/save/action';
+// retrieve actions by branch id
+const String VAT_SERVICE_URL_RETRIEVE_ACTIONS_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/actionsbybranchid';

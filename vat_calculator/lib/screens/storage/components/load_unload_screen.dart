@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -597,7 +599,16 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
                 DataCell(GestureDetector(
                     onTap: () {
                       //EasyLoading.show();
-                      dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(dataBundleNotifier.currentStorageProductListForCurrentStorage[index]);
+                      dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(
+                          storageProductModel: dataBundleNotifier.currentStorageProductListForCurrentStorage[index],
+                          actionModel: ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha rimosso il prodotto ${dataBundleNotifier.productToAddToStorage[index].nome} (del fornitore ${dataBundleNotifier.getSupplierName(dataBundleNotifier.productToAddToStorage[index].fkSupplierId)} dal magazzino ${dataBundleNotifier.currentStorage.name}).',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.REMOVE_PRODUCT_FROM_STORAGE
+                          )
+                      );
                       dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
                       //EasyLoading.dismiss();
                     },
@@ -644,7 +655,15 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
                 DataCell(GestureDetector(
                     onTap: () {
                       //EasyLoading.show();
-                      dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(dataBundleNotifier.currentStorageProductListForCurrentStorage[index]);
+                      dataBundleNotifier.getclientServiceInstance().removeProductFromStorage(
+                          storageProductModel: dataBundleNotifier.currentStorageProductListForCurrentStorage[index],
+                          actionModel: ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha rimosso il prodotto ${dataBundleNotifier.productToAddToStorage[index].nome} (del fornitore ${dataBundleNotifier.getSupplierName(dataBundleNotifier.productToAddToStorage[index].fkSupplierId)} dal magazzino ${dataBundleNotifier.currentStorage.name}).',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.REMOVE_PRODUCT_FROM_STORAGE
+                          ));
                       dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
                       //EasyLoading.dismiss();
                     },

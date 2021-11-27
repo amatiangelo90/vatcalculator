@@ -7,9 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/constants.dart';
@@ -81,17 +83,36 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 print('Finish uploading storage stock');
 
                                 ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
-                                getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorage);
+
+                                //TODO aggiungere lista merce aggiunta a fronte del carico
+                                getclientServiceInstance.updateStock(
+                                    currentStorageProductListForCurrentStorageUnload: dataBundleNotifier.currentStorageProductListForCurrentStorage,
+                                    actionModel: ActionModel(
+                                        date: DateTime.now().millisecondsSinceEpoch,
+                                        description: 'Ha eseguito il carico nel magazzino ${storageModel.name} a fronte della ricezione dell\'ordine #${widget.orderModel.code} '
+                                            'da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
+                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                        type: ActionType.STORAGE_LOAD
+                                    )
+                                );
                                 dataBundleNotifier.clearUnloadProductList();
                                 dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
 
                                 await dataBundleNotifier.getclientServiceInstance().updateOrderStatus(
-                                  OrderModel(
+                                  orderModel: OrderModel(
                                       pk_order_id: widget.orderModel.pk_order_id,
                                       status: OrderState.RECEIVED_ARCHIVED,
                                       delivery_date: DateTime.now().millisecondsSinceEpoch,
                                       closedby: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName
                                   ),
+                                  actionModel: ActionModel(
+                                      date: DateTime.now().millisecondsSinceEpoch,
+                                      description: 'Ha modificato in ${OrderState.RECEIVED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
+                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                      type: ActionType.RECEIVED_ORDER
+                                  )
                                 );
                                 dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName);
                                 dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);

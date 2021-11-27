@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -56,7 +58,19 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                   });
                 });
                 ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
-                getclientServiceInstance.updateStock(dataBundleNotifier.currentStorageProductListForCurrentStorageLoad);
+
+                //TODO aggiungere lista merce aggiunta a fronte del carico
+                getclientServiceInstance.updateStock(
+                  currentStorageProductListForCurrentStorageUnload: dataBundleNotifier.currentStorageProductListForCurrentStorageLoad,
+                    actionModel: ActionModel(
+                        date: DateTime.now().millisecondsSinceEpoch,
+                        description: 'Ha eseguito carico merce nel magazzino ${dataBundleNotifier.currentStorage.name}. ',
+                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                        type: ActionType.STORAGE_LOAD
+                    )
+                );
+
                 dataBundleNotifier.clearUnloadProductList();
                 dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
                 refreshPage(dataBundleNotifier);

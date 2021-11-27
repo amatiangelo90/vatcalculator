@@ -7,7 +7,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
@@ -546,9 +548,9 @@ class _StorageScreenState extends State<StorageScreen>{
     }
 
     dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated
-        .forEach((element) {
+        .forEach((productStorageElementToRemove) {
       TextEditingController controller =
-      TextEditingController(text: element.stock.toString());
+      TextEditingController(text: productStorageElementToRemove.stock.toString());
       rows.add(
         Dismissible(
           direction: DismissDirection.endToStart,
@@ -557,7 +559,7 @@ class _StorageScreenState extends State<StorageScreen>{
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text('Elimina ' + element.productName + '?', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),),
+                Text('Elimina ' + productStorageElementToRemove.productName + '?', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),),
                 SizedBox(width: 10,),
                 IconButton(
                   color: kPinaColor,
@@ -568,14 +570,23 @@ class _StorageScreenState extends State<StorageScreen>{
               ],
             ),
           ),
-          key: Key(element.pkStorageProductId.toString()),
+          key: Key(productStorageElementToRemove.pkStorageProductId.toString()),
           onDismissed: (value){
-            dataBundleNotifier.removeObjectFromStorageProductList(element);
+            dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
+
             dataBundleNotifier.getclientServiceInstance()
-                .removeProductFromStorage(element);
-            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-            dataBundleNotifier.getclientServiceInstance()
-                .removeProductFromStorage(element);
+                .removeProductFromStorage(
+                  storageProductModel: productStorageElementToRemove,
+                actionModel: ActionModel(
+                    date: DateTime.now().millisecondsSinceEpoch,
+                    description: 'Ha rimosso ${productStorageElementToRemove.productName} dal magazzino ${dataBundleNotifier.currentStorage.name} ',
+                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                    type: ActionType.PRODUCT_DELETE
+                )
+            );
+
+
             dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
             suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
           },
@@ -589,19 +600,19 @@ class _StorageScreenState extends State<StorageScreen>{
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      element.productName,
+                      productStorageElementToRemove.productName,
                       overflow: TextOverflow.clip,
                       style: TextStyle(fontSize: getProportionateScreenWidth(18)),
                     ),
                     Text(
-                      element.supplierName,
+                      productStorageElementToRemove.supplierName,
                       overflow: TextOverflow.clip,
                       style: TextStyle(fontSize: getProportionateScreenWidth(8)),
                     ),
                     Row(
                       children: [
                         Text(
-                          element.unitMeasure,
+                          productStorageElementToRemove.unitMeasure,
                           style:
                           TextStyle(fontSize: getProportionateScreenWidth(8)),
                         ),
@@ -614,7 +625,7 @@ class _StorageScreenState extends State<StorageScreen>{
                         ),
                         dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
                           TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
-                          element.price.toString() + ' €',
+                          productStorageElementToRemove.price.toString() + ' €',
                           style:
                           TextStyle(fontSize: getProportionateScreenWidth(8)),
                         ),

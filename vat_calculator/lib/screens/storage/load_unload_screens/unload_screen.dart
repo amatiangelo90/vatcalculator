@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -71,9 +73,11 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                     ));
                   }else{
                     Map<int, List<StorageProductModel>> recapMapForCustomer = orderedMapBySuppliers;
-                    orderedMapBySuppliers.forEach((key, value) async {
-                      Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(OrderModel(
-                          code: DateTime.now().microsecondsSinceEpoch.toString().substring(3,16),
+                    orderedMapBySuppliers.forEach((fkSupplierId, storageProductModelList) async {
+                      String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
+                      Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
+                          orderModel: OrderModel(
+                          code: code,
                           details: 'Ordine eseguito da ' + dataBundleNotifier.dataBundleList[0].firstName + ' ' +
                               dataBundleNotifier.dataBundleList[0].lastName + ' per ' +
                               dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
@@ -85,23 +89,48 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                           fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
                           fk_user_id: dataBundleNotifier.dataBundleList[0].id,
                           pk_order_id: 0,
-                          fk_supplier_id: key
-                      ));
+                          fk_supplier_id: fkSupplierId
+                      ),
+                          actionModel: ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha creato l\' ordine bozza #$code per il fornitore ${dataBundleNotifier.getSupplierName(fkSupplierId)} per conto di ' + dataBundleNotifier.currentBranch.companyName + ' a fronte dello scarico da magazzino ${dataBundleNotifier.currentStorage.name}.',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.DRAFT_ORDER_CREATION
+                          )
+                      );
 
-                      value.forEach((element) {
+                      storageProductModelList.forEach((storageProductModelItem) {
 
-                        print('Create relation between ' + performSaveOrderId.data.toString() + ' and : ' + element.fkProductId.toString() + ' - Stock: ' +  element.stock.toString());
+                        print('Create relation between ' + performSaveOrderId.data.toString() + ' and : ' + storageProductModelItem.fkProductId.toString() + ' - Stock: ' +  storageProductModelItem.stock.toString());
                         dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
-                            element.stock,
-                            element.fkProductId,
+                            storageProductModelItem.stock,
+                            storageProductModelItem.fkProductId,
                             performSaveOrderId.data
                         );
 
                         dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
-                          if(standardElement.pkStorageProductId == element.pkStorageProductId){
-                            element.stock = standardElement.stock - element.stock;
+                          if(standardElement.pkStorageProductId == storageProductModelItem.pkStorageProductId){
+
+                            double currentStock = standardElement.stock;
+                            double removedStockItem = storageProductModelItem.stock;
+
+                            storageProductModelItem.stock = standardElement.stock - storageProductModelItem.stock;
+
                             ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
-                            getclientServiceInstance.updateStock([element]);
+
+                            getclientServiceInstance.updateStock(
+                              currentStorageProductListForCurrentStorageUnload: [storageProductModelItem],
+                                actionModel: ActionModel(
+                                    date: DateTime.now().millisecondsSinceEpoch,
+                                    description: 'Ha eseguito scarico da magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                        '${removedStockItem.toStringAsFixed(2)} x ${storageProductModelItem.productName} rimossi. '
+                                        'Precedente disponibilità per ${storageProductModelItem.productName} : ${currentStock.toStringAsFixed(2)} ${standardElement.unitMeasure} ',
+                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  type: ActionType.STORAGE_UNLOAD
+                                )
+                            );
                           }
                         });
 

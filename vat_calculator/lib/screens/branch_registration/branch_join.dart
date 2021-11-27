@@ -8,6 +8,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -348,7 +349,13 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                           Response response = await dataBundleNotifier.getclientServiceInstance().createUserBranchRelation(
                                             accessPrivilege: Privileges.EMPLOYEE,
                                             fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
-                                            fkUserId: dataBundleNotifier.dataBundleList[0].id
+                                            fkUserId: dataBundleNotifier.dataBundleList[0].id,
+                                              actionModel: ActionModel(
+                                                  date: DateTime.now().millisecondsSinceEpoch,
+                                                  description: 'Si è collegato all\'attività ${retrieveBranchByBranchId[0].companyName} tramite il codice $currentPassword.',
+                                                  fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
+                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser()
+                                              )
                                           );
                                           if(response == null){
                                             showDialog(
@@ -514,10 +521,12 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                             ),
                                                           ),
                                                         ),
-                                                        Center(
-                                                          child: Text('Una volta confermato attendi che ti venga assegnato un ruolo dall\'amministratore. '
-                                                              'Fino a quel momento l\'attività associata risulterà nella tua '
-                                                              'lista ma non potrai fare nessuna operazione.', textAlign: TextAlign.center,),
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Center(
+                                                            child: Text('Una volta associata ti verrà assegnato il ruolo di DIPENDENTE. \n'
+                                                                'Nel caso avessi la necessità di modificare i permessi assegnati contatta l\'amministratore', textAlign: TextAlign.center,),
+                                                          ),
                                                         ),
 
                                                       ],

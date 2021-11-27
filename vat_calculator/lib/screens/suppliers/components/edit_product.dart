@@ -5,7 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -427,7 +429,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           buildSnackBar(text: 'Selezionare la categoria', color: kPinaColor);
                         }else{
 
-                          //EasyLoading.show();
                           ProductModel productModel = ProductModel(
                             pkProductId: widget.product.pkProductId,
                             nome: _nameController.text,
@@ -442,7 +443,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           print(productModel.toMap().toString());
 
                           ClientVatService vatService = ClientVatService();
-                          Response performUpdateProduct = await vatService.performUpdateProduct(productModel);
+                          Response performUpdateProduct = await vatService.performUpdateProduct(
+                              product: productModel
+                          );
                           if(performUpdateProduct != null && performUpdateProduct.statusCode == 200){
                             List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
                             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
@@ -478,7 +481,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         print(productModel.toMap().toString());
 
                         ClientVatService vatService = ClientVatService();
-                        Response perforDelteProduct = await vatService.performDeleteProduct(productModel);
+                        Response perforDelteProduct = await vatService.performDeleteProduct(
+                            product: productModel,
+                            actionModel: ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description: 'Ha eliminato il prodotto ${productModel.nome} dal catalogo del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)}',
+                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.PRODUCT_DELETE
+                            )
+                        );
                         if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
                           List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
                           dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);

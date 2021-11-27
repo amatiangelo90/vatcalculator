@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/email_sender/emailservice.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
@@ -21,53 +22,41 @@ import 'databundle.dart';
 class DataBundleNotifier extends ChangeNotifier {
 
   List<DataBundle> dataBundleList = [
-
   ];
 
   List<RecessedModel> currentListRecessed = [
-
   ];
 
   List<ResponseAnagraficaFornitori> currentListSuppliers = [
-
   ];
 
   List<ResponseAnagraficaFornitori> currentListSuppliersDuplicated = [
-
   ];
 
   List<StorageModel> currentStorageList = [
-
   ];
   Map<int, BundleUserStorageSupplier> currentMapBranchIdBundleSupplierStorageUsers = {
 
   };
 
   List<ProductModel> currentProductModelListForSupplier = [
-
   ];
 
   List<ProductModel> currentProductModelListForSupplierDuplicated = [
-
   ];
 
   List<StorageProductModel> currentStorageProductListForCurrentStorage = [
-
   ];
 
   List<StorageProductModel> currentStorageProductListForCurrentStorageDuplicated = [];
 
   List<StorageProductModel> currentStorageProductListForCurrentStorageUnload = [
-
   ];
 
   List<StorageProductModel> currentStorageProductListForCurrentStorageLoad = [
-
   ];
 
-
   List<ProductModel> productToAddToStorage = [
-
   ];
 
   List<OrderModel> currentOrdersForCurrentBranch = [];
@@ -77,6 +66,12 @@ class DataBundleNotifier extends ChangeNotifier {
   List<OrderModel> currentDraftOrdersList = [];
 
   List<OrderModel> currentArchiviedWorkingOrdersList = [];
+
+  List<ActionModel> currentBranchActionsList = [
+
+  ];
+
+  // retrieveActionsByBranchId
 
   String currentPrivilegeType;
 
@@ -221,6 +216,7 @@ class DataBundleNotifier extends ChangeNotifier {
   Future<void> addBranches(List<BranchModel> branchList) async {
     dataBundleList[0].companyList.clear();
     dataBundleList[0].companyList = branchList;
+
     if(dataBundleList[0].companyList.isNotEmpty){
       currentBranch = dataBundleList[0].companyList[0];
       setCurrentPrivilegeType(currentBranch.accessPrivilege);
@@ -233,11 +229,7 @@ class DataBundleNotifier extends ChangeNotifier {
       currentUnderWorkingOrdersList.clear();
 
       currentOrdersForCurrentBranch.forEach((orderItem) async {
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-        print('Order status POPOPOPO: ' + orderItem.status);
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
+
         if(orderItem.status == OrderState.DRAFT){
           currentDraftOrdersList.add(orderItem);
         }else if (orderItem.status == OrderState.ARCHIVED
@@ -248,15 +240,13 @@ class DataBundleNotifier extends ChangeNotifier {
         }else{
           currentUnderWorkingOrdersList.add(orderItem);
         }
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-        print('currentUnderWorkingOrdersList: ' + currentUnderWorkingOrdersList.length.toString());
-        print('currentArchiviedWorkingOrdersList: ' + currentArchiviedWorkingOrdersList.length.toString());
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@');
       });
 
     }
+
+    currentBranchActionsList.clear();
+    currentBranchActionsList = await getclientServiceInstance().retrieveActionsByBranchId(currentBranch.pkBranchId);
+
 
     clearAndUpdateMapBundle();
     notifyListeners();
@@ -266,6 +256,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentBranch = branchModel;
     setCurrentPrivilegeType(currentBranch.accessPrivilege);
+
     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
     currentListRecessed.clear();
     currentListRecessed.addAll(_recessedModelList);
@@ -338,11 +329,6 @@ class DataBundleNotifier extends ChangeNotifier {
     currentUnderWorkingOrdersList.clear();
 
     currentOrdersForCurrentBranch.forEach((orderItem) async {
-      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-      print('Order status : ' + orderItem.status);
-      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
-      print('@@@@@@@@@@@@@@@@@@@@@@@@@');
       if(orderItem.status == OrderState.DRAFT){
 
         currentDraftOrdersList.add(orderItem);
@@ -357,6 +343,10 @@ class DataBundleNotifier extends ChangeNotifier {
         currentUnderWorkingOrdersList.add(orderItem);
       }
     });
+
+    currentBranchActionsList.clear();
+    currentBranchActionsList = await getclientServiceInstance().retrieveActionsByBranchId(currentBranch.pkBranchId);
+
     clearAndUpdateMapBundle();
     notifyListeners();
   }
@@ -405,6 +395,10 @@ class DataBundleNotifier extends ChangeNotifier {
 
     if(currentStorageList.isNotEmpty){
       currentStorageList.clear();
+    }
+
+    if( currentBranchActionsList.isNotEmpty){
+      currentBranchActionsList.clear();
     }
     setShowIvaButtonToFalse();
     indexIvaList = 0;
@@ -858,6 +852,15 @@ class DataBundleNotifier extends ChangeNotifier {
     currentBranch.apiUidOrPassword = '';
     currentBranch.apiKeyOrUser = '';
     notifyListeners();
+
+  }
+
+  String retrieveNameLastNameCurrentUser() {
+    if(dataBundleList.isNotEmpty){
+      return dataBundleList[0].firstName + ' ' + dataBundleList[0].lastName;
+    }else{
+      return 'Error retrieving user name';
+    }
 
   }
 }

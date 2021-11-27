@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -328,7 +330,16 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           onPressed:  () async {
                             ResponseAnagraficaFornitori requestRemoveSupplierFromBranch = widget.currentSupplier;
                             requestRemoveSupplierFromBranch.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
-                            await dataBundleNotifier.getclientServiceInstance().removeSupplierFromCurrentBranch(requestRemoveSupplierFromBranch);
+                            await dataBundleNotifier.getclientServiceInstance().removeSupplierFromCurrentBranch(
+                                requestRemoveSupplierFromBranch: requestRemoveSupplierFromBranch,
+                                actionModel: ActionModel(
+                                    date: DateTime.now().millisecondsSinceEpoch,
+                                    description: 'Ha eliminato il fornitore ${widget.currentSupplier.nome} dall\'attività ${dataBundleNotifier.currentBranch.companyName}',
+                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  type: ActionType.PROVIDER_DELETE
+                                )
+                            );
                             List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                                 .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                             dataBundleNotifier.addCurrentSuppliersList(_suppliersList);

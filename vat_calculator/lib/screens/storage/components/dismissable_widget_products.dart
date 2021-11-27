@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/save_product_into_storage_request.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -51,7 +53,7 @@ class _DismissableWidgetProductsState extends State<DismissableWidgetProducts> {
                 key: Key(item),
                 onDismissed: (direction) {
                   dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
-                      SaveProductToStorageRequest(
+                      saveProductToStorageRequest: SaveProductToStorageRequest(
                         fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
                         fkProductId: dataBundleNotifier.productToAddToStorage[index].pkProductId,
                         available: 'true',
@@ -60,6 +62,13 @@ class _DismissableWidgetProductsState extends State<DismissableWidgetProducts> {
                         dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
                         pkStorageProductCreationModelId: 0,
                         user: dataBundleNotifier.dataBundleList[0].firstName
+                      ),
+                      actionModel: ActionModel(
+                          date: DateTime.now().millisecondsSinceEpoch,
+                          description: 'Ha aggiunto il prodotto ${dataBundleNotifier.productToAddToStorage[index].nome} (del fornitore ${dataBundleNotifier.getSupplierName(dataBundleNotifier.productToAddToStorage[index].fkSupplierId)} al magazzino ${dataBundleNotifier.currentStorage.name}).',
+                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                          type: ActionType.ADD_PRODUCT_TO_STORAGE
                       )
                   );
 

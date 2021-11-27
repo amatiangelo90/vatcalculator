@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
@@ -122,9 +124,16 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                             Widget continueButton = TextButton(
                               child: Text("Elimina", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
                               onPressed:  () async {
-                                await dataBundleNotifier.getclientServiceInstance().deleteOrder(
-                                    currentOrder
+
+                                ActionModel actionModel = ActionModel(
+                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                  description: 'Ha cancellato ordine per fornitore ${dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id)} con codice ${currentOrder.code} in stato ${currentOrder.status}.',
+                                  date: DateTime.now().millisecondsSinceEpoch,
+                                    type: ActionType.ORDER_DELETE
                                 );
+
+                                await dataBundleNotifier.getclientServiceInstance().deleteOrder(orderModel: currentOrder, actionModel: actionModel);
                                 dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
                                 Navigator.of(context).pop();
                               },

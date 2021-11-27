@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -419,7 +421,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         print(productModel.toMap().toString());
 
                         ClientVatService vatService = ClientVatService();
-                        Response performSaveProduct = await vatService.performSaveProduct(productModel);
+                        Response performSaveProduct = await vatService.performSaveProduct(
+                            product: productModel,
+                            actionModel: ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description: 'Ha aggiunto ${productModel.nome} al fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
+                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                type: ActionType.PRODUCT_CREATION
+                            )
+                        );
                         sleep(const Duration(seconds: 1));
 
 

@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
@@ -252,9 +254,17 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
       );
       clearControllers();
 
-      print('Saving the following provider to database: ');
       print(supplier.toMap());
-      await dataBundleNotifier.getclientServiceInstance().performSaveSupplier(supplier);
+      await dataBundleNotifier.getclientServiceInstance().performSaveSupplier(
+          anagraficaFornitore: supplier,
+          actionModel: ActionModel(
+              date: DateTime.now().millisecondsSinceEpoch,
+              description: 'Ha creato il fornitore ${supplier.nome}',
+              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+              type: ActionType.SUPPLIER_CREATION
+          )
+      );
 
       List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
@@ -423,21 +433,30 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                       Widget continueButton = TextButton(
                         child: const Text("Aggiungi", style: TextStyle(color: Colors.green)),
                         onPressed:  () async {
-                          clearControllers();
+
                           print('Adding retrieved supplier ' + retrieveSuppliersListByCode[0].nome + ' to branch ' +
                               dataBundleNotifier.currentBranch.companyName + ' with id ' + dataBundleNotifier.currentBranch.pkBranchId.toString());
 
-                          ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier
-                          = retrieveSuppliersListByCode[0];
+                          ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier = retrieveSuppliersListByCode[0];
 
                           supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
-                          int rowsUpdated = await dataBundleNotifier.getclientServiceInstance().addSupplierToCurrentBranch(supplierRetrievedByCodeToUpdateRelationTableBranchSupplier);
+                          await dataBundleNotifier.getclientServiceInstance().addSupplierToCurrentBranch(
+                              supplierRetrievedByCodeToUpdateRelationTableBranchSupplier: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier,
+                              actionModel: ActionModel(
+                                  date: DateTime.now().millisecondsSinceEpoch,
+                                  description: 'Ha associato all\'attività il fornitore ${supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome} tramite il codice ${supplierCodeControllerSearch.text.toString()}',
+                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  type: ActionType.SUPPLIER_ASSOCIATION
+                              )
+                          );
 
 
                           List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                               .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                           dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
                           dataBundleNotifier.clearAndUpdateMapBundle();
+                          clearControllers();
                           Navigator.pushNamed(context, SuppliersScreen.routeName);
                         },
                       );

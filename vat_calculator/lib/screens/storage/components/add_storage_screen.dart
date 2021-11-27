@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -79,7 +81,17 @@ class AddStorageScreen extends StatelessWidget {
                         creationDate: DateTime.now(),
                         pkStorageId: 0
                     );
-                    Response performSaveStorage = await vatService.performSaveStorage(storageModel);
+
+                    Response performSaveStorage = await vatService.performSaveStorage(
+                        storageModel: storageModel,
+                        actionModel: ActionModel(
+                            date: DateTime.now().millisecondsSinceEpoch,
+                            description: 'Ha creato il magazzino ${storageModel.name}.',
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                            type: ActionType.STORAGE_CREATION
+                        )
+                    );
                     //sleep(const Duration(seconds: 1));
 
 

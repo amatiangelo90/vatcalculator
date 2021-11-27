@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -146,7 +147,12 @@ class _BodyState extends State<Body> {
                   ),
                 ],
               ),
-
+              Row(
+                children: [
+                  Text('Lista Azioni'),
+                ],
+              ),
+              buildActionsList(dataBundleNotifier.currentBranchActionsList),
             ],
           ),
         );
@@ -348,6 +354,46 @@ class _BodyState extends State<Body> {
       );
     });
     return branchWidgetList;
+  }
+
+  Widget buildActionsList(List<ActionModel> currentBranchActionsList) {
+
+    List<Padding> rows = [];
+
+    currentBranchActionsList.forEach((action) {
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(action.user),
+                ],
+              ),
+              Row(
+                children: [
+                  Text(action.type),
+                ],
+              ),
+              Text(action.description,),
+              Row(
+                children: [
+                  Text(DateTime.fromMillisecondsSinceEpoch(action.date).toString()),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: rows,
+      ),
+    );
   }
 }
 
