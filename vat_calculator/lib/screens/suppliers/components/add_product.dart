@@ -425,7 +425,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             product: productModel,
                             actionModel: ActionModel(
                                 date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha aggiunto ${productModel.nome} al fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
+                                description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
                                 fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                 user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                 type: ActionType.PRODUCT_CREATION

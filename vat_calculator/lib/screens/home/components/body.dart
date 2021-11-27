@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -145,11 +146,6 @@ class _BodyState extends State<Body> {
                       color: kPrimaryColor,
                     ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
                   ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text('Lista Azioni'),
                 ],
               ),
               buildActionsList(dataBundleNotifier.currentBranchActionsList),
@@ -358,16 +354,37 @@ class _BodyState extends State<Body> {
 
   Widget buildActionsList(List<ActionModel> currentBranchActionsList) {
 
-    List<Padding> rows = [];
+    List<Padding> rows = [
+      Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Text('Lista Azioni'),
+              ],
+            ),
+            Row(
+              children: [
+                Text('Visualizza Tutte'),
+                Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey,),
+              ],
+            ),
+          ],
+        ),
+      ),
+    ];
 
     currentBranchActionsList.forEach((action) {
       rows.add(
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(5.0),
           child: Column(
             children: [
               Row(
                 children: [
+                  ActionType.getIconWidget(action.type) == null ? Text('vuotot') : ActionType.getIconWidget(action.type),
                   Text(action.user),
                 ],
               ),
@@ -382,6 +399,7 @@ class _BodyState extends State<Body> {
                   Text(DateTime.fromMillisecondsSinceEpoch(action.date).toString()),
                 ],
               ),
+              Divider(height: 1,),
             ],
           ),
         ),

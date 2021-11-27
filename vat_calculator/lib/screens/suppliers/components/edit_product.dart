@@ -485,7 +485,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             product: productModel,
                             actionModel: ActionModel(
                                 date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha eliminato il prodotto ${productModel.nome} dal catalogo del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)}',
+                                description: 'Ha eliminato il prodotto ${productModel.nome} dal catalogo del fornitore ${widget.supplier.nome}',
                                 fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                 user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                               type: ActionType.PRODUCT_DELETE
