@@ -65,7 +65,7 @@ class _DismissableWidgetProductsState extends State<DismissableWidgetProducts> {
                       ),
                       actionModel: ActionModel(
                           date: DateTime.now().millisecondsSinceEpoch,
-                          description: 'Ha aggiunto il prodotto ${dataBundleNotifier.productToAddToStorage[index].nome} (del fornitore ${dataBundleNotifier.getSupplierName(dataBundleNotifier.productToAddToStorage[index].fkSupplierId)} al magazzino ${dataBundleNotifier.currentStorage.name}).',
+                          description: 'Ha aggiunto ${dataBundleNotifier.productToAddToStorage[index].nome} (${dataBundleNotifier.getSupplierName(dataBundleNotifier.productToAddToStorage[index].fkSupplierId)}) al magazzino ${dataBundleNotifier.currentStorage.name}.',
                           fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                           user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                           type: ActionType.ADD_PRODUCT_TO_STORAGE

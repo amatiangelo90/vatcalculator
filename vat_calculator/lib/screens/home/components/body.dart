@@ -379,27 +379,41 @@ class _BodyState extends State<Body> {
     currentBranchActionsList.forEach((action) {
       rows.add(
         Padding(
-          padding: const EdgeInsets.all(5.0),
+          padding: const EdgeInsets.all(3.0),
           child: Column(
             children: [
               Row(
                 children: [
-                  ActionType.getIconWidget(action.type) == null ? Text('vuotot') : ActionType.getIconWidget(action.type),
-                  Text(action.user),
+                  ActionType.getIconWidget(action.type) == null ? Text('ICONA') : ActionType.getIconWidget(action.type),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(action.user, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),),
+                        Text(
+                            DateTime.fromMillisecondsSinceEpoch(action.date).day.toString() + '/' +
+                            DateTime.fromMillisecondsSinceEpoch(action.date).month.toString() + '/' +
+                            DateTime.fromMillisecondsSinceEpoch(action.date).year.toString() + '  ' +
+                            DateTime.fromMillisecondsSinceEpoch(action.date).hour.toString() + ':' +
+                                (DateTime.fromMillisecondsSinceEpoch(action.date).minute > 9
+                                ? DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString()
+                                : '0' + DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString())
+
+                            , style: TextStyle(color: Colors.green.shade700, fontWeight: FontWeight.bold)
+                        ),
+
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              Row(
-                children: [
-                  Text(action.type),
-                ],
+              Padding(
+                padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(58), 0, getProportionateScreenWidth(10), 2),
+                child: Text(action.description, textAlign: TextAlign.start, overflow: TextOverflow.visible, style: TextStyle(fontWeight: FontWeight.bold),),
               ),
-              Text(action.description,),
-              Row(
-                children: [
-                  Text(DateTime.fromMillisecondsSinceEpoch(action.date).toString()),
-                ],
-              ),
-              Divider(height: 1,),
+              Divider(height: 1, indent: getProportionateScreenWidth(58),),
             ],
           ),
         ),

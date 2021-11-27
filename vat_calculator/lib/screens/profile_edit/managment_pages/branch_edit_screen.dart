@@ -191,9 +191,19 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                             Response response = await dataBundleNotifier
                                                 .getclientServiceInstance()
                                                 .updatePrivilegeForUserBranchRelation(
-                                              branchId: currentBranch.pkBranchId,
+                                                branchId: currentBranch.pkBranchId,
                                               userId: listUserModel[index].id,
-                                              privilegeType: Privileges.ADMIN);
+
+                                              privilegeType: Privileges.ADMIN,
+                                                actionModel: ActionModel(
+                                                    date: DateTime.now().millisecondsSinceEpoch,
+                                                    description: 'Ha modificato i privilegi per ${listUserModel[index].name} in ${Privileges.ADMIN}',
+                                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                    type: ActionType.UPDATE_PRIVILEGE
+                                                )
+
+                                            );
 
                                             setState(() {
                                               if(response.data > 0){
@@ -217,7 +227,15 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                                 .updatePrivilegeForUserBranchRelation(
                                                 branchId: currentBranch.pkBranchId,
                                                 userId: listUserModel[index].id,
-                                                privilegeType: Privileges.EMPLOYEE);
+                                                privilegeType: Privileges.EMPLOYEE,
+                                                actionModel: ActionModel(
+                                                    date: DateTime.now().millisecondsSinceEpoch,
+                                                    description: 'Ha modificato i privilegi per ${listUserModel[index].name} in ${Privileges.EMPLOYEE}',
+                                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                    type: ActionType.UPDATE_PRIVILEGE
+                                                )
+                                            );
                                             setState(() {
                                               if(response.data > 0){
                                                 listUserModel[index].privilege = Privileges.EMPLOYEE;
@@ -551,7 +569,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                         storageModel: listStorageModel[index],
                                         actionModel: ActionModel(
                                             date: DateTime.now().millisecondsSinceEpoch,
-                                            description: 'Ha eliminato il magazzino ${listStorageModel[index].name}.',
+                                            description: 'Ha eliminato il magazzino ${listStorageModel[index].name} da ${dataBundleNotifier.currentBranch.companyName}.',
                                             fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                             user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                             type: ActionType.STORAGE_DELETE

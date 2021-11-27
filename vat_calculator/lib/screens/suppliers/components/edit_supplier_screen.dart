@@ -317,7 +317,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         height: getProportionateScreenHeight(26),
                       ),
                       onPressed: () async {
-
                         Widget cancelButton = TextButton(
                           child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
                           onPressed:  () {
@@ -334,10 +333,10 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                 requestRemoveSupplierFromBranch: requestRemoveSupplierFromBranch,
                                 actionModel: ActionModel(
                                     date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha eliminato il fornitore ${widget.currentSupplier.nome} dall\'attività ${dataBundleNotifier.currentBranch.companyName}',
+                                    description: 'Ha rimosso il fornitore ${widget.currentSupplier.nome} dall\'attività ${dataBundleNotifier.currentBranch.companyName}',
                                     fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                     user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.PROVIDER_DELETE
+                                  type: ActionType.SUPPLIER_DELETE
                                 )
                             );
                             List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()

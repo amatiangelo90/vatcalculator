@@ -444,7 +444,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                               supplierRetrievedByCodeToUpdateRelationTableBranchSupplier: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier,
                               actionModel: ActionModel(
                                   date: DateTime.now().millisecondsSinceEpoch,
-                                  description: 'Ha associato all\'attività il fornitore ${supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome} tramite il codice ${supplierCodeControllerSearch.text.toString()}',
+                                  description: 'Ha associato a ${dataBundleNotifier.currentBranch.companyName} il fornitore ${supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome} tramite il codice ${supplierCodeControllerSearch.text.toString()}.',
                                   fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                   user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                   type: ActionType.SUPPLIER_ASSOCIATION

@@ -469,7 +469,7 @@ class ClientVatService{
       if(post != null){
 
         print('Response From VatService removed product(' + VAT_SERVICE_URL_DELETE_PRODUCT + '): ' + post.data.toString());
-        
+
         try{
           String actionBody = json.encode(actionModel.toMap());
           await dio.post(
@@ -1392,8 +1392,8 @@ class ClientVatService{
         data: body,
       );
 
-      if(post != null && post.data){
-        print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH + '): ' + post.data);
+      if(post != null){
+        print('Response From VatService remove supplier (' + VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH + '): ' + post.data.toString());
         try{
           String actionBody = json.encode(actionModel.toMap());
           await dio.post(

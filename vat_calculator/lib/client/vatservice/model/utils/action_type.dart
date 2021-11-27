@@ -47,36 +47,53 @@ class ActionType{
   static const String SENT_ORDER = 'ORDINE INVIATO';
   static const String RECEIVED_ORDER = 'ORDINE RICEVUTO';
 
+  //Update Privilege
+  static const String UPDATE_PRIVILEGE = 'AGGIORNAMENTO PRIVILEGI UTENTE';
+
   static Widget getIconWidget(String type){
 
     switch(type){
         case BRANCH_CREATION:
         break;
         case SUPPLIER_CREATION:
-          return buildIconWidget('assets/icons/supplier.svg',
-            Colors.blue.shade700.withOpacity(0.9),
-            Colors.blue.withOpacity(0.2),
-            Icons.add_circle_outline,
-            Colors.blue.shade900,);
+          return buildIconWidget(
+              'assets/icons/supplier.svg',
+              Colors.blue.shade700.withOpacity(0.9),
+              Colors.blue.withOpacity(0.2),
+              Icons.add_circle_outline,
+              Colors.blue.shade900,
+              SUPPLIER_CREATION);
         case SUPPLIER_ASSOCIATION:
           return buildIconWidget('assets/icons/supplier.svg',
             Colors.blue.shade700.withOpacity(0.9),
             Colors.blue.withOpacity(0.2),
             Icons.compare_arrows_sharp,
-            Colors.blue.shade900,);
-        break;
+            Colors.blue.shade900,
+              SUPPLIER_ASSOCIATION);
         case STORAGE_CREATION:
-        break;
+          return buildIconWidget('assets/icons/storage.svg',
+            Colors.blue.shade700.withOpacity(0.9),
+            Colors.blue.withOpacity(0.2),
+            Icons.add_circle_outline,
+            Colors.blue.shade900,
+              STORAGE_CREATION);
         case EVENT_CREATION:
         break;
+        case UPDATE_PRIVILEGE:
+          return buildIconWidget('assets/icons/User.svg',
+              Colors.deepPurpleAccent.shade700.withOpacity(0.9),
+              Colors.deepPurpleAccent.withOpacity(0.2),
+              Icons.edit_outlined,
+              Colors.deepPurpleAccent,
+              UPDATE_PRIVILEGE);
         case ORDER_CREATION:
         break;
         case DRAFT_ORDER_CREATION:
           return buildIconWidget('assets/icons/receipt.svg',
-            Colors.yellow.shade700.withOpacity(0.9),
+            Colors.yellow.shade700,
             Colors.yellow.withOpacity(0.2),
             Icons.edit,
-            Colors.yellow.shade700,);
+            Colors.yellow.shade800,DRAFT_ORDER_CREATION);
         case PROVIDER_CREATION:
         break;
         case RECESSED_CREATION:
@@ -86,9 +103,13 @@ class ActionType{
             Colors.orange.shade700.withOpacity(0.9),
             Colors.orange.withOpacity(0.2),
             Icons.add_circle_outline,
-            Colors.green.shade900,);
+            Colors.green.shade900,PRODUCT_CREATION);
         case ADD_PRODUCT_TO_STORAGE:
-        break;
+          return buildIconWidget('assets/icons/product.svg',
+            Colors.blue.shade700.withOpacity(0.9),
+            Colors.blue.withOpacity(0.2),
+            Icons.exit_to_app,
+            Colors.blue.shade900,ADD_PRODUCT_TO_STORAGE);
         case BRANCH_EDIT:
         break;
         case SUPPLIER_EDIT:
@@ -104,21 +125,37 @@ class ActionType{
         case BRANCH_DELETE:
         break;
         case SUPPLIER_DELETE:
-        break;
+          return buildIconWidget('assets/icons/supplier.svg',
+            Colors.red.shade700.withOpacity(0.9),
+            Colors.red.withOpacity(0.2),
+            Icons.highlight_remove_outlined,
+            Colors.red.shade900,SUPPLIER_DELETE);
         case STORAGE_DELETE:
-        break;
+          return buildIconWidget('assets/icons/storage.svg',
+            Colors.red.shade700.withOpacity(0.9),
+            Colors.red.withOpacity(0.2),
+            Icons.highlight_remove_outlined,
+            Colors.red.shade900,STORAGE_DELETE);
         case EVENT_DELETE:
         break;
         case ORDER_DELETE:
           return buildIconWidget('assets/icons/receipt.svg',
             Colors.red.shade700.withOpacity(0.9),
             Colors.red.withOpacity(0.2),
-            Icons.delete,
-            kPinaColor,);
+            Icons.highlight_remove_outlined,
+            kPinaColor,ORDER_DELETE);
         case PROVIDER_DELETE:
-        break;
+          return buildIconWidget('assets/icons/Parcel.svg',
+            Colors.red.shade700.withOpacity(0.9),
+            Colors.red.withOpacity(0.2),
+            Icons.highlight_remove_outlined,
+            Colors.red.shade900,PROVIDER_DELETE);
         case PRODUCT_DELETE:
-        break;
+          return buildIconWidget('assets/icons/product.svg',
+            Colors.redAccent.shade700.withOpacity(0.9),
+            Colors.redAccent.withOpacity(0.2),
+            Icons.highlight_remove_outlined,
+            kPinaColor,PRODUCT_DELETE);
         case REMOVE_PRODUCT_FROM_STORAGE:
         break;
         case STORAGE_LOAD:
@@ -126,61 +163,67 @@ class ActionType{
             Colors.green.shade700.withOpacity(0.9),
             Colors.green.withOpacity(0.2),
             Icons.arrow_circle_up_outlined,
-            Colors.green.shade900,);
+            Colors.green.shade900,STORAGE_LOAD);
         case STORAGE_UNLOAD:
           return buildIconWidget('assets/icons/storage.svg',
             Colors.redAccent.shade700.withOpacity(0.9),
             Colors.redAccent.withOpacity(0.4),
             Icons.arrow_circle_down_outlined,
-            kPinaColor,);
+            kPinaColor,STORAGE_UNLOAD);
         case SENT_ORDER:
           return buildIconWidget('assets/icons/receipt.svg',
             Colors.blue.shade700.withOpacity(0.9),
             Colors.blue.withOpacity(0.2),
             Icons.message,
-            Colors.blueAccent.shade700,);
+            Colors.blueAccent.shade700,SENT_ORDER);
       case RECEIVED_ORDER:
         return buildIconWidget('assets/icons/receipt.svg',
           Colors.green.shade700.withOpacity(0.9),
           Colors.green.withOpacity(0.2),
           Icons.check_circle_outline,
-          Colors.green.shade900,);
+          Colors.green.shade900,
+            RECEIVED_ORDER
+        );
       default:
         return buildIconWidget('assets/icons/question-mark.svg',
           Colors.black.withOpacity(0.9),
           Colors.black.withOpacity(0.2),
-          Icons.clear,
-          Colors.black,);
+          Icons.highlight_remove_outlined,
+          Colors.black,
+          'Icona da creare');
     }
   }
 
-  static Widget buildIconWidget(String icon, Color iconColor, Color backgroundColor, IconData iconBanner, Color iconBannerColor) {
-    return Stack(
-      children: [
-        Container(
-          height: getProportionateScreenWidth(40),
-          decoration: BoxDecoration(
-              color: backgroundColor,
-              shape: BoxShape.circle
-          ),
-          width: getProportionateScreenWidth(50),
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SvgPicture.asset(icon, color: iconColor,),
-          ),
-        ),
-        Positioned(
-          right: 0,
-          top: 0,
-          child: Center(
-            child: Icon(
-              iconBanner,
-              color: iconBannerColor,
-              size: getProportionateScreenHeight(25),
+  static Widget buildIconWidget(String icon, Color iconColor, Color backgroundColor, IconData iconBanner, Color iconBannerColor, String message) {
+    return Tooltip(
+      message: message,
+      child: Stack(
+        children: [
+          Container(
+            height: getProportionateScreenWidth(40),
+            decoration: BoxDecoration(
+                color: backgroundColor,
+                shape: BoxShape.circle
+            ),
+            width: getProportionateScreenWidth(50),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SvgPicture.asset(icon, color: iconColor,),
             ),
           ),
-        ),
-      ],
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Center(
+              child: Icon(
+                iconBanner,
+                color: iconBannerColor,
+                size: getProportionateScreenHeight(25),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
