@@ -51,8 +51,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
               } else {
                 dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
                   dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
-                    if (standardElement.pkStorageProductId ==
-                        element.pkStorageProductId) {
+                    if (standardElement.pkStorageProductId == element.pkStorageProductId) {
                       element.stock = standardElement.stock + element.stock;
                     }
                   });

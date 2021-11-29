@@ -1,5 +1,4 @@
 import 'package:chips_choice/chips_choice.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -579,7 +578,8 @@ class _StorageScreenState extends State<StorageScreen>{
                   storageProductModel: productStorageElementToRemove,
                 actionModel: ActionModel(
                     date: DateTime.now().millisecondsSinceEpoch,
-                    description: 'Ha rimosso ${productStorageElementToRemove.productName} dal magazzino ${dataBundleNotifier.currentStorage.name} ',
+                    description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                        'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
                     fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                     user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                     type: ActionType.PRODUCT_DELETE

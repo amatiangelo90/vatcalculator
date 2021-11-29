@@ -506,8 +506,8 @@ class ClientVatService{
         data: body,
       );
 
-      if(post != null && post.data){
-        print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE + '): ' + post.data);
+      if(post != null){
+        print('Response From VatService delete product (' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE + '): ' + post.data.toString());
         try{
           String actionBody = json.encode(actionModel.toMap());
           await dio.post(
