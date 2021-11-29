@@ -30,6 +30,11 @@ class ProfileEditiScreen extends StatefulWidget {
 class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
   int currentPage = 0;
 
+  TextEditingController _nameController;
+  TextEditingController _lastNameController;
+  TextEditingController _phoneController;
+  TextEditingController _eMailController;
+
   refreshPage(){
     setState(() {
 
@@ -41,22 +46,11 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-      TextEditingController _nameController = TextEditingController(
-          text: dataBundleNotifier.dataBundleList.isEmpty
-              ? ''
-              : dataBundleNotifier.dataBundleList[0].firstName);
-      TextEditingController _lastNameController = TextEditingController(
-          text: dataBundleNotifier.dataBundleList.isEmpty
-              ? ''
-              : dataBundleNotifier.dataBundleList[0].lastName);
-      TextEditingController _phoneController = TextEditingController(
-          text: dataBundleNotifier.dataBundleList.isEmpty
-              ? ''
-              : dataBundleNotifier.dataBundleList[0].phone);
-      TextEditingController _eMailController = TextEditingController(
-          text: dataBundleNotifier.dataBundleList.isEmpty
-              ? ''
-              : dataBundleNotifier.dataBundleList[0].email);
+
+      _nameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty? '' : dataBundleNotifier.dataBundleList[0].firstName);
+      _lastNameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].lastName);
+      _phoneController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].phone);
+      _eMailController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].email);
 
       return Scaffold(
         drawer: const CommonDrawer(),
@@ -259,12 +253,19 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           ),
                                         ),
                                       ),
-                                      CupertinoButton(
-                                          child: const Text(
-                                            'Salva',
-                                            style: TextStyle(color: Colors.green),
-                                          ),
-                                          onPressed: () {}),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(8, 25, 8, 25),
+                                        child: SizedBox(
+                                          width: MediaQuery.of(context).size.width * 0.85,
+                                          child: CupertinoButton(
+                                            color: Colors.orange.withOpacity(0.7),
+                                              child: Text(
+                                                'Salva Modifiche',
+                                                style: TextStyle(color: kCustomWhite),
+                                              ),
+                                              onPressed: () {}),
+                                        ),
+                                      ),
                                     ],
                                   )
                                 : Padding(

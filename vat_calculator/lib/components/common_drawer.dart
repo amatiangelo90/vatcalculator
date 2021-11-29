@@ -9,6 +9,7 @@ import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
@@ -243,7 +244,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
-                                  width: dataBundleNotifier.currentOrdersForCurrentBranch.length > 90 ? 35 : 28,
+                                  width: dataBundleNotifier.currentOrdersForCurrentBranch.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.blueAccent.withOpacity(0.5),
                                     child: Center(child: Text(getOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch), style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
@@ -251,7 +252,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 ),
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
-                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.orange.withOpacity(0.8),
                                     child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
@@ -291,7 +292,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
-                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: Text(dataBundleNotifier.currentListSuppliers.length.toString()
@@ -331,7 +332,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
-                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: Text(dataBundleNotifier.currentStorageList.length.toString()
@@ -370,7 +371,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
-                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: Text('0'
@@ -384,45 +385,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          primary: kPrimaryColor,
-                          padding: const EdgeInsets.all(1),
-                          backgroundColor: Colors.black54.withOpacity(0.1),
-                        ),
-                        onPressed: (){
 
-                        },
-                        child: Row(
-                          children: [
-                            SizedBox(width: 9,),
-                            SvgPicture.asset(
-                              'assets/icons/activity.svg',
-                              color: kCustomWhite,
-                              width: 22,
-                            ),
-                            const SizedBox(width: 20),
-                            const Expanded(child: Text('Azioni', style: TextStyle(color: kCustomWhite),)),
-                            Row(
-                              children: [
-                                SizedBox(
-                                  height: getProportionateScreenHeight(28),
-                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
-                                  child: Card(
-                                    color: Colors.purple.withOpacity(0.4),
-                                    child: Center(child: Text(dataBundleNotifier.currentBranchActionsList.length.toString()
-                                      , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
-                                  ),
-                                ),
-                                const Icon(Icons.arrow_forward_ios,color: kCustomWhite,),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
 
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
@@ -454,7 +417,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
-                                  width: 28,
+                                  width: getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
@@ -468,6 +431,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
+
                     showBranchStuff ? Padding(
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Crea',(){
@@ -487,6 +451,45 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           kPrimaryColor),
                     ) : SizedBox(width: 0,),
                     showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          primary: kPrimaryColor,
+                          padding: const EdgeInsets.all(1),
+                          backgroundColor: Colors.black54.withOpacity(0.1),
+                        ),
+                        onPressed: (){
+                          Navigator.pushNamed(context, ActionsDetailsScreen.routeName);
+                        },
+                        child: Row(
+                          children: [
+                            SizedBox(width: 9,),
+                            SvgPicture.asset(
+                              'assets/icons/activity.svg',
+                              color: kCustomWhite,
+                              width: 22,
+                            ),
+                            const SizedBox(width: 20),
+                            const Expanded(child: Text('Azioni', style: TextStyle(color: kCustomWhite),)),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  height: getProportionateScreenHeight(28),
+                                  width: dataBundleNotifier.currentBranchActionsList.length > 100 ? getProportionateScreenWidth(40) : getProportionateScreenWidth(28),
+                                  child: Card(
+                                    color: Colors.purple.withOpacity(0.4),
+                                    child: Center(child: Text(dataBundleNotifier.currentBranchActionsList.length > 100 ? '+100' : dataBundleNotifier.currentBranchActionsList.length.toString()
+                                      , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                  ),
+                                ),
+                                const Icon(Icons.arrow_forward_ios,color: kCustomWhite,),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     buildDrawerRow('assets/icons/User Icon.svg',
                         'Profilo',
                             (){
