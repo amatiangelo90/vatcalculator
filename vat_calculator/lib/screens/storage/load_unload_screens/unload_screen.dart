@@ -93,7 +93,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                       ),
                           actionModel: ActionModel(
                               date: DateTime.now().millisecondsSinceEpoch,
-                              description: 'Ha creato l\' ordine bozza #$code per il fornitore ${dataBundleNotifier.getSupplierName(fkSupplierId)} per conto di ' + dataBundleNotifier.currentBranch.companyName + ' a fronte dello scarico da magazzino ${dataBundleNotifier.currentStorage.name}.',
+                              description: 'Ha creato l\'ordine bozza #$code per il fornitore ${dataBundleNotifier.getSupplierName(fkSupplierId)} per conto di ' + dataBundleNotifier.currentBranch.companyName + ' a fronte dello scarico da magazzino ${dataBundleNotifier.currentStorage.name}.',
                               fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                               user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                               type: ActionType.DRAFT_ORDER_CREATION
@@ -125,7 +125,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                                     date: DateTime.now().millisecondsSinceEpoch,
                                     description: 'Ha eseguito scarico da magazzino ${dataBundleNotifier.currentStorage.name}. '
                                         '${removedStockItem.toStringAsFixed(2)} x ${storageProductModelItem.productName} rimossi. '
-                                        'Precedente disponibilità per ${storageProductModelItem.productName} : ${currentStock.toStringAsFixed(2)} ${standardElement.unitMeasure} ',
+                                        'Precedente disponibilità per ${storageProductModelItem.productName}: ${currentStock.toStringAsFixed(2)} ${standardElement.unitMeasure} ',
                                     fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                     user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                   type: ActionType.STORAGE_UNLOAD

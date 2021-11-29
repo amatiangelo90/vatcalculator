@@ -7,6 +7,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -24,7 +25,8 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty ? Padding(
+        if (dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty) {
+          return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -50,108 +52,119 @@ class _BodyState extends State<Body> {
               ),
             ],
           ),
-        ) : SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: getProportionateScreenHeight(56),
-                  child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                    child: IconButton(icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: kPrimaryColor,
-                    ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
-                  ),
-                  GestureDetector(
-                      onTap: (){
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog (
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                content: Builder(
-                                  builder: (context) {
-                                    var height = MediaQuery.of(context).size.height;
-                                    var width = MediaQuery.of(context).size.width;
-                                    return SizedBox(
-                                      height: height - 250,
-                                      width: width - 90,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight: Radius.circular(10.0),
-                                                    topLeft: Radius.circular(10.0) ),
-                                                color: kPrimaryColor,
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text('  Calendario',style: TextStyle(
-                                                        fontSize: getProportionateScreenWidth(20),
-                                                        fontWeight: FontWeight.bold,
-                                                        color: kCustomWhite,
-                                                      ),),
-                                                      IconButton(icon: const Icon(
-                                                        Icons.clear,
-                                                        color: kCustomWhite,
-                                                      ), onPressed: () { Navigator.pop(context); },),
-
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    children: [
-
-                                                      Column(
-                                                        children: buildDateList(dataBundleNotifier, context),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            // buildDateList(),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              )
-                          );
-                      },
-                      child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                    child: IconButton(icon: const Icon(
-                      Icons.arrow_forward_ios,
-                      color: kPrimaryColor,
-                    ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
-                  ),
-                ],
-              ),
-              buildActionsList(dataBundleNotifier.currentBranchActionsList),
-            ],
-          ),
         );
+        } else {
+          return RefreshIndicator(
+            onRefresh: (){
+              dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+              setState(() {
+              });
+              return Future.delayed(Duration(milliseconds: 500));
+            },
+            child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: getProportionateScreenHeight(56),
+                    child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: IconButton(icon: const Icon(
+                        Icons.arrow_back_ios,
+                        color: kPrimaryColor,
+                      ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                    ),
+                    GestureDetector(
+                        onTap: (){
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog (
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var height = MediaQuery.of(context).size.height;
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        height: height - 250,
+                                        width: width - 90,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10.0),
+                                                      topLeft: Radius.circular(10.0) ),
+                                                  color: kPrimaryColor,
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text('  Calendario',style: TextStyle(
+                                                          fontSize: getProportionateScreenWidth(20),
+                                                          fontWeight: FontWeight.bold,
+                                                          color: kCustomWhite,
+                                                        ),),
+                                                        IconButton(icon: const Icon(
+                                                          Icons.clear,
+                                                          color: kCustomWhite,
+                                                        ), onPressed: () { Navigator.pop(context); },),
+
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      children: [
+
+                                                        Column(
+                                                          children: buildDateList(dataBundleNotifier, context),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              // buildDateList(),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                            );
+                        },
+                        child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: IconButton(icon: const Icon(
+                        Icons.arrow_forward_ios,
+                        color: kPrimaryColor,
+                      ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
+                    ),
+                  ],
+                ),
+                buildActionsList(dataBundleNotifier.currentBranchActionsList),
+              ],
+            ),
+        ),
+          );
+        }
       },
     );
   }
@@ -215,7 +228,7 @@ class _BodyState extends State<Body> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  color: Colors.green.shade700,
+                  color: Colors.green.shade700.withOpacity(0.9),
                   elevation: 7,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
@@ -356,68 +369,81 @@ class _BodyState extends State<Body> {
 
     List<Padding> rows = [
       Padding(
-        padding: const EdgeInsets.all(4.0),
+        padding: const EdgeInsets.all(0.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
-                Text('Lista Azioni'),
+                SizedBox(width: getProportionateScreenWidth(10),),
+                Text('Ultime Azioni', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
               ],
             ),
-            Row(
-              children: [
-                Text('Visualizza Tutte'),
-                Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey,),
-              ],
+            CupertinoButton(
+              onPressed: (){
+                Navigator.pushNamed(context, ActionsDetailsScreen.routeName);
+              },
+              child: Row(
+                children: [
+                  Text('Visualizza Tutte', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                  Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                ],
+              ),
             ),
           ],
         ),
       ),
     ];
 
+    rows.add(const Padding(
+      padding: EdgeInsets.all(0.0),
+      child: Divider(height: 1,),
+    ));
+
     currentBranchActionsList.forEach((action) {
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.all(3.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  ActionType.getIconWidget(action.type) == null ? Text('ICONA') : ActionType.getIconWidget(action.type),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(action.user, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),),
-                        Text(
-                            DateTime.fromMillisecondsSinceEpoch(action.date).day.toString() + '/' +
-                            DateTime.fromMillisecondsSinceEpoch(action.date).month.toString() + '/' +
-                            DateTime.fromMillisecondsSinceEpoch(action.date).year.toString() + '  ' +
-                            DateTime.fromMillisecondsSinceEpoch(action.date).hour.toString() + ':' +
-                                (DateTime.fromMillisecondsSinceEpoch(action.date).minute > 9
-                                ? DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString()
-                                : '0' + DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString())
+      if(rows.length < 10){
+        rows.add(
+          Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    ActionType.getIconWidget(action.type) ?? const Text('ICONA'),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(action.user, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),),
+                          Text(
+                              DateTime.fromMillisecondsSinceEpoch(action.date).day.toString() + '/' +
+                                  DateTime.fromMillisecondsSinceEpoch(action.date).month.toString() + '/' +
+                                  DateTime.fromMillisecondsSinceEpoch(action.date).year.toString() + '  ' +
+                                  DateTime.fromMillisecondsSinceEpoch(action.date).hour.toString() + ':' +
+                                  (DateTime.fromMillisecondsSinceEpoch(action.date).minute > 9
+                                      ? DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString()
+                                      : '0' + DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString())
 
-                            , style: TextStyle(color: Colors.green.shade700, fontWeight: FontWeight.bold)
-                        ),
-
-                      ],
+                              , style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(58), 0, getProportionateScreenWidth(10), 2),
-                child: Text(action.description, textAlign: TextAlign.start, overflow: TextOverflow.visible, style: TextStyle(fontWeight: FontWeight.bold),),
-              ),
-              Divider(height: 1, indent: getProportionateScreenWidth(58),),
-            ],
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(58), 0, getProportionateScreenWidth(10), 2),
+                  child: Text(action.description, textAlign: TextAlign.start, overflow: TextOverflow.visible, style: TextStyle(fontWeight: FontWeight.bold),),
+                ),
+                Divider(height: 1, indent: getProportionateScreenWidth(58),),
+              ],
+            ),
           ),
-        ),
-      );
+        );
+      }
+
     });
 
     return SingleChildScrollView(

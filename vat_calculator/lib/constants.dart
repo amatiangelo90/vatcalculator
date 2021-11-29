@@ -133,6 +133,37 @@ String getMonthFromMonthNumber(int month){
   }
 }
 
+String getItalianMonthFromMonthName(String month){
+  switch(month){
+    case 'january':
+      return 'Gennaio';
+    case 'february':
+      return 'Febbraio';
+    case 'march':
+      return 'Marzo';
+    case 'april':
+      return 'Aprile';
+    case 'may':
+      return 'Maggio';
+    case 'june':
+      return 'Giugno';
+    case 'july':
+      return 'Luglio';
+    case 'august':
+      return 'Agosto';
+    case 'september':
+      return 'Settembre';
+    case 'october':
+      return 'Ottobre';
+    case 'november':
+      return 'Novembre';
+    case 'december':
+      return 'Dicembre';
+    default:
+      return month;
+  }
+}
+
 String getNameDayFromWeekDay(int weekday) {
   switch(weekday){
     case 1:

@@ -667,6 +667,53 @@ class ClientVatService{
       rethrow;
     }
   }
+
+  Future<List<ActionModel>> retrieveLastWeekActionsByBranchId(int branchId) async {
+
+    var dio = Dio();
+
+    List<ActionModel> actionModelList = [];
+
+    print('Retrieve actions list for the branch with id ' + branchId.toString());
+    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID);
+    String body = json.encode(
+        BranchModel(
+            pkBranchId: branchId
+        ).toMap());
+
+    print('Retrieve actions body request: ' + body);
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID,
+        data: body,
+      );
+
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((actionElement) {
+
+        actionModelList.add(
+            ActionModel(
+              pkActionId: actionElement['pkActionId'],
+              user: actionElement['user'],
+              fkBranchId: actionElement['fkBranchId'],
+              description: actionElement['description'],
+              date: actionElement['date'],
+              type: actionElement['type'],
+
+            ));
+      });
+      return actionModelList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
   Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(int pkStorageId) async {
 
     var dio = Dio();
@@ -1558,6 +1605,40 @@ class ClientVatService{
 
       return post;
     }catch(e){
+      rethrow;
+    }
+  }
+
+  Future<Response> performEditSupplier({ResponseAnagraficaFornitori anagraficaFornitore, ActionModel actionModel}) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        anagraficaFornitore.toMap());
+    Response post;
+
+    print('Update supplier ($VAT_SERVICE_URL_UPDATE_SUPPLIER) request body: ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_SUPPLIER,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_SUPPLIER + '): ' + post.data.toString());
+        try{
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+
+      return post;
+    }catch(e){
+      print(e);
       rethrow;
     }
   }

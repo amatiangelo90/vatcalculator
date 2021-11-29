@@ -1,18 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../constants.dart';
-import '../../size_config.dart';
-import 'branch_creation.dart';
-import 'branch_join.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 
-class BranchChoiceCreationEnjoy extends StatefulWidget {
+import '../../../../constants.dart';
+import '../../../../size_config.dart';
+import 'add_supplier_screen.dart';
+import 'join_supplier.dart';
 
-  static String routeName = 'branch_choice';
+class SupplierChoiceCreationEnjoy extends StatefulWidget {
+
+  static String routeName = 'supplier_choice';
   @override
-  _BranchChoiceCreationEnjoyState createState() => _BranchChoiceCreationEnjoyState();
+  _SupplierChoiceCreationEnjoyState createState() => _SupplierChoiceCreationEnjoyState();
 }
 
-class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
+class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjoy> {
   var currentStep = 0;
 
 
@@ -29,7 +33,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
           ),
         ),
         centerTitle: true,
-        title: Text('Registra la tua attività',
+        title: Text('Registra Fornitore',
           style: TextStyle(
             fontSize: getProportionateScreenWidth(17),
             color: Colors.white,
@@ -52,11 +56,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                     SizedBox(height: 20,),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child: Text('Gestisci la tua attività dal tuo smartphone. '
-                          'Dal Magazzino ai Fornitori. '
-                          'Registra Spese ed Incassi. Perchè dovresti? '
-                          'Perchè cosi puoi calcolare, in totale automonia e in modo istantaneo la tua situazione Iva. '
-                          'Scopri se hai maturato iva a credito o debito, con un solo click.', textAlign: TextAlign.center,),
+                      child: Text('Crea un nuovo fornitore', textAlign: TextAlign.center,),
                     ),
 
                     Padding(
@@ -69,16 +69,16 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.home_work, color: kPinaColor,),
+                                SvgPicture.asset('assets/icons/supplier.svg', width: getProportionateScreenWidth(30),),
                                 SizedBox(width: 5,),
-                                Text('Crea una nuova attività', overflow: TextOverflow.visible, textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: getProportionateScreenWidth(20),
+                                Text('Crea Fornitore', overflow: TextOverflow.visible, textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: getProportionateScreenWidth(18),
                                       fontWeight: FontWeight.bold, color: kPrimaryColor),),
                               ],
                             ),
                             color: kCustomWhite,
                             onPressed: (){
-                              Navigator.pushNamed(context, CreationBranchScreen.routeName);
+                              Navigator.pushNamed(context, AddSupplierScreen.routeName);
                             },
                           ),
                         ),
@@ -91,8 +91,9 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child: Text('Sei un socio oppure un dipendente?'
-                          ' Associa il tuo account con una attività già esistente. Scopri come..', textAlign: TextAlign.center,),
+                      child: Text('oppure aggiungine uno alla tua lista. '
+                          'Se il tuo fornitore utilizza l\'app puoi collegarti al '
+                          'suo account ed utilizzare il suo catalogo prodotti per eseguire i tuoi ordini.', textAlign: TextAlign.center,),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -104,16 +105,16 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.people, color: kPinaColor,),
+                                SvgPicture.asset('assets/icons/deal.svg', width: getProportionateScreenWidth(30),),
                                 SizedBox(width: 5,),
-                                Text('Unisciti ad una esistente', overflow: TextOverflow.visible, textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: getProportionateScreenWidth(20),
-                                    fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                Text('Associa Fornitore', overflow: TextOverflow.visible, textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: getProportionateScreenWidth(18),
+                                      fontWeight: FontWeight.bold, color: kPrimaryColor),),
                               ],
                             ),
                             color: kCustomWhite,
                             onPressed: (){
-                              Navigator.pushNamed(context, BranchJoinScreen.routeName);
+                              Navigator.pushNamed(context, JoinSupplierScreen.routeName);
                             },
                           ),
                         ),

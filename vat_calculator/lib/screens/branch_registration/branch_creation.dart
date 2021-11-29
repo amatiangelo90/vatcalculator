@@ -10,7 +10,7 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 
-class BranchCreationScreen extends StatelessWidget {
+class CreationBranchScreen extends StatelessWidget {
 
   static String routeName = 'branch_creation';
 
@@ -92,9 +92,9 @@ class BranchCreationScreen extends StatelessWidget {
                             ),
                             Center(
                               child: Padding(
-                                padding: EdgeInsets.all(18.0),
+                                padding: const EdgeInsets.all(18.0),
                                 child: Text(text,
-                                  style: TextStyle(fontSize: 14),
+                                  style: const TextStyle(fontSize: 14),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -295,7 +295,6 @@ class BranchCreationScreen extends StatelessWidget {
                         keyboardType: TextInputType.number,
                         controller: controllerCap,
                         clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
                         placeholder: 'Cap',
                       ),
                       const Text('*campo obbligatorio'),

@@ -29,23 +29,31 @@ class EditSuppliersScreen extends StatefulWidget {
 class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
 
   bool isEditingEnabled = true;
+  TextEditingController controllerSupplierName;
+  TextEditingController controllerAddress;
+  TextEditingController controllerMobileNo;
+  TextEditingController controllerCity;
+  TextEditingController controllerCap;
+  TextEditingController controllerEmail;
+  TextEditingController controllerPIva;
 
   @override
   Widget build(BuildContext context) {
 
     String whatsappUrl = 'https://api.whatsapp.com/send/?phone=${getRefactoredNumber(widget.currentSupplier.tel)}';
 
-    TextEditingController controllerSupplierName = TextEditingController(text: widget.currentSupplier.nome);
-    TextEditingController controllerAddress = TextEditingController(text: widget.currentSupplier.indirizzo_via);
-    TextEditingController controllerMobileNo = TextEditingController(text: widget.currentSupplier.tel);
-    TextEditingController controllerCity = TextEditingController(text: widget.currentSupplier.indirizzo_citta);
-    TextEditingController controllerCap = TextEditingController(text: widget.currentSupplier.indirizzo_cap);
-    TextEditingController controllerEmail = TextEditingController(text: widget.currentSupplier.mail);
-    TextEditingController controllerPIva = TextEditingController(text: widget.currentSupplier.piva);
+
 
     final kPages = <Widget>[
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
+          controllerSupplierName = TextEditingController(text: widget.currentSupplier.nome);
+          controllerAddress = TextEditingController(text: widget.currentSupplier.indirizzo_via);
+          controllerMobileNo = TextEditingController(text: widget.currentSupplier.tel);
+          controllerCity = TextEditingController(text: widget.currentSupplier.indirizzo_citta);
+          controllerCap = TextEditingController(text: widget.currentSupplier.indirizzo_cap);
+          controllerEmail = TextEditingController(text: widget.currentSupplier.mail);
+          controllerPIva = TextEditingController(text: widget.currentSupplier.piva);
           return Scaffold(
             bottomSheet: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -106,35 +114,81 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: CupertinoButton(
-                      color: kPrimaryColor,
-                      child: const Text('Modifica Fornitore'),
-                      onPressed: () async {
-                        if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
-                          print('Il nome del fornitore è obbligatorio');
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 30,
+                    child: CupertinoButton(
+                        color: Colors.orange.shade700.withOpacity(0.8),
+                        child: const Text('Modifica Fornitore'),
+                        onPressed: () async {
+                          if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
+                            print('Il nome del fornitore è obbligatorio');
+                            buildShowErrorDialog('Il nome del fornitore è obbligatorio');
+                          }else if(controllerEmail.text == null || controllerEmail.text == ''){
+                            print('L\'indirizzo email è obbligatorio');
+                            buildShowErrorDialog('L\'indirizzo email è obbligatorio');
+                          }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
+                            print('Inserire un numero di cellulare');
+                            buildShowErrorDialog('Inserire un numero di cellulare');
+                          }else{
+                            KeyboardUtil.hideKeyboard(context);
+                            try{
+                              ResponseAnagraficaFornitori supplier = ResponseAnagraficaFornitori(
+                                pkSupplierId: widget.currentSupplier.pkSupplierId,
+                                cf: '',
+                                extra: widget.currentSupplier.extra,
+                                fax: '',
+                                id: widget.currentSupplier.id,
+                                indirizzo_cap: controllerCap.text,
+                                indirizzo_citta: controllerCity.text,
+                                indirizzo_extra: '',
+                                indirizzo_provincia: '',
+                                indirizzo_via: controllerAddress.text,
+                                mail: controllerEmail.text,
+                                nome: controllerSupplierName.text,
+                                paese: 'Italia',
+                                pec: '',
+                                piva: controllerPIva.text,
+                                referente: '',
+                                tel: controllerMobileNo.text,
+                                fkBranchId: widget.currentSupplier.fkBranchId,
+                              );
 
-                          buildShowErrorDialog('Il nome del fornitore è obbligatorio');
+                              await dataBundleNotifier.getclientServiceInstance().performEditSupplier(
+                                  anagraficaFornitore: supplier,
+                                  actionModel: ActionModel(
+                                      date: DateTime.now().millisecondsSinceEpoch,
+                                      description: 'Ha aggiornato il fornitore ${supplier.nome}. Dettaglio ${supplier.toMap()}',
+                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                      type: ActionType.SUPPLIER_EDIT
+                                  )
+                              );
+                              List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
-                        }else if(controllerEmail.text == null || controllerEmail.text == ''){
-                          print('L\'indirizzo email è obbligatorio');
-                          buildShowErrorDialog('L\'indirizzo email è obbligatorio');
-                        }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
-                          print('Inserire un numero di cellulare');
-                          buildShowErrorDialog('Inserire un numero di cellulare');
-                        }else{
-                          KeyboardUtil.hideKeyboard(context);
-                          try{
-                            //updateProviderData(dataBundleNotifier, context);
-                          }catch(e){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                duration: const Duration(milliseconds: 5000),
-                                backgroundColor: Colors.red,
-                                content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                              dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
+                              dataBundleNotifier.clearAndUpdateMapBundle();
+                              final snackBar =
+                              SnackBar(
+                                  duration: const Duration(seconds: 3),
+                                  backgroundColor: Colors.green,
+                                  content: Text('Fornitore ' + controllerSupplierName.text +' aggiornato',
+                                  )
+                              );
+
+                              clearControllers();
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              Navigator.pushNamed(context, SuppliersScreen.routeName);
+                            }catch(e){
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 5000),
+                                  backgroundColor: Colors.red,
+                                  content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                            }
                           }
-                        }
 
-                      }),
+                        }),
+                  ),
                 ),
               ],
             ) : const SizedBox(width: 0,),
@@ -403,7 +457,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                           const Text(''),
                                           const Text(''),
                                           Center(
-                                            child: Text('Vuoi davvero eliminare il fornitore ' + widget.currentSupplier.nome, textAlign: TextAlign.center,),
+                                            child: Text('Vuoi davvero eliminare il fornitore ' + widget.currentSupplier.nome + '?', textAlign: TextAlign.center,),
                                           ),
                                         ],
                                       ),
@@ -591,5 +645,29 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           ),
         )
     );
+  }
+
+  void clearControllers() {
+    if(controllerSupplierName != null){
+      controllerSupplierName.clear();
+    }
+    if(controllerAddress != null){
+      controllerAddress.clear();
+    }
+    if(controllerMobileNo != null){
+      controllerMobileNo.clear();
+    }
+    if(controllerCity != null){
+      controllerCity.clear();
+    }
+    if(controllerCap != null){
+      controllerCap.clear();
+    }
+    if(controllerEmail != null){
+      controllerEmail.clear();
+    }
+    if(controllerPIva != null){
+      controllerPIva.clear();
+    }
   }
 }

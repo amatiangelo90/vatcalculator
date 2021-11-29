@@ -245,7 +245,7 @@ class DataBundleNotifier extends ChangeNotifier {
     }
 
     currentBranchActionsList.clear();
-    currentBranchActionsList = await getclientServiceInstance().retrieveActionsByBranchId(currentBranch.pkBranchId);
+    currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
 
 
     clearAndUpdateMapBundle();
@@ -345,7 +345,7 @@ class DataBundleNotifier extends ChangeNotifier {
     });
 
     currentBranchActionsList.clear();
-    currentBranchActionsList = await getclientServiceInstance().retrieveActionsByBranchId(currentBranch.pkBranchId);
+    currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
 
     clearAndUpdateMapBundle();
     notifyListeners();
@@ -571,12 +571,17 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   String getSupplierName(int fk_supplier_id) {
-    String currentSupplierName;
+
+    print('Retrieve supplier name for id ' + fk_supplier_id.toString());
+    String currentSupplierName = 'Fornitore Sconosciuto';
+
     currentListSuppliers.forEach((currentSupplier) {
+
       if(currentSupplier.pkSupplierId == fk_supplier_id){
         currentSupplierName = currentSupplier.nome;
       }
     });
+    print('Name retrieved: ' + currentSupplierName);
     return currentSupplierName;
   }
 

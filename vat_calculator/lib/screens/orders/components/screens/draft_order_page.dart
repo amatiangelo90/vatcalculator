@@ -128,7 +128,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                 ActionModel actionModel = ActionModel(
                                   user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                   fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                  description: 'Ha cancellato ordine per fornitore ${dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id)} con codice ${currentOrder.code} in stato ${currentOrder.status}.',
+                                  description: 'Ha cancellato ordine #${currentOrder.code} con stato ${currentOrder.status} per fornitore ${dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id)}.',
                                   date: DateTime.now().millisecondsSinceEpoch,
                                     type: ActionType.ORDER_DELETE
                                 );

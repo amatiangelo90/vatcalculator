@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
@@ -19,9 +20,11 @@ import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.d
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
+import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
+import 'package:vat_calculator/screens/suppliers/components/add_suppliers/join_supplier.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_product.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_supplier_screen.dart';
-import 'package:vat_calculator/screens/suppliers/components/add_supplier_screen.dart';
+import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
@@ -54,8 +57,11 @@ final Map<String, WidgetBuilder> routes = {
   RegisterFattureProviderScreen.routeName: (context) => RegisterFattureProviderScreen(),
   LoadStorageScreen.routeName: (context) => LoadStorageScreen(),
   UnloadStorageScreen.routeName: (context) => UnloadStorageScreen(),
-  BranchCreationScreen.routeName: (context) => BranchCreationScreen(),
+  CreationBranchScreen.routeName: (context) => CreationBranchScreen(),
   BranchJoinScreen.routeName: (context) => BranchJoinScreen(),
   DraftOrderPage.routeName: (context) => DraftOrderPage(),
   ArchiviedOrderPage.routeName: (context) => ArchiviedOrderPage(),
+  ActionsDetailsScreen.routeName: (context) => ActionsDetailsScreen(),
+  SupplierChoiceCreationEnjoy.routeName: (context) => SupplierChoiceCreationEnjoy(),
+  JoinSupplierScreen.routeName: (context) => JoinSupplierScreen(),
 };

@@ -33,6 +33,7 @@ const String VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH = 'http://$host:8080/vat
 const String VAT_SERVICE_URL_UPDATE_PRODUCT = 'http://$host:8080/vatservices/api/v1/update/product';
 const String VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID = 'http://$host:8080/vatservices/api/v1/update/orderstatus';
 const String VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE = 'http://$host:8080/vatservices/api/v1/update/branch/addproviderconfiguration';
+const String VAT_SERVICE_URL_UPDATE_SUPPLIER = 'http://$host:8080/vatservices/api/v1/update/supplier';
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';
@@ -60,3 +61,4 @@ const String VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH = 'http://$host:8080/va
 const String VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH = 'http://$host:8080/vatservices/api/v1/save/action';
 // retrieve actions by branch id
 const String VAT_SERVICE_URL_RETRIEVE_ACTIONS_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/actionsbybranchid';
+const String VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/lastactionsbybranchid';

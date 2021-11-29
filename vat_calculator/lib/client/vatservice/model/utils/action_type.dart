@@ -92,8 +92,9 @@ class ActionType{
           return buildIconWidget('assets/icons/receipt.svg',
             Colors.yellow.shade700,
             Colors.yellow.withOpacity(0.2),
-            Icons.edit,
-            Colors.yellow.shade800,DRAFT_ORDER_CREATION);
+            Icons.add_circle_outline,
+              Colors.brown.withOpacity(0.9),
+              DRAFT_ORDER_CREATION);
         case PROVIDER_CREATION:
         break;
         case RECESSED_CREATION:
@@ -113,7 +114,12 @@ class ActionType{
         case BRANCH_EDIT:
         break;
         case SUPPLIER_EDIT:
-        break;
+          return buildIconWidget('assets/icons/supplier.svg',
+              Colors.yellow.shade700,
+              Colors.yellow.withOpacity(0.2),
+              Icons.edit,
+              Colors.brown,
+              SUPPLIER_EDIT);
         case STORAGE_EDIT:
         break;
         case EVENT_EDIT:
@@ -129,7 +135,8 @@ class ActionType{
             Colors.red.shade700.withOpacity(0.9),
             Colors.red.withOpacity(0.2),
             Icons.highlight_remove_outlined,
-            Colors.red.shade900,SUPPLIER_DELETE);
+            Colors.red.shade900,
+              SUPPLIER_DELETE);
         case STORAGE_DELETE:
           return buildIconWidget('assets/icons/storage.svg',
             Colors.red.shade700.withOpacity(0.9),

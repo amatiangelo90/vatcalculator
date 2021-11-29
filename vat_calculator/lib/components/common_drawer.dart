@@ -48,7 +48,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
         child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Container(
-              color: kCustomWhite,
+              color: kPrimaryColor,
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(
@@ -171,16 +171,14 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ],
                       ),
                     ),
-                    Divider(),
                     buildDrawerRow('assets/icons/home.svg','Home',(){
                       dataBundleNotifier.setShowIvaButtonToFalse();
                       Navigator.pushNamed(context, HomeScreen.routeName);
                     },
-                        kPrimaryColor,
                         kCustomWhite,
-                        kPrimaryColor),
-                    const Divider(),
-                    buildDrawerRow('assets/icons/Parcel.svg','Calcola Iva',(){
+                        Colors.black54.withOpacity(0.1),
+                        kCustomWhite),
+                    buildDrawerRow('assets/icons/iva.svg','Calcola Iva',(){
                       if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                         showDialog(
                             context: context,
@@ -217,26 +215,26 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             break;
                         }
                       }
-                    }, kPrimaryColor,
-                        kCustomWhite,
-                        kPrimaryColor),
-                    const Divider(),
+                    }, kCustomWhite,
+                        Colors.black54.withOpacity(0.1),
+                        kCustomWhite),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          primary: kPrimaryColor,
+                          primary: kCustomWhite,
                           padding: const EdgeInsets.all(1),
-                          backgroundColor: kCustomWhite,
+                          backgroundColor: Colors.black54.withOpacity(0.1),
                         ),
                         onPressed: (){
                           Navigator.pushNamed(context, OrdersScreen.routeName);
                         },
                         child: Row(
                           children: [
+                            SizedBox(width: 9,),
                             SvgPicture.asset(
                               'assets/icons/receipt.svg',
-                              color: kPrimaryColor,
+                              color: kCustomWhite,
                               width: 22,
                             ),
                             const SizedBox(width: 20),
@@ -247,7 +245,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   height: getProportionateScreenHeight(28),
                                   width: dataBundleNotifier.currentOrdersForCurrentBranch.length > 90 ? 35 : 28,
                                   child: Card(
-                                    color: Colors.blueAccent,
+                                    color: Colors.blueAccent.withOpacity(0.5),
                                     child: Center(child: Text(getOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch), style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                   ),
                                 ),
@@ -255,7 +253,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   height: getProportionateScreenHeight(28),
                                   width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                   child: Card(
-                                    color: Colors.orange,
+                                    color: Colors.orange.withOpacity(0.8),
                                     child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
                                       , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                   ),
@@ -267,14 +265,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
-                    const Divider(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
-                          primary: kPrimaryColor,
+                          primary: kCustomWhite,
                           padding: const EdgeInsets.all(1),
-                          backgroundColor: kCustomWhite,
+                          backgroundColor: Colors.black54.withOpacity(0.1),
                         ),
                         onPressed: (){
 
@@ -282,9 +279,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         },
                         child: Row(
                           children: [
+                            SizedBox(width: 9,),
                             SvgPicture.asset(
                               'assets/icons/supplier.svg',
-                              color: kPrimaryColor,
+                              color: kCustomWhite,
                               width: 22,
                             ),
                             const SizedBox(width: 20),
@@ -295,26 +293,25 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   height: getProportionateScreenHeight(28),
                                   width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                   child: Card(
-                                    color: Colors.red,
+                                    color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: Text(dataBundleNotifier.currentListSuppliers.length.toString()
-                                      , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                      , style: const TextStyle(fontSize: 12.0, color: kCustomWhite),),),
                                   ),
                                 ),
-                                const Icon(Icons.arrow_forward_ios),
+                                const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const Divider(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
                           padding: const EdgeInsets.all(1),
-                          backgroundColor: kCustomWhite,
+                          backgroundColor: Colors.black54.withOpacity(0.1),
                         ),
                         onPressed: (){
 
@@ -322,78 +319,117 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         },
                         child: Row(
                           children: [
+                            SizedBox(width: 9,),
                             SvgPicture.asset(
                               'assets/icons/storage.svg',
-                              color: kPrimaryColor,
+                              color: kCustomWhite,
                               width: 22,
                             ),
                             const SizedBox(width: 20),
-                            const Expanded(child: Text('Magazzino')),
+                            const Expanded(child: Text('Magazzino', style: TextStyle(color: kCustomWhite),)),
                             Row(
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
                                   width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                   child: Card(
-                                    color: Colors.red,
+                                    color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: Text(dataBundleNotifier.currentStorageList.length.toString()
                                       , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                   ),
                                 ),
-                                const Icon(Icons.arrow_forward_ios),
+                                const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const Divider(),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
                           padding: const EdgeInsets.all(1),
-                          backgroundColor: kCustomWhite,
+                          backgroundColor: Colors.black54.withOpacity(0.1),
                         ),
                         onPressed: (){
 
                         },
                         child: Row(
                           children: [
+                            SizedBox(width: 9,),
                             SvgPicture.asset(
                               'assets/icons/party.svg',
-                              color: kPrimaryColor,
+                              color: kCustomWhite,
                               width: 22,
                             ),
                             const SizedBox(width: 20),
-                            const Expanded(child: Text('Eventi')),
+                            const Expanded(child: Text('Eventi', style: TextStyle(color: kCustomWhite),)),
                             Row(
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
                                   width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
                                   child: Card(
-                                    color: Colors.red,
+                                    color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: Text('0'
                                       , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                   ),
                                 ),
-                                const Icon(Icons.arrow_forward_ios),
+                                const Icon(Icons.arrow_forward_ios,color: kCustomWhite,),
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const Divider(),
-                 Padding(
+                    Padding(
                       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           primary: kPrimaryColor,
                           padding: const EdgeInsets.all(1),
-                          backgroundColor: kCustomWhite,
+                          backgroundColor: Colors.black54.withOpacity(0.1),
+                        ),
+                        onPressed: (){
+
+                        },
+                        child: Row(
+                          children: [
+                            SizedBox(width: 9,),
+                            SvgPicture.asset(
+                              'assets/icons/activity.svg',
+                              color: kCustomWhite,
+                              width: 22,
+                            ),
+                            const SizedBox(width: 20),
+                            const Expanded(child: Text('Azioni', style: TextStyle(color: kCustomWhite),)),
+                            Row(
+                              children: [
+                                SizedBox(
+                                  height: getProportionateScreenHeight(28),
+                                  width: dataBundleNotifier.currentListSuppliers.length > 90 ? 35 : 28,
+                                  child: Card(
+                                    color: Colors.purple.withOpacity(0.4),
+                                    child: Center(child: Text(dataBundleNotifier.currentBranchActionsList.length.toString()
+                                      , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                  ),
+                                ),
+                                const Icon(Icons.arrow_forward_ios,color: kCustomWhite,),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.all(1),
+                          backgroundColor: Colors.black54.withOpacity(0.1),
                         ),
                         onPressed: (){
                           setState((){
@@ -406,32 +442,32 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         },
                         child: Row(
                           children: [
+                            SizedBox(width: 9,),
                             SvgPicture.asset(
                               'assets/icons/Shop Icon.svg',
-                              color: kPrimaryColor,
+                              color: kCustomWhite,
                               width: 22,
                             ),
                             const SizedBox(width: 20),
-                            Expanded(child: Text('Attività')),
+                            Expanded(child: Text('Attività', style: const TextStyle(color: kCustomWhite),)),
                             Row(
                               children: [
                                 SizedBox(
                                   height: getProportionateScreenHeight(28),
                                   width: 28,
                                   child: Card(
-                                    color: Colors.red,
+                                    color: Colors.redAccent.withOpacity(0.8),
                                     child: Center(child: dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
                                       , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
                                   ),
                                 ),
-                                showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30,) : const Icon(Icons.arrow_forward_ios),
+                                showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30,) : const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
                               ],
                             ),
                           ],
                         ),
                       ),
                     ),
-                    const Divider(),
                     showBranchStuff ? Padding(
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Crea',(){
@@ -451,24 +487,21 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           kPrimaryColor),
                     ) : SizedBox(width: 0,),
                     showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
-                    const Divider(),
                     buildDrawerRow('assets/icons/User Icon.svg',
                         'Profilo',
                             (){
                               dataBundleNotifier.setShowIvaButtonToFalse();
                               Navigator.pushNamed(context, ProfileEditiScreen.routeName);
                               },
-                        kPrimaryColor,
-                        kCustomWhite,
-                        kPrimaryColor),
-                    const Divider(),
+                      kCustomWhite,
+                      Colors.black54.withOpacity(0.1),
+                      kCustomWhite,),
                     buildDrawerRow(
                         'assets/icons/Question mark.svg',
                         'Hai bisogno di aiuto?',(){
-                    }, kPrimaryColor,
-                        kCustomWhite,
-                        kPrimaryColor),
-                    const Divider(),
+                    }, kCustomWhite,
+                        Colors.black54.withOpacity(0.1),
+                        kCustomWhite),
                     SizedBox(height: 40,),
                     buildDrawerRow('assets/icons/Log out.svg','Log Out',(){
                       FirebaseAuth _auth = FirebaseAuth.instance;
@@ -482,9 +515,9 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           backgroundColor: kPinaColor,
                           content: Text('Logging out...', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                       Navigator.pushNamed(context, SplashScreen.routeName);
-                    }, kPinaColor,
-                        kCustomWhite,
-                        kPinaColor),
+                    }, kCustomWhite,
+                        kPinaColor,
+                        kCustomWhite),
                     SizedBox(height: 90,),
                     Text('Developed by Angelo Amati', style: TextStyle(fontSize: 10)),
                     SizedBox(height: 20,),
@@ -510,6 +543,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
         onPressed: onPress,
         child: Row(
           children: [
+            SizedBox(width: 9,),
             icon == '' ? const SizedBox(width: 0,) : SvgPicture.asset(
               icon,
               color: iconColor,
