@@ -7,6 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -160,7 +162,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                     ),
                   ),
                   Container(
-                    height: 16,
+                    height: 18,
                     decoration: const BoxDecoration(
                         color: kCustomWhite,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
@@ -197,33 +199,39 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                           const SizedBox(
                                             height: 5,
                                           ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id),
-                                                style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold),),
-                                            ],
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                '#' + orderList[order].code,
-                                                style: TextStyle(
-                                                    fontSize: getProportionateScreenHeight(12)),
-                                              ), ],
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              children: [
+                                                OrderState.getIconWidget(OrderState.SENT),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Text(dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id),
+                                                      style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.blueAccent.withOpacity(0.8), fontWeight: FontWeight.bold),),
+                                                    Text(
+                                                      '       #' + orderList[order].code,
+                                                      style: TextStyle(
+                                                          fontSize: getProportionateScreenHeight(12)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           Divider(
                                           ),
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: [
+
                                               Column(
                                                 children: [
                                                   Text(
                                                     'Prodotti',
                                                     style: TextStyle(
-                                                        fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.bold),
+                                                        fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
                                                   ),
                                                   Text(orderIdProductListMap[
                                                   orderList[order].pk_order_id]
@@ -231,7 +239,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                                       .toString(),
                                                     style: TextStyle(
                                                         color: kPinaColor,
-                                                        fontSize: getProportionateScreenHeight(20)),
+                                                        fontSize: getProportionateScreenHeight(17)),
                                                   ),
                                                 ],
                                               ),
@@ -240,7 +248,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                                   Text(
                                                     'Prezzo Stimato ',
                                                     style: TextStyle(
-                                                        fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.bold),
+                                                        fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
                                                   ),
                                                   Text(
                                                     '€ ' +
@@ -249,14 +257,13 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                                             orderList[order].pk_order_id]),
                                                     style: TextStyle(
                                                         color: kPinaColor,
-                                                        fontSize: getProportionateScreenHeight(20)),
+                                                        fontSize: getProportionateScreenHeight(17)),
                                                   ),
                                                 ],
                                               ),
 
                                             ],
                                           ),
-
                                           ExpansionTile(
                                             title: Text(
                                               'Mostra Dettagli',
@@ -355,11 +362,12 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                               pressedOpacity: 0.9,
                                               color: Colors.green.shade700,
                                               onPressed: () {
-                                                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
+                                                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                                                    OrderCompletionScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
                                               },
                                             ),
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
+                                              borderRadius: const BorderRadius.only(
                                                   bottomLeft: Radius.circular(10.0),
                                                   bottomRight: Radius.circular(10.0)),
                                               color: Colors.green.shade700,

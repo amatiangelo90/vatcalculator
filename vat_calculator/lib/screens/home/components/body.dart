@@ -1,14 +1,20 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
+import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
+import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -20,6 +26,9 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+
+
+  Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
   @override
   Widget build(BuildContext context) {
@@ -159,6 +168,63 @@ class _BodyState extends State<Body> {
                     ),
                   ],
                 ),
+                Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(width: getProportionateScreenWidth(10),),
+                          Text('Ordini in arrivo Oggi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                        ],
+                      ),
+                      CupertinoButton(
+                        onPressed: (){
+                          Navigator.pushNamed(context, OrdersScreen.routeName);
+                        },
+                        child: Row(
+                          children: [
+                            Text('Pagina Ordini', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                FutureBuilder(
+                    initialData: <Widget>[
+                      const Center(
+                          child: CircularProgressIndicator(
+                            color: kPinaColor,
+                          )),
+                      const SizedBox(),
+                      Column(
+                        children: const [
+                          Center(
+                            child: Text(
+                              'Caricamento Ordini..',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: kPrimaryColor,
+                                  fontFamily: 'LoraFont'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                    future: populateProductsListForTodayOrders(dataBundleNotifier),
+                    builder: (context, snapshot){
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: buildOrderIncomingTodayListWidget(dataBundleNotifier),
+                    ),
+                  );
+                }),
+
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
               ],
             ),
@@ -228,7 +294,7 @@ class _BodyState extends State<Body> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  color: Colors.green.shade700.withOpacity(0.9),
+                  color: Colors.blue.shade700.withOpacity(0.9),
                   elevation: 7,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
@@ -262,7 +328,7 @@ class _BodyState extends State<Body> {
         GestureDetector(
             child: Container(
                   decoration: BoxDecoration(
-                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.green.shade700 : Colors.white,
+                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.blue.shade700.withOpacity(0.8) : Colors.white,
                     border: const Border(
                       bottom: BorderSide(width: 1.0, color: Colors.grey),
                     ),
@@ -443,7 +509,6 @@ class _BodyState extends State<Body> {
           ),
         );
       }
-
     });
 
     return SingleChildScrollView(
@@ -452,6 +517,184 @@ class _BodyState extends State<Body> {
         children: rows,
       ),
     );
+  }
+
+  buildOrderIncomingTodayListWidget(DataBundleNotifier dataBundleNotifier) {
+
+    List<Widget> ordersList = [];
+
+    dataBundleNotifier.currentUnderWorkingOrdersList.forEach((order) {
+      if(isToday(order.delivery_date)) {
+        ordersList.add(
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15.0),
+              ),
+              color: Colors.white,
+              elevation: 10,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            OrderState.getIconWidget(OrderState.INCOMING),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                              style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
+                            Text(
+                              '       #' + order.code,
+                              style: TextStyle(
+                                  fontSize: getProportionateScreenHeight(12)),
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: getProportionateScreenWidth(90)),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Column(
+                        children: [
+                          Text(
+                            'Prodotti',
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
+                          ),
+                          Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
+                            style: TextStyle(
+                                color: kPinaColor,
+                                fontSize: getProportionateScreenHeight(17)),
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: getProportionateScreenWidth(90)),
+                      Column(
+                        children: [
+                          Text(
+                            'Prezzo Stimato ',
+                            style: TextStyle(
+                                fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            '€ ' +
+                                calculatePriceFromProductList(
+                                    orderIdProductListMap[
+                                    order.pk_order_id]),
+                            style: TextStyle(
+                                color: kPinaColor,
+                                fontSize: getProportionateScreenHeight(17)),
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(10),),
+
+                  Container(
+                    height: 50,
+                    width: getProportionateScreenWidth(300),
+                    child: CupertinoButton(
+                      child: Text(
+                        'Completa Ordine',
+                        style: TextStyle(
+                            fontSize: getProportionateScreenHeight(13)),
+                      ),
+                      pressedOpacity: 0.8,
+                      color: Colors.green.shade700,
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+                          productList: orderIdProductListMap[order.pk_order_id],),),);
+                      },
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(10.0),
+                          bottomRight: Radius.circular(10.0)),
+                      color: Colors.green.shade700,
+
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }
+    });
+
+    if(ordersList.isEmpty){
+      ordersList.add(SizedBox(
+          height: getProportionateScreenHeight(100),
+          width: getProportionateScreenWidth(400),
+          child: Card(
+            child: Center(child: Text('Nessun ordine in arrivo per oggi', style: TextStyle(fontSize: getProportionateScreenWidth(16)),)),
+          ),
+      ));
+    }
+
+    return ordersList;
+  }
+
+  bool isToday(int delivery_date) {
+    DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(delivery_date);
+    DateTime now = DateTime.now();
+    bool result = false;
+
+    if(currentDate.day == now.day &&
+        currentDate.month == now.month &&
+          currentDate.year == now.year){
+      result = true;
+    }
+    return false;
+  }
+
+  Future<List<Widget>> populateProductsListForTodayOrders(DataBundleNotifier dataBundleNotifier) async {
+
+    dataBundleNotifier.currentUnderWorkingOrdersList.forEach((element) async {
+      if(isToday(element.delivery_date)){
+        List<ProductOrderAmountModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveProductByOrderId(
+          OrderModel(pk_order_id: element.pk_order_id,),
+        );
+        orderIdProductListMap[element.pk_order_id] = list;
+      }
+    });
+
+    return [];
+  }
+
+  String calculatePriceFromProductList(List<ProductOrderAmountModel> orderIdProductListMap) {
+    double total = 0.0;
+
+    if(orderIdProductListMap != null && orderIdProductListMap.isNotEmpty){
+      orderIdProductListMap.forEach((currentProduct) {
+        total = total + (currentProduct.amount * currentProduct.prezzo_lordo);
+      });
+    }
+    return total.toStringAsFixed(2);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(milliseconds: 1500), () {
+      setState(() {
+
+      });
+    });
+
   }
 }
 

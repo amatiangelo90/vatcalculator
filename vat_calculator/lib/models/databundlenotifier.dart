@@ -61,6 +61,8 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<OrderModel> currentOrdersForCurrentBranch = [];
 
+  List<OrderModel> currentTodayOrdersForCurrentBranch = [];
+
   List<OrderModel> currentUnderWorkingOrdersList = [];
 
   List<OrderModel> currentDraftOrdersList = [];
@@ -224,6 +226,8 @@ class DataBundleNotifier extends ChangeNotifier {
       currentOrdersForCurrentBranch.clear();
       currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
 
+      currentTodayOrdersForCurrentBranch.clear();
+
       currentDraftOrdersList.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
@@ -239,6 +243,14 @@ class DataBundleNotifier extends ChangeNotifier {
           currentArchiviedWorkingOrdersList.add(orderItem);
         }else{
           currentUnderWorkingOrdersList.add(orderItem);
+          if(
+          DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == DateTime.now().day &&
+          DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
+          DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+
+            currentTodayOrdersForCurrentBranch.add(orderItem);
+
+          }
         }
       });
 
@@ -323,6 +335,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentOrdersForCurrentBranch.clear();
     currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
+    currentTodayOrdersForCurrentBranch.clear();
 
     currentDraftOrdersList.clear();
     currentArchiviedWorkingOrdersList.clear();
@@ -341,6 +354,14 @@ class DataBundleNotifier extends ChangeNotifier {
         currentArchiviedWorkingOrdersList.add(orderItem);
       }else {
         currentUnderWorkingOrdersList.add(orderItem);
+        if(
+        DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == DateTime.now().day &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+
+          currentTodayOrdersForCurrentBranch.add(orderItem);
+
+        }
       }
     });
 
@@ -379,27 +400,45 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();
     }
-    if(currentOrdersForCurrentBranch.isNotEmpty){
+    if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
       currentDraftOrdersList.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
+      currentTodayOrdersForCurrentBranch.clear();
     }
 
-    if(currentListSuppliers.isNotEmpty){
+    if(currentListSuppliers != null && currentListSuppliers.isNotEmpty){
       currentListSuppliers.clear();
     }
-    if(currentListSuppliersDuplicated.isNotEmpty){
+    if(currentListSuppliersDuplicated != null && currentListSuppliersDuplicated.isNotEmpty){
       currentListSuppliers.clear();
     }
 
-    if(currentStorageList.isNotEmpty){
+    if(currentStorageList != null && currentStorageList.isNotEmpty){
       currentStorageList.clear();
     }
 
-    if( currentBranchActionsList.isNotEmpty){
+    if(currentBranchActionsList != null && currentBranchActionsList.isNotEmpty){
       currentBranchActionsList.clear();
     }
+    if(currentArchiviedWorkingOrdersList != null && currentArchiviedWorkingOrdersList.isNotEmpty){
+      currentArchiviedWorkingOrdersList.clear();
+    }
+
+    if(currentDraftOrdersList != null && currentDraftOrdersList.isNotEmpty){
+      currentDraftOrdersList.clear();
+    }
+    if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
+      currentOrdersForCurrentBranch.clear();
+    }
+    if(currentTodayOrdersForCurrentBranch != null && currentTodayOrdersForCurrentBranch.isNotEmpty){
+      currentTodayOrdersForCurrentBranch.clear();
+    }
+    if(currentBranchActionsList != null && currentBranchActionsList.isNotEmpty){
+      currentBranchActionsList.clear();
+    }
+
     setShowIvaButtonToFalse();
     indexIvaList = 0;
 
@@ -545,6 +584,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   Future<void> addCurrentOrdersList(List<OrderModel> orderModelList) async {
     currentOrdersForCurrentBranch.clear();
+    currentTodayOrdersForCurrentBranch.clear();
     currentOrdersForCurrentBranch.addAll(orderModelList);
     currentDraftOrdersList.clear();
     currentArchiviedWorkingOrdersList.clear();
@@ -561,12 +601,16 @@ class DataBundleNotifier extends ChangeNotifier {
         currentArchiviedWorkingOrdersList.add(orderItem);
       }else{
         currentUnderWorkingOrdersList.add(orderItem);
+        if(
+        DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == DateTime.now().day &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+
+          currentTodayOrdersForCurrentBranch.add(orderItem);
+
+        }
       }
     });
-
-
-
-
     notifyListeners();
   }
 
@@ -866,6 +910,13 @@ class DataBundleNotifier extends ChangeNotifier {
     }else{
       return 'Error retrieving user name';
     }
+  }
 
+  void removeProductFromStorage(StorageProductModel productStorageElementToRemove) {
+    currentStorageProductListForCurrentStorage.remove(productStorageElementToRemove);
+    currentStorageProductListForCurrentStorageDuplicated.remove(productStorageElementToRemove);
+    currentStorageProductListForCurrentStorageUnload.remove(productStorageElementToRemove);
+    currentStorageProductListForCurrentStorageLoad.remove(productStorageElementToRemove);
+    notifyListeners();
   }
 }

@@ -133,6 +133,7 @@ String getMonthFromMonthNumber(int month){
   }
 }
 
+
 String getItalianMonthFromMonthName(String month){
   switch(month){
     case 'january':
@@ -162,6 +163,7 @@ String getItalianMonthFromMonthName(String month){
     default:
       return month;
   }
+
 }
 
 String getNameDayFromWeekDay(int weekday) {
@@ -183,3 +185,4 @@ String getNameDayFromWeekDay(int weekday) {
 
   }
 }
+

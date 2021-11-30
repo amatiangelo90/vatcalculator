@@ -10,6 +10,8 @@ import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
@@ -247,7 +249,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   width: dataBundleNotifier.currentOrdersForCurrentBranch.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                   child: Card(
                                     color: Colors.blueAccent.withOpacity(0.5),
-                                    child: Center(child: Text(getOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch), style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                    child: Center(child: Text(dataBundleNotifier.currentUnderWorkingOrdersList.length.toString(),
+                                      style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                   ),
                                 ),
                                 SizedBox(
@@ -436,7 +439,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Crea',(){
                         dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
+                        Navigator.pushNamed(context, CreationBranchScreen.routeName);
                       }, kPrimaryColor,
                           kCustomWhite,
                           kPrimaryColor),
@@ -445,7 +448,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                       child: buildDrawerRow('','Associa tramite Codice',(){
                         dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
+                        Navigator.pushNamed(context, BranchJoinScreen.routeName);
                       }, kPrimaryColor,
                           kCustomWhite,
                           kPrimaryColor),
@@ -619,16 +622,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
       );
     });
     return branchWidgetList;
-  }
-
-  String getOrdersNumber(List<OrderModel> currentOrdersForCurrentBranch) {
-    int counter = 0;
-    currentOrdersForCurrentBranch.forEach((element) {
-      if(element.status != OrderState.ARCHIVED && element.status != OrderState.DRAFT){
-        counter = counter + 1;
-      }
-    });
-    return counter.toString();
   }
 
   String getDraftOrdersNumber(List<OrderModel> currentOrdersForCurrentBranch) {

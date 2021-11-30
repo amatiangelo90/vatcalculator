@@ -571,8 +571,9 @@ class _StorageScreenState extends State<StorageScreen>{
           ),
           key: Key(productStorageElementToRemove.pkStorageProductId.toString()),
           onDismissed: (value){
-            dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
 
+            dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
+            dataBundleNotifier.removeProductFromStorage(productStorageElementToRemove);
             dataBundleNotifier.getclientServiceInstance()
                 .removeProductFromStorage(
                   storageProductModel: productStorageElementToRemove,
