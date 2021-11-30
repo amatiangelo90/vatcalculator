@@ -528,106 +528,109 @@ class _BodyState extends State<Body> {
         ordersList.add(
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
-              ),
-              color: Colors.white,
-              elevation: 10,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: SizedBox(
+              width: getProportionateScreenWidth(350),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+                color: Colors.white,
+                elevation: 10,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              OrderState.getIconWidget(OrderState.INCOMING),
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
+                              Text(
+                                '       #' + order.code,
+                                style: TextStyle(
+                                    fontSize: getProportionateScreenHeight(12)),
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: getProportionateScreenWidth(90)),
+                        ],
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Row(
-                          children: [
-                            OrderState.getIconWidget(OrderState.INCOMING),
-                          ],
-                        ),
                         Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                              style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
                             Text(
-                              '       #' + order.code,
+                              'Prodotti',
                               style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(12)),
+                                  fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
+                            ),
+                            Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
+                              style: TextStyle(
+                                  color: kPinaColor,
+                                  fontSize: getProportionateScreenHeight(17)),
                             ),
                           ],
                         ),
                         SizedBox(width: getProportionateScreenWidth(90)),
+                        Column(
+                          children: [
+                            Text(
+                              'Prezzo Stimato ',
+                              style: TextStyle(
+                                  fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '€ ' +
+                                  calculatePriceFromProductList(
+                                      orderIdProductListMap[
+                                      order.pk_order_id]),
+                              style: TextStyle(
+                                  color: kPinaColor,
+                                  fontSize: getProportionateScreenHeight(17)),
+                            ),
+                          ],
+                        ),
+
                       ],
                     ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Prodotti',
-                            style: TextStyle(
-                                fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
-                          ),
-                          Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
-                            style: TextStyle(
-                                color: kPinaColor,
-                                fontSize: getProportionateScreenHeight(17)),
-                          ),
-                        ],
-                      ),
-                      SizedBox(width: getProportionateScreenWidth(90)),
-                      Column(
-                        children: [
-                          Text(
-                            'Prezzo Stimato ',
-                            style: TextStyle(
-                                fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '€ ' +
-                                calculatePriceFromProductList(
-                                    orderIdProductListMap[
-                                    order.pk_order_id]),
-                            style: TextStyle(
-                                color: kPinaColor,
-                                fontSize: getProportionateScreenHeight(17)),
-                          ),
-                        ],
-                      ),
+                    SizedBox(height: getProportionateScreenHeight(10),),
 
-                    ],
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(10),),
-
-                  Container(
-                    height: 50,
-                    width: getProportionateScreenWidth(300),
-                    child: CupertinoButton(
-                      child: Text(
-                        'Completa Ordine',
-                        style: TextStyle(
-                            fontSize: getProportionateScreenHeight(13)),
+                    Container(
+                      height: 50,
+                      width: getProportionateScreenWidth(350),
+                      child: CupertinoButton(
+                        child: Text(
+                          'Completa Ordine',
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(13)),
+                        ),
+                        pressedOpacity: 0.8,
+                        color: Colors.green.shade700,
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+                            productList: orderIdProductListMap[order.pk_order_id],),),);
+                        },
                       ),
-                      pressedOpacity: 0.8,
-                      color: Colors.green.shade700,
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                          productList: orderIdProductListMap[order.pk_order_id],),),);
-                      },
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(10.0),
+                            bottomRight: Radius.circular(10.0)),
+                        color: Colors.green.shade700,
+
+                      ),
                     ),
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(10.0),
-                          bottomRight: Radius.circular(10.0)),
-                      color: Colors.green.shade700,
-
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -658,7 +661,7 @@ class _BodyState extends State<Body> {
           currentDate.year == now.year){
       result = true;
     }
-    return false;
+    return result;
   }
 
   Future<List<Widget>> populateProductsListForTodayOrders(DataBundleNotifier dataBundleNotifier) async {
