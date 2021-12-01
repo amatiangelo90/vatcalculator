@@ -162,20 +162,13 @@ class DataBundleNotifier extends ChangeNotifier {
           days: DateTime.daysPerWeek - currentDateTime.weekday)),
     );
 
-    currentDateTimeRange = DateTimeRange(
-      start: currentDateTimeRange.start
-          .subtract(const Duration(days: 100)),
-      end: currentDateTimeRange.end.subtract(const Duration(
-          days: 100)),
-    );
-
-    if(currentBranch.providerFatture == 'fatture_in_cloud'){
-      retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
-    }else{
-      // retrieveDataToDrawChartAruba(currentDateTimeRange);
+    if(currentBranch != null){
+      if(currentBranch.providerFatture == 'fatture_in_cloud'){
+        retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
+      }else if(currentBranch.providerFatture == 'aruba'){
+        // retrieveDataToDrawChartAruba(currentDateTimeRange);
+      }
     }
-
-
     clearAndUpdateMapBundle();
     notifyListeners();
   }
@@ -281,8 +274,9 @@ class DataBundleNotifier extends ChangeNotifier {
     }
 
     currentBranchActionsList.clear();
-    currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
-
+    if(currentBranch != null){
+      currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
+    }
 
     clearAndUpdateMapBundle();
     notifyListeners();

@@ -255,7 +255,8 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Magazzino: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  Text(dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id).name, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+
+                                  dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id) == null ? SizedBox(width: 0,) : Text(dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id).name, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),
                               Row(
@@ -270,28 +271,28 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Da consegnare a: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  Text(dataBundleNotifier.currentBranch.companyName, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                  dataBundleNotifier.currentBranch == null ? Text('') : Text(dataBundleNotifier.currentBranch.companyName, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('In via: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  Text(dataBundleNotifier.currentBranch.address, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                  dataBundleNotifier.currentBranch == null ? Text('') : Text(dataBundleNotifier.currentBranch.address, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Città: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  Text(dataBundleNotifier.currentBranch.city, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                  dataBundleNotifier.currentBranch == null ? Text('') : Text(dataBundleNotifier.currentBranch.city, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('CAP : ', style: TextStyle(fontWeight: FontWeight.bold),),
-                                  Text(dataBundleNotifier.currentBranch.cap.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                                  dataBundleNotifier.currentBranch == null ? Text('') : Text(dataBundleNotifier.currentBranch.cap.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),
                               Row(

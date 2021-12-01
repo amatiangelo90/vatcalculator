@@ -160,7 +160,7 @@ class _StorageScreenState extends State<StorageScreen>{
               },
               child: Text(
                 dataBundleNotifier.currentStorageList.isNotEmpty ?
-                dataBundleNotifier.currentStorage.name : 'Crea Magazzino',
+                dataBundleNotifier.currentStorage.name : dataBundleNotifier.currentBranch == null ? 'Area Gestione Magazzini' : 'Crea Magazzino',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(13),
                   color: kPrimaryColor,
@@ -169,7 +169,7 @@ class _StorageScreenState extends State<StorageScreen>{
             ),
             backgroundColor: kCustomWhite,
             actions: [
-              IconButton(
+              dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : IconButton(
                   icon: Icon(
                     dataBundleNotifier.searchStorageButton ? Icons.cancel_outlined : Icons.search,
                     color: dataBundleNotifier.searchStorageButton ? kPinaColor : kPrimaryColor,
@@ -181,7 +181,7 @@ class _StorageScreenState extends State<StorageScreen>{
                   }
               ),
 
-              dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
+              dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
                   icon: Icon(
                     Icons.arrow_circle_down_outlined,
                     color: kPinaColor,
@@ -191,7 +191,7 @@ class _StorageScreenState extends State<StorageScreen>{
                     Navigator.pushNamed(context, UnloadStorageScreen.routeName);
                   }
                   ),
-              dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
+              dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
                   icon: Icon(
                     Icons.arrow_circle_up_outlined,
                     color: Colors.green,
