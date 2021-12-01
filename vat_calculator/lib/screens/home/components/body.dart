@@ -231,70 +231,14 @@ class _BodyState extends State<Body> {
                     ),
                   );
                 }),
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(width: getProportionateScreenWidth(10),),
-                          Text('Situazione Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                        ],
-                      ),
-                      CupertinoButton(
-                        onPressed: (){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          switch(dataBundleNotifier.currentBranch.providerFatture){
-                            case 'fatture_in_cloud':
-                              Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                              break;
-                            case 'aruba':
-                              Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                              break;
-                            case '':
-                              Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                              break;
-                          }
-                        },
-                        child: Row(
-                          children: [
-                            Text('Dettagli', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
+                  children: [
+                    Text(''),
 
+                  ],
+                ) :
                 LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.circle,
-                            color: kPinaColor,
-                          ),
-                          Text('Iva Credito'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            color: Colors.blueAccent.withOpacity(0.6),
-                          ),
-                          Text('Iva Debito'),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+
                 Divider(height: getProportionateScreenHeight(30),),
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
               ],

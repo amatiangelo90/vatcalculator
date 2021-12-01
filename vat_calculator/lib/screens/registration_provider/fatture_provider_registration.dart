@@ -220,6 +220,12 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
            appBar: AppBar(
              iconTheme: const IconThemeData(color: Colors.white),
              backgroundColor: kPrimaryColor,
+             leading: GestureDetector(
+               child: const Icon(Icons.arrow_back_ios),
+               onTap: (){
+                 Navigator.of(context).pop();
+               },
+             ),
              actions: [
                GestureDetector(
                  child: SvgPicture.asset(
