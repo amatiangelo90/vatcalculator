@@ -6,6 +6,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.
 import 'package:vat_calculator/client/fattureICloud/model/response_fatture_api.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
@@ -65,12 +66,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
             const SizedBox(height: 30,),
             SizedBox(
               width: SizeConfig.screenWidth * 0.6,
-              child: DefaultButton(
-                text: "Crea Attività",
-                press: () async {
-                  Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-                },
-              ),
+              child: CreateBranchButton(),
             ),
           ],
         ),

@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
@@ -59,12 +60,7 @@ class _BodyState extends State<Body> {
               const SizedBox(height: 30,),
               SizedBox(
                 width: SizeConfig.screenWidth * 0.6,
-                child: DefaultButton(
-                  text: "Crea Attività",
-                  press: () async {
-                    Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-                  },
-                ),
+                child: CreateBranchButton(),
               ),
             ],
           ),

@@ -183,7 +183,7 @@ class CreationBranchScreen extends StatelessWidget {
               ),
             ),
             centerTitle: true,
-            title: Text('Registra la tua attività',
+            title: Text('Crea nuova attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
                 color: Colors.white,

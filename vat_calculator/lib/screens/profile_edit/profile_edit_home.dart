@@ -11,7 +11,10 @@ import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
+import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
@@ -342,8 +345,22 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                   ),
                 ),
                 (dataBundleNotifier.dataBundleList != null && dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty) ? buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
-                    dataBundleNotifier) : const SizedBox(width: 50,
-                child: Center(child: Text('Nessuna Attività creata')),),
+                    dataBundleNotifier) : Center(child: Column(
+                      children: [
+                        Text('Nessuna Attività creata'),
+                        Padding(
+                          padding: const EdgeInsets.all(28.0),
+                          child: SizedBox(
+                            width: SizeConfig.screenWidth * 0.6,
+                            child: CreateBranchButton(),
+                          ),
+                        ),
+                      ],
+                    )),
+                Divider(
+                  endIndent: getProportionateScreenWidth(40),
+                  indent: getProportionateScreenWidth(40),
+                ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(18, 10, 18, 10),
                   child: TextButton(

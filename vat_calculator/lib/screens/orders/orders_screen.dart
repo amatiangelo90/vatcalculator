@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../constants.dart';
 import '../../enums.dart';
@@ -29,7 +30,7 @@ class _OrdersScreenState extends State<OrdersScreen>
           drawer: const CommonDrawer(),
           appBar: AppBar(
             actions: [
-              Stack(
+              dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -77,7 +78,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                   ),
                 ],
               ),
-              Stack(
+              dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
@@ -137,7 +138,25 @@ class _OrdersScreenState extends State<OrdersScreen>
             ),
             backgroundColor: kCustomWhite,
           ),
-          body: const UnderWorkingOrderPage(),
+          body: dataBundleNotifier.currentBranch == null ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Sembra che tu non abbia configurato ancora nessuna attività. ",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(13),
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              const SizedBox(height: 30,),
+              SizedBox(
+                width: SizeConfig.screenWidth * 0.6,
+                child: CreateBranchButton(),
+              ),
+            ],
+          ) : const UnderWorkingOrderPage(),
           bottomNavigationBar:
               const CustomBottomNavBar(selectedMenu: MenuState.orders),
         );

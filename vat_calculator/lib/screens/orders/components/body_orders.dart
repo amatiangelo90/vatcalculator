@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
@@ -46,12 +47,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                           const SizedBox(height: 30,),
                           SizedBox(
                             width: SizeConfig.screenWidth * 0.6,
-                            child: DefaultButton(
-                              text: "Crea Attività",
-                              press: () async {
-                                Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-                              },
-                            ),
+                            child: CreateBranchButton(),
                           ),
                         ],
                       ) : Column(

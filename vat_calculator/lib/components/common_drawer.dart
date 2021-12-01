@@ -25,6 +25,7 @@ import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_i
 
 import '../constants.dart';
 import '../size_config.dart';
+import 'create_branch_button.dart';
 import 'loader_overlay_widget.dart';
 
 class CommonDrawer extends StatefulWidget {
@@ -87,7 +88,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             ],
                           ),
                           const SizedBox(height: 10,),
-                          GestureDetector(
+                          dataBundleNotifier.currentBranch == null ? const Padding(
+                            padding: EdgeInsets.all(15.0),
+                            child: CreateBranchButton(),
+                          ) : GestureDetector(
                             onTap: (){
                               showDialog(
                                   context: context,

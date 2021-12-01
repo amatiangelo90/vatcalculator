@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/custom_surfix_icon.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
@@ -87,12 +88,7 @@ class _VatFattureInCloudCalculatorBodyState
               ),
               SizedBox(
                 width: SizeConfig.screenWidth * 0.6,
-                child: DefaultButton(
-                  text: "Crea Attività",
-                  press: () async {
-                    Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-                  },
-                ),
+                child: CreateBranchButton(),
               ),
             ],
           ),

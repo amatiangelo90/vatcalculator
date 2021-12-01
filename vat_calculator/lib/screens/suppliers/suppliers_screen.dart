@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/item_menu.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -26,7 +27,7 @@ class SuppliersScreen extends StatelessWidget {
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
         bottomSheet:
-            Padding(
+            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -64,13 +65,6 @@ class SuppliersScreen extends StatelessWidget {
             ],
           ),
           elevation: 2,
-          actions: [
-            IconButton(
-                icon: const Icon(Icons.add),
-                onPressed: () => {
-                      Navigator.pushNamed(context, AddSupplierScreen.routeName),
-                    }),
-          ],
         ),
         body: Container(
           color: kCustomWhite,
@@ -92,13 +86,7 @@ class SuppliersScreen extends StatelessWidget {
                     ),
                     SizedBox(
                       width: SizeConfig.screenWidth * 0.6,
-                      child: DefaultButton(
-                        text: "Crea Attività",
-                        press: () async {
-                          Navigator.pushNamed(
-                              context, BranchChoiceCreationEnjoy.routeName);
-                        },
-                      ),
+                      child: CreateBranchButton(),
                     ),
                   ],
                 )
