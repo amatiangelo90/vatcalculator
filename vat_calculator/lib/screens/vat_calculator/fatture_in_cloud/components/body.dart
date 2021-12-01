@@ -386,7 +386,7 @@ class _VatFattureInCloudCalculatorBodyState
                             press: () async {
                               dataBundleNotifier.setShowIvaButtonToTrue();
                             },
-                            color: Colors.blue,
+                            color: Colors.blue.withOpacity(0.8),
                           ),
                         ),
                         dataBundleNotifier.showIvaButtonPressed

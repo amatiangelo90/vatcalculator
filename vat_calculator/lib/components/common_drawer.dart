@@ -181,7 +181,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         kCustomWhite,
                         Colors.black54.withOpacity(0.1),
                         kCustomWhite),
-                    buildDrawerRow('assets/icons/iva.svg','Calcola Iva',(){
+                    buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
                       if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                         showDialog(
                             context: context,
@@ -203,9 +203,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         );
                       } else{
                         dataBundleNotifier.setShowIvaButtonToFalse();
-                        if(dataBundleNotifier.currentBranch == null){
-                          Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                        }
+
                         switch(dataBundleNotifier.currentBranch.providerFatture){
                           case 'fatture_in_cloud':
                             Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);

@@ -9,14 +9,19 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
+import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
+import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../home_screen.dart';
 
 class Body extends StatefulWidget {
   const Body({Key key}) : super(key: key);
@@ -27,8 +32,10 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
 
+  DateTime _currentDateForDateRangePicker;
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
+
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +184,7 @@ class _BodyState extends State<Body> {
                       Row(
                         children: [
                           SizedBox(width: getProportionateScreenWidth(10),),
-                          Text('Ordini in arrivo Oggi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                          Text('Ordini in arrivo oggi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
                         ],
                       ),
                       CupertinoButton(
@@ -224,7 +231,71 @@ class _BodyState extends State<Body> {
                     ),
                   );
                 }),
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(width: getProportionateScreenWidth(10),),
+                          Text('Situazione Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                        ],
+                      ),
+                      CupertinoButton(
+                        onPressed: (){
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          switch(dataBundleNotifier.currentBranch.providerFatture){
+                            case 'fatture_in_cloud':
+                              Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                              break;
+                            case 'aruba':
+                              Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                              break;
+                            case '':
+                              Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
+                              break;
+                          }
+                        },
+                        child: Row(
+                          children: [
+                            Text('Dettagli', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
+                LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
+                Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: const [
+                          Icon(
+                            Icons.circle,
+                            color: kPinaColor,
+                          ),
+                          Text('Iva Credito'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            color: Colors.blueAccent.withOpacity(0.6),
+                          ),
+                          Text('Iva Debito'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(height: getProportionateScreenHeight(30),),
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
               ],
             ),
@@ -604,7 +675,6 @@ class _BodyState extends State<Body> {
                       ],
                     ),
                     SizedBox(height: getProportionateScreenHeight(10),),
-
                     Container(
                       height: 50,
                       width: getProportionateScreenWidth(350),
@@ -650,7 +720,6 @@ class _BodyState extends State<Body> {
 
     return ordersList;
   }
-
   bool isToday(int delivery_date) {
     DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(delivery_date);
     DateTime now = DateTime.now();
@@ -663,7 +732,6 @@ class _BodyState extends State<Body> {
     }
     return result;
   }
-
   Future<List<Widget>> populateProductsListForTodayOrders(DataBundleNotifier dataBundleNotifier) async {
 
     dataBundleNotifier.currentUnderWorkingOrdersList.forEach((element) async {
@@ -677,7 +745,6 @@ class _BodyState extends State<Body> {
 
     return [];
   }
-
   String calculatePriceFromProductList(List<ProductOrderAmountModel> orderIdProductListMap) {
     double total = 0.0;
 
@@ -688,13 +755,12 @@ class _BodyState extends State<Body> {
     }
     return total.toStringAsFixed(2);
   }
-
   @override
   void initState() {
     super.initState();
+    _currentDateForDateRangePicker = DateTime.now();
     Timer(Duration(milliseconds: 1500), () {
       setState(() {
-
       });
     });
 
