@@ -62,6 +62,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           DefaultButton(
             text: "Crea Profilo ed Accedi",
             press: () async {
+              print('XXX');
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 KeyboardUtil.hideKeyboard(context);

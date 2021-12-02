@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../constants.dart';
@@ -49,122 +50,144 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              children: [
                Padding(
                  padding: const EdgeInsets.all(8.0),
-                 child: CupertinoButton(
-                     color: kPrimaryColor,
-                     child: const Text('Imposta Provider'),
-                     onPressed: () async {
-                       KeyboardUtil.hideKeyboard(context);
-                       try{
-                         if(controllerProviderName.text == 'fatture_in_cloud'){
-                           var performRichiestaInfoResponse = await fattureInCloudClient.performRichiestaInfo(
-                               controllerApiUidOrPassword.text,
-                               controllerApiKeyOrUser.text);
-                           if(performRichiestaInfoResponse.data.toString().contains('error')){
+                 child: SizedBox(
+                   width: MediaQuery.of(context).size.width - 30,
+                   child: CupertinoButton(
+                       color: Colors.green.shade900.withOpacity(0.8),
+                       child: const Text('Imposta Provider'),
+                       onPressed: () async {
+                         KeyboardUtil.hideKeyboard(context);
+                         try{
+                           if(controllerProviderName.text == 'fatture_in_cloud'){
+                             var performRichiestaInfoResponse = await fattureInCloudClient.performRichiestaInfo(
+                                 controllerApiUidOrPassword.text,
+                                 controllerApiKeyOrUser.text);
+                             if(performRichiestaInfoResponse.data.toString().contains('error')){
 
-                             showDialog(
-                               context: context,
-                               builder: (BuildContext context) {
-                                 return AlertDialog(
-                                   title: const Text("Errore"),
-                                   content: Text('Validazione Fallita. Messaggio di errore dal server: ' + performRichiestaInfoResponse.data.toString()),
-                                   actions: <Widget>[
-                                     FlatButton(
-                                       child: const Text("OK"),
-                                       onPressed: () {
-                                         Navigator.of(context).pop();
-                                       },
-                                     ),
-                                   ],
-                                 );
-                               },
-                             );
-                           }else{
+                               showDialog(
+                                 context: context,
+                                 builder: (BuildContext context) {
+                                   return AlertDialog(
+                                     title: const Text("Errore"),
+                                     content: Text('Validazione Fallita. Messaggio di errore dal server: ' + performRichiestaInfoResponse.data.toString()),
+                                     actions: <Widget>[
+                                       FlatButton(
+                                         child: const Text("OK"),
+                                         onPressed: () {
+                                           Navigator.of(context).pop();
+                                         },
+                                       ),
+                                     ],
+                                   );
+                                 },
+                               );
+                             }else{
 
-                             context.loaderOverlay.show();
+                               context.loaderOverlay.show();
 
-                             BranchModel branchUpdated = BranchModel(
-                               pkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                               city: dataBundleNotifier.currentBranch.city,
-                               cap: dataBundleNotifier.currentBranch.cap,
-                               address: dataBundleNotifier.currentBranch.address,
-                               vatNumber: dataBundleNotifier.currentBranch.vatNumber,
-                               companyName: dataBundleNotifier.currentBranch.companyName,
-                               phoneNumber: dataBundleNotifier.currentBranch.phoneNumber,
-                               eMail: dataBundleNotifier.currentBranch.eMail,
-                               apiUidOrPassword: controllerApiUidOrPassword.text,
-                               apiKeyOrUser: controllerApiKeyOrUser.text,
-                               providerFatture: controllerProviderName.text);
+                               BranchModel branchUpdated = BranchModel(
+                                 pkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                 city: dataBundleNotifier.currentBranch.city,
+                                 cap: dataBundleNotifier.currentBranch.cap,
+                                 address: dataBundleNotifier.currentBranch.address,
+                                 vatNumber: dataBundleNotifier.currentBranch.vatNumber,
+                                 companyName: dataBundleNotifier.currentBranch.companyName,
+                                 phoneNumber: dataBundleNotifier.currentBranch.phoneNumber,
+                                 eMail: dataBundleNotifier.currentBranch.eMail,
+                                 apiUidOrPassword: controllerApiUidOrPassword.text,
+                                 apiKeyOrUser: controllerApiKeyOrUser.text,
+                                 providerFatture: controllerProviderName.text);
 
-                              Response response = await dataBundleNotifier.getclientServiceInstance().addProviderDetailsToBranch(branchModel: branchUpdated);
-                              if(response.data > 0 ){
-                                dataBundleNotifier.addProviderFattureDetailsToCurrentBranch(
-                                  providerFatture: controllerProviderName.text,
-                                  apiKeyOrUser: controllerApiKeyOrUser.text,
-                                  apiUidOrPassword: controllerApiUidOrPassword.text,
-                                );
-                                controllerProviderName.clear();
-                                controllerApiKeyOrUser.clear();
-                                controllerApiUidOrPassword.clear();
+                                Response response = await dataBundleNotifier.getclientServiceInstance().addProviderDetailsToBranch(branchModel: branchUpdated);
+                                if(response.data > 0 ){
+                                  dataBundleNotifier.addProviderFattureDetailsToCurrentBranch(
+                                    providerFatture: controllerProviderName.text,
+                                    apiKeyOrUser: controllerApiKeyOrUser.text,
+                                    apiUidOrPassword: controllerApiUidOrPassword.text,
+                                  );
+                                  controllerProviderName.clear();
+                                  controllerApiKeyOrUser.clear();
+                                  controllerApiUidOrPassword.clear();
 
-                                context.loaderOverlay.hide();
-                                switch(dataBundleNotifier.currentBranch.providerFatture){
-                                  case 'fatture_in_cloud':
-                                    Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                                    break;
-                                  case 'aruba':
-                                    Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                                    break;
-                                  case '':
-                                    Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                                    break;
+                                  context.loaderOverlay.hide();
+                                  dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                                  switch(dataBundleNotifier.currentBranch.providerFatture){
+                                    case 'fatture_in_cloud':
+                                      Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                                      break;
+                                    case 'aruba':
+                                      Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                                      break;
+                                    case '':
+                                      Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
+                                      break;
+                                  }
+                                }else{
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Errore"),
+                                        content: const Text("Impossibile salvare dettagli provider per la fatturazione elettronica"
+                                            ". Provare più tardi."),
+                                        actions: <Widget>[
+                                          FlatButton(
+                                            child: const Text("OK"),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
                                 }
-                              }else{
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("Errore"),
-                                      content: const Text("Impossibile salvare dettagli provider per la fatturazione elettronica"
-                                          ". Provare più tardi."),
-                                      actions: <Widget>[
-                                        FlatButton(
-                                          child: const Text("OK"),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                           }
-                         }else if (controllerProviderName.text == 'aruba'){
-                           Response performAuthAruba = await arubaClient.performVerifyCredentials(
-                               controllerApiUidOrPassword.text,
-                               controllerApiKeyOrUser.text);
+                             }
+                           }else if (controllerProviderName.text == 'aruba'){
+                             Response performAuthAruba = await arubaClient.performVerifyCredentials(
+                                 controllerApiUidOrPassword.text,
+                                 controllerApiKeyOrUser.text);
 
-                           if(performAuthAruba.statusCode == 200){
-                             const snackBar =
-                             SnackBar(
-                               duration: Duration(seconds: 5),
-                               backgroundColor: Colors.green,
-                               content: Text('Ottimo lavoro! Credenziali salvate',
-                               ),
-                             );
-                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                             if(performAuthAruba.statusCode == 200){
+                               const snackBar =
+                               SnackBar(
+                                 duration: Duration(seconds: 5),
+                                 backgroundColor: Colors.green,
+                                 content: Text('Ottimo lavoro! Credenziali salvate',
+                                 ),
+                               );
+                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
 
+                             }else{
+                               showDialog(
+                                 context: context,
+                                 builder: (BuildContext context) {
+                                   return AlertDialog(
+                                     title: const Text("Errore"),
+                                     content: const Text("Validazione Fallita. Credenziali errate."),
+                                     actions: <Widget>[
+                                       FlatButton(
+                                         child: const Text("OK"),
+                                         onPressed: () {
+                                           Navigator.of(context).pop();
+                                         },
+                                       ),
+                                     ],
+                                   );
+                                 },
+                               );
+                             }
                            }else{
                              showDialog(
                                context: context,
                                builder: (BuildContext context) {
                                  return AlertDialog(
-                                   title: const Text("Errore"),
-                                   content: const Text("Validazione Fallita. Credenziali errate."),
+                                   title: Text("Errore"),
+                                   content: Text("Selezionare e configurare un provider per la fatturazione elettronica"),
                                    actions: <Widget>[
                                      FlatButton(
-                                       child: const Text("OK"),
+                                       child: new Text("OK"),
                                        onPressed: () {
                                          Navigator.of(context).pop();
                                        },
@@ -174,16 +197,17 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                },
                              );
                            }
-                         }else{
+                         }catch(e){
+
                            showDialog(
                              context: context,
                              builder: (BuildContext context) {
                                return AlertDialog(
-                                 title: Text("Errore"),
-                                 content: Text("Selezionare e configurare un provider per la fatturazione elettronica"),
+                                 title: const Text("Errore"),
+                                 content: Text("Impossibile salvare credenziali provider. Riprova più tardi. Errore: $e"),
                                  actions: <Widget>[
                                    FlatButton(
-                                     child: new Text("OK"),
+                                     child: const Text("OK"),
                                      onPressed: () {
                                        Navigator.of(context).pop();
                                      },
@@ -193,27 +217,8 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                              },
                            );
                          }
-                       }catch(e){
-
-                         showDialog(
-                           context: context,
-                           builder: (BuildContext context) {
-                             return AlertDialog(
-                               title: const Text("Errore"),
-                               content: Text("Impossibile salvare credenziali provider. Riprova più tardi. Errore: $e"),
-                               actions: <Widget>[
-                                 FlatButton(
-                                   child: const Text("OK"),
-                                   onPressed: () {
-                                     Navigator.of(context).pop();
-                                   },
-                                 ),
-                               ],
-                             );
-                           },
-                         );
-                       }
-                     }),
+                       }),
+                 ),
                ),
              ],
            ),
@@ -223,7 +228,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              leading: GestureDetector(
                child: const Icon(Icons.arrow_back_ios),
                onTap: (){
-                 Navigator.of(context).pop();
+                 Navigator.pushNamed(context, HomeScreen.routeName);
                },
              ),
              actions: [

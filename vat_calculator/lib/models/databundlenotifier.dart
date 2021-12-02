@@ -58,11 +58,9 @@ class DataBundleNotifier extends ChangeNotifier {
   List<StorageProductModel> currentStorageProductListForCurrentStorageUnload = [
   ];
 
-  List<StorageProductModel> currentStorageProductListForCurrentStorageLoad = [
-  ];
+  List<StorageProductModel> currentStorageProductListForCurrentStorageLoad = [];
 
-  List<ProductModel> productToAddToStorage = [
-  ];
+  List<ProductModel> productToAddToStorage = [];
 
   List<OrderModel> currentOrdersForCurrentBranch = [];
 
@@ -77,6 +75,8 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ActionModel> currentBranchActionsList = [
 
   ];
+
+  List<ProductModel> productListForChoicedSupplierToPerformOrder = [];
 
   List<VatData> charDataCreditIva = [];
   List<VatData> charDataDebitIva = [];
@@ -103,6 +103,12 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
+    notifyListeners();
+  }
+
+  void setProductListForChoicedSupplierToPerformOrder(List<ProductModel> list){
+    productListForChoicedSupplierToPerformOrder.clear();
+    productListForChoicedSupplierToPerformOrder = list;
     notifyListeners();
   }
 

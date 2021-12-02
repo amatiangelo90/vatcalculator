@@ -422,12 +422,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
                         }else if(double.tryParse(_priceController.text) == null){
                           buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
-                        }
-                        else if(!_selectedValue4 && !_selectedValue5 && !_selectedValue10 && !_selectedValue22){
-                          buildSnackBar(text: 'Selezionare l\'iva da applicare al prezzo lordo del prodotto', color: kPinaColor);
-                        }else if(_categoryController.text.isEmpty || _categoryController.text == ''){
-                          buildSnackBar(text: 'Selezionare la categoria', color: kPinaColor);
-                        }else{
+                        } else{
 
                           ProductModel productModel = ProductModel(
                             pkProductId: widget.product.pkProductId,

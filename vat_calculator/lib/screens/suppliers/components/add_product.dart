@@ -385,73 +385,68 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   ),
                 ),
                 const SizedBox(height: 20,),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(30, 4, 30, 0),
-                  child: DefaultButton(color: Colors.green.shade700,
-                    press: () async {
-                      if(_nameController.text.isEmpty || _nameController.text == ''){
-                        buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
-                      }else if(!_litresUnitMeasure && !_otherUnitMeasure && !_kgUnitMeasure && !_packagesUnitMeasure){
-                        buildSnackBar(text: 'Unità di misura del prodotto obbligatoria', color: kPinaColor);
-                      } else if(_otherUnitMeasure && (_unitMeasureController.text.isEmpty || _unitMeasureController.text == '')){
-                        buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
-                      }else if(_priceController.text.isEmpty || _priceController.text == ''){
-                        buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
-                      }else if(double.tryParse(_priceController.text) == null){
-                        buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
-                      }
-                      else if(!_selectedValue4 && !_selectedValue5 && !_selectedValue10 && !_selectedValue22){
-                        buildSnackBar(text: 'Selezionare l\'iva da applicare al prezzo lordo del prodotto', color: kPinaColor);
-                      }else if(_categoryController.text.isEmpty || _categoryController.text == ''){
-                        buildSnackBar(text: 'Selezionare la categoria', color: kPinaColor);
-                      }else{
-
-                        //EasyLoading.show();
-                        ProductModel productModel = ProductModel(
-                            nome: _nameController.text,
-                            categoria: _categoryController.text,
-                            codice: const Uuid().v1(),
-                            descrizione: _descriptionController.text,
-                            iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
-                            prezzo_lordo: double.parse(_priceController.text),
-                            unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
-                            fkSupplierId: widget.supplier.pkSupplierId
-                        );
-
-                        print(productModel.toMap().toString());
-
-                        ClientVatService vatService = ClientVatService();
-                        Response performSaveProduct = await vatService.performSaveProduct(
-                            product: productModel,
-                            actionModel: ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
-                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                type: ActionType.PRODUCT_CREATION
-                            )
-                        );
-                        sleep(const Duration(seconds: 1));
-
-
-                        if(performSaveProduct != null && performSaveProduct.statusCode == 200){
-
-                          List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
-                          dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                          //EasyLoading.dismiss();
-                          clearAll();
-                          buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + widget.supplier.nome, color: Colors.green.shade700);
-                        }else{
-                          //EasyLoading.dismiss();
-                          buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
-                        }
-
-                      }
-                    },
-                    text: 'Crea',
-                  ),
-                ),
               ],
+            ),
+          ),
+          bottomSheet: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            child: DefaultButton(color: Colors.green.shade700.withOpacity(0.8),
+              press: () async {
+                if(_nameController.text.isEmpty || _nameController.text == ''){
+                  buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
+                }else if(!_litresUnitMeasure && !_otherUnitMeasure && !_kgUnitMeasure && !_packagesUnitMeasure){
+                  buildSnackBar(text: 'Unità di misura del prodotto obbligatoria', color: kPinaColor);
+                } else if(_otherUnitMeasure && (_unitMeasureController.text.isEmpty || _unitMeasureController.text == '')){
+                  buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
+                }else if(_priceController.text.isEmpty || _priceController.text == ''){
+                  buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
+                }else if(double.tryParse(_priceController.text) == null){
+                  buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
+                } else{
+
+                  //EasyLoading.show();
+                  ProductModel productModel = ProductModel(
+                      nome: _nameController.text,
+                      categoria: _categoryController.text,
+                      codice: const Uuid().v1(),
+                      descrizione: _descriptionController.text,
+                      iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
+                      prezzo_lordo: double.parse(_priceController.text),
+                      unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
+                      fkSupplierId: widget.supplier.pkSupplierId
+                  );
+
+                  print(productModel.toMap().toString());
+
+                  ClientVatService vatService = ClientVatService();
+                  Response performSaveProduct = await vatService.performSaveProduct(
+                      product: productModel,
+                      actionModel: ActionModel(
+                          date: DateTime.now().millisecondsSinceEpoch,
+                          description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
+                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                          type: ActionType.PRODUCT_CREATION
+                      )
+                  );
+                  sleep(const Duration(seconds: 1));
+
+
+                  if(performSaveProduct != null && performSaveProduct.statusCode == 200){
+
+                    List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
+                    dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+                    //EasyLoading.dismiss();
+                    clearAll();
+                    buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + widget.supplier.nome, color: Colors.green.shade700);
+                  }else{
+                    //EasyLoading.dismiss();
+                    buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
+                  }
+
+                }
+              },
+              text: 'Crea ' + _nameController.text,
             ),
           ),
         );

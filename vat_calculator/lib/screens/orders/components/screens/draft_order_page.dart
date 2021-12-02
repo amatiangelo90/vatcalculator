@@ -49,14 +49,14 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
           return Future.delayed(const Duration(milliseconds: 500));
         },
         child: Scaffold(
-          backgroundColor: kCustomWhite,
+          backgroundColor: Colors.grey.shade900,
           appBar: AppBar(
-            backgroundColor: kCustomWhite,
-            title: const Text('Bozze Ordini'),
+            backgroundColor: Colors.grey.shade900,
+            title: const Text('Bozze Ordini', style: TextStyle(color: kCustomWhite),),
             centerTitle: true,
-            titleTextStyle: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15)),
+            titleTextStyle: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),
             leading: GestureDetector(
-                child: const Icon(Icons.arrow_back_ios),
+                child: const Icon(Icons.arrow_back_ios, color: kCustomWhite,),
               onTap: (){
                   Navigator.of(context).pop();
               },

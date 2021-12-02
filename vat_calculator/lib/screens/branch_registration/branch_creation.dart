@@ -10,28 +10,35 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 
-class CreationBranchScreen extends StatelessWidget {
+class CreationBranchScreen extends StatefulWidget {
 
   static String routeName = 'branch_creation';
 
   @override
+  State<CreationBranchScreen> createState() => _CreationBranchScreenState();
+}
+
+class _CreationBranchScreenState extends State<CreationBranchScreen> {
+  TextEditingController controllerPIva;
+  TextEditingController controllerCompanyName;
+  TextEditingController controllerEmail;
+  TextEditingController controllerAddress;
+  TextEditingController controllerCity;
+  TextEditingController controllerCap;
+  TextEditingController controllerMobileNo;
+
+  @override
   Widget build(BuildContext context) {
+
+
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
 
-        TextEditingController controllerPIva = TextEditingController();
-        TextEditingController controllerCompanyName = TextEditingController();
-        TextEditingController controllerEmail;
         if(dataBundleNotifier.dataBundleList.isEmpty){
           controllerEmail = TextEditingController();
         }else{
           controllerEmail = TextEditingController(text: dataBundleNotifier.dataBundleList[0].email);
         }
-        TextEditingController controllerAddress = TextEditingController();
-        TextEditingController controllerCity = TextEditingController();
-        TextEditingController controllerCap = TextEditingController();
-        TextEditingController controllerMobileNo = TextEditingController();
-
         void buildShowErrorDialog(String text) {
           Widget cancelButton = TextButton(
             child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
@@ -109,7 +116,6 @@ class CreationBranchScreen extends StatelessWidget {
         }
 
         return Scaffold(
-          key: key,
           backgroundColor: Colors.grey.shade900.withOpacity(0.9),
           bottomSheet: Container(
             color: Colors.black54.withOpacity(0.9),
@@ -120,58 +126,61 @@ class CreationBranchScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 40,
-                    child: CupertinoButton(
-                        color: Colors.green.shade500,
-                        child: const Text('Crea Attività'),
-                        onPressed: () async {
-                          if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
-                            print('Il nome dell\' azienda è obbligatorio');
-                            buildShowErrorDialog('Il nome dell\' azienda è obbligatorio');
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CupertinoButton(
+                          color: Colors.green.shade500,
+                          child: const Text('Crea Attività'),
+                          onPressed: () async {
+                            if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
+                              print('Il nome dell\' azienda è obbligatorio');
+                              buildShowErrorDialog('Il nome dell\' azienda è obbligatorio');
 
-                          }else if(controllerEmail.text == null || controllerEmail.text == ''){
-                            print('L\'indirizzo email è obbligatorio');
-                            buildShowErrorDialog('L\'indirizzo email è obbligatorio');
-                          }else if(controllerAddress.text == null || controllerAddress.text == ''){
-                            print('Inserire indirizzo');
-                            buildShowErrorDialog('Inserire indirizzo');
-                          }else if(int.tryParse(controllerCap.text) == null){
-                            print('Il cap è errato. Inserire un numero corretto!');
-                            buildShowErrorDialog('Il cap è errato. Inserire un numero corretto');
-                          }else if(controllerCap.text.characters.length != 5){
-                            print('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
-                            buildShowErrorDialog('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
-                          }else{
-                            BranchModel company = BranchModel(
-                                eMail: controllerEmail.text,
-                                phoneNumber: controllerMobileNo.text,
-                                address: controllerAddress.text,
-                                apiKeyOrUser: '',
-                                apiUidOrPassword: '',
-                                companyName: controllerCompanyName.text,
-                                cap: int.parse(controllerCap.text),
-                                city: controllerCity.text,
-                                providerFatture: '',
-                                vatNumber: controllerPIva.text,
-                                pkBranchId: 0,
-                                accessPrivilege: Privileges.OWNER
-                            );
+                            }else if(controllerEmail.text == null || controllerEmail.text == ''){
+                              print('L\'indirizzo email è obbligatorio');
+                              buildShowErrorDialog('L\'indirizzo email è obbligatorio');
+                            }else if(controllerAddress.text == null || controllerAddress.text == ''){
+                              print('Inserire indirizzo');
+                              buildShowErrorDialog('Inserire indirizzo');
+                            }else if(int.tryParse(controllerCap.text) == null){
+                              print('Il cap è errato. Inserire un numero corretto!');
+                              buildShowErrorDialog('Il cap è errato. Inserire un numero corretto');
+                            }else if(controllerCap.text.characters.length != 5){
+                              print('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
+                              buildShowErrorDialog('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
+                            }else{
+                              BranchModel company = BranchModel(
+                                  eMail: controllerEmail.text,
+                                  phoneNumber: controllerMobileNo.text,
+                                  address: controllerAddress.text,
+                                  apiKeyOrUser: '',
+                                  apiUidOrPassword: '',
+                                  companyName: controllerCompanyName.text,
+                                  cap: int.parse(controllerCap.text),
+                                  city: controllerCity.text,
+                                  providerFatture: '',
+                                  vatNumber: controllerPIva.text,
+                                  pkBranchId: 0,
+                                  accessPrivilege: Privileges.OWNER
+                              );
 
-                            ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+                              ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
 
 
-                            ActionModel actionModel = ActionModel(user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                description: 'Ha creato l\'attività ${controllerCompanyName.text}',
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                fkBranchId: 0);
-                            await clientService.performSaveBranch(company, actionModel);
+                              ActionModel actionModel = ActionModel(user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  description: 'Ha creato l\'attività ${controllerCompanyName.text}',
+                                  date: DateTime.now().millisecondsSinceEpoch,
+                                  fkBranchId: 0);
+                              await clientService.performSaveBranch(company, actionModel);
 
-                            List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
-                            dataBundleNotifier.addBranches(_branchList);
+                              List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
+                              dataBundleNotifier.addBranches(_branchList);
 
-                            Navigator.pushNamed(context, HomeScreen.routeName);
-                          }
+                              Navigator.pushNamed(context, HomeScreen.routeName);
+                            }
 
-                        }),
+                          }),
+                    ),
                   ),
                 ),
               ],
@@ -315,5 +324,16 @@ class CreationBranchScreen extends StatelessWidget {
       },
     );
 
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controllerPIva = TextEditingController();
+    controllerCompanyName = TextEditingController();
+    controllerAddress = TextEditingController();
+    controllerCity = TextEditingController();
+    controllerCap = TextEditingController();
+    controllerMobileNo = TextEditingController();
   }
 }

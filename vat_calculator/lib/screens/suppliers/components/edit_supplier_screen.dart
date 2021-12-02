@@ -5,10 +5,12 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -56,13 +58,13 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           controllerPIva = TextEditingController(text: widget.currentSupplier.piva);
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(8.0),
               child: DefaultButton(
                 text: 'Crea Prodotto',
                 press: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
                 },
-                color: kPrimaryColor,
+                color: Colors.green.shade700.withOpacity(0.8),
               ),
             ),
             body: FutureBuilder(
@@ -105,7 +107,41 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           );
         },
       ),
-      const Center(child: Text('Ordini')),
+      Consumer<DataBundleNotifier>(
+        builder: (context, dataBundleNotifier, _){
+          return Scaffold(
+            bottomSheet: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DefaultButton(
+                text: 'Crea Ordine',
+                press: () async {
+
+
+                  List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
+                      .getclientServiceInstance()
+                      .retrieveProductsBySupplier(widget.currentSupplier);
+
+                  retrieveProductsBySupplier.forEach((element) {
+                    element.prezzo_lordo = 0.0;
+                  });
+                  dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChoiceOrderProductScreen(
+                        currentSupplier: widget.currentSupplier,
+                      ),
+                    ),
+                  );
+                },
+                color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
+              ),
+            ),
+            body: Center(child: const Text('Ordini')),
+          );
+        },
+      ),
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
@@ -116,10 +152,10 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 30,
-                    child: CupertinoButton(
+                    child: DefaultButton(
+                      text: 'Modifica Fornitore',
                         color: Colors.orange.shade700.withOpacity(0.8),
-                        child: const Text('Modifica Fornitore'),
-                        onPressed: () async {
+                        press: () async {
                           if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
                             print('Il nome del fornitore è obbligatorio');
                             buildShowErrorDialog('Il nome del fornitore è obbligatorio');
@@ -475,7 +511,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 ],
                 bottom: TabBar(
                   tabs: kTab,
-                  indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 3.0, color: kPinaColor),
+                  indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 2.0, color: Colors.white),
                   ),
                 ),
               ),
@@ -498,8 +534,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
   }
 
   Future buildProductPage(DataBundleNotifier dataBundleNotifier) async {
-
-
     List<Widget> list = [];
 
     if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){

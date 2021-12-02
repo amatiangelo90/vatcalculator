@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
 import '../../../constants.dart';
 import '../../../enums.dart';
@@ -18,6 +19,16 @@ class ArubaCalculatorScreen extends StatelessWidget {
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, HomeScreen.routeName);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: kCustomWhite,
+                size: getProportionateScreenHeight(20),
+              ),
+            ),
             backgroundColor: kPrimaryColor,
             centerTitle: true,
             title: Text(

@@ -3,7 +3,8 @@ import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
-import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/landing/landing_page.dart';
@@ -41,7 +42,7 @@ final Map<String, WidgetBuilder> routes = {
   LandingScreen.routeName: (context) => LandingScreen(),
   OrdersScreen.routeName: (context) => OrdersScreen(),
   FattureInCloudCalculatorScreen.routeName: (context) => FattureInCloudCalculatorScreen(),
-  DetailsRecessed.routeName: (context) => DetailsRecessed(),
+  CreateOrderScreen.routeName: (context) => CreateOrderScreen(),
   ArubaCalculatorScreen.routeName: (context) => ArubaCalculatorScreen(),
   BranchChoiceCreationEnjoy.routeName: (context) => BranchChoiceCreationEnjoy(),
   OrdersScreen.routeName: (context) => OrdersScreen(),
@@ -49,9 +50,9 @@ final Map<String, WidgetBuilder> routes = {
   SuppliersScreen.routeName: (context) => SuppliersScreen(),
   AddSupplierScreen.routeName: (context) => AddSupplierScreen(),
   EditSuppliersScreen.routeName: (context) => EditSuppliersScreen(),
-  AddProductScreen.routeName: (context) => AddProductScreen(),
-  EditProductScreen.routeName: (context) => EditProductScreen(),
-  AddStorageScreen.routeName: (context) => AddStorageScreen(),
+  AddProductScreen.routeName: (context) => const AddProductScreen(),
+  EditProductScreen.routeName: (context) => const EditProductScreen(),
+  AddStorageScreen.routeName: (context) => const AddStorageScreen(),
   ProfileEditiScreen.routeName: (context) => ProfileEditiScreen(),
   RegisterFattureProviderScreen.routeName: (context) => RegisterFattureProviderScreen(),
   LoadStorageScreen.routeName: (context) => LoadStorageScreen(),
@@ -63,4 +64,5 @@ final Map<String, WidgetBuilder> routes = {
   ActionsDetailsScreen.routeName: (context) => ActionsDetailsScreen(),
   SupplierChoiceCreationEnjoy.routeName: (context) => SupplierChoiceCreationEnjoy(),
   JoinSupplierScreen.routeName: (context) => JoinSupplierScreen(),
+  ChoiceOrderProductScreen.routeName: (context) => ChoiceOrderProductScreen(),
 };

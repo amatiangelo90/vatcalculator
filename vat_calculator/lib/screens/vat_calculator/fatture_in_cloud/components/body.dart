@@ -18,7 +18,7 @@ import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
 import 'package:vat_calculator/components/item_menu.dart';
-import 'package:vat_calculator/screens/details_screen/details_recessed.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import '../../../../constants.dart';
@@ -574,7 +574,7 @@ class _VatFattureInCloudCalculatorBodyState
                             child: DefaultButton(
                               text: "Dettaglio Incassi",
                               press: () async {
-                                Navigator.pushNamed(context, DetailsRecessed.routeName);
+                                Navigator.pushNamed(context, CreateOrderScreen.routeName);
                               },
                             ),
                           ),

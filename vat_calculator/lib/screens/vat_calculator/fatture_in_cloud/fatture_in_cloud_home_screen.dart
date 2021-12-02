@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
 import '../../../constants.dart';
 import '../../../enums.dart';
@@ -20,7 +21,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.pushNamed(context, HomeScreen.routeName);
               },
               icon: Icon(
                 Icons.arrow_back_ios,

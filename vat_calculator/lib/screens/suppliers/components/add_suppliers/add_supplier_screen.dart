@@ -120,12 +120,12 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                       ),
                       CupertinoTextField(
                         textInputAction: TextInputAction.next,
-                        restorationId: 'Nome Attività',
+                        restorationId: 'Nome Fornitore',
                         keyboardType: TextInputType.emailAddress,
                         controller: controllerSupplierName,
                         clearButtonMode: OverlayVisibilityMode.editing,
                         autocorrect: false,
-                        placeholder: 'Nome Attività',
+                        placeholder: 'Nome Fornitore',
                       ),
                       Row(
                         children: [

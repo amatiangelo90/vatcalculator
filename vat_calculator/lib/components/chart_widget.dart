@@ -25,8 +25,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
   List<VatData> fattureInCloudData = [];
 
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: getProportionateScreenHeight(400),
+    return Container(
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, _) {
           return Center(
@@ -112,6 +111,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                   ],
                 ),
               ),
+
             ],
           ));
         },

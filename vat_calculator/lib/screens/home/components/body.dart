@@ -11,18 +11,13 @@ import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
-import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
-import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
-import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../home_screen.dart';
 
 class Body extends StatefulWidget {
   const Body({Key key}) : super(key: key);
@@ -33,10 +28,7 @@ class Body extends StatefulWidget {
 
 class _BodyState extends State<Body> {
 
-  DateTime _currentDateForDateRangePicker;
-
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
-
 
   @override
   Widget build(BuildContext context) {
@@ -234,9 +226,9 @@ class _BodyState extends State<Body> {
                   ],
                 ) :
                 LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
-
                 Divider(height: getProportionateScreenHeight(30),),
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
+                dataBundleNotifier.currentBranchActionsList.isEmpty ? SizedBox(height: 500,) : SizedBox(height: 0,),
               ],
             ),
         ),
@@ -650,10 +642,24 @@ class _BodyState extends State<Body> {
 
     if(ordersList.isEmpty){
       ordersList.add(SizedBox(
-          height: getProportionateScreenHeight(100),
+
           width: getProportionateScreenWidth(400),
           child: Card(
-            child: Center(child: Text('Nessun ordine in arrivo per oggi', style: TextStyle(fontSize: getProportionateScreenWidth(16)),)),
+            child: Column(
+              children: [
+                Center(child: Text('Nessun ordine in arrivo per oggi', style: TextStyle(fontSize: getProportionateScreenWidth(16)),)),
+                Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: CupertinoButton(
+                    color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
+                    onPressed: (){
+                      Navigator.pushNamed(context, CreateOrderScreen.routeName);
+                    },
+                    child: Text('Crea Ordine'),
+                  ),
+                ),
+              ],
+            ),
           ),
       ));
     }
@@ -698,8 +704,7 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     super.initState();
-    _currentDateForDateRangePicker = DateTime.now();
-    Timer(Duration(milliseconds: 1500), () {
+    Timer(const Duration(milliseconds: 1500), () {
       setState(() {
       });
     });
