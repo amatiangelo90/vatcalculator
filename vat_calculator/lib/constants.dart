@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
+import 'client/vatservice/model/product_order_amount_model.dart';
+
 //const Color kPrimaryColor = Color(0XFF66855F);
 //const Color kPrimaryColor = Color(0XFF127410);
 

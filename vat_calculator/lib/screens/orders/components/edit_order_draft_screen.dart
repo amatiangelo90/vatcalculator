@@ -13,6 +13,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 
@@ -110,7 +111,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                           )));
                     } else {
                       print('Invio mail');
-                      // TODO send mail to supplier
+
                       String currentSupplierEmail = '';
                       String currentSupplierName = '';
                       dataBundleNotifier.currentListSuppliers
@@ -122,35 +123,16 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                         }
                       });
 
-                      Response sendEmailResponse = await dataBundleNotifier
-                          .getEmailServiceInstance()
-                          .sendEmail(
+                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
                               supplierName: currentSupplierName,
-                              branchName:
-                                  dataBundleNotifier.currentBranch.companyName,
-                              message: buildMessageFromCurrentOrder(
-                                  widget.productList),
+                              branchName: dataBundleNotifier.currentBranch.companyName,
+                              message: OrderUtils.buildMessageFromCurrentOrder(widget.productList),
                               orderCode: widget.orderModel.code,
                               supplierEmail: currentSupplierEmail,
-                              userEmail:
-                                  dataBundleNotifier.dataBundleList[0].email,
-                              userName: dataBundleNotifier
-                                  .dataBundleList[0].firstName,
-                              addressBranch:
-                                  dataBundleNotifier.currentBranch.address +
-                                      ' ' +
-                                      dataBundleNotifier.currentBranch.city +
-                                      ' ' +
-                                      dataBundleNotifier.currentBranch.cap
-                                          .toString(),
-                              deliveryDate:
-                                  getDayFromWeekDay(currentDate.weekday) +
-                                      ' ' +
-                                      currentDate.day.toString() +
-                                      '/' +
-                                      currentDate.month.toString() +
-                                      '/' +
-                                      currentDate.year.toString());
+                              userEmail: dataBundleNotifier.dataBundleList[0].email,
+                              userName: dataBundleNotifier.dataBundleList[0].firstName,
+                              addressBranch: dataBundleNotifier.currentBranch.address + ' ' + dataBundleNotifier.currentBranch.city + ' ' + dataBundleNotifier.currentBranch.cap.toString(),
+                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
 
                       if (sendEmailResponse.data == 'OK') {
                         await dataBundleNotifier
@@ -497,19 +479,5 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
     } else {
       return string;
     }
-  }
-
-  String buildMessageFromCurrentOrder(
-      List<ProductOrderAmountModel> productList) {
-    String orderString = '';
-    productList.forEach((currentProductOrderAmount) {
-      orderString = orderString +
-          currentProductOrderAmount.amount.toString() +
-          ' X ' +
-          currentProductOrderAmount.nome +
-          '(${currentProductOrderAmount.unita_misura})' +
-          '';
-    });
-    return orderString;
   }
 }

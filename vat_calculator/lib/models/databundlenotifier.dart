@@ -1151,4 +1151,17 @@ class DataBundleNotifier extends ChangeNotifier {
   String buildKeyFromTimeRange(int i) {
     return normalizeDayValue(currentDateTimeRange.end.subtract(Duration(days: i)).day) + '/' + normalizeMonth(currentDateTimeRange.end.subtract(Duration(days: i)).month) + '/' + currentDateTimeRange.end.subtract(Duration(days: i)).year.toString();
   }
+
+  StorageModel retrieveStorageFromStorageListByIdName(String storageIdName) {
+    print('Retrieve Storage');
+    StorageModel storageModelToReturn;
+
+    currentStorageList.forEach((storage) {
+      if(storageIdName.contains(storage.name) &&
+          storageIdName.contains(storage.pkStorageId.toString())){
+        storageModelToReturn = storage;
+      }
+    });
+    return storageModelToReturn;
+  }
 }

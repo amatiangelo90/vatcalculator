@@ -536,17 +536,4 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
     });
     return currentUserName;
   }
-
-  String buildMessageFromCurrentOrder(List<ProductOrderAmountModel> productList) {
-    String orderString = '';
-    productList.forEach((currentProductOrderAmount) {
-
-      orderString = orderString + currentProductOrderAmount.amount.toString() +
-          ' X ' + currentProductOrderAmount.nome +
-          '(${currentProductOrderAmount.unita_misura})'+ '';
-
-    });
-    return orderString;
-  }
-
 }

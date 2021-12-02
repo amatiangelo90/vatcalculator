@@ -446,16 +446,4 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
       return string;
     }
   }
-
-  String buildMessageFromCurrentOrder(List<ProductOrderAmountModel> productList) {
-    String orderString = '';
-    productList.forEach((currentProductOrderAmount) {
-
-      orderString = orderString + currentProductOrderAmount.amount.toString() +
-          ' X ' + currentProductOrderAmount.nome +
-          '(${currentProductOrderAmount.unita_misura})'+ '';
-
-    });
-    return orderString;
-  }
 }

@@ -1,12 +1,19 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
+import 'order_confirm_screen.dart';
 import 'order_create_screen.dart';
 
 class ChoiceOrderProductScreen extends StatefulWidget {
@@ -34,14 +41,24 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                 text: 'Procedi',
                 press: () async {
 
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChoiceOrderProductScreen(
-                        currentSupplier: widget.currentSupplier,
+                  int productsAmountsDiffentThan0 = 0;
+                  dataBundleNotifier.currentProductModelListForSupplier.forEach((element) {
+                    if(element.prezzo_lordo != 0){
+                      productsAmountsDiffentThan0 = productsAmountsDiffentThan0 + 1;
+                    }
+                  });
+                  if(productsAmountsDiffentThan0 == 0){
+                    buildSnackBar(text: 'Selezionare quantità per almeno un prodotto', color: kPinaColor);
+                  }else{
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderConfirmationScreen(
+                          currentSupplier: widget.currentSupplier,
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  }
                 },
                 color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
               ),
@@ -232,5 +249,13 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
       ],
     ));
     return list;
+  }
+
+  void buildSnackBar({@required String text, @required Color color}) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(
+        duration: const Duration(milliseconds: 2000),
+        backgroundColor: color,
+        content: Text(text, style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
   }
 }

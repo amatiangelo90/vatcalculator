@@ -3,6 +3,7 @@ import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_confirm_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.dart';
@@ -65,4 +66,5 @@ final Map<String, WidgetBuilder> routes = {
   SupplierChoiceCreationEnjoy.routeName: (context) => SupplierChoiceCreationEnjoy(),
   JoinSupplierScreen.routeName: (context) => JoinSupplierScreen(),
   ChoiceOrderProductScreen.routeName: (context) => ChoiceOrderProductScreen(),
+  OrderConfirmationScreen.routeName: (context) => OrderConfirmationScreen(),
 };
