@@ -101,7 +101,7 @@ class DataBundleNotifier extends ChangeNotifier {
   bool isZtoAOrderded = false;
   bool editOrder = false;
 
-  int daysRangeDate = 30;
+  int daysRangeDate = 15;
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -164,9 +164,9 @@ class DataBundleNotifier extends ChangeNotifier {
   void initializeCurrentDateTimeRangeWeekly() {
 
     currentDateTimeRange = DateTimeRange(
-      start: currentDateTime
-          .subtract(Duration(days: 10)),
-      end: currentDateTime,
+      start: DateTime.now()
+          .subtract(Duration(days: daysRangeDate)),
+      end: DateTime.now(),
     );
 
     if(currentBranch != null){
@@ -1054,84 +1054,33 @@ class DataBundleNotifier extends ChangeNotifier {
     print(resultCreditIvaMap.toString());
     print(resultDebitIvaMap.toString());
 
-    charDataCreditIva = [
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 10)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 10, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 9)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 9, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 8)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 8, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 7)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 7, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 6)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 6, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 5)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 5, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 4)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 4, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 3)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 3, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 2)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 2, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 1)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 1, 10, false)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 0)),
-          calculateValue(resultCreditIvaMap, currentDateTimeRange, 0, 10, false)),
+    int j = 0;
 
-    ];
+    charDataCreditIva.clear();
+    do{
+      charDataCreditIva.add(VatData(
+          currentDateTimeRange.end.subtract(Duration(days: daysRangeDate-j)),
+          calculateValue(resultCreditIvaMap, currentDateTimeRange, daysRangeDate-j, daysRangeDate, false)));
+      j++;
+    }while(j <= daysRangeDate);
 
+    int i = 0;
+    charDataDebitIva.clear();
+    do{
+      charDataDebitIva.add(VatData(
+          currentDateTimeRange.end.subtract(Duration(days: daysRangeDate-i)),
+          calculateValue(resultDebitIvaMap, currentDateTimeRange, daysRangeDate-i, daysRangeDate, true)));
+      i++;
+    }while(i <= daysRangeDate);
 
-    charDataDebitIva = [
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 10)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 10, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 9)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 9, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 8)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 8, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 7)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 7, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 6)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 6, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 5)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 5, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 4)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 4, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 3)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 3, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 2)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 2, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 1)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 1, 10, true)),
-      VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 0)),
-          calculateValue(resultDebitIvaMap, currentDateTimeRange, 0, 10, true)),
-    ];
-
+    print('Char data credit iva');
     charDataCreditIva.forEach((element) {
       print(element.date.toString() + ' - ' + element.vatValue.toString());
     });
-
+    print('Char data debit iva');
+    charDataDebitIva.forEach((element) {
+      print(element.date.toString() + ' - ' + element.vatValue.toString());
+    });
     print('finish');
 
     notifyListeners();
@@ -1139,19 +1088,17 @@ class DataBundleNotifier extends ChangeNotifier {
 
   Map<String, double> initializeMap(DateTimeRange currentDateTimeRange) {
     Map<String, double> mapToReturn = {};
+    int i = 0;
+    do{
+      mapToReturn[buildKeyFromTimeRange(daysRangeDate-i)] = 0;
+      i++;
+    }while(i <= daysRangeDate);
 
-    mapToReturn[buildKeyFromTimeRange(10)] = 0;
-    mapToReturn[buildKeyFromTimeRange(9)] = 0;
-    mapToReturn[buildKeyFromTimeRange(8)] = 0;
-    mapToReturn[buildKeyFromTimeRange(7)] = 0;
-    mapToReturn[buildKeyFromTimeRange(6)] = 0;
-    mapToReturn[buildKeyFromTimeRange(5)] = 0;
-    mapToReturn[buildKeyFromTimeRange(4)] = 0;
-    mapToReturn[buildKeyFromTimeRange(3)] = 0;
-    mapToReturn[buildKeyFromTimeRange(2)] = 0;
-    mapToReturn[buildKeyFromTimeRange(1)] = 0;
-    mapToReturn[buildKeyFromTimeRange(0)] = 0;
-
+    print('##################');
+    print('##################');
+    print(mapToReturn.toString());
+    print('##################');
+    print('##################');
     return mapToReturn;
   }
 

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/screens/landing/components/landing_body.dart';
-import 'package:vat_calculator/size_config.dart';
-
-import '../../constants.dart';
 
 class LandingScreen extends StatelessWidget {
 
