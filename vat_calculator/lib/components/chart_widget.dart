@@ -29,71 +29,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, _) {
           return Center(
-              child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        SizedBox(width: getProportionateScreenWidth(10),),
-                        Text('Situazione Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                      ],
-                    ),
-                    CupertinoButton(
-                      onPressed: (){
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        switch(dataBundleNotifier.currentBranch.providerFatture){
-                          case 'fatture_in_cloud':
-                            Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                            break;
-                          case 'aruba':
-                            Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                            break;
-                          case '':
-                            Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                            break;
-                        }
-                      },
-                      child: Row(
-                        children: [
-                          Text('Dettagli', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                          Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.circle,
-                          color: Colors.green.shade700.withOpacity(0.6),
-                        ),
-                        Text('Iva Credito'),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.circle,
-                          color: Colors.redAccent.withOpacity(0.6),
-                        ),
-                        Text('Iva Debito'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: SfCartesianChart(
                     backgroundColor: Colors.white,
@@ -114,9 +50,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                           xValueMapper: (VatData sales, _) => sales.date,
                           yValueMapper: (VatData sales, _) => sales.vatValue),
                     ]),
-              ),
-            ],
-          ));
+              ));
         },
       ),
     );

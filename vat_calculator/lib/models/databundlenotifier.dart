@@ -101,7 +101,9 @@ class DataBundleNotifier extends ChangeNotifier {
   bool isZtoAOrderded = false;
   bool editOrder = false;
 
-  int daysRangeDate = 15;
+  int daysRangeDate = 31;
+
+  DateTime currentDate = DateTime.now();
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -162,11 +164,10 @@ class DataBundleNotifier extends ChangeNotifier {
 
 
   void initializeCurrentDateTimeRangeWeekly() {
-
+    DateTime date = DateTime.now();
     currentDateTimeRange = DateTimeRange(
-      start: DateTime.now()
-          .subtract(Duration(days: daysRangeDate)),
-      end: DateTime.now(),
+      start: DateTime(date.year, date.month, 1, 0, 0, 0, 0,0),
+      end: DateTime(date.year, date.month, DateTime(date.year, date.month + 1, 0).day, 0, 0, 0, 0,0),
     );
 
     if(currentBranch != null){
@@ -203,12 +204,24 @@ class DataBundleNotifier extends ChangeNotifier {
   int indexIvaList = 0;
   List<int> ivaList = [22, 10, 4, 0];
   Map<int, Widget> ivaListCupertino = {
-    0 : Text('22'),
-    1 : Text('10'),
-    2 : Text('4'),
-    3 : Text('0'),
+    0 : const Text('22'),
+    1 : const Text('10'),
+    2 : const Text('4'),
+    3 : const Text('0'),
   };
 
+  Map<int, Widget> ivaListPeriodCupertino = {
+    0 : const Text('Gen-Mar'),
+    1 : const Text('Apr-Giu'),
+    2 : const Text('Lug-Set'),
+    3 : const Text('Ott-Dic'),
+  };
+
+  int ivaListTrimMonthChoiceCupertinoIndex = 0;
+  Map<int, Widget> ivaListTrimMonthChoiceCupertino = {
+    0 : const Text('Mensile'),
+    1 : const Text('Trimestrale'),
+  };
 
   void setShowIvaButtonToFalse(){
     showIvaButtonPressed = false;
@@ -1094,11 +1107,6 @@ class DataBundleNotifier extends ChangeNotifier {
       i++;
     }while(i <= daysRangeDate);
 
-    print('##################');
-    print('##################');
-    print(mapToReturn.toString());
-    print('##################');
-    print('##################');
     return mapToReturn;
   }
 
@@ -1157,20 +1165,62 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   double calculateValue(Map<String, double> resultDebitIvaMap,
-      DateTimeRange currentDateTimeRange, int i, int j, bool isDebit) {
+      DateTimeRange currentDateTimeRange, int daysToSubtract, int j, bool isDebit) {
 
     double valueToReturn = 0.0;
 
-    while(i <= j){
-      valueToReturn = valueToReturn + retrieveValueFromMapByDate(i, resultDebitIvaMap, currentDateTimeRange, isDebit);
-      i++;
+    if(DateTime.now().isAfter(currentDateTimeRange.end.subtract(Duration(days: daysToSubtract)))){
+      while(daysToSubtract <= j){
+        valueToReturn = valueToReturn + retrieveValueFromMapByDate(daysToSubtract, resultDebitIvaMap, currentDateTimeRange, isDebit);
+        daysToSubtract++;
+      }
+      return valueToReturn;
     }
-
-    return valueToReturn;
+    return null;
   }
 
   void setIndexIvaListValue(int index) {
     indexIvaList = index;
+    notifyListeners();
+  }
+
+  void setIvaListTrimMonthChoiceCupertinoIndex(int index) {
+    ivaListTrimMonthChoiceCupertinoIndex = index;
+    notifyListeners();
+  }
+
+  void subtractMonth() {
+    currentDate = DateTime(currentDate.year, currentDate.month - 1, currentDate.day);
+    currentDateTimeRange = DateTimeRange(
+      start: DateTime(currentDate.year, currentDate.month, 1, 0, 0, 0, 0, 0),
+      end: DateTime(currentDate.year, currentDate.month, DateTime(currentDate.year, currentDate.month + 1, 0).day, 0, 0, 0, 0,0),
+    );
+    if(currentBranch != null){
+      if(currentBranch.providerFatture == 'fatture_in_cloud'){
+        retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
+      }else if(currentBranch.providerFatture == 'aruba'){
+        // retrieveDataToDrawChartAruba(currentDateTimeRange);
+      }
+    }
+    clearAndUpdateMapBundle();
+
+    notifyListeners();
+  }
+
+  void addMonth() {
+    currentDate = DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
+    currentDateTimeRange = DateTimeRange(
+      start: DateTime(currentDate.year, currentDate.month, 1, 0, 0, 0, 0,0),
+      end: DateTime(currentDate.year, currentDate.month, DateTime(currentDate.year, currentDate.month + 1, 0).day, 0, 0, 0, 0,0),
+    );
+    if(currentBranch != null){
+      if(currentBranch.providerFatture == 'fatture_in_cloud'){
+        retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
+      }else if(currentBranch.providerFatture == 'aruba'){
+        // retrieveDataToDrawChartAruba(currentDateTimeRange);
+      }
+    }
+    clearAndUpdateMapBundle();
     notifyListeners();
   }
 }

@@ -22,6 +22,9 @@ import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
+import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
+import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -38,17 +41,19 @@ class _BodyState extends State<Body> with RestorationMixin {
 
   final List<String> errors = [];
   String importExpences;
-  final _formExpenceKey = GlobalKey<FormState>();
   TextEditingController recessedController = TextEditingController();
   TextEditingController casualeRecessedController = TextEditingController();
-  RestorableInt currentSegment = RestorableInt(0);
+  RestorableInt currentSegmentIva = RestorableInt(0);
+  RestorableInt currentSegmentCalculationIvaPeriod = RestorableInt(0);
+
 
   @override
   String get restorationId => 'cupertino_segmented_control';
 
   @override
   void restoreState(RestorationBucket oldBucket, bool initialRestore) {
-    registerForRestoration(currentSegment, 'current_segment');
+    registerForRestoration(currentSegmentIva, 'current_segment');
+    registerForRestoration(currentSegmentCalculationIvaPeriod, 'current_segment_iva');
   }
 
   @override
@@ -157,11 +162,120 @@ class _BodyState extends State<Body> with RestorationMixin {
                 }),
                 dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
                   children: [
-                    Text(''),
+                    Text(''), ],
+                ) : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              SizedBox(width: getProportionateScreenWidth(10),),
+                              Text('Situazione Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                            ],
+                          ),
+                          CupertinoButton(
+                            onPressed: (){
+                              dataBundleNotifier.setShowIvaButtonToFalse();
+                              switch(dataBundleNotifier.currentBranch.providerFatture){
+                                case 'fatture_in_cloud':
+                                  Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                                  break;
+                                case 'aruba':
+                                  Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                                  break;
+                                case '':
+                                  Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
+                                  break;
+                              }
+                            },
+                            child: Row(
+                              children: [
+                                Text('Dettagli', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                                Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: CupertinoSlidingSegmentedControl<int>(
+                          children: dataBundleNotifier.ivaListTrimMonthChoiceCupertino,
+                          onValueChanged: (index){
+                            setState(() {
+                              currentSegmentCalculationIvaPeriod.value = index;
+                            });
+                            dataBundleNotifier.setIvaListTrimMonthChoiceCupertinoIndex(index);
+                          },
+                          groupValue: currentSegmentCalculationIvaPeriod.value,
+                        ),
+                      ),
+                    ),
+                    dataBundleNotifier.ivaListTrimMonthChoiceCupertinoIndex == 0 ?
 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child: IconButton(icon: Icon(
+                            Icons.arrow_back_ios,
+                            size: getProportionateScreenWidth(15),
+                            color: kPrimaryColor,
+                          ), onPressed: () {
+                            dataBundleNotifier.subtractMonth();
+                          },),
+                        ),
+                        Text(getMonthFromMonthNumber(dataBundleNotifier.currentDate.month).toUpperCase() + ' - ' + dataBundleNotifier.currentDate.year.toString()),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child: IconButton(icon: Icon(
+                            Icons.arrow_forward_ios,
+                            size: getProportionateScreenWidth(15),
+                            color: kPrimaryColor,
+                          ), onPressed: () {
+                            dataBundleNotifier.addMonth();
+                          },),
+                        ),
+                      ],
+                    ) :
+
+                    Text('Trimestrale'),
+                    LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.circle,
+                                color: Colors.green.shade700.withOpacity(0.6),
+                              ),
+                              Text('Iva Credito'),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.circle,
+                                color: Colors.redAccent.withOpacity(0.6),
+                              ),
+                              Text('Iva Debito'),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
-                ) :
-                LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
+                ),
                 buildDateRecessedRegistrationWidget(dataBundleNotifier),
                 Divider(height: getProportionateScreenHeight(30),),
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
@@ -761,11 +875,11 @@ class _BodyState extends State<Body> with RestorationMixin {
                           children: dataBundleNotifier.ivaListCupertino,
                           onValueChanged: (index){
                             setState(() {
-                              currentSegment.value = index;
+                              currentSegmentIva.value = index;
                             });
                             dataBundleNotifier.setIndexIvaListValue(index);
                           },
-                          groupValue: currentSegment.value,
+                          groupValue: currentSegmentIva.value,
                         ),
                       ),
                     ),
