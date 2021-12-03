@@ -1,16 +1,23 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
+import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
+import 'package:vat_calculator/components/custom_surfix_icon.dart';
+import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/components/form_error.dart';
+import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
@@ -26,9 +33,24 @@ class Body extends StatefulWidget {
   _BodyState createState() => _BodyState();
 }
 
-class _BodyState extends State<Body> {
+class _BodyState extends State<Body> with RestorationMixin {
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
+
+  final List<String> errors = [];
+  String importExpences;
+  final _formExpenceKey = GlobalKey<FormState>();
+  TextEditingController recessedController = TextEditingController();
+  TextEditingController casualeRecessedController = TextEditingController();
+  RestorableInt currentSegment = RestorableInt(0);
+
+  @override
+  String get restorationId => 'cupertino_segmented_control';
+
+  @override
+  void restoreState(RestorationBucket oldBucket, bool initialRestore) {
+    registerForRestoration(currentSegment, 'current_segment');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,91 +99,7 @@ class _BodyState extends State<Body> {
                     child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: IconButton(icon: const Icon(
-                        Icons.arrow_back_ios,
-                        color: kPrimaryColor,
-                      ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
-                    ),
-                    GestureDetector(
-                        onTap: (){
-                            showDialog(
-                                context: context,
-                                builder: (_) => AlertDialog (
-                                  contentPadding: EdgeInsets.zero,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius:
-                                      BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  content: Builder(
-                                    builder: (context) {
-                                      var height = MediaQuery.of(context).size.height;
-                                      var width = MediaQuery.of(context).size.width;
-                                      return SizedBox(
-                                        height: height - 250,
-                                        width: width - 90,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.vertical,
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                decoration: const BoxDecoration(
-                                                  borderRadius: BorderRadius.only(
-                                                      topRight: Radius.circular(10.0),
-                                                      topLeft: Radius.circular(10.0) ),
-                                                  color: kPrimaryColor,
-                                                ),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text('  Calendario',style: TextStyle(
-                                                          fontSize: getProportionateScreenWidth(20),
-                                                          fontWeight: FontWeight.bold,
-                                                          color: kCustomWhite,
-                                                        ),),
-                                                        IconButton(icon: const Icon(
-                                                          Icons.clear,
-                                                          color: kCustomWhite,
-                                                        ), onPressed: () { Navigator.pop(context); },),
 
-                                                      ],
-                                                    ),
-                                                    Column(
-                                                      children: [
-                                                        Column(
-                                                          children: buildDateList(dataBundleNotifier, context),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              // buildDateList(),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                )
-                            );
-                        },
-                        child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 20),)),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: IconButton(icon: const Icon(
-                        Icons.arrow_forward_ios,
-                        color: kPrimaryColor,
-                      ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
-                    ),
-                  ],
-                ),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.all(0.0),
@@ -225,6 +163,7 @@ class _BodyState extends State<Body> {
                   ],
                 ) :
                 LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
+                buildDateRecessedRegistrationWidget(dataBundleNotifier),
                 Divider(height: getProportionateScreenHeight(30),),
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
                 dataBundleNotifier.currentBranchActionsList.isEmpty ? SizedBox(height: 500,) : SizedBox(height: 0,),
@@ -296,7 +235,7 @@ class _BodyState extends State<Body> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  color: Colors.blue.shade700.withOpacity(0.9),
+                  color: Colors.black.withOpacity(0.9),
                   elevation: 7,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
@@ -708,6 +647,335 @@ class _BodyState extends State<Body> {
       });
     });
 
+  }
+
+  buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Card(
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            elevation: 2,
+            child: Column(
+              children: [
+                Text('Registra Incasso'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: IconButton(icon: Icon(
+                        Icons.arrow_back_ios,
+                        size: getProportionateScreenWidth(15),
+                        color: kPrimaryColor,
+                      ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                    ),
+                    GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog (
+                                contentPadding: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                content: Builder(
+                                  builder: (context) {
+                                    var height = MediaQuery.of(context).size.height;
+                                    var width = MediaQuery.of(context).size.width;
+                                    return SizedBox(
+                                      height: height - 250,
+                                      width: width - 90,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(10.0),
+                                                    topLeft: Radius.circular(10.0) ),
+                                                color: kPrimaryColor,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      Text('  Calendario',style: TextStyle(
+                                                        fontSize: getProportionateScreenWidth(20),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: kCustomWhite,
+                                                      ),),
+                                                      IconButton(icon: const Icon(
+                                                        Icons.clear,
+                                                        color: kCustomWhite,
+                                                      ), onPressed: () { Navigator.pop(context); },),
+
+                                                    ],
+                                                  ),
+                                                  Column(
+                                                    children: [
+                                                      Column(
+                                                        children: buildDateList(dataBundleNotifier, context),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            // buildDateList(),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          );
+                        },
+                        child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 15),)),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+                      child: IconButton(icon: Icon(
+                        Icons.arrow_forward_ios,
+                        size: getProportionateScreenWidth(15),
+                        color: kPrimaryColor,
+                      ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
+                    ),
+                  ],
+                ),
+
+                Column(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 30,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: CupertinoSlidingSegmentedControl<int>(
+                          children: dataBundleNotifier.ivaListCupertino,
+                          onValueChanged: (index){
+                            setState(() {
+                              currentSegment.value = index;
+                            });
+                            dataBundleNotifier.setIndexIvaListValue(index);
+                          },
+                          groupValue: currentSegment.value,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: const [
+                        SizedBox(width: 28,),
+                        Text('Importo'),
+                      ],
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 75,
+                      child: CupertinoTextField(
+                        controller: recessedController,
+                        onChanged: (text) {
+
+                        },
+                        textInputAction: TextInputAction.next,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true, signed: true),
+                        clearButtonMode: OverlayVisibilityMode.never,
+                        textAlign: TextAlign.center,
+                        autocorrect: false,
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: const [
+                        SizedBox(width: 28,),
+                        Text('Casuale'),
+                      ],
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width - 75,
+                      child: CupertinoTextField(
+                        controller: casualeRecessedController,
+                        onChanged: (text) {
+
+                        },
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.text,
+                        clearButtonMode: OverlayVisibilityMode.never,
+                        textAlign: TextAlign.center,
+                        autocorrect: false,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      child: FormError(errors: errors),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: DefaultButton(
+                        text: "Salva Incasso",
+                        press: () async {
+                            KeyboardUtil.hideKeyboard(context);
+                            try{
+                              if(recessedController.text == ''){
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: const Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                    content: const Text('Inserire importo', style: TextStyle(color: Colors.white),)));
+                              }else if(double.tryParse(recessedController.text) == null){
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: const Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                    content: const Text('Inserire un importo corretto', style: TextStyle(color: Colors.white),)));
+                              }else if(casualeRecessedController.text == ''){
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: const Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                    content: const Text('Inserire casuale', style: TextStyle(color: Colors.white),)));
+                              }else{
+                                ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+
+                                await clientService.performSaveRecessed(
+                                    double.parse(recessedController.text),
+                                    casualeRecessedController.text,
+                                    dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
+                                    dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                    dataBundleNotifier.currentBranch.pkBranchId,
+                                    ActionModel(
+                                        date: DateTime.now().millisecondsSinceEpoch,
+                                        description: 'Ha registrato incasso ${recessedController.text} € con casuale [${casualeRecessedController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                        type: ActionType.RECESSED_CREATION
+                                    )
+                                );
+
+                                List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                                dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                                dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                                recessedController.clear();
+                                casualeRecessedController.clear();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.green.shade700.withOpacity(0.8),
+                                    content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                              }
+                            }catch(e){
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 6000),
+                                  backgroundColor: Colors.red,
+                                  content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                            }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+
+              ],
+            ),
+          ),
+        ),
+
+        buildLas5RecessedRegisteredWidget(dataBundleNotifier),
+      ],
+    );
+  }
+
+  buildLas5RecessedRegisteredWidget(DataBundleNotifier dataBundleNotifier) {
+
+      if (dataBundleNotifier
+          .getCurrentListRecessed()
+          .isEmpty) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('Nessun incasso registrato'),
+            )
+          ],
+        );
+      }
+      List<Widget> rowChildrenWidget = [];
+
+      int lenght = 0;
+      if (dataBundleNotifier
+          .getCurrentListRecessed()
+          .length > 5) {
+        lenght = 5;
+      }else{
+        lenght = dataBundleNotifier
+            .getCurrentListRecessed()
+            .length;
+      }
+        dataBundleNotifier.getCurrentListRecessed().sublist(0, lenght).forEach((
+            recessedModel) {
+
+          DateTime currentDateTime = DateTime.fromMillisecondsSinceEpoch(recessedModel.dateTimeRecessed);
+          rowChildrenWidget.add(Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: getProportionateScreenWidth(40),
+                      decoration: BoxDecoration(
+                          color: Colors.green.shade700.withOpacity(0.5),
+                          shape: BoxShape.circle
+                      ),
+                      width: getProportionateScreenWidth(50),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: SvgPicture.asset('assets/icons/euro.svg', color: Colors.green.shade900,),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Text(recessedModel.amount.toStringAsFixed(2), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+              Text('IVA ' + recessedModel.vat.toStringAsFixed(2) + '%', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold,fontSize: 5),),
+              Text(normalizeCalendarValue(currentDateTime.day)
+                  + '/' + normalizeCalendarValue(currentDateTime.month)
+                  .toString()),
+
+            ],
+          ));
+        });
+
+      return Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text('Ultimi 5 incassi registrati'),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: rowChildrenWidget.reversed.toList(),),
+        ],
+      );
+    }
+
+  String normalizeCalendarValue(int day) {
+    if(day < 10){
+      return '0' + day.toString();
+    }else{
+      return day.toString();
+    }
   }
 }
 

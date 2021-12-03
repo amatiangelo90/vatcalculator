@@ -1252,6 +1252,7 @@ class _VatFattureInCloudCalculatorBodyState
     );
   }
 
+
   buildWeekDetailReceed(DataBundleNotifier dataBundleNotifier) {
     double total = 0.0;
 

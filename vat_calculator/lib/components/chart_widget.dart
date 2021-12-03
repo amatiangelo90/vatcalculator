@@ -93,25 +93,28 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                   ],
                 ),
               ),
-              SfCartesianChart(
-                  backgroundColor: Colors.white,
-                  enableAxisAnimation: true,
-                  primaryXAxis: DateTimeAxis(),
-                  series: <ChartSeries>[
-                    LineSeries<VatData, DateTime>(
-                      width: 3,
-                      color: Colors.green.shade700.withOpacity(0.6),
-                        dataSource: dataBundleNotifier.charDataCreditIva,
-                        xValueMapper: (VatData sales, _) => sales.date,
-                        yValueMapper: (VatData sales, _) => sales.vatValue),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SfCartesianChart(
+                    backgroundColor: Colors.white,
+                    enableAxisAnimation: true,
+                    primaryXAxis: DateTimeAxis(),
+                    series: <ChartSeries>[
+                      LineSeries<VatData, DateTime>(
+                        width: 3,
+                        color: Colors.green.shade700.withOpacity(0.6),
+                          dataSource: dataBundleNotifier.charDataCreditIva,
+                          xValueMapper: (VatData sales, _) => sales.date,
+                          yValueMapper: (VatData sales, _) => sales.vatValue),
 
-                    LineSeries<VatData, DateTime>(
-                      width: 3,
-                      color: Colors.redAccent.shade700.withOpacity(0.6),
-                        dataSource: dataBundleNotifier.charDataDebitIva,
-                        xValueMapper: (VatData sales, _) => sales.date,
-                        yValueMapper: (VatData sales, _) => sales.vatValue),
-                  ]),
+                      LineSeries<VatData, DateTime>(
+                        width: 3,
+                        color: Colors.redAccent.shade700.withOpacity(0.6),
+                          dataSource: dataBundleNotifier.charDataDebitIva,
+                          xValueMapper: (VatData sales, _) => sales.date,
+                          yValueMapper: (VatData sales, _) => sales.vatValue),
+                    ]),
+              ),
             ],
           ));
         },
