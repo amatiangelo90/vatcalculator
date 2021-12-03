@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -336,86 +337,25 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
 
                   }
                 }else{
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog (
-                        actions: [
-                          ButtonBar(
-                            alignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              TextButton(
-                                child: const Text("Indietro", style: TextStyle(color: kPinaColor),),
-                                onPressed:  () {
-                                  clearControllers();
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                        contentPadding: EdgeInsets.zero,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.all(
-                                Radius.circular(10.0))),
-                        content: Builder(
-                          builder: (context) {
-                            var height = MediaQuery.of(context).size.height;
-                            var width = MediaQuery.of(context).size.width;
-                            return SizedBox(
-                              height: getProportionateScreenHeight(300),
-                              width: width - 90,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(10.0),
-                                            topLeft: Radius.circular(10.0) ),
-                                        color: kPinaColor,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text('    Errore',style: TextStyle(
-                                                fontSize: getProportionateScreenWidth(15),
-                                                fontWeight: FontWeight.bold,
-                                                color: kCustomWhite,
-                                              ),),
-                                              IconButton(icon: const Icon(
-                                                Icons.clear,
-                                                color: kCustomWhite,
-                                              ), onPressed: () { Navigator.pop(context); },),
 
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        children: [
-                                          const Text('Nessun fornitore trovato con il seguente codice', textAlign: TextAlign.center,),
-                                          Card(child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Text(supplierCodeControllerSearch.text, style: TextStyle(fontSize: getProportionateScreenHeight(30)),),
-                                          )),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                  );
+                  AwesomeDialog(
+                    context: context,
+                    animType: AnimType.RIGHSLIDE,
+                    dialogType: DialogType.WARNING,
+                    body: Center(child: Column(
+                      children: [
+                        Text('Nessun fornitore trovato con il seguente codice', textAlign: TextAlign.center,),
+                        Card(child: Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(supplierCodeControllerSearch.text, style: TextStyle(fontSize: getProportionateScreenHeight(30)),),
+                        )),
+                      ],
+                    ),),
+                    title: 'This is Ignored',
+                    desc:   'This is also Ignored',
+                    btnOkOnPress: () {},
+                  ).show();
+                  clearControllers();
                 }
               },
               onChanged: (value) {

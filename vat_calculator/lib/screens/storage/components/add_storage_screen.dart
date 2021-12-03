@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,11 +38,19 @@ class AddStorageScreen extends StatelessWidget {
 
 
     void buildSnackBar({@required String text, @required Color color}) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(
-          duration: const Duration(milliseconds: 2000),
-          backgroundColor: color,
-          content: Text(text, style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+      AwesomeDialog(
+        context: context,
+        animType: AnimType.RIGHSLIDE,
+        dialogType: DialogType.WARNING,
+        body: Center(child: Column(
+          children: [
+            Text(text, textAlign: TextAlign.center,),
+          ],
+        ),),
+        title: 'This is Ignored',
+        desc:   'This is also Ignored',
+        btnOkOnPress: () {},
+      ).show();
     }
 
     return Consumer<DataBundleNotifier>(
@@ -52,64 +61,67 @@ class AddStorageScreen extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: CupertinoButton(
-                color: kPrimaryColor,
-                child: const Text('Crea Magazzino'),
-                onPressed: () async {
-                  if(_nameController.text.isEmpty || _nameController.text == ''){
-                    buildSnackBar(text: 'Inserire il nome del magazzino', color: kPinaColor);
-                  }else if(_addressController.text.isEmpty || _addressController.text == ''){
-                    buildSnackBar(text: 'Inserire l\'indirizzo', color: kPinaColor);
-                  }else if(_cityController.text.isEmpty || _cityController.text == ''){
-                    buildSnackBar(text: 'Inserire la città', color: kPinaColor);
-                  }else if(_capController.text.isEmpty || _capController.text == ''){
-                    buildSnackBar(text: 'Inserire il cap', color: kPinaColor);
-                  }else if(dataBundleNotifier.retrieveListStoragesName().contains(_nameController.text)){
-                    buildSnackBar(text: 'Esiste già un magazzino con questo nome : ' + _nameController.text, color: kPinaColor);
-                  }else{
-
-                    //EasyLoading.show();
-
-                    ClientVatService vatService = ClientVatService();
-                    StorageModel storageModel = StorageModel(
-                        name: _nameController.text,
-                        fkBranchId: branch.pkBranchId,
-                        address: _addressController.text,
-                        cap: _capController.text,
-                        city: _cityController.text,
-                        code: Uuid().v1().toString(),
-                        creationDate: DateTime.now(),
-                        pkStorageId: 0
-                    );
-
-                    Response performSaveStorage = await vatService.performSaveStorage(
-                        storageModel: storageModel,
-                        actionModel: ActionModel(
-                            date: DateTime.now().millisecondsSinceEpoch,
-                            description: 'Ha creato il magazzino ${storageModel.name}.',
-                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                            type: ActionType.STORAGE_CREATION
-                        )
-                    );
-                    //sleep(const Duration(seconds: 1));
-
-
-                    if(performSaveStorage != null && performSaveStorage.statusCode == 200){
-
-                      List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
-                      dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
-                      dataBundleNotifier.clearAndUpdateMapBundle();
-                      //EasyLoading.dismiss();
-                      buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width - 30,
+                  child: DefaultButton(
+                  color: Colors.green.shade900.withOpacity(0.9),
+                  text: 'Crea Magazzino',
+                  press: () async {
+                    if(_nameController.text.isEmpty || _nameController.text == ''){
+                      buildSnackBar(text: 'Inserire il nome del magazzino', color: kPinaColor);
+                    }else if(_addressController.text.isEmpty || _addressController.text == ''){
+                      buildSnackBar(text: 'Inserire l\'indirizzo', color: kPinaColor);
+                    }else if(_cityController.text.isEmpty || _cityController.text == ''){
+                      buildSnackBar(text: 'Inserire la città', color: kPinaColor);
+                    }else if(_capController.text.isEmpty || _capController.text == ''){
+                      buildSnackBar(text: 'Inserire il cap', color: kPinaColor);
+                    }else if(dataBundleNotifier.retrieveListStoragesName().contains(_nameController.text)){
+                      buildSnackBar(text: 'Esiste già un magazzino con questo nome : ' + _nameController.text, color: kPinaColor);
                     }else{
-                      //EasyLoading.dismiss();
-                      buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveStorage.toString(), color: kPinaColor);
-                    }
-                    Navigator.pushNamed(context, StorageScreen.routeName);
-                  }
 
-                }),
+                      //EasyLoading.show();
+
+                      ClientVatService vatService = ClientVatService();
+                      StorageModel storageModel = StorageModel(
+                          name: _nameController.text,
+                          fkBranchId: branch.pkBranchId,
+                          address: _addressController.text,
+                          cap: _capController.text,
+                          city: _cityController.text,
+                          code: Uuid().v1().toString(),
+                          creationDate: DateTime.now(),
+                          pkStorageId: 0
+                      );
+
+                      Response performSaveStorage = await vatService.performSaveStorage(
+                          storageModel: storageModel,
+                          actionModel: ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha creato il magazzino ${storageModel.name}.',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.STORAGE_CREATION
+                          )
+                      );
+                      //sleep(const Duration(seconds: 1));
+
+
+                      if(performSaveStorage != null && performSaveStorage.statusCode == 200){
+
+                        List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
+                        dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
+                        dataBundleNotifier.clearAndUpdateMapBundle();
+                        //EasyLoading.dismiss();
+                        buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
+                      }else{
+                        //EasyLoading.dismiss();
+                        buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveStorage.toString(), color: kPinaColor);
+                      }
+                      Navigator.pushNamed(context, StorageScreen.routeName);
+                    }
+
+                  }),
+                ),
               ),
             ],
           ),

@@ -498,10 +498,10 @@ class _StorageScreenState extends State<StorageScreen>{
         padding: const EdgeInsets.all(8.0),
         child: SizedBox(
           height: getProportionateScreenHeight(50),
-          width: getProportionateScreenWidth(250),
+          width: MediaQuery.of(context).size.width,
           child: CupertinoButton(
             child: Text('Crea Magazzino'),
-            color: Colors.green,
+            color: Colors.green.shade900.withOpacity(0.9),
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(

@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,168 +50,202 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 press: () async {
                   print('Performing send order ...');
 
-                  String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
-                  Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
-                      orderModel: OrderModel(
-                          code: code,
-                          details: 'Ordine eseguito da ' + dataBundleNotifier.dataBundleList[0].firstName + ' ' +
-                              dataBundleNotifier.dataBundleList[0].lastName + ' per ' +
-                              dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
-                          total: 0.0,
-                          status: OrderState.DRAFT,
-                          creation_date: DateTime.now().millisecondsSinceEpoch,
-                          delivery_date: null,
-                          fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
-                          fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                          fk_user_id: dataBundleNotifier.dataBundleList[0].id,
-                          pk_order_id: 0,
-                          fk_supplier_id: widget.currentSupplier.pkSupplierId
-                      ),
-                      actionModel: ActionModel(
-                          date: DateTime.now().millisecondsSinceEpoch,
-                          description: 'Ha creato l\'ordine #$code per il fornitore ${widget.currentSupplier.nome} per conto di ' + dataBundleNotifier.currentBranch.companyName,
-                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                          type: ActionType.DRAFT_ORDER_CREATION
-                      )
-                  );
-
-                  if(performSaveOrderId != null){
-                    dataBundleNotifier.currentProductModelListForSupplier.forEach((element) {
-                      dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
-                          element.prezzo_lordo,
-                          element.pkProductId,
-                          performSaveOrderId.data
-                      );
-                    });
-                  }
-
-                  if(performSaveOrderId != null){
-                    Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
-                        supplierName: widget.currentSupplier.nome,
-                        branchName: dataBundleNotifier.currentBranch.companyName,
-                        message: OrderUtils.buildMessageFromCurrentOrderList(dataBundleNotifier.currentProductModelListForSupplier),
-                        orderCode: code,
-                        supplierEmail: widget.currentSupplier.mail,
-                        userEmail: dataBundleNotifier.dataBundleList[0].email,
-                        userName: dataBundleNotifier.dataBundleList[0].firstName,
-                        addressBranch: currentStorageModel.address + ' ' + currentStorageModel.city + ' ' + currentStorageModel.cap.toString(),
-                        deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
-
-                    if (sendEmailResponse.data == 'OK') {
-                      print('Save order as SENT. OrderId: ' + performSaveOrderId.data.toString() );
-                      await dataBundleNotifier
-                          .getclientServiceInstance()
-                          .updateOrderStatus(
-                          orderModel: OrderModel(
-                              pk_order_id: performSaveOrderId.data,
-                              status: OrderState.SENT,
-                              delivery_date:
-                              currentDate.millisecondsSinceEpoch,
-                              closedby: dataBundleNotifier
-                                  .retrieveNameLastNameCurrentUser()),
-                          actionModel: ActionModel(
-                              date: DateTime.now().millisecondsSinceEpoch,
-                              description:
-                              'Ha inviato l\'ordine #${code} '
-                                  'al fornitore ${widget.currentSupplier.nome}. ',
-                              fkBranchId: dataBundleNotifier
-                                  .currentBranch.pkBranchId,
-                              user: dataBundleNotifier
-                                  .retrieveNameLastNameCurrentUser(),
-                              type: ActionType.SENT_ORDER));
-                      dataBundleNotifier
-                          .setCurrentBranch(dataBundleNotifier.currentBranch);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const OrdersScreen(),
+                  if(_selectedStorage == 'Seleziona Magazzino'){
+                    AwesomeDialog(
+                      context: context,
+                      animType: AnimType.SCALE,
+                      dialogType: DialogType.ERROR,
+                      body: const Center(child: Text(
+                        'Selezionare il magazzino',
+                      ),),
+                      title: 'This is Ignored',
+                      desc:   'This is also Ignored',
+                      btnOkOnPress: () {},
+                    ).show();
+                  }else if(currentStorageModel == null){
+                    AwesomeDialog(
+                      context: context,
+                      animType: AnimType.SCALE,
+                      dialogType: DialogType.ERROR,
+                      body: const Center(child: Text(
+                        'Selezionare il magazzino',
+                      ),),
+                      title: 'This is Ignored',
+                      desc:   'This is also Ignored',
+                      btnOkOnPress: () {},
+                    ).show();
+                  }else if(currentDate == null) {
+                    AwesomeDialog(
+                      context: context,
+                      animType: AnimType.RIGHSLIDE,
+                      dialogType: DialogType.ERROR,
+                      body: const Center(child: Text(
+                        'Selezionare la data di consegna',
+                      ),),
+                      title: 'This is Ignored',
+                      desc:   'This is also Ignored',
+                      btnOkOnPress: () {},
+                    ).show();
+                  }else{
+                    Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
+                        orderModel: OrderModel(
+                            code: code,
+                            details: 'Ordine eseguito da ' + dataBundleNotifier.dataBundleList[0].firstName + ' ' +
+                                dataBundleNotifier.dataBundleList[0].lastName + ' per ' +
+                                dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
+                            total: 0.0,
+                            status: OrderState.DRAFT,
+                            creation_date: DateTime.now().millisecondsSinceEpoch,
+                            delivery_date: null,
+                            fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
+                            fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
+                            fk_user_id: dataBundleNotifier.dataBundleList[0].id,
+                            pk_order_id: 0,
+                            fk_supplier_id: widget.currentSupplier.pkSupplierId
                         ),
-                      );
-                    } else {
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            contentPadding: EdgeInsets.zero,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(10.0))),
-                            content: Builder(
-                              builder: (context) {
-                                var height =
-                                    MediaQuery.of(context).size.height;
-                                var width =
-                                    MediaQuery.of(context).size.width;
-                                return SizedBox(
-                                  height: height - 250,
-                                  width: width - 90,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.only(
-                                                topRight:
-                                                Radius.circular(
-                                                    10.0),
-                                                topLeft:
-                                                Radius.circular(
-                                                    10.0)),
-                                            color: kPrimaryColor,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                MainAxisAlignment
-                                                    .spaceBetween,
-                                                children: [
-                                                  Text(
-                                                    '  Errore invio ordine',
-                                                    style: TextStyle(
-                                                      fontSize:
-                                                      getProportionateScreenWidth(
-                                                          20),
-                                                      fontWeight:
-                                                      FontWeight.bold,
-                                                      color: kCustomWhite,
+                        actionModel: ActionModel(
+                            date: DateTime.now().millisecondsSinceEpoch,
+                            description: 'Ha creato l\'ordine #$code per il fornitore ${widget.currentSupplier.nome} per conto di ' + dataBundleNotifier.currentBranch.companyName,
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                            type: ActionType.DRAFT_ORDER_CREATION
+                        )
+                    );
+
+                    if(performSaveOrderId != null){
+                      dataBundleNotifier.currentProductModelListForSupplier.forEach((element) {
+                        dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
+                            element.prezzo_lordo,
+                            element.pkProductId,
+                            performSaveOrderId.data
+                        );
+                      });
+                    }
+
+                    if(performSaveOrderId != null){
+                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
+                          supplierName: widget.currentSupplier.nome,
+                          branchName: dataBundleNotifier.currentBranch.companyName,
+                          message: OrderUtils.buildMessageFromCurrentOrderList(dataBundleNotifier.currentProductModelListForSupplier),
+                          orderCode: code,
+                          supplierEmail: widget.currentSupplier.mail,
+                          userEmail: dataBundleNotifier.dataBundleList[0].email,
+                          userName: dataBundleNotifier.dataBundleList[0].firstName,
+                          addressBranch: currentStorageModel.address + ' ' + currentStorageModel.city + ' ' + currentStorageModel.cap.toString(),
+                          deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
+
+                      if (sendEmailResponse.data == 'OK') {
+                        print('Save order as SENT. OrderId: ' + performSaveOrderId.data.toString() );
+                        await dataBundleNotifier
+                            .getclientServiceInstance()
+                            .updateOrderStatus(
+                            orderModel: OrderModel(
+                                pk_order_id: performSaveOrderId.data,
+                                status: OrderState.SENT,
+                                delivery_date:
+                                currentDate.millisecondsSinceEpoch,
+                                closedby: dataBundleNotifier
+                                    .retrieveNameLastNameCurrentUser()),
+                            actionModel: ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description:
+                                'Ha inviato l\'ordine #${code} '
+                                    'al fornitore ${widget.currentSupplier.nome}. ',
+                                fkBranchId: dataBundleNotifier
+                                    .currentBranch.pkBranchId,
+                                user: dataBundleNotifier
+                                    .retrieveNameLastNameCurrentUser(),
+                                type: ActionType.SENT_ORDER));
+                        dataBundleNotifier
+                            .setCurrentBranch(dataBundleNotifier.currentBranch);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OrdersScreen(),
+                          ),
+                        );
+                      } else {
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              contentPadding: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              content: Builder(
+                                builder: (context) {
+                                  var height =
+                                      MediaQuery.of(context).size.height;
+                                  var width =
+                                      MediaQuery.of(context).size.width;
+                                  return SizedBox(
+                                    height: height - 250,
+                                    width: width - 90,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.only(
+                                                  topRight:
+                                                  Radius.circular(
+                                                      10.0),
+                                                  topLeft:
+                                                  Radius.circular(
+                                                      10.0)),
+                                              color: kPrimaryColor,
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                                  children: [
+                                                    Text(
+                                                      '  Errore invio ordine',
+                                                      style: TextStyle(
+                                                        fontSize:
+                                                        getProportionateScreenWidth(
+                                                            20),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                        color: kCustomWhite,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  IconButton(
-                                                    icon: const Icon(
-                                                      Icons.clear,
-                                                      color: kCustomWhite,
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.clear,
+                                                        color: kCustomWhite,
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context);
+                                                      },
                                                     ),
-                                                    onPressed: () {
-                                                      Navigator.pop(
-                                                          context);
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                              Column(
-                                                children: [
-                                                  Text('E\' stato riscontrato un errore durate l\'invio dell\'ordine. Controlla che la mail sia giusta oppure riprova fra un paio di minuti. L\'ordine è stato salvato come bozza.' ),
-                                                ],
-                                              ),
-                                            ],
+                                                  ],
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    Text('E\' stato riscontrato un errore durate l\'invio dell\'ordine. Controlla che la mail sia giusta oppure riprova fra un paio di minuti. L\'ordine è stato salvato come bozza.' ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        // buildDateList(),
-                                      ],
+                                          // buildDateList(),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ));
+                                  );
+                                },
+                              ),
+                            ));
+                      }
                     }
                   }
-
-
-
                 },
                 color: Colors.green.shade900.withOpacity(0.8),
               ),
