@@ -375,6 +375,8 @@ class _VatFattureInCloudCalculatorBodyState
                           showArrow: false,
                           backgroundColor: kCustomWhite,
                         ),
+
+
                         Padding(
                           padding: const EdgeInsets.all(18.0),
                           child: DefaultButton(

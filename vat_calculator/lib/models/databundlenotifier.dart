@@ -102,6 +102,7 @@ class DataBundleNotifier extends ChangeNotifier {
   bool editOrder = false;
 
   int daysRangeDate = 31;
+  int currentYear = 2021;
 
   DateTime currentDate = DateTime.now();
 
@@ -203,6 +204,9 @@ class DataBundleNotifier extends ChangeNotifier {
   bool showIvaButtonPressed = false;
   int indexIvaList = 0;
   List<int> ivaList = [22, 10, 4, 0];
+
+  int trimCounter;
+
   Map<int, Widget> ivaListCupertino = {
     0 : const Text('22'),
     1 : const Text('10'),
@@ -210,6 +214,7 @@ class DataBundleNotifier extends ChangeNotifier {
     3 : const Text('0'),
   };
 
+  int trimCounterPeriod;
   Map<int, Widget> ivaListPeriodCupertino = {
     0 : const Text('Gen-Mar'),
     1 : const Text('Apr-Giu'),
@@ -1184,10 +1189,7 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setIvaListTrimMonthChoiceCupertinoIndex(int index) {
-    ivaListTrimMonthChoiceCupertinoIndex = index;
-    notifyListeners();
-  }
+
 
   void subtractMonth() {
     currentDate = DateTime(currentDate.year, currentDate.month - 1, currentDate.day);
@@ -1203,11 +1205,11 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     }
     clearAndUpdateMapBundle();
-
     notifyListeners();
   }
 
   void addMonth() {
+
     currentDate = DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
     currentDateTimeRange = DateTimeRange(
       start: DateTime(currentDate.year, currentDate.month, 1, 0, 0, 0, 0,0),
@@ -1221,6 +1223,58 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     }
     clearAndUpdateMapBundle();
+    notifyListeners();
+  }
+
+  void switchTrimAndCalculateIvaGraph(int index) {
+
+    currentDate = DateTime(currentDate.year, currentDate.month + 1, currentDate.day);
+    switch(index){
+      case 0:
+        currentDateTimeRange = DateTimeRange(
+          start: DateTime(currentYear, 1, 1, 0, 0, 0, 0,0),
+          end: DateTime(currentYear, 3, DateTime(currentDate.year, 3 + 1, 0).day, 0, 0, 0, 0,0),
+        );
+        break;
+      case 1:
+        currentDateTimeRange = DateTimeRange(
+          start: DateTime(currentYear, 4, 1, 0, 0, 0, 0,0),
+          end: DateTime(currentYear, 6, DateTime(currentDate.year, 6 + 1, 0).day, 0, 0, 0, 0,0),
+        );
+        break;
+      case 2:
+        currentDateTimeRange = DateTimeRange(
+          start: DateTime(currentYear, 7, 1, 0, 0, 0, 0,0),
+          end: DateTime(currentYear, 9, DateTime(currentDate.year, 9 + 1, 0).day, 0, 0, 0, 0,0),
+        );
+        break;
+      case 3:
+        currentDateTimeRange = DateTimeRange(
+          start: DateTime(currentYear, 10, 1, 0, 0, 0, 0,0),
+          end: DateTime(currentYear, 12, DateTime(currentDate.year + 1, 1, 0).day, 0, 0, 0, 0,0),
+        );
+        break;
+
+    }
+
+    print(currentDateTimeRange.start.toString());
+    print(currentDateTimeRange.end.toString());
+
+    if(currentBranch != null){
+      if(currentBranch.providerFatture == 'fatture_in_cloud'){
+        retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
+      }else if(currentBranch.providerFatture == 'aruba'){
+        // retrieveDataToDrawChartAruba(currentDateTimeRange);
+      }
+    }
+    clearAndUpdateMapBundle();
+    notifyListeners();
+
+  }
+
+  void setIvaListTrimMonthChoiceCupertinoIndex(int index) {
+
+    ivaListTrimMonthChoiceCupertinoIndex = index;
     notifyListeners();
   }
 }

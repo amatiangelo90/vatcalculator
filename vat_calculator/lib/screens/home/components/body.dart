@@ -43,17 +43,75 @@ class _BodyState extends State<Body> with RestorationMixin {
   String importExpences;
   TextEditingController recessedController = TextEditingController();
   TextEditingController casualeRecessedController = TextEditingController();
-  RestorableInt currentSegmentIva = RestorableInt(0);
-  RestorableInt currentSegmentCalculationIvaPeriod = RestorableInt(0);
+  RestorableInt currentSegmentIva;
+  RestorableInt currentSegmentCalculationIvaPeriodChoiceMonthTrim;
+  RestorableInt currentSegmentCalculationIvaTrim;
 
+
+  @override
+  void initState() {
+    super.initState();
+    currentSegmentIva = RestorableInt(0);
+    currentSegmentCalculationIvaPeriodChoiceMonthTrim = RestorableInt(0);
+    DateTime currentDate = DateTime.now();
+
+    switch(currentDate.month){
+      case 1:
+        currentSegmentCalculationIvaTrim = RestorableInt(0);
+        break;
+      case 2:
+        currentSegmentCalculationIvaTrim = RestorableInt(0);
+        break;
+      case 3:
+        currentSegmentCalculationIvaTrim = RestorableInt(0);
+      break;
+      case 4:
+        currentSegmentCalculationIvaTrim = RestorableInt(1);
+      break;
+      case 5:
+        currentSegmentCalculationIvaTrim = RestorableInt(1);
+        break;
+      case 6:
+        currentSegmentCalculationIvaTrim = RestorableInt(1);
+        break;
+      case 7:
+        currentSegmentCalculationIvaTrim = RestorableInt(2);
+        break;
+      case 8:
+        currentSegmentCalculationIvaTrim = RestorableInt(2);
+        break;
+      case 9:
+        currentSegmentCalculationIvaTrim = RestorableInt(2);
+        break;
+      case 10:
+        currentSegmentCalculationIvaTrim = RestorableInt(3);
+        break;
+      case 11:
+        currentSegmentCalculationIvaTrim = RestorableInt(3);
+        break;
+      case 12:
+        currentSegmentCalculationIvaTrim = RestorableInt(3);
+        break;
+    }
+
+
+
+    Timer(const Duration(milliseconds: 1500), () {
+      setState(() {
+      });
+    });
+
+  }
 
   @override
   String get restorationId => 'cupertino_segmented_control';
 
+
   @override
   void restoreState(RestorationBucket oldBucket, bool initialRestore) {
     registerForRestoration(currentSegmentIva, 'current_segment');
-    registerForRestoration(currentSegmentCalculationIvaPeriod, 'current_segment_iva');
+    registerForRestoration(currentSegmentCalculationIvaPeriodChoiceMonthTrim, 'current_segment_iva');
+    registerForRestoration(currentSegmentCalculationIvaTrim, 'current_segment_iva_trim');
   }
 
   @override
@@ -209,11 +267,11 @@ class _BodyState extends State<Body> with RestorationMixin {
                           children: dataBundleNotifier.ivaListTrimMonthChoiceCupertino,
                           onValueChanged: (index){
                             setState(() {
-                              currentSegmentCalculationIvaPeriod.value = index;
+                              currentSegmentCalculationIvaPeriodChoiceMonthTrim.value = index;
                             });
                             dataBundleNotifier.setIvaListTrimMonthChoiceCupertinoIndex(index);
                           },
-                          groupValue: currentSegmentCalculationIvaPeriod.value,
+                          groupValue: currentSegmentCalculationIvaPeriodChoiceMonthTrim.value,
                         ),
                       ),
                     ),
@@ -246,7 +304,27 @@ class _BodyState extends State<Body> with RestorationMixin {
                       ],
                     ) :
 
-                    Text('Trimestrale'),
+                    Column(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: CupertinoSlidingSegmentedControl<int>(
+                              children: dataBundleNotifier.ivaListPeriodCupertino,
+                              onValueChanged: (index){
+                                setState(() {
+                                  currentSegmentCalculationIvaTrim.value = index;
+                                });
+                                dataBundleNotifier.switchTrimAndCalculateIvaGraph(index);
+                              },
+                              groupValue: currentSegmentCalculationIvaTrim.value,
+                            ),
+                          ),
+                        ),
+                        Text(dataBundleNotifier.currentYear.toString()),
+                      ],
+                    ),
                     LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
                     Padding(
                       padding: const EdgeInsets.all(2.0),
@@ -751,15 +829,6 @@ class _BodyState extends State<Body> with RestorationMixin {
       });
     }
     return total.toStringAsFixed(2);
-  }
-  @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(milliseconds: 1500), () {
-      setState(() {
-      });
-    });
-
   }
 
   buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
