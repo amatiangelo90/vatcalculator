@@ -101,6 +101,8 @@ class DataBundleNotifier extends ChangeNotifier {
   bool isZtoAOrderded = false;
   bool editOrder = false;
 
+  int daysRangeDate = 30;
+
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
     notifyListeners();
@@ -163,9 +165,9 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentDateTimeRange = DateTimeRange(
       start: currentDateTime
-          .subtract(Duration(days: currentDateTime.weekday - 1)),
-      end: currentDateTime.add(Duration(
-          days: DateTime.daysPerWeek - currentDateTime.weekday)),
+          .subtract(Duration(days: 10)),
+
+      end: currentDateTime,
     );
 
     if(currentBranch != null){
@@ -981,8 +983,7 @@ class DataBundleNotifier extends ChangeNotifier {
     double totalIvaNdcReceived = 0.0;
     double totalIvaNdcSent = 0.0;
 
-    Map<String, double> resultCreditIvaMap =
-    initializeMap(currentDateTimeRange);
+    Map<String, double> resultCreditIvaMap = initializeMap(currentDateTimeRange);
     Map<String, double> resultDebitIvaMap = initializeMap(currentDateTimeRange);
 
     List<ResponseAcquistiApi> extractedAcquistiFatture = [];
@@ -1048,51 +1049,79 @@ class DataBundleNotifier extends ChangeNotifier {
     print(resultCreditIvaMap.toString());
     print(resultDebitIvaMap.toString());
 
-
     charDataCreditIva = [
       VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 6)), retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          currentDateTimeRange.end.subtract(const Duration(days: 10)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 10, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 9)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 9, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 8)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 8, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 7)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 7, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 6)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 6, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 5)),
-          retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 5, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 4)),
-          retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 4, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 3)),
-          retrieveValueFromMapByDate(3, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 3, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 2)),
-          retrieveValueFromMapByDate(2, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(3, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 2, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 1)),
-          retrieveValueFromMapByDate(1, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(2, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(3, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 1, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 0)),
-          retrieveValueFromMapByDate(0, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(1, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(2, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(3, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultCreditIvaMap, currentDateTimeRange, 0, 10)),
+
     ];
+
 
     charDataDebitIva = [
       VatData(
-          currentDateTimeRange.end.subtract(const Duration(days: 6)), retrieveValueFromMapByDate(6, resultDebitIvaMap, currentDateTimeRange)),
+          currentDateTimeRange.end.subtract(const Duration(days: 10)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 10, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 9)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 9, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 8)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 8, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 7)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 7, 10)),
+      VatData(
+          currentDateTimeRange.end.subtract(const Duration(days: 6)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 6, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 5)),
-          retrieveValueFromMapByDate(5, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultDebitIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 5, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 4)),
-          retrieveValueFromMapByDate(4, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 4, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 3)),
-          retrieveValueFromMapByDate(3, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 3, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 2)),
-          retrieveValueFromMapByDate(2, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(3, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 2, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 1)),
-          retrieveValueFromMapByDate(1, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(2, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(3, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 1, 10)),
       VatData(
           currentDateTimeRange.end.subtract(const Duration(days: 0)),
-          retrieveValueFromMapByDate(0, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(1, resultDebitIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(2, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(3, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(4, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(5, resultCreditIvaMap, currentDateTimeRange) + retrieveValueFromMapByDate(6, resultCreditIvaMap, currentDateTimeRange)),
+          calculateValue(retrieveValueFromMapByDate, resultDebitIvaMap, currentDateTimeRange, 0, 10)),
+
     ];
 
     charDataCreditIva.forEach((element) {
@@ -1110,6 +1139,10 @@ class DataBundleNotifier extends ChangeNotifier {
   Map<String, double> initializeMap(DateTimeRange currentDateTimeRange) {
     Map<String, double> mapToReturn = {};
 
+    mapToReturn[buildKeyFromTimeRange(10)] = 0;
+    mapToReturn[buildKeyFromTimeRange(9)] = 0;
+    mapToReturn[buildKeyFromTimeRange(8)] = 0;
+    mapToReturn[buildKeyFromTimeRange(7)] = 0;
     mapToReturn[buildKeyFromTimeRange(6)] = 0;
     mapToReturn[buildKeyFromTimeRange(5)] = 0;
     mapToReturn[buildKeyFromTimeRange(4)] = 0;
@@ -1163,5 +1196,21 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     });
     return storageModelToReturn;
+  }
+
+  double calculateValue(double Function(int dayToSubtract,
+      Map<String, double> resultCreditIvaMap,
+      DateTimeRange timeRange) retrieveValueFromMapByDate,
+      Map<String, double> resultDebitIvaMap,
+      DateTimeRange currentDateTimeRange, int i, int j) {
+
+    double valueToReturn = 0.0;
+
+    while(i <= j){
+      valueToReturn = valueToReturn + retrieveValueFromMapByDate(i, resultDebitIvaMap, currentDateTimeRange);
+      i++;
+    }
+
+    return valueToReturn;
   }
 }

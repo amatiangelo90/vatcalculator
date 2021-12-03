@@ -134,7 +134,6 @@ class _BodyState extends State<Body> {
                                                     ),
                                                     Column(
                                                       children: [
-
                                                         Column(
                                                           children: buildDateList(dataBundleNotifier, context),
                                                         ),

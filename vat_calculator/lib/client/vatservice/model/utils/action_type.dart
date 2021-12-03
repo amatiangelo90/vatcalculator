@@ -99,7 +99,12 @@ class ActionType{
         case PROVIDER_CREATION:
         break;
         case RECESSED_CREATION:
-        break;
+          return CustomIcon.buildIconWidget('assets/icons/euro.svg',
+              Colors.deepPurple.shade700.withOpacity(0.9),
+              Colors.orange.withOpacity(0.2),
+              Icons.edit,
+              Colors.deepPurple.shade900,
+              RECESSED_CREATION);
         case PRODUCT_CREATION:
           return CustomIcon.buildIconWidget('assets/icons/product.svg',
             Colors.orange.shade700.withOpacity(0.9),
