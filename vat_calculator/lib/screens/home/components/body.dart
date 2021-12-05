@@ -1141,7 +1141,7 @@ class _BodyState extends State<Body> with RestorationMixin {
 
       return Column(
         children: [
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text('Ultimi 5 incassi registrati'),
           ),

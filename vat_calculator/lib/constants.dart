@@ -111,7 +111,7 @@ String getMonthFromMonthNumber(int month){
     case 2:
       return 'Febbraio';
     case 3:
-      return 'Marco';
+      return 'Marzo';
     case 4:
       return 'Aprile';
     case 5:

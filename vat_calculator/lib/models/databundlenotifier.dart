@@ -101,8 +101,8 @@ class DataBundleNotifier extends ChangeNotifier {
   bool isZtoAOrderded = false;
   bool editOrder = false;
 
-  int daysRangeDate = 31;
-  int currentYear = 2021;
+  int daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
+  int currentYear = DateTime.now().year;
 
   DateTime currentDate = DateTime.now();
 
@@ -972,6 +972,8 @@ class DataBundleNotifier extends ChangeNotifier {
 
   retrieveDataToDrawChartFattureInCloud(DateTimeRange currentDateTimeRange) async {
 
+    print('Inizia a calcolare iva con ' + currentDateTimeRange.start.toString());
+    print('Inizia a calcolare iva con ' + currentDateTimeRange.end.toString());
     List<ResponseAcquistiApi> retrieveListaAcquisti =
     await iCloudClient.retrieveListaAcquisti(
         currentBranch.apiUidOrPassword,
@@ -1235,24 +1237,28 @@ class DataBundleNotifier extends ChangeNotifier {
           start: DateTime(currentYear, 1, 1, 0, 0, 0, 0,0),
           end: DateTime(currentYear, 3, DateTime(currentDate.year, 3 + 1, 0).day, 0, 0, 0, 0,0),
         );
+        daysRangeDate = currentDateTimeRange.end.difference(currentDateTimeRange.start).inDays;
         break;
       case 1:
         currentDateTimeRange = DateTimeRange(
           start: DateTime(currentYear, 4, 1, 0, 0, 0, 0,0),
           end: DateTime(currentYear, 6, DateTime(currentDate.year, 6 + 1, 0).day, 0, 0, 0, 0,0),
         );
+        daysRangeDate = currentDateTimeRange.end.difference(currentDateTimeRange.start).inDays;
         break;
       case 2:
         currentDateTimeRange = DateTimeRange(
           start: DateTime(currentYear, 7, 1, 0, 0, 0, 0,0),
           end: DateTime(currentYear, 9, DateTime(currentDate.year, 9 + 1, 0).day, 0, 0, 0, 0,0),
         );
+        daysRangeDate = currentDateTimeRange.end.difference(currentDateTimeRange.start).inDays;
         break;
       case 3:
         currentDateTimeRange = DateTimeRange(
           start: DateTime(currentYear, 10, 1, 0, 0, 0, 0,0),
           end: DateTime(currentYear, 12, DateTime(currentDate.year + 1, 1, 0).day, 0, 0, 0, 0,0),
         );
+        daysRangeDate = currentDateTimeRange.end.difference(currentDateTimeRange.start).inDays;
         break;
 
     }
@@ -1273,6 +1279,30 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void setIvaListTrimMonthChoiceCupertinoIndex(int index) {
+
+    if(index == 0){
+      daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
+      currentDate = DateTime.now();
+
+      if(currentBranch != null){
+        if(currentBranch.providerFatture == 'fatture_in_cloud'){
+          retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
+        }else if(currentBranch.providerFatture == 'aruba'){
+          // retrieveDataToDrawChartAruba(currentDateTimeRange);
+        }
+      }
+    }else if(index == 1){
+      DateTime now = DateTime.now();
+      if(now.month == 1 || now.month == 2 || now.month == 3){
+        switchTrimAndCalculateIvaGraph(0);
+      }else if(now.month == 4 || now.month == 5 || now.month == 6){
+        switchTrimAndCalculateIvaGraph(1);
+      }else if(now.month == 7 || now.month == 8 || now.month ==9){
+        switchTrimAndCalculateIvaGraph(2);
+      }else if(now.month == 10 || now.month == 11 || now.month == 12){
+        switchTrimAndCalculateIvaGraph(3);
+      }
+    }
 
     ivaListTrimMonthChoiceCupertinoIndex = index;
     notifyListeners();
