@@ -2,16 +2,12 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -19,13 +15,6 @@ import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
-import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
-import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
-import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
-import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
-
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
@@ -33,7 +22,7 @@ import '../../../../size_config.dart';
 class VatFattureInCloudCalculatorBody extends StatefulWidget {
   const VatFattureInCloudCalculatorBody({Key key}) : super(key: key);
 
-  static String routeName = 'vat_fattureincloud_screen';
+  static String routeName = 'fattureincloud_screen';
   @override
   _VatFattureInCloudCalculatorBodyState createState() => _VatFattureInCloudCalculatorBodyState();
 }
@@ -148,10 +137,8 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
         } else {
           return RefreshIndicator(
             onRefresh: () {
-              dataBundleNotifier.setCurrentBranch(
-                  dataBundleNotifier.currentBranch);
               setState(() {});
-              return Future.delayed(Duration(milliseconds: 500));
+              return Future.delayed(const Duration(milliseconds: 500));
             },
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -249,37 +236,13 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                           Text(dataBundleNotifier.currentYear.toString()),
                         ],
                       ),
+                      buildHeaderDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
+                      buildDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
                       LineChartWidget(currentDateTimeRange: dataBundleNotifier
                           .currentDateTimeRange),
-                      Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.circle,
-                                  color: Colors.green.shade700.withOpacity(0.6),
-                                ),
-                                Text('Iva Credito'),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.circle,
-                                  color: Colors.redAccent.withOpacity(0.6),
-                                ),
-                                Text('Iva Debito'),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+
                     ],
                   ),
-                  buildDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
                   buildDateRecessedRegistrationWidget(dataBundleNotifier),
 
                 ],
@@ -393,7 +356,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
             elevation: 2,
             child: Column(
               children: [
-                Text('Registra Incasso'),
+                const Text('Registra Incasso'),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -546,7 +509,6 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                       padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
                       child: FormError(errors: errors),
                     ),
-
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: DefaultButton(
@@ -694,7 +656,18 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: rowChildrenWidget.reversed.toList(),),
+          children: rowChildrenWidget.reversed.toList(),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: DefaultButton(
+            text: "Dettagli Incasso",
+            press: () async {
+              KeyboardUtil.hideKeyboard(context);
+            },
+          ),
+        ),
+        SizedBox(height: getProportionateScreenHeight(60),),
       ],
     );
   }
@@ -726,67 +699,57 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
     }
   }
 
-  buildDetailsIvaWidget(DataBundleNotifier dataBundleNotifier, double width) {
+  buildHeaderDetailsIvaWidget(DataBundleNotifier dataBundleNotifier, double width) {
     List<Widget> listOut = <Widget>[];
+    double vatCredit = dataBundleNotifier.totalIvaAcquisti + dataBundleNotifier.totalIvaNdcSent;
+    double vatDebit = dataBundleNotifier.totalIvaFatture +
+        dataBundleNotifier.totalIvaNdcReceived;
+    double currentRecessedVat = 0.0;
 
-    if ((dataBundleNotifier.totalIvaAcquisti + dataBundleNotifier.totalIvaNdcReceived) >=
-        (dataBundleNotifier.totalIvaFatture +
-            dataBundleNotifier.totalIvaNdcSent +
-            calculateVatFromListRecessed(
-                dataBundleNotifier.getRecessedListByRangeDate(
-                    dataBundleNotifier.currentDateTimeRange.start, dataBundleNotifier.currentDateTimeRange.end)))) {
+    dataBundleNotifier.currentListRecessed.forEach((recessedElement) {
+      if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(dataBundleNotifier.currentDateTimeRange.end)
+          && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(dataBundleNotifier.currentDateTimeRange.start)){
+        currentRecessedVat = currentRecessedVat + ((recessedElement.amount / 100) * recessedElement.vat);
+      }
+    });
+
+    if (vatCredit >= (vatDebit + currentRecessedVat)) {
       // iva a credito
       listOut.add(Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: Card(
           shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.white12, width: 1),
+            side: BorderSide(color: Colors.green.withOpacity(0.7), width: 1),
             borderRadius: BorderRadius.circular(15),
           ),
           child: Center(
             child: Column(
               children: [
-                const SizedBox(
-                  height: 5,
-                ),
-                const Text(
+                Text(
                   'Iva a Credito',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-                const SizedBox(
-                  height: 20,
+                  style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(15)),
                 ),
                 Text(
                   '€ ' +
-                      ((dataBundleNotifier.totalIvaNdcReceived + dataBundleNotifier.totalIvaAcquisti) -
-                          (dataBundleNotifier.totalIvaFatture +
-                              dataBundleNotifier.totalIvaNdcSent +
-                              calculateVatFromListRecessed(
-                                  dataBundleNotifier
-                                      .getRecessedListByRangeDate(
-                                      dataBundleNotifier.currentDateTimeRange.start,
-                                      dataBundleNotifier.currentDateTimeRange.end))))
+                      (vatCredit - (vatDebit + currentRecessedVat))
                           .toStringAsFixed(2),
-                  style: const TextStyle(color: Colors.white, fontSize: 40),
-                ),
-                const SizedBox(
-                  height: 20,
+                  style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(25)),
                 ),
               ],
             ),
           ),
-          color: kPrimaryColor,
+          color: Colors.green.withOpacity(0.7),
         ),
       ));
     } else {
       listOut.add(Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: Card(
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.white12, width: 1),
             borderRadius: BorderRadius.circular(15),
           ),
-          elevation: 20,
+          elevation: 10,
           child: Center(
             child: Column(
               children: [
@@ -797,24 +760,11 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                   'Iva a Debito',
                   style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
                 Text(
                   '€ ' +
-                      ((dataBundleNotifier.totalIvaFatture +
-                          dataBundleNotifier.totalIvaNdcReceived +
-                          calculateVatFromListRecessed(
-                              dataBundleNotifier
-                                  .getRecessedListByRangeDate(
-                                  dataBundleNotifier.currentDateTimeRange.start,
-                                  dataBundleNotifier.currentDateTimeRange.end))) -
-                          (dataBundleNotifier.totalIvaAcquisti + dataBundleNotifier.totalIvaNdcSent))
+                      ((vatDebit + currentRecessedVat) - vatCredit)
                           .toStringAsFixed(2),
-                  style: const TextStyle(color: Colors.white, fontSize: 40),
-                ),
-                const SizedBox(
-                  height: 20,
+                  style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(25)),
                 ),
               ],
             ),
@@ -823,255 +773,172 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
         ),
       ));
     }
-    listOut.add(
-      Padding(
-        padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FattureAcquistiDetailsPage(
-                          listResponseAcquisti: dataBundleNotifier.extractedAcquistiFatture,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    height: width / 2.3,
-                    width: width / 2.3,
-                    color: Colors.white,
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.white12, width: 1),
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      elevation: 20,
-                      color: kBeigeColor,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: const [
-                              Text(
-                                'Iva',
-                                style: TextStyle(
-                                    color: kCustomBlue, fontSize: 13),
-                              ),
-                              Text(
-                                'Fatture Acquisti',
-                                style: TextStyle(
-                                    color: kCustomBlue, fontSize: 13),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text('€ ' + dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2),
-                              style: const TextStyle(
-                                  color: kCustomBlue, fontSize: 25)),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: width / 2.3,
-                  width: width / 2.3,
-                  color: Colors.white,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.white12, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 20,
-                    color: kBeigeColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: const [
-                            Text(
-                              'Iva',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                            Text(
-                              'Fatture Vendite',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text('€ ' + dataBundleNotifier.totalIvaFatture.toStringAsFixed(2),
-                            style: const TextStyle(
-                                color: kCustomBlue, fontSize: 22)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: width / 2.3,
-                  width: width / 2.3,
-                  color: Colors.white,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.white12, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 20,
-                    color: kBeigeColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: const [
-                            Text(
-                              'Iva',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                            Text(
-                              'NDC (Emesse)',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text('€ ' + dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2),
-                            style: const TextStyle(
-                                color: kCustomBlue, fontSize: 22)),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: width / 2.3,
-                  width: width / 2.3,
-                  color: Colors.white,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.white12, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 20,
-                    color: kBeigeColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: const [
-                            Text(
-                              'Iva',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                            Text(
-                              'NDC (Ricevute)',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text('€ ' + dataBundleNotifier.totalIvaNdcReceived.toStringAsFixed(2),
-                            style: const TextStyle(
-                                color: kCustomBlue, fontSize: 22)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: width / 2.3,
-                  width: width / 2.3,
-                  color: kCustomWhite,
-                  child: const Card(
-                    elevation: 0,
-                    color: kCustomWhite,
-                  ),
-                ),
-                Container(
-                  height: width / 2.3,
-                  width: width / 2.3,
-                  color: kCustomWhite,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      side: const BorderSide(color: Colors.white12, width: 1),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    elevation: 20,
-                    color: kBeigeColor,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          children: const [
-                            Text(
-                              'Iva',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                            Text(
-                              'Incassi',
-                              style:
-                              TextStyle(color: kCustomBlue, fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                            calculateVatFromListRecessed(dataBundleNotifier
-                                .getRecessedListByRangeDate(
-                                dataBundleNotifier.currentDateTimeRange.start,
-                                dataBundleNotifier.currentDateTimeRange.end))
-                                .toStringAsFixed(2),
-                            style: const TextStyle(
-                                color: kCustomBlue, fontSize: 22)),
 
-                        //
-                      ],
-                    ),
+    return Column(
+      children: listOut,
+    );
+  }
+  buildDetailsIvaWidget(DataBundleNotifier dataBundleNotifier, double width) {
+    List<Widget> listOut = <Widget>[];
+    listOut.add(
+      Divider(),
+    );
+    listOut.add(
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FattureAcquistiDetailsPage(
+                    listResponseAcquisti: dataBundleNotifier.extractedAcquistiFatture,
                   ),
+                ),
+              );
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      'Iva',
+                      style: TextStyle(
+                          color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                    ),
+                    Text(
+                      'Fatture Acquisti',
+                      style: TextStyle(
+                          color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text('€ ' + dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2),
+                    style: TextStyle(
+                        color: Colors.green.shade700, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(11)),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    'Iva',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                  Text(
+                    'NDC (Emesse)',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text('€ ' + dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2),
+                  style: TextStyle(
+                      color: Colors.green.shade700, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(11))),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    'Iva',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                  Text(
+                    'Fatture Vendite',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text('€ ' + dataBundleNotifier.totalIvaFatture.toStringAsFixed(2),
+                style: TextStyle(
+                    color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(11)),
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    'Iva',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                  Text(
+                    'NDC (Ricevute)',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text('€ ' + dataBundleNotifier.totalIvaNdcReceived.toStringAsFixed(2),
+                  style: TextStyle(
+                      color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(11))),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text(
+                    'Iva',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                  Text(
+                    'Incassi',
+                    style:
+                    TextStyle(color: kCustomBlue, fontSize: getProportionateScreenWidth(8)),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                  calculateVatFromListRecessed(dataBundleNotifier
+                      .getRecessedListByRangeDate(
+                      dataBundleNotifier.currentDateTimeRange.start,
+                      dataBundleNotifier.currentDateTimeRange.end))
+                      .toStringAsFixed(2),
+                  style: TextStyle(
+                      color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(11))),
+
+              //
+            ],
+          ),
+        ],
       ),
     );
-
+    listOut.add(
+      Divider(),
+    );
     return Column(
       children: listOut,
     );

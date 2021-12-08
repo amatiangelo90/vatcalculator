@@ -112,7 +112,11 @@ class DataBundleNotifier extends ChangeNotifier {
   double totalIvaNdcSent = 0.0;
   List<ResponseAcquistiApi> extractedAcquistiFatture = [];
   List<ResponseAcquistiApi> extractedNdc = [];
-
+  Map<String, double> resultCreditIvaMap = {};
+  Map<String, double> resultDebitIvaMap = {};
+  List<ResponseAcquistiApi> retrieveListaAcquisti = [];
+  List<ResponseFattureApi> retrieveListaFatture = [];
+  List<ResponseNDCApi> retrieveListaNDC = [];
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -440,6 +444,8 @@ class DataBundleNotifier extends ChangeNotifier {
     currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
 
     clearAndUpdateMapBundle();
+
+    retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
     notifyListeners();
   }
 
@@ -993,9 +999,21 @@ class DataBundleNotifier extends ChangeNotifier {
 
   retrieveDataToDrawChartFattureInCloud(DateTimeRange currentDateTimeRange) async {
 
+    totalIvaAcquisti = 0.0;
+    totalIvaFatture = 0.0;
+    totalIvaNdcReceived = 0.0;
+    totalIvaNdcSent = 0.0;
+    extractedAcquistiFatture.clear();
+    extractedNdc.clear();
+    resultDebitIvaMap.clear();
+    resultCreditIvaMap.clear();
+    retrieveListaAcquisti.clear();
+    retrieveListaFatture.clear();
+    retrieveListaNDC.clear();
+
     print('Inizia a calcolare iva con ' + currentDateTimeRange.start.toString());
     print('Inizia a calcolare iva con ' + currentDateTimeRange.end.toString());
-    List<ResponseAcquistiApi> retrieveListaAcquisti =
+    retrieveListaAcquisti =
     await iCloudClient.retrieveListaAcquisti(
         currentBranch.apiUidOrPassword,
         currentBranch.apiKeyOrUser,
@@ -1005,7 +1023,7 @@ class DataBundleNotifier extends ChangeNotifier {
         '',
         currentDateTimeRange.start.year);
 
-    List<ResponseFattureApi> retrieveListaFatture =
+    retrieveListaFatture =
     await iCloudClient.retrieveListaFatture(
         currentBranch.apiUidOrPassword,
         currentBranch.apiKeyOrUser,
@@ -1015,7 +1033,7 @@ class DataBundleNotifier extends ChangeNotifier {
         '',
         currentDateTimeRange.start.year);
 
-    List<ResponseNDCApi> retrieveListaNDC = await iCloudClient.retrieveListaNdc(
+    retrieveListaNDC = await iCloudClient.retrieveListaNdc(
         currentBranch.apiUidOrPassword,
         currentBranch.apiKeyOrUser,
         currentDateTimeRange.start,
@@ -1025,12 +1043,8 @@ class DataBundleNotifier extends ChangeNotifier {
         currentDateTimeRange.start.year);
 
 
-    Map<String, double> resultCreditIvaMap = initializeMap(currentDateTimeRange);
-    Map<String, double> resultDebitIvaMap = initializeMap(currentDateTimeRange);
-
-
-    extractedAcquistiFatture.clear();
-    extractedNdc.clear();
+    resultCreditIvaMap = initializeMap(currentDateTimeRange);
+    resultDebitIvaMap = initializeMap(currentDateTimeRange);
 
 
     retrieveListaAcquisti.forEach((acquisto) {
@@ -1257,6 +1271,7 @@ class DataBundleNotifier extends ChangeNotifier {
           end: DateTime(currentYear, 3, DateTime(currentDate.year, 3 + 1, 0).day, 0, 0, 0, 0,0),
         );
         daysRangeDate = currentDateTimeRange.end.difference(currentDateTimeRange.start).inDays;
+
         break;
       case 1:
         currentDateTimeRange = DateTimeRange(
@@ -1298,6 +1313,8 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void setIvaListTrimMonthChoiceCupertinoIndex(int index) {
+
+
 
     if(index == 0){
       daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);

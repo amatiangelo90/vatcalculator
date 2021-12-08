@@ -29,27 +29,51 @@ class _LineChartWidgetState extends State<LineChartWidget> {
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, _) {
           return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SfCartesianChart(
-                    backgroundColor: Colors.white,
-                    enableAxisAnimation: true,
-                    primaryXAxis: DateTimeAxis(),
-                    series: <ChartSeries>[
-                      LineSeries<VatData, DateTime>(
-                        width: 3,
-                        color: Colors.green.shade700.withOpacity(0.6),
-                          dataSource: dataBundleNotifier.charDataCreditIva,
-                          xValueMapper: (VatData sales, _) => sales.date,
-                          yValueMapper: (VatData sales, _) => sales.vatValue),
+              child: Column(
+                children: [
+                  SfCartesianChart(
+                      backgroundColor: Colors.white,
+                      enableAxisAnimation: true,
+                      primaryXAxis: DateTimeAxis(),
+                      series: <ChartSeries>[
+                        LineSeries<VatData, DateTime>(
+                          width: 3,
+                          color: Colors.green.shade700.withOpacity(0.6),
+                            dataSource: dataBundleNotifier.charDataCreditIva,
+                            xValueMapper: (VatData sales, _) => sales.date,
+                            yValueMapper: (VatData sales, _) => sales.vatValue),
 
-                      LineSeries<VatData, DateTime>(
-                        width: 3,
-                        color: Colors.redAccent.shade700.withOpacity(0.6),
-                          dataSource: dataBundleNotifier.charDataDebitIva,
-                          xValueMapper: (VatData sales, _) => sales.date,
-                          yValueMapper: (VatData sales, _) => sales.vatValue),
-                    ]),
+                        LineSeries<VatData, DateTime>(
+                          width: 3,
+                          color: Colors.redAccent.shade700.withOpacity(0.6),
+                            dataSource: dataBundleNotifier.charDataDebitIva,
+                            xValueMapper: (VatData sales, _) => sales.date,
+                            yValueMapper: (VatData sales, _) => sales.vatValue),
+                      ]),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            color: Colors.green.shade700.withOpacity(0.6),
+                          ),
+                          Text('Iva Credito'),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            color: Colors.redAccent.shade700.withOpacity(0.6),
+                          ),
+                          Text('Iva Debito'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ));
         },
       ),

@@ -198,9 +198,9 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               content: SizedBox(
                                   width: MediaQuery.of(context).size.width / 2,
                                   height: MediaQuery.of(context).size.height / 5,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: const Center(child: Text('Utente non abilitato per '
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Center(child: Text('Utente non abilitato per '
                                         'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
                                   )),
                             )
@@ -495,8 +495,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         ),
                       ),
                     ),
-                    buildDrawerRow('assets/icons/User Icon.svg',
-                        'Profilo',
+                    buildDrawerRow('assets/icons/Settings.svg',
+                        'Area Gestione',
                             (){
                               dataBundleNotifier.setShowIvaButtonToFalse();
                               Navigator.pushNamed(context, ProfileEditiScreen.routeName);

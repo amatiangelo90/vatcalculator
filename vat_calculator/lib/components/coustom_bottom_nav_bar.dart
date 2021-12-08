@@ -181,7 +181,7 @@ class CustomBottomNavBar extends StatelessWidget {
                         padding: const EdgeInsets.only(bottom: 3),
                         child: IconButton(
                             icon: SvgPicture.asset(
-                              "assets/icons/User Icon.svg",
+                              "assets/icons/Settings.svg",
                               color: MenuState.profile == selectedMenu
                                   ? kPrimaryColor
                                   : inActiveIconColor,
@@ -196,7 +196,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       MenuState.profile == selectedMenu
                           ? Card(
                         color: kCustomGreyBlue,
-                        child: Text(' Profilo ',
+                        child: Text(' Gestione ',
                           style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
                         ),
                       ) : const SizedBox(height: 0,)

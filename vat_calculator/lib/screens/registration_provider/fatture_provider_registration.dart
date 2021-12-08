@@ -111,6 +111,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
 
                                   context.loaderOverlay.hide();
                                   dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+
                                   switch(dataBundleNotifier.currentBranch.providerFatture){
                                     case 'fatture_in_cloud':
                                       Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
