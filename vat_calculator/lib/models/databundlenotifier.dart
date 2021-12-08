@@ -106,6 +106,14 @@ class DataBundleNotifier extends ChangeNotifier {
 
   DateTime currentDate = DateTime.now();
 
+  double totalIvaAcquisti = 0.0;
+  double totalIvaFatture = 0.0;
+  double totalIvaNdcReceived = 0.0;
+  double totalIvaNdcSent = 0.0;
+  List<ResponseAcquistiApi> extractedAcquistiFatture = [];
+  List<ResponseAcquistiApi> extractedNdc = [];
+
+
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
     notifyListeners();
@@ -163,9 +171,22 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void recalculateGraph() {
+
+    if(currentBranch != null){
+      if(currentBranch.providerFatture == 'fatture_in_cloud'){
+        retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
+      }else if(currentBranch.providerFatture == 'aruba'){
+        // retrieveDataToDrawChartAruba(currentDateTimeRange);
+      }
+    }
+    clearAndUpdateMapBundle();
+    notifyListeners();
+  }
 
   void initializeCurrentDateTimeRangeWeekly() {
     DateTime date = DateTime.now();
+
     currentDateTimeRange = DateTimeRange(
       start: DateTime(date.year, date.month, 1, 0, 0, 0, 0,0),
       end: DateTime(date.year, date.month, DateTime(date.year, date.month + 1, 0).day, 0, 0, 0, 0,0),
@@ -1003,16 +1024,14 @@ class DataBundleNotifier extends ChangeNotifier {
         '',
         currentDateTimeRange.start.year);
 
-    double totalIvaAcquisti = 0.0;
-    double totalIvaFatture = 0.0;
-    double totalIvaNdcReceived = 0.0;
-    double totalIvaNdcSent = 0.0;
 
     Map<String, double> resultCreditIvaMap = initializeMap(currentDateTimeRange);
     Map<String, double> resultDebitIvaMap = initializeMap(currentDateTimeRange);
 
-    List<ResponseAcquistiApi> extractedAcquistiFatture = [];
-    List<ResponseAcquistiApi> extractedNdc = [];
+
+    extractedAcquistiFatture.clear();
+    extractedNdc.clear();
+
 
     retrieveListaAcquisti.forEach((acquisto) {
       if (acquisto.tipo == 'spesa') {

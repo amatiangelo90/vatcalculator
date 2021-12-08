@@ -28,14 +28,14 @@ import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_i
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
-class Body extends StatefulWidget {
-  const Body({Key key}) : super(key: key);
+class HomePageBody extends StatefulWidget {
+  const HomePageBody({Key key}) : super(key: key);
 
   @override
-  _BodyState createState() => _BodyState();
+  _HomePageBodyState createState() => _HomePageBodyState();
 }
 
-class _BodyState extends State<Body> with RestorationMixin {
+class _HomePageBodyState extends State<HomePageBody> {
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
@@ -43,75 +43,18 @@ class _BodyState extends State<Body> with RestorationMixin {
   String importExpences;
   TextEditingController recessedController = TextEditingController();
   TextEditingController casualeRecessedController = TextEditingController();
-  RestorableInt currentSegmentIva;
-  RestorableInt currentSegmentCalculationIvaPeriodChoiceMonthTrim;
-  RestorableInt currentSegmentCalculationIvaTrim;
+
 
 
   @override
   void initState() {
     super.initState();
-    currentSegmentIva = RestorableInt(0);
-    currentSegmentCalculationIvaPeriodChoiceMonthTrim = RestorableInt(0);
     DateTime currentDate = DateTime.now();
-
-    switch(currentDate.month){
-      case 1:
-        currentSegmentCalculationIvaTrim = RestorableInt(0);
-        break;
-      case 2:
-        currentSegmentCalculationIvaTrim = RestorableInt(0);
-        break;
-      case 3:
-        currentSegmentCalculationIvaTrim = RestorableInt(0);
-      break;
-      case 4:
-        currentSegmentCalculationIvaTrim = RestorableInt(1);
-      break;
-      case 5:
-        currentSegmentCalculationIvaTrim = RestorableInt(1);
-        break;
-      case 6:
-        currentSegmentCalculationIvaTrim = RestorableInt(1);
-        break;
-      case 7:
-        currentSegmentCalculationIvaTrim = RestorableInt(2);
-        break;
-      case 8:
-        currentSegmentCalculationIvaTrim = RestorableInt(2);
-        break;
-      case 9:
-        currentSegmentCalculationIvaTrim = RestorableInt(2);
-        break;
-      case 10:
-        currentSegmentCalculationIvaTrim = RestorableInt(3);
-        break;
-      case 11:
-        currentSegmentCalculationIvaTrim = RestorableInt(3);
-        break;
-      case 12:
-        currentSegmentCalculationIvaTrim = RestorableInt(3);
-        break;
-    }
-
-
-
     Timer(const Duration(milliseconds: 1500), () {
       setState(() {
       });
     });
 
-  }
-
-  @override
-  String get restorationId => 'cupertino_segmented_control';
-
-
-  @override
-  void restoreState(RestorationBucket oldBucket, bool initialRestore) {
-    registerForRestoration(currentSegmentIva, 'current_segment');
-    registerForRestoration(currentSegmentCalculationIvaPeriodChoiceMonthTrim, 'current_segment_iva');
-    registerForRestoration(currentSegmentCalculationIvaTrim, 'current_segment_iva_trim');
   }
 
   @override
@@ -258,72 +201,6 @@ class _BodyState extends State<Body> with RestorationMixin {
                           ),
                         ],
                       ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: CupertinoSlidingSegmentedControl<int>(
-                          children: dataBundleNotifier.ivaListTrimMonthChoiceCupertino,
-                          onValueChanged: (index){
-                            setState(() {
-                              currentSegmentCalculationIvaPeriodChoiceMonthTrim.value = index;
-                            });
-                            dataBundleNotifier.setIvaListTrimMonthChoiceCupertinoIndex(index);
-                          },
-                          groupValue: currentSegmentCalculationIvaPeriodChoiceMonthTrim.value,
-                        ),
-                      ),
-                    ),
-                    dataBundleNotifier.ivaListTrimMonthChoiceCupertinoIndex == 0 ?
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                          child: IconButton(icon: Icon(
-                            Icons.arrow_back_ios,
-                            size: getProportionateScreenWidth(15),
-                            color: kPrimaryColor,
-                          ), onPressed: () {
-                            dataBundleNotifier.subtractMonth();
-                          },),
-                        ),
-                        Text(getMonthFromMonthNumber(dataBundleNotifier.currentDate.month).toUpperCase() + ' - ' + dataBundleNotifier.currentDate.year.toString()),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                          child: IconButton(icon: Icon(
-                            Icons.arrow_forward_ios,
-                            size: getProportionateScreenWidth(15),
-                            color: kPrimaryColor,
-                          ), onPressed: () {
-                            dataBundleNotifier.addMonth();
-                          },),
-                        ),
-                      ],
-                    ) :
-
-                    Column(
-                      children: [
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: CupertinoSlidingSegmentedControl<int>(
-                              children: dataBundleNotifier.ivaListPeriodCupertino,
-                              onValueChanged: (index){
-                                setState(() {
-                                  currentSegmentCalculationIvaTrim.value = index;
-                                });
-                                dataBundleNotifier.switchTrimAndCalculateIvaGraph(index);
-                              },
-                              groupValue: currentSegmentCalculationIvaTrim.value,
-                            ),
-                          ),
-                        ),
-                        Text(dataBundleNotifier.currentYear.toString()),
-                      ],
                     ),
                     LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
                     Padding(
@@ -936,22 +813,7 @@ class _BodyState extends State<Body> with RestorationMixin {
 
                 Column(
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 30,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: CupertinoSlidingSegmentedControl<int>(
-                          children: dataBundleNotifier.ivaListCupertino,
-                          onValueChanged: (index){
-                            setState(() {
-                              currentSegmentIva.value = index;
-                            });
-                            dataBundleNotifier.setIndexIvaListValue(index);
-                          },
-                          groupValue: currentSegmentIva.value,
-                        ),
-                      ),
-                    ),
+                    
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: const [
@@ -1045,7 +907,7 @@ class _BodyState extends State<Body> with RestorationMixin {
 
                                 List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
                                 dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                                dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                                dataBundleNotifier.recalculateGraph();
                                 recessedController.clear();
                                 casualeRecessedController.clear();
                                 ScaffoldMessenger.of(context)

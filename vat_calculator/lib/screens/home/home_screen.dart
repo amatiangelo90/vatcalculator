@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
 
               elevation: 0,
             ),
-            body: const Body(),
+            body: const HomePageBody(),
             bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.home),
           ),
         );
