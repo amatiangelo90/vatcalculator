@@ -24,7 +24,7 @@ class _DismissableWidgetProductsState extends State<DismissableWidgetProducts> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-          return dataBundleNotifier.productToAddToStorage.length == 0 ?
+          return dataBundleNotifier.productToAddToStorage.isEmpty ?
           Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.stretch,

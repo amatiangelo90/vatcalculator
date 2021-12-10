@@ -247,7 +247,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Text('Ordine creato il: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                  const Text('il: ', style: TextStyle(fontWeight: FontWeight.bold),),
                                   Text(buildDateFromMilliseconds(widget.orderModel.creation_date), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                                 ],
                               ),

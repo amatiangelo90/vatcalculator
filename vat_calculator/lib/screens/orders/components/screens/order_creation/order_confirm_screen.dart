@@ -334,7 +334,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text('  Ordine creato il: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                      const Text('  In data: ', style: TextStyle(fontWeight: FontWeight.bold),),
                       Text(buildDateFromMilliseconds(DateTime.now().millisecondsSinceEpoch)  + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                     ],
                   ),

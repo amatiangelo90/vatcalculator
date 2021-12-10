@@ -25,6 +25,7 @@ import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -123,7 +124,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                         },
                         child: Row(
                           children: [
-                            Text('Pagina Ordini', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                            Text('Dettaglio Ordini', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
                             Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
                           ],
                         ),
@@ -131,6 +132,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ],
                   ),
                 ),
+
                 FutureBuilder(
                     initialData: <Widget>[
                       const Center(
@@ -160,7 +162,33 @@ class _HomePageBodyState extends State<HomePageBody> {
                       children: buildOrderIncomingTodayListWidget(dataBundleNotifier),
                     ),
                   );
-                }),
+                }
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(width: getProportionateScreenWidth(10),),
+                          Text('Eventi in programma oggi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                        ],
+                      ),
+                      CupertinoButton(
+                        onPressed: (){
+                          Navigator.pushNamed(context, OrdersScreen.routeName);
+                        },
+                        child: Row(
+                          children: [
+                            Text('Dettaglio Eventi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
                   children: [
                     dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('') : GestureDetector(
@@ -198,7 +226,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                         Row(
                           children: [
                             SizedBox(width: getProportionateScreenWidth(10),),
-                            Text('Situazione Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                            Text('Andamento Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
                           ],
                         ),
                         CupertinoButton(
@@ -218,7 +246,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           },
                           child: Row(
                             children: [
-                              Text('Dettagli', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                              Text('Dettaglio Andamendo Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
                               Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
                             ],
                           ),
@@ -532,69 +560,55 @@ class _HomePageBodyState extends State<HomePageBody> {
     dataBundleNotifier.currentUnderWorkingOrdersList.forEach((order) {
       if(isToday(order.delivery_date)) {
         ordersList.add(
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: getProportionateScreenWidth(350),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15.0),
-                ),
-                color: Colors.white,
-                elevation: 10,
-                child: Column(
+          GestureDetector(
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+                productList: orderIdProductListMap[order.pk_order_id],),),);
+            },
+            child: Column(
+              children: [
+                Row(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              OrderState.getIconWidget(OrderState.INCOMING),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
-                              Text(
-                                '       #' + order.code,
-                                style: TextStyle(
-                                    fontSize: getProportionateScreenHeight(12)),
-                              ),
-                            ],
-                          ),
-                          SizedBox(width: getProportionateScreenWidth(90)),
-                        ],
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    OrderState.getIconWidget(OrderState.INCOMING),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Column(
+                        Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                          style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
+                        Text(
+                          '       #' + order.code,
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(12)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: getProportionateScreenWidth(90)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    SizedBox(width: getProportionateScreenHeight(110),),
+                    Row(
+                      children: [
+                        Row(
                           children: [
-                            Text(
-                              'Prodotti',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
-                            ),
                             Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
                               style: TextStyle(
                                   color: kPinaColor,
-                                  fontSize: getProportionateScreenHeight(17)),
+                                  fontSize: getProportionateScreenHeight(13),
+                                  fontWeight: FontWeight.bold),
                             ),
+                            Text(
+                              ' x Prodotti',
+                              style: TextStyle(
+                                  fontSize: getProportionateScreenHeight(13),),
+                            ),
+
                           ],
                         ),
-                        SizedBox(width: getProportionateScreenWidth(90)),
-                        Column(
+                        SizedBox(width: getProportionateScreenHeight(20),),
+                        Row(
                           children: [
-                            Text(
-                              'Prezzo Stimato ',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
-                            ),
                             Text(
                               '€ ' +
                                   calculatePriceFromProductList(
@@ -602,41 +616,26 @@ class _HomePageBodyState extends State<HomePageBody> {
                                       order.pk_order_id]),
                               style: TextStyle(
                                   color: kPinaColor,
-                                  fontSize: getProportionateScreenHeight(17)),
+                                  fontSize: getProportionateScreenHeight(13),
+                                  fontWeight: FontWeight.bold
+                              ),
                             ),
+                            Text(
+                              ' (Prezzo Stimato)',
+                              style: TextStyle(
+                                  fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
+                            ),
+
                           ],
                         ),
 
                       ],
                     ),
-                    SizedBox(height: getProportionateScreenHeight(10),),
-                    Container(
-                      height: 50,
-                      width: getProportionateScreenWidth(350),
-                      child: CupertinoButton(
-                        child: Text(
-                          'Completa Ordine',
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(13)),
-                        ),
-                        pressedOpacity: 0.8,
-                        color: Colors.green.shade700,
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                            productList: orderIdProductListMap[order.pk_order_id],),),);
-                        },
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(10.0),
-                            bottomRight: Radius.circular(10.0)),
-                        color: Colors.green.shade700,
-
-                      ),
-                    ),
                   ],
                 ),
-              ),
+                Divider(indent: getProportionateScreenHeight(100),),
+
+              ],
             ),
           ),
         );
@@ -1000,9 +999,30 @@ class _HomePageBodyState extends State<HomePageBody> {
 
       return Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text('Ultimi 5 incassi registrati'),
+          Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    SizedBox(width: getProportionateScreenWidth(10),),
+                    Text('Ultimi 5 incassi registrati', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                  ],
+                ),
+                CupertinoButton(
+                  onPressed: (){
+                    Navigator.pushNamed(context, RecessedManagerScreen.routeName);
+                  },
+                  child: Row(
+                    children: [
+                      Text('Dettaglio Incassi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                      Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -11,6 +11,7 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/components/vat_data.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
@@ -79,10 +80,20 @@ class LandingBody extends StatelessWidget {
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
 
+                  List<RecessedModel> _recessedModelList;
+
                   if(dataBundleNotifier.currentBranch != null){
-                    List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                    _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
                     dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
                   }
+
+                  // TODO sistemare la questione addizionare amount se esiste già una data contenente un incasso
+                  dataBundleNotifier.recessedListCharData.clear();
+                  _recessedModelList.forEach((recessedElement) {
+                    dataBundleNotifier.recessedListCharData.add(
+                        CharData(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed), recessedElement.amount)
+                    );
+                  });
 
                   if(dataBundleNotifier.currentBranch != null){
                     List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);

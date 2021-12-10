@@ -4,12 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:vat_calculator/components/vat_data.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
-import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
-import 'package:vat_calculator/size_config.dart';
-
-import '../constants.dart';
 
 class LineChartWidget extends StatefulWidget {
   LineChartWidget({Key key, this.currentDateTimeRange}) : super(key: key);
@@ -22,7 +16,7 @@ class LineChartWidget extends StatefulWidget {
 
 class _LineChartWidgetState extends State<LineChartWidget> {
 
-  List<VatData> fattureInCloudData = [];
+  List<CharData> fattureInCloudData = [];
 
   Widget build(BuildContext context) {
     return Container(
@@ -36,20 +30,20 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                       enableAxisAnimation: true,
                       primaryXAxis: DateTimeAxis(),
                       series: <ChartSeries>[
-                        LineSeries<VatData, DateTime>(
-                          width: 3,
+                        LineSeries<CharData, DateTime>(
+                          width: 4,
                           color: Colors.green.shade700.withOpacity(0.6),
                             dataSource: dataBundleNotifier.charDataCreditIva,
-                            xValueMapper: (VatData sales, _) => sales.date,
-                            yValueMapper: (VatData sales, _) => sales.vatValue),
-
-                        LineSeries<VatData, DateTime>(
-                          width: 3,
+                            xValueMapper: (CharData sales, _) => sales.date,
+                            yValueMapper: (CharData sales, _) => sales.value),
+                        LineSeries<CharData, DateTime>(
+                          width: 4,
                           color: Colors.redAccent.shade700.withOpacity(0.6),
                             dataSource: dataBundleNotifier.charDataDebitIva,
-                            xValueMapper: (VatData sales, _) => sales.date,
-                            yValueMapper: (VatData sales, _) => sales.vatValue),
-                      ]),
+                            xValueMapper: (CharData sales, _) => sales.date,
+                            yValueMapper: (CharData sales, _) => sales.value),
+                      ]
+                  ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

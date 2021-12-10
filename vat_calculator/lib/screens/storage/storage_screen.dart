@@ -15,7 +15,6 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import '../../constants.dart';
@@ -45,7 +44,7 @@ class _StorageScreenState extends State<StorageScreen>{
 
         return Scaffold(
           floatingActionButton: dataBundleNotifier.currentStorageList.isEmpty
-              ? SizedBox(width: 0,) :
+              ? const SizedBox(width: 0,) :
           FloatingActionButton(
             onPressed: () {
               showDialog(
@@ -59,7 +58,7 @@ class _StorageScreenState extends State<StorageScreen>{
                         var height = MediaQuery.of(context).size.height;
                         var width = MediaQuery.of(context).size.width;
                         return SizedBox(
-                          height: height - 350,
+                          height: height - 250,
                           width: width,
                           child: SingleChildScrollView(
                             scrollDirection: Axis.vertical,
@@ -670,6 +669,7 @@ class _StorageScreenState extends State<StorageScreen>{
 
 
     List<Widget> fakeList = [];
+
     List<ProductModel> retrieveProductsByBranch = await dataBundleNotifier.getclientServiceInstance().retrieveProductsByBranch(dataBundleNotifier.currentBranch);
     List<int> listProductIdsToRemove = [];
     print('coming list size ' + retrieveProductsByBranch.length.toString());
@@ -684,6 +684,7 @@ class _StorageScreenState extends State<StorageScreen>{
 
     print('coming list size ' + retrieveProductsByBranch.length.toString());
     dataBundleNotifier.addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
+
     return fakeList;
   }
 

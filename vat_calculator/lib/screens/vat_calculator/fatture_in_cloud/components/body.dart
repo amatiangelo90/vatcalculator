@@ -9,15 +9,16 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
+import 'package:vat_calculator/components/column_chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
+import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_screen.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
-
 
 class VatFattureInCloudCalculatorBody extends StatefulWidget {
   const VatFattureInCloudCalculatorBody({Key key}) : super(key: key);
@@ -46,53 +47,55 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
     currentSegmentIva = RestorableInt(0);
     currentSegmentCalculationIvaPeriodChoiceMonthTrim = RestorableInt(0);
     DateTime currentDate = DateTime.now();
-
-    switch(currentDate.month){
-      case 1:
-        currentSegmentCalculationIvaTrim = RestorableInt(0);
-        break;
-      case 2:
-        currentSegmentCalculationIvaTrim = RestorableInt(0);
-        break;
-      case 3:
-        currentSegmentCalculationIvaTrim = RestorableInt(0);
-        break;
-      case 4:
-        currentSegmentCalculationIvaTrim = RestorableInt(1);
-        break;
-      case 5:
-        currentSegmentCalculationIvaTrim = RestorableInt(1);
-        break;
-      case 6:
-        currentSegmentCalculationIvaTrim = RestorableInt(1);
-        break;
-      case 7:
-        currentSegmentCalculationIvaTrim = RestorableInt(2);
-        break;
-      case 8:
-        currentSegmentCalculationIvaTrim = RestorableInt(2);
-        break;
-      case 9:
-        currentSegmentCalculationIvaTrim = RestorableInt(2);
-        break;
-      case 10:
-        currentSegmentCalculationIvaTrim = RestorableInt(3);
-        break;
-      case 11:
-        currentSegmentCalculationIvaTrim = RestorableInt(3);
-        break;
-      case 12:
-        currentSegmentCalculationIvaTrim = RestorableInt(3);
-        break;
-    }
-
-
-
+    setcurrentSegmentCalculationIvaTrim(currentDate.month);
     Timer(const Duration(milliseconds: 1500), () {
       setState(() {
       });
     });
+  }
 
+  setcurrentSegmentCalculationIvaTrim(int month){
+    print('Current Month ' + month.toString());
+    setState((){
+      switch(month){
+        case 1:
+          currentSegmentCalculationIvaTrim = RestorableInt(0);
+          break;
+        case 2:
+          currentSegmentCalculationIvaTrim = RestorableInt(0);
+          break;
+        case 3:
+          currentSegmentCalculationIvaTrim = RestorableInt(0);
+          break;
+        case 4:
+          currentSegmentCalculationIvaTrim = RestorableInt(1);
+          break;
+        case 5:
+          currentSegmentCalculationIvaTrim = RestorableInt(1);
+          break;
+        case 6:
+          currentSegmentCalculationIvaTrim = RestorableInt(1);
+          break;
+        case 7:
+          currentSegmentCalculationIvaTrim = RestorableInt(2);
+          break;
+        case 8:
+          currentSegmentCalculationIvaTrim = RestorableInt(2);
+          break;
+        case 9:
+          currentSegmentCalculationIvaTrim = RestorableInt(2);
+          break;
+        case 10:
+          currentSegmentCalculationIvaTrim = RestorableInt(3);
+          break;
+        case 11:
+          currentSegmentCalculationIvaTrim = RestorableInt(3);
+          break;
+        case 12:
+          currentSegmentCalculationIvaTrim = RestorableInt(3);
+          break;
+      }
+    });
   }
 
   @override
@@ -144,6 +147,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
+                  const Divider(color: Colors.blue, height: 6,),
                   dataBundleNotifier.currentBranch.providerFatture == ''
                       ? Column(
                     children: [
@@ -161,19 +165,14 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                         child: Padding(
                           padding: const EdgeInsets.all(8),
                           child: CupertinoSlidingSegmentedControl<int>(
-                            children: dataBundleNotifier
-                                .ivaListTrimMonthChoiceCupertino,
+                            children: dataBundleNotifier.ivaListTrimMonthChoiceCupertino,
                             onValueChanged: (index) {
                               setState(() {
-                                currentSegmentCalculationIvaPeriodChoiceMonthTrim
-                                    .value = index;
+                                currentSegmentCalculationIvaPeriodChoiceMonthTrim.value = index;
                               });
-                              dataBundleNotifier
-                                  .setIvaListTrimMonthChoiceCupertinoIndex(
-                                  index);
+                              dataBundleNotifier.setIvaListTrimMonthChoiceCupertinoIndex(index);
                             },
-                            groupValue: currentSegmentCalculationIvaPeriodChoiceMonthTrim
-                                .value,
+                            groupValue: currentSegmentCalculationIvaPeriodChoiceMonthTrim.value,
                           ),
                         ),
                       ),
@@ -222,14 +221,11 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                                     .ivaListPeriodCupertino,
                                 onValueChanged: (index) {
                                   setState(() {
-                                    currentSegmentCalculationIvaTrim.value =
-                                        index;
+                                    currentSegmentCalculationIvaTrim.value = index;
                                   });
-                                  dataBundleNotifier
-                                      .switchTrimAndCalculateIvaGraph(index);
+                                  dataBundleNotifier.switchTrimAndCalculateIvaGraph(index);
                                 },
-                                groupValue: currentSegmentCalculationIvaTrim
-                                    .value,
+                                groupValue: currentSegmentCalculationIvaTrim.value,
                               ),
                             ),
                           ),
@@ -650,23 +646,36 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
 
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text('Ultimi 5 incassi registrati'),
+        Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: getProportionateScreenWidth(10),),
+                  Text('Ultimi 5 incassi registrati', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                ],
+              ),
+              CupertinoButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, RecessedManagerScreen.routeName);
+                },
+                child: Row(
+                  children: [
+                    Text('Dettaglio Incassi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                    Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: rowChildrenWidget.reversed.toList(),
         ),
-        Padding(
-          padding: const EdgeInsets.all(18.0),
-          child: DefaultButton(
-            text: "Dettagli Incasso",
-            press: () async {
-              KeyboardUtil.hideKeyboard(context);
-            },
-          ),
-        ),
+        ColumnRecessedChartWidget(),
         SizedBox(height: getProportionateScreenHeight(60),),
       ],
     );
@@ -944,4 +953,3 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
     );
   }
 }
-

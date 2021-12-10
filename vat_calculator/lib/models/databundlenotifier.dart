@@ -12,7 +12,6 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
@@ -20,7 +19,6 @@ import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/vat_data.dart';
 import '../constants.dart';
-import '../size_config.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
 
@@ -78,8 +76,9 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<ProductModel> productListForChoicedSupplierToPerformOrder = [];
 
-  List<VatData> charDataCreditIva = [];
-  List<VatData> charDataDebitIva = [];
+  List<CharData> charDataCreditIva = [];
+  List<CharData> charDataDebitIva = [];
+  List<CharData> recessedListCharData = [];
 
   String currentPrivilegeType;
 
@@ -348,6 +347,15 @@ class DataBundleNotifier extends ChangeNotifier {
     currentListRecessed.clear();
     currentListRecessed.addAll(_recessedModelList);
 
+    recessedListCharData.clear();
+    _recessedModelList.forEach((recessedElement) {
+      recessedListCharData.add(CharData(
+        DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed),
+        recessedElement.amount
+      ));
+    });
+
+
     List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
     currentListSuppliersDuplicated.clear();
@@ -476,6 +484,9 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();
+    }
+    if(recessedListCharData.isNotEmpty){
+      recessedListCharData.clear();
     }
     if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
@@ -1111,7 +1122,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     charDataCreditIva.clear();
     do{
-      charDataCreditIva.add(VatData(
+      charDataCreditIva.add(CharData(
           currentDateTimeRange.end.subtract(Duration(days: daysRangeDate-j)),
           calculateValue(resultCreditIvaMap, currentDateTimeRange, daysRangeDate-j, daysRangeDate, false)));
       j++;
@@ -1120,7 +1131,7 @@ class DataBundleNotifier extends ChangeNotifier {
     int i = 0;
     charDataDebitIva.clear();
     do{
-      charDataDebitIva.add(VatData(
+      charDataDebitIva.add(CharData(
           currentDateTimeRange.end.subtract(Duration(days: daysRangeDate-i)),
           calculateValue(resultDebitIvaMap, currentDateTimeRange, daysRangeDate-i, daysRangeDate, true)));
       i++;
@@ -1128,11 +1139,11 @@ class DataBundleNotifier extends ChangeNotifier {
 
     print('Char data credit iva');
     charDataCreditIva.forEach((element) {
-      print(element.date.toString() + ' - ' + element.vatValue.toString());
+      print(element.date.toString() + ' - ' + element.value.toString());
     });
     print('Char data debit iva');
     charDataDebitIva.forEach((element) {
-      print(element.date.toString() + ' - ' + element.vatValue.toString());
+      print(element.date.toString() + ' - ' + element.value.toString());
     });
     print('finish');
 
@@ -1314,12 +1325,13 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void setIvaListTrimMonthChoiceCupertinoIndex(int index) {
 
-
-
     if(index == 0){
       daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
       currentDate = DateTime.now();
-
+      currentDateTimeRange = DateTimeRange(
+        start: DateTime(currentDate.year, currentDate.month, 1, 0, 0, 0, 0,0),
+        end: DateTime(currentDate.year, currentDate.month, DateTime(currentDate.year, currentDate.month + 1, 0).day, 0, 0, 0, 0,0),
+      );
       if(currentBranch != null){
         if(currentBranch.providerFatture == 'fatture_in_cloud'){
           retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);

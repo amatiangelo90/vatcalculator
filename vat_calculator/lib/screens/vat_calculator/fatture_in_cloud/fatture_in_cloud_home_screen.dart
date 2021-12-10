@@ -109,7 +109,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
                                         width: width - 90,
                                         child: Card(
                                           color:
-                                          Colors.blue,
+                                          kPrimaryColor,
                                           semanticContainer:
                                           true,
                                           clipBehavior: Clip
@@ -248,7 +248,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
                     color: dataBundleNotifier
                         .currentBranch.providerFatture ==
                         'fatture_in_cloud'
-                        ? Colors.blue.shade700.withOpacity(0.9)
+                        ? kPrimaryColor
                         : Colors.orange,
                     semanticContainer: true,
                     clipBehavior: Clip.antiAliasWithSaveLayer,

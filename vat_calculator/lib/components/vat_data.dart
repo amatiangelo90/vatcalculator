@@ -1,5 +1,5 @@
-class VatData {
-  VatData(this.date, this.vatValue);
+class CharData {
+  CharData(this.date, this.value);
   DateTime date;
-  double vatValue;
+  double value;
 }
