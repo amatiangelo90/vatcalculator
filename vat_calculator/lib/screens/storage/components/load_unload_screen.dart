@@ -165,7 +165,7 @@ class _StorageScreenState extends State<StorageScreen> with TickerProviderStateM
                                       future: buildListProducts(dataBundleNotifier, context),
                                       builder: (context, snapshot) {
                                         if (snapshot.hasData) {
-                                          return DismissableWidgetProducts();
+                                          return SingleChildScrollView(scrollDirection: Axis.vertical,child: const DismissableWidgetProducts());
                                         } else {
                                           return const CircularProgressIndicator();
                                         }

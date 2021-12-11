@@ -230,7 +230,6 @@ class DataBundleNotifier extends ChangeNotifier {
   List<int> ivaList = [22, 10, 4, 0];
 
   int trimCounter;
-
   Map<int, Widget> ivaListCupertino = {
     0 : const Text('22'),
     1 : const Text('10'),
@@ -251,6 +250,7 @@ class DataBundleNotifier extends ChangeNotifier {
     0 : const Text('Mensile'),
     1 : const Text('Trimestrale'),
   };
+
 
   void setShowIvaButtonToFalse(){
     showIvaButtonPressed = false;
@@ -619,6 +619,19 @@ class DataBundleNotifier extends ChangeNotifier {
           unitMeasure: element.unitMeasure));
     });
 
+    List<ProductModel> retrieveProductsByBranch = await getclientServiceInstance().retrieveProductsByBranch(currentBranch);
+    List<int> listProductIdsToRemove = [];
+    print('coming list size ' + retrieveProductsByBranch.length.toString());
+    currentStorageProductListForCurrentStorage.forEach((currentProductAlreadyPresent) {
+      listProductIdsToRemove.add(currentProductAlreadyPresent.fkProductId);
+    });
+
+    retrieveProductsByBranch.removeWhere((element) =>
+        listProductIdsToRemove.contains(element.pkProductId),
+    );
+
+    print('coming list size ' + retrieveProductsByBranch.length.toString());
+    addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
     notifyListeners();
   }
 
@@ -723,6 +736,19 @@ class DataBundleNotifier extends ChangeNotifier {
     currentStorageList.addAll(storageModelList);
     if(currentStorageList.isNotEmpty){
       currentStorage = currentStorageList[0];
+      List<ProductModel> retrieveProductsByBranch = await getclientServiceInstance().retrieveProductsByBranch(currentBranch);
+      List<int> listProductIdsToRemove = [];
+      print('coming list size ' + retrieveProductsByBranch.length.toString());
+      currentStorageProductListForCurrentStorage.forEach((currentProductAlreadyPresent) {
+        listProductIdsToRemove.add(currentProductAlreadyPresent.fkProductId);
+      });
+
+      retrieveProductsByBranch.removeWhere((element) =>
+          listProductIdsToRemove.contains(element.pkProductId),
+      );
+
+      print('coming list size ' + retrieveProductsByBranch.length.toString());
+      addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
     }
 
     if(currentStorageList.isNotEmpty){
@@ -782,12 +808,14 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   String retrieveSupplierById(int supplierId) {
+    String currentSupplier = '';
+    print('Retrieve supplier by current id : ' + supplierId.toString());
     currentListSuppliers.forEach((element) {
       if(element.pkSupplierId == supplierId){
-        return element.nome;
+        currentSupplier = element.nome;
       }
     });
-    return "";
+    return currentSupplier;
   }
 
   void clearUnloadProductList() {
@@ -1353,6 +1381,15 @@ class DataBundleNotifier extends ChangeNotifier {
     }
 
     ivaListTrimMonthChoiceCupertinoIndex = index;
+    notifyListeners();
+  }
+
+  void filterProductToAddToStorageBySupplier(String val) {
+
+  }
+
+  void removeProductToAddToStorage(ProductModel element) {
+    productToAddToStorage.remove(element);
     notifyListeners();
   }
 }

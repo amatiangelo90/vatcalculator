@@ -31,7 +31,6 @@ import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_screen.dart';
-import 'components/chart_widget.dart';
 import 'screens/sign_up/sign_up_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {

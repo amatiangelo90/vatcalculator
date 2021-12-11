@@ -18,7 +18,7 @@ import 'client/vatservice/model/product_order_amount_model.dart';
 // #e7e5e1	(231,229,225)
 // #a8acab	(168,172,171)
 // #d2c5b9	(210,197,185)
-const Color kPrimaryColor = Colors.black87;
+const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
 const Color kWinterGreen = Color(0XFF2f4a36);

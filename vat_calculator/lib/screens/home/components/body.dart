@@ -177,7 +177,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ),
                       CupertinoButton(
                         onPressed: (){
-                          Navigator.pushNamed(context, OrdersScreen.routeName);
+
                         },
                         child: Row(
                           children: [
@@ -653,11 +653,11 @@ class _HomePageBodyState extends State<HomePageBody> {
                 Padding(
                   padding: const EdgeInsets.all(28.0),
                   child: CupertinoButton(
-                    color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
+                    color: Colors.blueAccent.shade700.withOpacity(0.6),
                     onPressed: (){
                       Navigator.pushNamed(context, CreateOrderScreen.routeName);
                     },
-                    child: Text('Crea Ordine'),
+                    child: const Text('Crea Ordine'),
                   ),
                 ),
               ],
