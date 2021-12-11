@@ -12,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../orders_screen.dart';
 import '../edit_order_draft_screen.dart';
@@ -58,7 +59,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
             leading: GestureDetector(
                 child: const Icon(Icons.arrow_back_ios, color: kCustomWhite,),
               onTap: (){
-                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, HomeScreen.routeName);
               },
             ),
           ),

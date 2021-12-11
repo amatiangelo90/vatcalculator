@@ -39,10 +39,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
   RestorableInt segmentControlCreateOrAddFromCatalogue;
 
   String supplierChoiced = '';
-  String supplierChoicedForCreationProduct = '';
-
   List<String> suppliersList = [];
-  List<String> suppliersListForCreationProduct = [];
 
   TextEditingController _nameController = TextEditingController();
   TextEditingController _unitMeasureController = TextEditingController();
@@ -89,14 +86,12 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     const double _initFabHeight = 80.0;
     double _fabHeight = 0;
     double _panelHeightOpen = 0;
-    double _panelHeightClosed = 70.0;
+    double _panelHeightClosed = 45.0;
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         suppliersList.clear();
         suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
-        suppliersListForCreationProduct.clear();
-        suppliersListForCreationProduct = retrieveListSuppliersBis(dataBundleNotifier.currentListSuppliers);
 
         _panelHeightOpen = MediaQuery.of(context).size.height * .75;
         return Scaffold(
@@ -330,7 +325,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
             ],
           ),
           const SizedBox(
-            height: 10.0,
+            height: 8.0,
           ),
           Column(
             children: [
@@ -594,113 +589,101 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
       TextEditingController controller =
       TextEditingController(text: productStorageElementToRemove.stock.toString());
       rows.add(
-        Dismissible(
-          direction: DismissDirection.endToStart,
-          background: Container(
-            color: kPinaColor,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text('Elimina ' + productStorageElementToRemove.productName + '?', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),),
-                SizedBox(width: 10,),
-                IconButton(
-                  color: kPinaColor,
-                  icon: Icon(FontAwesomeIcons.trash, size: getProportionateScreenHeight(16),color: kCustomWhite,),
-                  onPressed: () {
-                  },
-                ),
-              ],
-            ),
-          ),
-          key: Key(productStorageElementToRemove.pkStorageProductId.toString()),
-          onDismissed: (value){
-
-            dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
-            dataBundleNotifier.removeProductFromStorage(productStorageElementToRemove);
-            dataBundleNotifier.getclientServiceInstance()
-                .removeProductFromStorage(
-                storageProductModel: productStorageElementToRemove,
-                actionModel: ActionModel(
-                    date: DateTime.now().millisecondsSinceEpoch,
-                    description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                        'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                    type: ActionType.PRODUCT_DELETE
-                )
-            );
-
-
-            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-            suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 9),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      productStorageElementToRemove.productName,
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(fontSize: getProportionateScreenWidth(18)),
-                    ),
-                    Text(
-                      productStorageElementToRemove.supplierName,
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(fontSize: getProportionateScreenWidth(8)),
-                    ),
-                    Row(
-                      children: [
-                        Text(
-                          productStorageElementToRemove.unitMeasure,
-                          style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8)),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Icon(
-                            FontAwesomeIcons.dotCircle,
-                            size: getProportionateScreenWidth(3),
-                          ),
-                        ),
-                        dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
-                        TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
-                          productStorageElementToRemove.price.toString() + ' €',
-                          style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              Row(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 9),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ConstrainedBox(
-                    constraints: BoxConstraints.loose(Size(
-                        getProportionateScreenWidth(70),
-                        getProportionateScreenWidth(60))),
-                    child: CupertinoTextField(
-                      enabled: false,
-                      controller: controller,
-                      onChanged: (text) {
-                      },
-                      textInputAction: TextInputAction.next,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true, signed: true),
-                      clearButtonMode: OverlayVisibilityMode.never,
-                      textAlign: TextAlign.center,
-                      autocorrect: false,
-                    ),
+                  Text(
+                    productStorageElementToRemove.productName,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(fontSize: getProportionateScreenWidth(15)),
+                  ),
+                  Text(
+                    productStorageElementToRemove.supplierName,
+                    overflow: TextOverflow.clip,
+                    style: TextStyle(fontSize: getProportionateScreenWidth(8)),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        productStorageElementToRemove.unitMeasure,
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(8)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          FontAwesomeIcons.dotCircle,
+                          size: getProportionateScreenWidth(3),
+                        ),
+                      ),
+                      dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
+                      TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
+                        productStorageElementToRemove.price.toString() + ' €',
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(8)),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+            Row(
+              children: [
+                Row(
+                  children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints.loose(Size(
+                          getProportionateScreenWidth(60),
+                          getProportionateScreenWidth(50))),
+                      child: CupertinoTextField(
+                        enabled: false,
+                        controller: controller,
+                        onChanged: (text) {
+                        },
+                        textInputAction: TextInputAction.next,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true, signed: true),
+                        clearButtonMode: OverlayVisibilityMode.never,
+                        textAlign: TextAlign.center,
+                        autocorrect: false,
+                      ),
+                    ),
+                    SizedBox(width: 9,),
+                    GestureDetector(
+                        onTap: (){
+                          dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
+                          dataBundleNotifier.removeProductFromStorage(productStorageElementToRemove);
+                          dataBundleNotifier.getclientServiceInstance()
+                              .removeProductFromStorage(
+                              storageProductModel: productStorageElementToRemove,
+                              actionModel: ActionModel(
+                                  date: DateTime.now().millisecondsSinceEpoch,
+                                  description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                      'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
+                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  type: ActionType.PRODUCT_DELETE
+                              )
+                          );
+
+
+                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                          suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
+                        },
+                        child: SvgPicture.asset('assets/icons/Error.svg', width: getProportionateScreenHeight(20),)),
+                    SizedBox(width: 3,),
+                  ],
+                ),
+              ],
+            ),
+
+          ],
         ),
       );
     });
@@ -895,32 +878,6 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                   keyboardType: TextInputType.number,
                   clearButtonMode: OverlayVisibilityMode.editing,
                   autocorrect: false,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                const SizedBox(width: 11,),
-                Text('   Seleziona il fornitore', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(10))),
-              ],
-            ),
-            Content(
-              child: ChipsChoice<String>.single(
-                choiceActiveStyle: C2ChoiceStyle(
-                  color: Colors.lightGreen.shade700.withOpacity(0.9),
-                  elevation: 2,
-                  showCheckmark: false,
-                ),
-                value: supplierChoicedForCreationProduct,
-                onChanged: (val) => setState(() {
-                  supplierChoicedForCreationProduct = val;
-
-                }),
-                choiceItems: C2Choice.listFrom<String, String>(
-                  source: suppliersListForCreationProduct,
-                  value: (i, v) => v,
-                  label: (i, v) => v,
-                  tooltip: (i, v) => v,
                 ),
               ),
             ),
