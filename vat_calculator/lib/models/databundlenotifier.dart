@@ -59,6 +59,7 @@ class DataBundleNotifier extends ChangeNotifier {
   List<StorageProductModel> currentStorageProductListForCurrentStorageLoad = [];
 
   List<ProductModel> productToAddToStorage = [];
+  List<ProductModel> productToAddToStorageDuplicated = [];
 
   List<OrderModel> currentOrdersForCurrentBranch = [];
 
@@ -170,6 +171,10 @@ class DataBundleNotifier extends ChangeNotifier {
   void addAllCurrentListProductToProductListToAddToStorage(List<ProductModel> listProduct){
     productToAddToStorage.clear();
     productToAddToStorage.addAll(listProduct);
+
+    productToAddToStorageDuplicated.clear();
+    productToAddToStorageDuplicated.addAll(listProduct);
+
     clearAndUpdateMapBundle();
     notifyListeners();
   }
@@ -900,7 +905,6 @@ class DataBundleNotifier extends ChangeNotifier {
       currentStorageProductListForCurrentStorageDuplicated.addAll(currentStorageProductListForCurrentStorage);
     }else{
 
-
       List<StorageProductModel> listTemp = [];
       currentStorageProductListForCurrentStorage.forEach((element) {
 
@@ -1384,12 +1388,19 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void filterProductToAddToStorageBySupplier(String val) {
-
-  }
-
   void removeProductToAddToStorage(ProductModel element) {
     productToAddToStorage.remove(element);
     notifyListeners();
+  }
+
+  ResponseAnagraficaFornitori retrieveSupplierFromSupplierListByIdName(String selectedSupplier) {
+    ResponseAnagraficaFornitori supplierToReturn;
+    currentListSuppliers.forEach((supplier) {
+      if(selectedSupplier.contains(supplier.nome) &&
+          selectedSupplier.contains(supplier.pkSupplierId.toString())){
+        supplierToReturn = supplier;
+      }
+    });
+    return supplierToReturn;
   }
 }

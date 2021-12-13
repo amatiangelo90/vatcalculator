@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chips_choice/chips_choice.dart';
+import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,6 +58,8 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
 
   bool creationProductAndAdd = true;
 
+  String _selectedSupplier = 'Seleziona Fornitore';
+
   ResponseAnagraficaFornitori currentSupplierToSaveProduct;
 
   Map<int, Widget> ivaListCupertino = {
@@ -71,6 +74,12 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
   @override
   void restoreState(RestorationBucket oldBucket, bool initialRestore) {
     registerForRestoration(segmentControlCreateOrAddFromCatalogue, 'current_add_create');
+  }
+
+  void setCurrentSupplier(String supplier, DataBundleNotifier dataBundleNotifier) {
+    setState(() {
+      _selectedSupplier = supplier;
+    });
   }
 
 
@@ -253,8 +262,8 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                                 ),
                                 Content(
                                   child: ChipsChoice<String>.single(
-                                    choiceActiveStyle: const C2ChoiceStyle(
-                                      color: kPinaColor,
+                                    choiceActiveStyle: C2ChoiceStyle(
+                                      color: Colors.blueAccent.shade700.withOpacity(0.8),
                                       elevation: 2,
                                       showCheckmark: false,
                                     ),
@@ -382,7 +391,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          color: kPinaColor,
+          color: Colors.lightBlue.shade700.withOpacity(0.8),
           elevation: 7,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -486,7 +495,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
             decoration: BoxDecoration(
               color: dataBundleNotifier.currentStorage.name ==
                   currentStorageElement.name
-                  ? kPinaColor
+                  ? Colors.lightBlue.shade700.withOpacity(0.8)
                   : Colors.white,
               border: const Border(
                 bottom: BorderSide(width: 1.0, color: Colors.grey),
@@ -589,6 +598,9 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
       TextEditingController controller =
       TextEditingController(text: productStorageElementToRemove.stock.toString());
       rows.add(
+        Divider(height: 2, indent: 10, color: Colors.black54),
+      );
+      rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -601,7 +613,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                   Text(
                     productStorageElementToRemove.productName,
                     overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(15)),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(15)),
                   ),
                   Text(
                     productStorageElementToRemove.supplierName,
@@ -654,7 +666,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         autocorrect: false,
                       ),
                     ),
-                    SizedBox(width: 9,),
+                    const SizedBox(width: 9,),
                     GestureDetector(
                         onTap: (){
                           dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
@@ -676,8 +688,9 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                           dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
                           suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
                         },
-                        child: SvgPicture.asset('assets/icons/Error.svg', width: getProportionateScreenHeight(20),)),
-                    SizedBox(width: 3,),
+                        child: Icon(Icons.delete_forever, color: Colors.red.shade800, size: getProportionateScreenHeight(30),)
+                    ),
+                    SizedBox(width: 4,),
                   ],
                 ),
               ],
@@ -686,6 +699,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
           ],
         ),
       );
+
     });
     return Padding(
       padding: EdgeInsets.fromLTRB(getProportionateScreenHeight(8), getProportionateScreenHeight(8), getProportionateScreenHeight(8), getProportionateScreenHeight(90)),
@@ -722,6 +736,23 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
       listWidget.add(
         Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Center(
+                child: DropdownWithSearch(
+                  title: 'Seleziona Fornitore',
+                  placeHolder: 'Ricerca Fornitore',
+                  disabled: false,
+                  items: dataBundleNotifier.currentListSuppliers.map((ResponseAnagraficaFornitori supplier) {
+                    return supplier.pkSupplierId.toString() + ' - ' + supplier.nome;
+                  }).toList(),
+                  selected: _selectedSupplier,
+                  onChanged: (storage) {
+                    setCurrentSupplier(storage, dataBundleNotifier);
+                  },
+                ),
+              ),
+            ),
             Row(
               children: [
                 const SizedBox(width: 11,),
@@ -897,9 +928,11 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                     buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
                   }else if(double.tryParse(_priceController.text) == null){
                     buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
+                  }else if(_selectedSupplier == 'Seleziona Fornitore'){
+                    buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: kPinaColor);
                   } else{
 
-                    //EasyLoading.show();
+                    ResponseAnagraficaFornitori currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier);
                     ProductModel productModel = ProductModel(
                         nome: _nameController.text,
                         categoria: '',
@@ -908,7 +941,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
                         prezzo_lordo: double.parse(_priceController.text),
                         unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
-                        fkSupplierId: 788
+                        fkSupplierId: currentSupplierToSaveProduct.pkSupplierId
                     );
 
                     print(productModel.toMap().toString());
@@ -917,7 +950,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         product: productModel,
                         actionModel: ActionModel(
                             date: DateTime.now().millisecondsSinceEpoch,
-                            description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
+                            description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${currentSupplierToSaveProduct.nome} ',
                             fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                             user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                             type: ActionType.PRODUCT_CREATION
@@ -927,11 +960,32 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
 
 
                     if(performSaveProduct != null && performSaveProduct.statusCode == 200){
-
-                      //List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier.getclientServiceInstance().retrieveProductsBySupplier(widget.supplier);
-                      //dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+                      List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier.getclientServiceInstance().retrieveProductsBySupplier(currentSupplierToSaveProduct);
+                      dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
                       clearAll();
-                      buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + '', color: Colors.green.shade700);
+
+
+                      dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
+                          saveProductToStorageRequest: SaveProductToStorageRequest(
+                              fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
+                              fkProductId: performSaveProduct.data,
+                              available: 'true',
+                              stock: 0,
+                              dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
+                              dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
+                              pkStorageProductCreationModelId: 0,
+                              user: dataBundleNotifier.dataBundleList[0].firstName
+                          ),
+                          actionModel: ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha aggiunto ${productModel.nome} al magazzino ${dataBundleNotifier.currentStorage.name}.',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.ADD_PRODUCT_TO_STORAGE
+                          )
+                      );
+                      dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
+                      buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + currentSupplierToSaveProduct.nome + ' ed inserito nel magazzino ${dataBundleNotifier.currentStorage.name}', color: Colors.green.shade700);
                     }else{
                       buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
                     }
@@ -984,95 +1038,118 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
 
   Widget buildListProductDividedBySupplier(DataBundleNotifier dataBundleNotifier) {
 
-    List<Widget> listWidget = [];
-
-    Map<String, List<ProductModel>> mapSupplierListProduct = {};
-    if(dataBundleNotifier.productToAddToStorage.isNotEmpty){
-      listWidget.add(
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('Aggiungi prodotti da catalogo fornitori'),
+    List<Widget> listWidget = [
+    ];
+    listWidget.add(
+      Content(
+        child: ChipsChoice<String>.single(
+          choiceActiveStyle: C2ChoiceStyle(
+            color: Colors.blueAccent.shade700.withOpacity(0.8),
+            elevation: 2,
+            showCheckmark: false,
+          ),
+          value: supplierChoiced,
+          onChanged: (val) => setState(() {
+            supplierChoiced = val;
+            //TODO filter list product to add to current storage
+          }),
+          choiceItems: C2Choice.listFrom<String, String>(
+            source: suppliersList,
+            value: (i, v) => v,
+            label: (i, v) => v,
+            tooltip: (i, v) => v,
+          ),
         ),
+      ),
+    );
+
+    if(dataBundleNotifier.productToAddToStorage.isNotEmpty){
+
+      Map<String, List<ProductModel>> mapSupplierListProduct = {};
+
+      dataBundleNotifier.productToAddToStorage.forEach((product) {
+        if(mapSupplierListProduct.containsKey(dataBundleNotifier.retrieveSupplierById(product.fkSupplierId))){
+          mapSupplierListProduct[dataBundleNotifier.retrieveSupplierById(product.fkSupplierId)].add(product);
+        }else{
+          mapSupplierListProduct[dataBundleNotifier.retrieveSupplierById(product.fkSupplierId)] = [product];
+        }
+      });
+      mapSupplierListProduct.forEach((key, value) {
+        print('Build list for current supplier : ' + key.toString());
+        listWidget.add(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(13, 5, 13, 2),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black54.withOpacity(0.7),
+                ),
+                width: MediaQuery.of(context).size.width,
+                child: Text(key, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
+              ),
+            ));
+        value.forEach((element) {
+          listWidget.add(
+            GestureDetector(
+              onTap: (){
+                dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
+                    saveProductToStorageRequest: SaveProductToStorageRequest(
+                        fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
+                        fkProductId: element.pkProductId,
+                        available: 'true',
+                        stock: 0,
+                        dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
+                        dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
+                        pkStorageProductCreationModelId: 0,
+                        user: dataBundleNotifier.dataBundleList[0].firstName
+                    ),
+                    actionModel: ActionModel(
+                        date: DateTime.now().millisecondsSinceEpoch,
+                        description: 'Ha aggiunto ${element.nome} (${dataBundleNotifier.getSupplierName(element.fkSupplierId)}) al magazzino ${dataBundleNotifier.currentStorage.name}.',
+                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                        type: ActionType.ADD_PRODUCT_TO_STORAGE
+                    )
+                );
+
+                dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
+                setState(() {
+                  dataBundleNotifier.removeProductToAddToStorage(element);
+                });
+
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(
+                    duration: const Duration(milliseconds: 400),
+                    content: Text('${element.nome} aggiunto')));
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(element.nome, style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenHeight(10)),),
+                      ],
+                    ),
+                    SvgPicture.asset('assets/icons/rightarrow.svg', width: getProportionateScreenHeight(25), color: Colors.greenAccent.shade700.withOpacity(0.7),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+      });
+    }else{
+      listWidget.add(
+        Center(child: Text('Nessun prodotto disponibile'),)
       );
     }
 
-    dataBundleNotifier.productToAddToStorage.forEach((product) {
-      if(mapSupplierListProduct.containsKey(dataBundleNotifier.retrieveSupplierById(product.fkSupplierId))){
-        mapSupplierListProduct[dataBundleNotifier.retrieveSupplierById(product.fkSupplierId)].add(product);
-      }else{
-        mapSupplierListProduct[dataBundleNotifier.retrieveSupplierById(product.fkSupplierId)] = [product];
-      }
-    });
-    mapSupplierListProduct.forEach((key, value) {
-      print('Build list for current supplier : ' + key.toString());
-      listWidget.add(
-          Padding(
-            padding: const EdgeInsets.fromLTRB(13, 5, 13, 2),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.black54.withOpacity(0.7),
-              ),
-        width: MediaQuery.of(context).size.width,
-        child: Text(key, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
-      ),
-          ));
-      value.forEach((element) {
-        listWidget.add(
-          GestureDetector(
-            onTap: (){
-              dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
-                  saveProductToStorageRequest: SaveProductToStorageRequest(
-                      fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
-                      fkProductId: element.pkProductId,
-                      available: 'true',
-                      stock: 0,
-                      dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
-                      dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
-                      pkStorageProductCreationModelId: 0,
-                      user: dataBundleNotifier.dataBundleList[0].firstName
-                  ),
-                  actionModel: ActionModel(
-                      date: DateTime.now().millisecondsSinceEpoch,
-                      description: 'Ha aggiunto ${element.nome} (${dataBundleNotifier.getSupplierName(element.fkSupplierId)}) al magazzino ${dataBundleNotifier.currentStorage.name}.',
-                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                      type: ActionType.ADD_PRODUCT_TO_STORAGE
-                  )
-              );
-
-              dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-              setState(() {
-                dataBundleNotifier.removeProductToAddToStorage(element);
-              });
-
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(
-                  duration: const Duration(milliseconds: 400),
-                  content: Text('${element.nome} aggiunto')));
-            },
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(element.nome, style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenHeight(10)),),
-                    ],
-                  ),
-                  SvgPicture.asset('assets/icons/rightarrow.svg', width: getProportionateScreenHeight(25), color: Colors.greenAccent.shade700.withOpacity(0.7),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      });
-    });
     return Column(children: listWidget,);
   }
 }
