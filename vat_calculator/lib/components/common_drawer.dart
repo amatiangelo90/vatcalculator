@@ -52,13 +52,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
         child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Container(
-              color: kPrimaryColor,
+              color: Colors.black.withOpacity(0.9),
               child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children: [
                     Container(
-                      color: kPrimaryColor,
+                      color: Colors.black.withOpacity(0.9),
                       child: Column(
                         children: [
                           SizedBox(height: getProportionateScreenHeight(100),),

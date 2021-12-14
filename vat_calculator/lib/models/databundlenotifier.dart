@@ -1403,4 +1403,14 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     return supplierToReturn;
   }
+
+  ResponseAnagraficaFornitori retrieveSupplierFromSupplierListById(int fk_supplier_id) {
+    ResponseAnagraficaFornitori supplierToReturn;
+    currentListSuppliers.forEach((supplier) {
+      if(supplier.pkSupplierId == fk_supplier_id){
+        supplierToReturn = supplier;
+      }
+    });
+    return supplierToReturn;
+  }
 }

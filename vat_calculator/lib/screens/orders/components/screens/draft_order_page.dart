@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/constants.dart';
@@ -298,7 +299,17 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                           ),
                           pressedOpacity: 0.9,
                           color: Colors.orange,
-                          onPressed: () {
+                          onPressed: () async {
+
+                            List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
+                                .getclientServiceInstance()
+                                .retrieveProductsBySupplier(dataBundleNotifier.retrieveSupplierFromSupplierListById(currentOrder.fk_supplier_id));
+
+                            retrieveProductsBySupplier.forEach((element) {
+                              element.prezzo_lordo = 0.0;
+                            });
+                            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(

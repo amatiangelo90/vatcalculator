@@ -17,6 +17,7 @@ import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
+import 'package:vat_calculator/client/pdf/pdf_generator.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
@@ -178,7 +179,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ),
                       CupertinoButton(
                         onPressed: (){
-                          Navigator.pushNamed(context, PageScc.routeName);
+                          Navigator.pushNamed(context, CreatePdfWidget.routeName);
+                          //Navigator.pushNamed(context, PageScc.routeName);
                         },
                         child: Row(
                           children: [
@@ -635,7 +637,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                   ],
                 ),
                 Divider(indent: getProportionateScreenHeight(100),),
-
               ],
             ),
           ),

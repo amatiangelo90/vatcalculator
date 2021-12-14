@@ -284,7 +284,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             centerTitle: true,
             automaticallyImplyLeading: true,
             title: const Text(
-              'Dettaglio Ordine',
+              'Completa Bozza Ordine',
               style: TextStyle(color: kPrimaryColor),
             ),
           ),

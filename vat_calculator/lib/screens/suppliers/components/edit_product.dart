@@ -91,7 +91,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
               ),
               elevation: 2,
               actions: [
-
               ],
             ),
             body: SingleChildScrollView(

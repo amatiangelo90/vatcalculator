@@ -23,23 +23,6 @@ class CreateOrderScreen extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            bottomSheet:
-            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 39,
-                    child: CupertinoButton(
-                        color: Colors.blueAccent.shade700.withOpacity(0.7),
-                        child: Text('Crea nuovo fornitore'), onPressed: () {
-
-                    }),
-                  ),
-                ],
-              ),
-            ),
             backgroundColor: kCustomWhite,
             appBar: AppBar(
               leading: IconButton(
@@ -154,25 +137,28 @@ class CreateOrderScreen extends StatelessWidget {
     );
     dataBundleNotifier.currentListSuppliersDuplicated.forEach((supplier) {
       listout.add(
-        GestureDetector(
+          GestureDetector(
           onTap: () async {
             List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
                 .getclientServiceInstance()
                 .retrieveProductsBySupplier(supplier);
-
-            retrieveProductsBySupplier.forEach((element) {
+            for (var element in retrieveProductsBySupplier) {
               element.prezzo_lordo = 0.0;
-            });
+            }
             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+            if(draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)){
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ChoiceOrderProductScreen(
-                  currentSupplier: supplier,
+            }else{
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChoiceOrderProductScreen(
+                    currentSupplier: supplier,
+                  ),
                 ),
-              ),
-            );
+              );
+            }
+
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 5, 10, 2),
@@ -180,10 +166,8 @@ class CreateOrderScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: dataBundleNotifier.dataBundleList[0].id.toString() ==
-                    supplier.id
-                    ? kBeigeColor
-                    : kPinaColor,
+                color: draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)
+                    ? Colors.orangeAccent.withOpacity(0.6) : Colors.blueAccent.withOpacity(0.6),
               ),
               child: Container(
                 decoration: const BoxDecoration(
@@ -245,5 +229,16 @@ class CreateOrderScreen extends StatelessWidget {
         children: listout,
       ),
     );
+  }
+
+  bool draftOrderListContainsOrderForCurrentSupplier(int id, DataBundleNotifier dataBundleNotifier) {
+    bool result = false;
+
+    dataBundleNotifier.currentDraftOrdersList.forEach((draftElement) {
+      if(draftElement.fk_supplier_id == id){
+        result = true;
+      }
+    });
+    return result;
   }
 }
