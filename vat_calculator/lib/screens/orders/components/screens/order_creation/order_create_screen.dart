@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -11,6 +12,7 @@ import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_su
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
+import '../../edit_order_draft_screen.dart';
 import 'product_order_choice_screen.dart';
 
 class CreateOrderScreen extends StatelessWidget {
@@ -147,7 +149,17 @@ class CreateOrderScreen extends StatelessWidget {
             }
             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
             if(draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)){
-
+              OrderModel order = dataBundleNotifier.getDraftOrderFromListBySupplierId(supplier.pkSupplierId);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditDraftOrderScreen(
+                    orderModel: order,
+                    productList: dataBundleNotifier.orderIdProductListMap[
+                    order.pk_order_id],
+                  ),
+                ),
+              );
             }else{
               Navigator.push(
                 context,

@@ -1449,4 +1449,15 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     return supplierToReturn;
   }
+
+  OrderModel getDraftOrderFromListBySupplierId(int pkSupplierId) {
+    OrderModel orderToReturn;
+
+    currentDraftOrdersList.forEach((draftOrder) {
+      if(draftOrder.fk_supplier_id == pkSupplierId){
+        orderToReturn = draftOrder;
+      }
+    });
+    return orderToReturn;
+  }
 }
