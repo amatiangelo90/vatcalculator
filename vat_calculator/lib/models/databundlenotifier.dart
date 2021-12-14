@@ -12,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
@@ -117,6 +118,9 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ResponseAcquistiApi> retrieveListaAcquisti = [];
   List<ResponseFattureApi> retrieveListaFatture = [];
   List<ResponseNDCApi> retrieveListaNDC = [];
+
+  Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
+
 
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
@@ -306,6 +310,7 @@ class DataBundleNotifier extends ChangeNotifier {
       currentTodayOrdersForCurrentBranch.clear();
 
       currentDraftOrdersList.clear();
+      orderIdProductListMap.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
 
@@ -313,6 +318,15 @@ class DataBundleNotifier extends ChangeNotifier {
 
         if(orderItem.status == OrderState.DRAFT){
           currentDraftOrdersList.add(orderItem);
+          currentDraftOrdersList.forEach((element) async {
+            List<ProductOrderAmountModel> list = await getclientServiceInstance()
+                .retrieveProductByOrderId(
+              OrderModel(
+                pk_order_id: element.pk_order_id,
+              ),
+            );
+            orderIdProductListMap[element.pk_order_id] = list;
+          });
         }else if (orderItem.status == OrderState.ARCHIVED
             || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED
             || orderItem.status == OrderState.RECEIVED_ARCHIVED
@@ -426,6 +440,7 @@ class DataBundleNotifier extends ChangeNotifier {
     currentTodayOrdersForCurrentBranch.clear();
 
     currentDraftOrdersList.clear();
+    orderIdProductListMap.clear();
     currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
 
@@ -433,6 +448,15 @@ class DataBundleNotifier extends ChangeNotifier {
       if(orderItem.status == OrderState.DRAFT){
 
         currentDraftOrdersList.add(orderItem);
+        currentDraftOrdersList.forEach((element) async {
+          List<ProductOrderAmountModel> list = await getclientServiceInstance()
+              .retrieveProductByOrderId(
+            OrderModel(
+              pk_order_id: element.pk_order_id,
+            ),
+          );
+          orderIdProductListMap[element.pk_order_id] = list;
+        });
 
       }else if (orderItem.status == OrderState.ARCHIVED
           || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED
@@ -496,6 +520,7 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
       currentDraftOrdersList.clear();
+      orderIdProductListMap.clear();
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
       currentTodayOrdersForCurrentBranch.clear();
@@ -521,6 +546,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     if(currentDraftOrdersList != null && currentDraftOrdersList.isNotEmpty){
       currentDraftOrdersList.clear();
+      orderIdProductListMap.clear();
     }
     if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
@@ -693,6 +719,7 @@ class DataBundleNotifier extends ChangeNotifier {
     currentTodayOrdersForCurrentBranch.clear();
     currentOrdersForCurrentBranch.addAll(orderModelList);
     currentDraftOrdersList.clear();
+    orderIdProductListMap.clear();
     currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
 
@@ -700,6 +727,15 @@ class DataBundleNotifier extends ChangeNotifier {
       if(orderItem.status == OrderState.DRAFT){
 
         currentDraftOrdersList.add(orderItem);
+        currentDraftOrdersList.forEach((element) async {
+          List<ProductOrderAmountModel> list = await getclientServiceInstance()
+              .retrieveProductByOrderId(
+            OrderModel(
+              pk_order_id: element.pk_order_id,
+            ),
+          );
+          orderIdProductListMap[element.pk_order_id] = list;
+        });
       }else if (orderItem.status == OrderState.ARCHIVED
               || orderItem.status == OrderState.REFUSED_ARCHIVED
               || orderItem.status == OrderState.RECEIVED_ARCHIVED

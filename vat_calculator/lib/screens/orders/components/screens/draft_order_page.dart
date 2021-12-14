@@ -28,7 +28,6 @@ class DraftOrderPage extends StatefulWidget {
 }
 
 class _DraftOrderPageState extends State<DraftOrderPage> {
-  Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
   int timeToRefresh = 1500;
 
@@ -37,8 +36,6 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
 
-          buildDraftOrderList(dataBundleNotifier);
-          //list of draft order not renderized untill setState is performed. I put timeToRegresh to 60000 after the first refresh because otherways is workins as batch script for refreshing page
           Timer(Duration(milliseconds: timeToRefresh), (){
             setState(() {
               timeToRefresh = 5000000;
@@ -101,7 +98,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
               ),
               color: Colors.white,
               elevation: 14,
-              child: orderIdProductListMap[currentOrder.pk_order_id] == null
+              child: dataBundleNotifier.orderIdProductListMap[currentOrder.pk_order_id] == null
                   ? const SizedBox(
                 width: 0,
               )
@@ -243,7 +240,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                 style: TextStyle(
                                     fontSize: getProportionateScreenHeight(13)),
                               ),
-                              Text(orderIdProductListMap[
+                              Text(dataBundleNotifier.orderIdProductListMap[
                               currentOrder.pk_order_id]
                                   .length
                                   .toString(),
@@ -263,7 +260,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                               Text(
                                 '€ ' +
                                     calculatePriceFromProductList(
-                                        orderIdProductListMap[
+                                        dataBundleNotifier.orderIdProductListMap[
                                         currentOrder.pk_order_id]),
                                 style: TextStyle(
                                     color: kPinaColor,
@@ -283,7 +280,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                 fontSize: getProportionateScreenHeight(13)),
                           ),
                           children: [
-                            buildProductListWidget(orderIdProductListMap[
+                            buildProductListWidget(dataBundleNotifier.orderIdProductListMap[
                             currentOrder.pk_order_id], dataBundleNotifier),
                           ],
                         ),
@@ -315,7 +312,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                               MaterialPageRoute(
                                 builder: (context) => EditDraftOrderScreen(
                                   orderModel: currentOrder,
-                                  productList: orderIdProductListMap[
+                                  productList: dataBundleNotifier.orderIdProductListMap[
                                   currentOrder.pk_order_id],
                                 ),
                               ),
@@ -367,23 +364,6 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
         children: list,
       ),
     );
-  }
-
-  Future<List<Widget>> buildDraftOrderList(
-      DataBundleNotifier dataBundleNotifier) async {
-
-    dataBundleNotifier.currentDraftOrdersList.forEach((element) async {
-      List<ProductOrderAmountModel> list = await dataBundleNotifier
-          .getclientServiceInstance()
-          .retrieveProductByOrderId(
-            OrderModel(
-              pk_order_id: element.pk_order_id,
-            ),
-          );
-      orderIdProductListMap[element.pk_order_id] = list;
-    });
-
-    return [];
   }
 
   buildProductListWidget(List<ProductOrderAmountModel> productList,
