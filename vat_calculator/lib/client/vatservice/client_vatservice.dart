@@ -388,7 +388,8 @@ class ClientVatService{
     var dio = Dio();
 
     String body = json.encode(
-        {"amount" : amount,
+        {"pk_product_order_id" : 0,
+          "amount" : amount,
          "fk_product_id" : productId,
          "fk_order_id" : orderId
         });
@@ -1639,6 +1640,65 @@ class ClientVatService{
       return post;
     }catch(e){
       print(e);
+      rethrow;
+    }
+  }
+
+  Future<Response> removeProductFromOrder(ProductOrderAmountModel element) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        element.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_DELETE_PRODUCT_FROM_ORDER + '...');
+    print('Body Request delete product from Order: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_PRODUCT_FROM_ORDER,
+        data: body,
+      );
+
+      if(post != null){
+        print('Response From VatService removed product from order(' + VAT_SERVICE_URL_DELETE_PRODUCT_FROM_ORDER + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  Future<Response> updateProductAmountIntoOrder(int pkOrderProductId, double amount, int pkProductId, int pk_order_id) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        {
+          "pk_product_order_id" : pkOrderProductId,
+          "amount" : amount,
+          "fk_product_id" : pkProductId,
+          "fk_order_id" : pk_order_id
+        });
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER + '...');
+    print('Body Request update amount product in Order: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER,
+        data: body,
+      );
+
+      if(post != null){
+        print('Response From VatService removed product from order(' + VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
       rethrow;
     }
   }

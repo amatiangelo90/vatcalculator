@@ -26,8 +26,8 @@ class EmailSenderService{
       dio.options.headers['Content-Type'] = 'application/json';
       dio.options.headers['origin'] = 'http://localhost';
 
-      post = await dio.post(
 
+      post = await dio.post(
         URL_EMAIL_API_SERVICE,
         data: jsonEncode(
           {

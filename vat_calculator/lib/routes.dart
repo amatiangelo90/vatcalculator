@@ -18,7 +18,6 @@ import 'package:vat_calculator/screens/registration_provider/fatture_provider_re
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/components/add_storage_screen.dart';
-import 'package:vat_calculator/screens/storage/datagrid.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
@@ -70,6 +69,5 @@ final Map<String, WidgetBuilder> routes = {
   ChoiceOrderProductScreen.routeName: (context) => ChoiceOrderProductScreen(),
   OrderConfirmationScreen.routeName: (context) => OrderConfirmationScreen(),
   RecessedManagerScreen.routeName: (context) => RecessedManagerScreen(),
-  PageScc.routeName: (context) => PageScc(),
   CreatePdfWidget.routeName: (context) => CreatePdfWidget(),
 };

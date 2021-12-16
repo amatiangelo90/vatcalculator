@@ -25,7 +25,17 @@ class OrderUtils{
 
     });
     return orderString;
-
   }
 
+  static buildMessageFromCurrentOrderListFromDraft(List<ProductOrderAmountModel> orderProductList) {
+    String orderString = '';
+    orderProductList.forEach((currentProductOrderAmount) {
+
+      orderString = orderString + currentProductOrderAmount.amount.toString() +
+          ' X ' + currentProductOrderAmount.nome +
+          '(${currentProductOrderAmount.unita_misura})'+ '';
+
+    });
+    return orderString;
+  }
 }

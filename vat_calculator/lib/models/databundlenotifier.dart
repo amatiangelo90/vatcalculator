@@ -119,6 +119,8 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ResponseFattureApi> retrieveListaFatture = [];
   List<ResponseNDCApi> retrieveListaNDC = [];
 
+  List<ProductOrderAmountModel> currentProdOrderModelList = [];
+
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
 
@@ -1460,5 +1462,11 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     });
     return orderToReturn;
+  }
+
+  void setCurrentProductListToSendDraftOrder(List<ProductOrderAmountModel> prodOrderModelList) {
+    currentProdOrderModelList.clear();
+    currentProdOrderModelList.addAll(prodOrderModelList);
+    notifyListeners();
   }
 }

@@ -33,10 +33,12 @@ const String VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH = 'http://$host:8080/vat
 const String VAT_SERVICE_URL_UPDATE_PRODUCT = 'http://$host:8080/vatservices/api/v1/update/product';
 const String VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID = 'http://$host:8080/vatservices/api/v1/update/orderstatus';
 const String VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE = 'http://$host:8080/vatservices/api/v1/update/branch/addproviderconfiguration';
+const String VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER = 'http://$host:8080/vatservices/api/v1/update/amountproductinorder';
 const String VAT_SERVICE_URL_UPDATE_SUPPLIER = 'http://$host:8080/vatservices/api/v1/update/supplier';
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';
+const String VAT_SERVICE_URL_DELETE_PRODUCT_FROM_ORDER = 'http://$host:8080/vatservices/api/v1/delete/productfromorder';
 const String VAT_SERVICE_URL_DELETE_STORAGE = 'http://$host:8080/vatservices/api/v1/delete/storage';
 const String VAT_SERVICE_URL_DELETE_ORDER = 'http://$host:8080/vatservices/api/v1/delete/order';
 const String VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/remove/relationbranchsupplier';

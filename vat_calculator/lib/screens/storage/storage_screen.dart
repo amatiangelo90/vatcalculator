@@ -731,7 +731,6 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
   buildWidgetRowForProduct(DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> listWidget = [];
-
     if(creationProductAndAdd){
       listWidget.add(
         Column(
@@ -1087,7 +1086,8 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                 width: MediaQuery.of(context).size.width,
                 child: Text(key, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
               ),
-            ));
+            ),
+        );
         value.forEach((element) {
           listWidget.add(
             GestureDetector(
