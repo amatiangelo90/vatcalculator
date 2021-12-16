@@ -164,6 +164,7 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void addAllCurrentProductSupplierList(List<ProductModel> listProduct){
+
     currentProductModelListForSupplier.clear();
     currentProductModelListForSupplier.addAll(listProduct);
     currentProductModelListForSupplierDuplicated.clear();

@@ -24,7 +24,9 @@ class SuppliersScreen extends StatelessWidget {
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
         bottomSheet:
-            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Padding(
+            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) :
+
+            dataBundleNotifier.currentListSuppliers.isNotEmpty ? Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -39,7 +41,7 @@ class SuppliersScreen extends StatelessWidget {
                   ),
                 ],
               ),
-            ),
+            ) : const Text(''),
         backgroundColor: kCustomWhite,
         appBar: AppBar(
           leading: IconButton(
@@ -111,8 +113,7 @@ class SuppliersScreen extends StatelessWidget {
                             child: DefaultButton(
                               text: "Crea Fornitore",
                               press: () async {
-                                Navigator.pushNamed(
-                                    context, AddSupplierScreen.routeName);
+                                Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                               },
                             ),
                           ),

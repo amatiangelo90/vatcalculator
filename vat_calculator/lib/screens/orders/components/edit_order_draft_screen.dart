@@ -5,12 +5,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
-import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
@@ -34,6 +35,8 @@ class EditDraftOrderScreen extends StatefulWidget {
 class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
   DateTime currentDate = DateTime.now();
 
+
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
         context: context,
@@ -49,8 +52,16 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    const double _initFabHeight = 80.0;
+    double _fabHeight = 0;
+    double _panelHeightOpen = 0;
+    double _panelHeightClosed = 45.0;
+
+
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
+          _panelHeightOpen = MediaQuery.of(context).size.height * .75;
       return LoaderOverlay(
         useDefaultLoading: false,
         overlayOpacity: 0.9,
@@ -95,9 +106,9 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               CupertinoButton(
-                  child: Text(
+                  child: const Text(
                     'Invia',
-                    style: const TextStyle(color: Colors.green),
+                    style: TextStyle(color: Colors.green),
                   ),
                   onPressed: () async {
                     if (currentDate == null) {
@@ -124,37 +135,37 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                       });
 
                       Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
-                              supplierName: currentSupplierName,
-                              branchName: dataBundleNotifier.currentBranch.companyName,
-                              message: OrderUtils.buildMessageFromCurrentOrder(widget.productList),
-                              orderCode: widget.orderModel.code,
-                              supplierEmail: currentSupplierEmail,
-                              userEmail: dataBundleNotifier.dataBundleList[0].email,
-                              userName: dataBundleNotifier.dataBundleList[0].firstName,
-                              addressBranch: dataBundleNotifier.currentBranch.address + ' ' + dataBundleNotifier.currentBranch.city + ' ' + dataBundleNotifier.currentBranch.cap.toString(),
-                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
+                          supplierName: currentSupplierName,
+                          branchName: dataBundleNotifier.currentBranch.companyName,
+                          message: OrderUtils.buildMessageFromCurrentOrder(widget.productList),
+                          orderCode: widget.orderModel.code,
+                          supplierEmail: currentSupplierEmail,
+                          userEmail: dataBundleNotifier.dataBundleList[0].email,
+                          userName: dataBundleNotifier.dataBundleList[0].firstName,
+                          addressBranch: dataBundleNotifier.currentBranch.address + ' ' + dataBundleNotifier.currentBranch.city + ' ' + dataBundleNotifier.currentBranch.cap.toString(),
+                          deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
 
                       if (sendEmailResponse.data == 'OK') {
                         await dataBundleNotifier
                             .getclientServiceInstance()
                             .updateOrderStatus(
-                                orderModel: OrderModel(
-                                    pk_order_id: widget.orderModel.pk_order_id,
-                                    status: OrderState.SENT,
-                                    delivery_date:
-                                        currentDate.millisecondsSinceEpoch,
-                                    closedby: dataBundleNotifier
-                                        .retrieveNameLastNameCurrentUser()),
-                                actionModel: ActionModel(
-                                    date: DateTime.now().millisecondsSinceEpoch,
-                                    description:
-                                        'Ha inviato l\'ordine #${widget.orderModel.code} '
-                                        'al fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
-                                    fkBranchId: dataBundleNotifier
-                                        .currentBranch.pkBranchId,
-                                    user: dataBundleNotifier
-                                        .retrieveNameLastNameCurrentUser(),
-                                    type: ActionType.SENT_ORDER));
+                            orderModel: OrderModel(
+                                pk_order_id: widget.orderModel.pk_order_id,
+                                status: OrderState.SENT,
+                                delivery_date:
+                                currentDate.millisecondsSinceEpoch,
+                                closedby: dataBundleNotifier
+                                    .retrieveNameLastNameCurrentUser()),
+                            actionModel: ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description:
+                                'Ha inviato l\'ordine #${widget.orderModel.code} '
+                                    'al fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
+                                fkBranchId: dataBundleNotifier
+                                    .currentBranch.pkBranchId,
+                                user: dataBundleNotifier
+                                    .retrieveNameLastNameCurrentUser(),
+                                type: ActionType.SENT_ORDER));
                         dataBundleNotifier
                             .setCurrentBranch(dataBundleNotifier.currentBranch);
                         Navigator.push(
@@ -167,200 +178,275 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
-                                  contentPadding: EdgeInsets.zero,
-                                  shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(10.0))),
-                                  content: Builder(
-                                    builder: (context) {
-                                      var height =
-                                          MediaQuery.of(context).size.height;
-                                      var width =
-                                          MediaQuery.of(context).size.width;
-                                      return SizedBox(
-                                        height: height - 250,
-                                        width: width - 90,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.vertical,
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                decoration: const BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.only(
-                                                          topRight:
-                                                              Radius.circular(
-                                                                  10.0),
-                                                          topLeft:
-                                                              Radius.circular(
-                                                                  10.0)),
-                                                  color: kPrimaryColor,
-                                                ),
-                                                child: Column(
+                              contentPadding: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              content: Builder(
+                                builder: (context) {
+                                  var height =
+                                      MediaQuery.of(context).size.height;
+                                  var width =
+                                      MediaQuery.of(context).size.width;
+                                  return SizedBox(
+                                    height: height - 250,
+                                    width: width - 90,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: const BoxDecoration(
+                                              borderRadius:
+                                              BorderRadius.only(
+                                                  topRight:
+                                                  Radius.circular(
+                                                      10.0),
+                                                  topLeft:
+                                                  Radius.circular(
+                                                      10.0)),
+                                              color: kPrimaryColor,
+                                            ),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                                   children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          '  Errore invio ordine',
-                                                          style: TextStyle(
-                                                            fontSize:
-                                                                getProportionateScreenWidth(
-                                                                    20),
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: kCustomWhite,
-                                                          ),
-                                                        ),
-                                                        IconButton(
-                                                          icon: const Icon(
-                                                            Icons.clear,
-                                                            color: kCustomWhite,
-                                                          ),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
-                                                      ],
+                                                    Text(
+                                                      '  Errore invio ordine',
+                                                      style: TextStyle(
+                                                        fontSize:
+                                                        getProportionateScreenWidth(
+                                                            20),
+                                                        fontWeight:
+                                                        FontWeight.bold,
+                                                        color: kCustomWhite,
+                                                      ),
                                                     ),
-                                                    Column(
-                                                      children: [],
+                                                    IconButton(
+                                                      icon: const Icon(
+                                                        Icons.clear,
+                                                        color: kCustomWhite,
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(
+                                                            context);
+                                                      },
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                              // buildDateList(),
-                                            ],
+                                                Column(
+                                                  children: [],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ));
+                                          // buildDateList(),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ));
                       }
                     }
                   }),
-              CupertinoButton(
-                  child: const Text(
-                    'Cancella Bozza',
-                    style: TextStyle(color: kPinaColor),
-                  ),
-                  onPressed: () async {
-                    await dataBundleNotifier
-                        .getclientServiceInstance()
-                        .deleteOrder(
-                            orderModel: widget.orderModel,
-                            actionModel: ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description:
-                                    'Ha elininato l\'ordine #${widget.orderModel.code} '
-                                    'per il fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
-                                fkBranchId:
-                                    dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier
-                                    .retrieveNameLastNameCurrentUser(),
-                                type: ActionType.ORDER_DELETE));
-
-                    dataBundleNotifier
-                        .setCurrentBranch(dataBundleNotifier.currentBranch);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OrdersScreen(),
-                      ),
-                    );
-                  }),
             ],
           ),
+
           appBar: AppBar(
+            actions: [
+              IconButton(
+                icon: Icon(Icons.delete_forever_rounded, size: getProportionateScreenHeight(35),),
+                  color: Colors.red.shade800,
+                  onPressed: () async {
+                    Widget cancelButton = TextButton(
+                      child: Text("Indietro", style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
+                      onPressed:  () {
+                        Navigator.of(context).pop();
+                      },
+                    );
+
+                    Widget continueButton = TextButton(
+                      child: Text("Elimina", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20))),
+                      onPressed:  () async {
+
+                        ActionModel actionModel = ActionModel(
+                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            description: 'Ha cancellato ordine #${widget.orderModel.code} con stato ${widget.orderModel.status} per fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
+                            date: DateTime.now().millisecondsSinceEpoch,
+                            type: ActionType.ORDER_DELETE
+                        );
+
+                        await dataBundleNotifier.getclientServiceInstance().deleteOrder(orderModel: widget.orderModel, actionModel: actionModel);
+                        dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                        Navigator.pushNamed(context, OrdersScreen.routeName);
+                      },
+                    );
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog (
+                          actions: [
+                            ButtonBar(
+                              alignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                cancelButton,
+                                continueButton,
+                              ],
+                            ),
+                          ],
+                          contentPadding: EdgeInsets.zero,
+                          shape: const RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.all(
+                                  Radius.circular(10.0))),
+                          content: Builder(
+                            builder: (context) {
+                              var width = MediaQuery.of(context).size.width;
+                              return SizedBox(
+                                width: width - 90,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(10.0),
+                                              topLeft: Radius.circular(10.0) ),
+                                          color: kPrimaryColor,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('  Elimina ordine?',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: getProportionateScreenWidth(15),
+                                                  fontWeight: FontWeight.bold,
+                                                  color: kCustomWhite,
+                                                )),
+                                            IconButton(icon: const Icon(
+                                              Icons.clear,
+                                              color: kCustomWhite,
+                                            ), onPressed: () {
+                                              Navigator.pop(context);
+
+                                              },),
+
+                                          ],
+                                        ),
+                                      ),
+                                      const Text(''),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('Stai eliminando bozza di ordine con codice #${widget.orderModel.code.toString()} per fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
+                                          textAlign: TextAlign.center,),
+                                      ),
+                                      const Text(''),
+                                      Text('Continuare?', style: TextStyle(fontWeight: FontWeight.bold,),),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        )
+                    );
+                  }
+              ),
+            ],
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios, color: kPrimaryColor),
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
               onPressed: () => Navigator.of(context).pop(),
             ),
-            backgroundColor: kBeigeColor,
+            backgroundColor: kPrimaryColor,
             centerTitle: true,
             automaticallyImplyLeading: true,
-            title: const Text(
-              'Completa Bozza Ordine',
-              style: TextStyle(color: kPrimaryColor),
+            title: Column(
+              children: [
+                Text(
+                  dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.orderModel.fk_supplier_id).nome,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(17),
+                    color: kCustomWhite,
+                  ),
+                ),
+                Text(
+                  'Bozza Ordine',
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(10),
+                    color: kCustomWhite,
+                  ),
+                ),
+              ],
             ),
+            elevation: 2,
           ),
-          body: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(15, 10, 8, 100),
-              child: Column(
-                children: [
-                  Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.width * 0.45,
-                        width: MediaQuery.of(context).size.width * 0.95,
-                        child: Card(
-                          child: Column(
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 8, 100),
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              Text(
-                                '#' + widget.orderModel.code,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              Center(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    CupertinoButton(
-                                      child:
-                                          const Text('Seleziona data consegna'),
-                                      color: Colors.blueAccent,
-                                      onPressed: () => _selectDate(context),
-                                    ),
-                                    const Text('Data consegna'),
-                                    currentDate == null
-                                        ? Text(''
-                                            'Nessuna Data selezionata')
-                                        : Text('Data consegna : ' +
-                                            currentDate.toString()),
-                                  ],
-                                ),
-                              ),
+                              Text('Carrello',
+                                  style: TextStyle(
+                                      color: kPinaColor,
+                                      fontSize: getProportionateScreenHeight(20),
+                                      fontWeight: FontWeight.bold)),
                             ],
                           ),
-                        ),
+                          buildProductListWidget(dataBundleNotifier),
+                          const Divider(
+                            height: 40,
+                            indent: 20,
+                            endIndent: 20,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                  Row(
-                    children: [
-                      Text('Carrello',
-                          style: TextStyle(
-                              color: kPinaColor,
-                              fontSize: getProportionateScreenHeight(20),
-                              fontWeight: FontWeight.bold)),
-                    ],
-                  ),
-                  buildProductListWidget(
-                      widget.productList, dataBundleNotifier),
-                  const Divider(
-                    height: 40,
-                    indent: 20,
-                    endIndent: 20,
-                  ),
-                ],
+
+                  ],
+                ),
               ),
-            ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(2, 0, 2, getProportionateScreenHeight(50)),
+                child: SlidingUpPanel(
+                  maxHeight: _panelHeightOpen,
+                  minHeight: _panelHeightClosed,
+                  parallaxEnabled: true,
+                  parallaxOffset: .3,
+                  panelBuilder: (sc) => _panel(sc, dataBundleNotifier),
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(18.0),
+                      topRight: Radius.circular(18.0)),
+                  onPanelSlide: (double pos) => setState(() {
+                    _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
+                        _initFabHeight;
+                  }),
+                ),
+              ),
+            ],
           ),
         ),
       );
     });
   }
 
-  buildProductListWidget(List<ProductOrderAmountModel> productList,
-      DataBundleNotifier dataBundleNotifier) {
+  buildProductListWidget(DataBundleNotifier dataBundleNotifier) {
     List<Row> rows = [];
-    productList.forEach((element) {
+    widget.productList.forEach((element) {
       TextEditingController controller =
           TextEditingController(text: element.amount.toString());
       rows.add(
@@ -407,8 +493,10 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                 GestureDetector(
                   onTap: () {
                     setState(() {
-                      if (element.amount <= 0) {
-                      } else {
+                      if (element.amount < 0) {
+                      } else if(element.amount == 1) {
+                        widget.productList.remove(element);
+                      }else {
                         element.amount--;
                       }
                     });
@@ -480,4 +568,81 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
       return string;
     }
   }
+
+  Widget _panel(ScrollController sc, DataBundleNotifier dataBundleNotifier) {
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      child: ListView(
+        controller: sc,
+        children: <Widget>[
+          const SizedBox(
+            height: 8.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 35,
+                height: 5,
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.all(const Radius.circular(12.0))),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 8.0,
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Aggiungi altri prodotti dal catalogo",
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: getProportionateScreenHeight(12),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          buildRemainingProductListForCurrentSuplier(dataBundleNotifier),
+        ],
+      ),
+    );
+  }
+
+  buildRemainingProductListForCurrentSuplier(DataBundleNotifier dataBundleNotifier) {
+
+    List<int> productAlreadyPresent = [];
+    List<ProductModel> productAll = [];
+
+    dataBundleNotifier.currentProductModelListForSupplier.forEach((product) {
+      productAll.add(product);
+    });
+    widget.productList.forEach((productAlreadyInDraftOrder) {
+      productAlreadyPresent.add(productAlreadyInDraftOrder.pkProductId);
+    });
+
+    productAll.removeWhere((element) => productAlreadyPresent.contains(element.pkProductId));
+
+    List<Widget> widgetList = [];
+
+    productAll.forEach((productToAdd) {
+      widgetList.add(
+        Text(productToAdd.nome),
+      );
+    });
+    return Column(
+      children: widgetList,
+    );
+  }
+
 }
