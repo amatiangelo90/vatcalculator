@@ -428,7 +428,6 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
     }
     list.add(Center(child: Text(supplier.nome)));
 
-
     dataBundleNotifier.currentProdOrderModelList.forEach((currentProduct) {
       TextEditingController controller = TextEditingController(text: currentProduct.amount.toString());
 
