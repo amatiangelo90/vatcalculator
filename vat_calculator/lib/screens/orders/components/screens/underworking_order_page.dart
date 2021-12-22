@@ -92,103 +92,109 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
               final kFirstDay = DateTime(kNow.year, kNow.month - 3, kNow.day);
               final kLastDay = DateTime(kNow.year, kNow.month + 3, kNow.day);
 
-              return Column(
-                children: [
-                  Container(
-                    color: kCustomWhite,
-                    child: TableCalendar<OrderModel>(
-                      headerStyle: HeaderStyle(
-                        formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                        titleTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                        formatButtonDecoration: BoxDecoration(
-                          color: kPrimaryColor,
-                          borderRadius: BorderRadius.circular(22.0),
-                        ),
-                        leftChevronIcon: Icon(
-                          Icons.arrow_back_ios,
-                          color: kPrimaryColor,
-                          size: getProportionateScreenHeight(16),
-                        ),
-                        rightChevronIcon: Icon(
-                          Icons.arrow_forward_ios,
-                          color: kPrimaryColor,
-                          size: getProportionateScreenHeight(16),
-                        ),
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Container(
+                      height: 18,
+                      decoration: const BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
                       ),
-                      daysOfWeekStyle: const DaysOfWeekStyle(
-                        weekdayStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                        weekendStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-
-                      ),
-
-                      firstDay: kFirstDay,
-                      lastDay: kLastDay,
-                      focusedDay: _focusedDay,
-                      selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                      calendarFormat: _calendarFormat,
-                      rangeSelectionMode: _rangeSelectionMode,
-                      eventLoader: _getEventsForDay,
-                      startingDayOfWeek: StartingDayOfWeek.monday,
-                      calendarStyle: CalendarStyle(
-                        markerSize: 10,
-                        selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                        defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                        weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
-
-                        selectedDecoration: const BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        markerDecoration: BoxDecoration(
-                          color: kPinaColor,
-                          borderRadius: BorderRadius.circular(3),
-
-                        ),
-                        outsideDaysVisible: false,
-                        canMarkersOverflow: true,
-                        isTodayHighlighted: true,
-                      ),
-                      onDaySelected: _onDaySelected,
-                      onFormatChanged: (format) {
-                        if (_calendarFormat != format) {
-                          setState(() {
-                            _calendarFormat = format;
-                          });
-                        }
-                      },
-                      onPageChanged: (focusedDay) {
-                        _focusedDay = focusedDay;
-                      },
                     ),
-                  ),
-                  Container(
-                    height: 18,
-                    decoration: const BoxDecoration(
-                        color: kCustomWhite,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                    Container(
+                      color: kPrimaryColor,
+                      child: TableCalendar<OrderModel>(
+                        headerStyle: HeaderStyle(
+                          formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
+                          titleTextStyle: TextStyle(fontSize: 14.0, color: Colors.green.withOpacity(0.5)),
+                          formatButtonDecoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(22.0),
+                          ),
+                          leftChevronIcon: Icon(
+                            Icons.arrow_back_ios,
+                            color: kCustomWhite,
+                            size: getProportionateScreenHeight(16),
+                          ),
+                          rightChevronIcon: Icon(
+                            Icons.arrow_forward_ios,
+                            color: kCustomWhite,
+                            size: getProportionateScreenHeight(16),
+                          ),
+                        ),
+                        daysOfWeekStyle: const DaysOfWeekStyle(
+                          weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
+                          weekendStyle:  TextStyle(fontSize: 14.0, color: Colors.redAccent),
+                        ),
+
+                        firstDay: kFirstDay,
+                        lastDay: kLastDay,
+                        focusedDay: _focusedDay,
+                        selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                        calendarFormat: _calendarFormat,
+                        rangeSelectionMode: _rangeSelectionMode,
+                        eventLoader: _getEventsForDay,
+                        startingDayOfWeek: StartingDayOfWeek.monday,
+                        calendarStyle: CalendarStyle(
+                          markerSize: 11,
+                          selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
+                          defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
+                          weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
+
+                          selectedDecoration: BoxDecoration(
+                            color: Colors.greenAccent.shade700.withOpacity(0.7),
+                            shape: BoxShape.circle,
+                          ),
+
+                          markerDecoration: BoxDecoration(
+                            color: Colors.orange.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                          outsideDaysVisible: false,
+                          canMarkersOverflow: true,
+                          isTodayHighlighted: true,
+                        ),
+                        onDaySelected: _onDaySelected,
+                        onFormatChanged: (format) {
+                          if (_calendarFormat != format) {
+                            setState(() {
+                              _calendarFormat = format;
+                            });
+                          }
+                        },
+                        onPageChanged: (focusedDay) {
+                          _focusedDay = focusedDay;
+                        },
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: ValueListenableBuilder<List<OrderModel>>(
-                      valueListenable: _selectedEvents,
-                      builder: (context, orderList, child) {
-                        return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: orderList.length,
-                          itemBuilder: (context, order) {
-                            return Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 0.0,
-                                vertical: 4.0,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                    Container(
+                      height: 18,
+                      decoration: const BoxDecoration(
+                          color: kPrimaryColor,
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                      ),
+                    ),
+                    Expanded(
+                      child: ValueListenableBuilder<List<OrderModel>>(
+                        valueListenable: _selectedEvents,
+                        builder: (context, orderList, child) {
+                          return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: orderList.length,
+                            itemBuilder: (context, order) {
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 0.0,
+                                  vertical: 4.0,
+                                ),
                                 child: Card(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
-                                  color: Colors.white,
+                                  color: kCustomWhite,
                                   elevation: 14,
                                   child: orderIdProductListMap[orderList[order].pk_order_id] == null
                                       ? const SizedBox(
@@ -200,7 +206,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                             height: 5,
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.all(8.0),
+                                            padding: const EdgeInsets.all(3.0),
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.start,
                                               children: [
@@ -223,45 +229,46 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                           Divider(
                                           ),
                                           Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-
-                                              Column(
+                                              Row(
                                                 children: [
-                                                  Text(
-                                                    'Prodotti',
-                                                    style: TextStyle(
-                                                        fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
-                                                  ),
+                                                  SizedBox(width: getProportionateScreenWidth(10),),
+                                                  const Text('Prodotti: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
                                                   Text(orderIdProductListMap[
                                                   orderList[order].pk_order_id]
                                                       .length
                                                       .toString(),
-                                                    style: TextStyle(
-                                                        color: kPinaColor,
-                                                        fontSize: getProportionateScreenHeight(17)),
                                                   ),
+                                                  SizedBox(width: getProportionateScreenWidth(10),),
                                                 ],
                                               ),
-                                              Column(
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
                                                 children: [
-                                                  Text(
-                                                    'Prezzo Stimato ',
-                                                    style: TextStyle(
-                                                        fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),
-                                                  ),
+                                                  SizedBox(width: getProportionateScreenWidth(10),),
+                                                  const Text('Prezzo Stimato: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
                                                   Text(
                                                     '€ ' +
                                                         calculatePriceFromProductList(
                                                             orderIdProductListMap[
                                                             orderList[order].pk_order_id]),
-                                                    style: TextStyle(
-                                                        color: kPinaColor,
-                                                        fontSize: getProportionateScreenHeight(17)),
                                                   ),
+                                                  SizedBox(width: getProportionateScreenWidth(10),),
                                                 ],
                                               ),
-
                                             ],
                                           ),
                                           ExpansionTile(
@@ -271,6 +278,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                                   fontSize: getProportionateScreenHeight(13)),
                                             ),
                                             children: [
+
                                               Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
@@ -360,7 +368,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                                     fontSize: getProportionateScreenHeight(13)),
                                               ),
                                               pressedOpacity: 0.9,
-                                              color: Colors.green.shade700,
+                                              color: Colors.teal.shade700.withOpacity(0.7),
                                               onPressed: () {
                                                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                                                     OrderCompletionScreen(orderModel: orderList[order], productList: orderIdProductListMap[orderList[order].pk_order_id], ),),);
@@ -370,21 +378,21 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                                               borderRadius: const BorderRadius.only(
                                                   bottomLeft: Radius.circular(10.0),
                                                   bottomRight: Radius.circular(10.0)),
-                                              color: Colors.green.shade700,
+                                              color: Colors.teal.shade700.withOpacity(0.7),
 
                                             ),
                                           ),
                                         ],
                                       ),
                                 ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                              );
+                            },
+                          );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           );

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
@@ -80,12 +81,20 @@ class LandingBody extends StatelessWidget {
                   dataBundleNotifier.addDataBundle(dataBundle);
                   dataBundleNotifier.addBranches(_branchList);
 
-                  List<RecessedModel> _recessedModelList;
+                  List<RecessedModel> _recessedModelList = [];
 
                   if(dataBundleNotifier.currentBranch != null){
                     _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
                     dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
                   }
+
+                  List<ExpenceModel> _expenceModelList = [];
+
+                  if(dataBundleNotifier.currentBranch != null){
+                    _expenceModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier.addCurrentExpencesList(_expenceModelList);
+                  }
+
 
                   // TODO sistemare la questione addizionare amount se esiste già una data contenente un incasso
                   dataBundleNotifier.recessedListCharData.clear();

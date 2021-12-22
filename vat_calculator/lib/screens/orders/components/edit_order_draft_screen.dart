@@ -260,7 +260,9 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             title: Column(
               children: [
                 Text(
-                  dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.orderModel.fk_supplier_id).nome,
+                  dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.orderModel.fk_supplier_id)
+                      != null ?
+                  dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.orderModel.fk_supplier_id).nome : '',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
                     color: kCustomWhite,

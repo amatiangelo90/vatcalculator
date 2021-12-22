@@ -8,6 +8,7 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 
 import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
+import 'model/expence_model.dart';
 import 'model/order_model.dart';
 import 'model/product_model.dart';
 import 'model/product_order_amount_model.dart';
@@ -75,8 +76,7 @@ class ClientVatService{
   }
 
   //Action Done
-  Future<Response> performSaveRecessed(
-      double amount, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
+  Future<Response> performSaveRecessed(double amount, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
 
     var dio = Dio();
 
@@ -118,6 +118,52 @@ class ClientVatService{
       rethrow;
     }
   }
+
+
+  Future<Response> performSaveExpence(double amount, String description, int iva, int dateTimeExpence, int pkBranchId, String fiscal, ActionModel actionModel) async{
+
+    var dio = Dio();
+    String body = json.encode(
+        ExpenceModel(
+            amount: amount,
+            vat: iva,
+            dateTimeExpence: dateTimeExpence,
+            description: description,
+            dateTimeExpenceInsert: DateTime.now().millisecondsSinceEpoch,
+            fkBranchId: pkBranchId,
+            pkExpenceId: null,
+            fiscal: fiscal
+        ).toMap());
+
+    Response post;
+    print('Save expence request body: ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_SAVE_EXPENCE_FOR_BRANCH,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_EXPENCE_FOR_BRANCH + '): ' + post.data.toString());
+        try{
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+
   //Action Done
   Future<Response> performSaveStorage({StorageModel storageModel, ActionModel actionModel}) async{
     var dio = Dio();
@@ -808,6 +854,48 @@ class ClientVatService{
             ));
       });
       return recessedList;
+  }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+  }
+  Future<List<ExpenceModel>> retrieveExpencesListByBranch(BranchModel currentBranch) async {
+    var dio = Dio();
+
+    List<ExpenceModel> expenceList = [];
+
+
+    String body = json.encode(
+        currentBranch.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_EXPENCE_BY_BRANCHES,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve expences list by branch): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_EXPENCE_BY_BRANCHES + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((expenceElement) {
+
+        expenceList.add(
+            ExpenceModel(
+                fkBranchId: expenceElement['fkBranchId'],
+                description: expenceElement['description'],
+                vat: expenceElement['vat'],
+                dateTimeExpence: expenceElement['dateTimeExpence'],
+                dateTimeExpenceInsert: expenceElement['dateTimeExpenceInsert'],
+                amount: expenceElement['amount'],
+                pkExpenceId: expenceElement['pkExpenceId']
+            ));
+      });
+      return expenceList;
   }catch(e){
       print('Errore retrieving recessed : ');
       print(e);

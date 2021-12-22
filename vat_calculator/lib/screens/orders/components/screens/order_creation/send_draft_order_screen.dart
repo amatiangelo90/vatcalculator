@@ -201,7 +201,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                                                   ],
                                                 ),
                                                 Column(
-                                                  children: [
+                                                  children: const [
                                                     Text('E\' stato riscontrato un errore durate l\'invio dell\'ordine. Controlla che la mail sia giusta oppure riprova fra un paio di minuti. L\'ordine è stato salvato come bozza.' ),
                                                   ],
                                                 ),
@@ -379,17 +379,17 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                           onPressed: () => _selectDate(context),
                         ) : SizedBox(height: 0,),
                         currentDate == null
-                            ? Padding(
-                          padding: const EdgeInsets.all(8.0),
+                            ? const Padding(
+                          padding: EdgeInsets.all(8.0),
                           child: Text(''),
                         )
                             : Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Row(
-                              children: [
+                              children: const [
                                 Text('  '),
-                                const Text('Data Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text('Data Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(

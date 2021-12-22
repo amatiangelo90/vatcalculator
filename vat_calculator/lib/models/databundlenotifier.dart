@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart'
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
@@ -29,6 +30,9 @@ class DataBundleNotifier extends ChangeNotifier {
   ];
 
   List<RecessedModel> currentListRecessed = [
+  ];
+
+  List<ExpenceModel> currentListExpences = [
   ];
 
   List<ResponseAnagraficaFornitori> currentListSuppliers = [
@@ -287,6 +291,20 @@ class DataBundleNotifier extends ChangeNotifier {
       return listToReturn;
     }
   }
+
+  List<ExpenceModel> getExpenceListByRangeDate(DateTime start, DateTime end){
+    List<ExpenceModel> listToReturn = [];
+    if(currentListExpences.isEmpty){
+      return listToReturn;
+    }else{
+      currentListExpences.forEach((expenceElement) {
+        if(DateTime.fromMillisecondsSinceEpoch(expenceElement.dateTimeExpence).isBefore(end) && DateTime.fromMillisecondsSinceEpoch(expenceElement.dateTimeExpence).isAfter(start)){
+          listToReturn.add(expenceElement);
+        }
+      });
+      return listToReturn;
+    }
+  }
   List<int> getIvaList(){
     return ivaList;
   }
@@ -368,6 +386,11 @@ class DataBundleNotifier extends ChangeNotifier {
     List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
     currentListRecessed.clear();
     currentListRecessed.addAll(_recessedModelList);
+
+    List<ExpenceModel> _expenceModelList = await clientService.retrieveExpencesListByBranch(currentBranch);
+    currentListExpences.clear();
+    currentListExpences.addAll(_expenceModelList);
+
 
     recessedListCharData.clear();
     _recessedModelList.forEach((recessedElement) {
@@ -501,6 +524,10 @@ class DataBundleNotifier extends ChangeNotifier {
     return currentListRecessed;
   }
 
+  List<ExpenceModel> getCurrentListExpences(){
+    return currentListExpences;
+  }
+
   void setCurrentDateTime(DateTime newDateTime){
     currentDateTime = newDateTime;
     notifyListeners();
@@ -516,6 +543,10 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();
+    }
+
+    if(currentListExpences.isNotEmpty){
+      currentListExpences.clear();
     }
     if(recessedListCharData.isNotEmpty){
       recessedListCharData.clear();
@@ -580,6 +611,13 @@ class DataBundleNotifier extends ChangeNotifier {
   void addCurrentRecessedList(List<RecessedModel> recessedModelList) {
     currentListRecessed.clear();
     currentListRecessed = recessedModelList;
+
+    notifyListeners();
+  }
+
+  void addCurrentExpencesList(List<ExpenceModel> expenceList) {
+    currentListExpences.clear();
+    currentListExpences = expenceList;
 
     notifyListeners();
   }

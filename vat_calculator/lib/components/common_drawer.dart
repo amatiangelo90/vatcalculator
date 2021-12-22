@@ -75,7 +75,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               Row(
                                 children: [
                                   dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.yellow.shade700,
-                                  ) : SizedBox(width: 0,),
+                                  ) : const SizedBox(width: 0,),
                                   const SizedBox(width: 20,),
                                 ],
                               ),
@@ -185,6 +185,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         kCustomWhite,
                         Colors.black54.withOpacity(0.1),
                         kCustomWhite),
+
                     buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
                       if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                         showDialog(
@@ -219,6 +220,32 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
                             break;
                         }
+                      }
+                    }, kCustomWhite,
+                        Colors.black54.withOpacity(0.1),
+                        kCustomWhite),
+                    buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
+                      if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog (
+                              contentPadding: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              content: SizedBox(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  height: MediaQuery.of(context).size.height / 5,
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Center(child: Text('Utente non abilitato per '
+                                        'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
+                                  )),
+                            )
+                        );
+                      } else{
+
                       }
                     }, kCustomWhite,
                         Colors.black54.withOpacity(0.1),
@@ -332,7 +359,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               width: 22,
                             ),
                             const SizedBox(width: 20),
-                            const Expanded(child: Text('Magazzino', style: TextStyle(color: kCustomWhite),)),
+                            const Expanded(child: Text('Magazzini', style: TextStyle(color: kCustomWhite),)),
                             Row(
                               children: [
                                 SizedBox(

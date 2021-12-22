@@ -6,18 +6,16 @@ import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
-import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
-import 'package:vat_calculator/client/pdf/pdf_generator.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
@@ -26,7 +24,6 @@ import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -43,8 +40,10 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   final List<String> errors = [];
   String importExpences;
-  TextEditingController recessedController = TextEditingController();
-  TextEditingController casualeRecessedController = TextEditingController();
+  TextEditingController expenceController = TextEditingController();
+  TextEditingController casualeExpenceController = TextEditingController();
+
+  int currentOrderIndex = 0;
 
 
 
@@ -106,8 +105,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
                   ),
                 ),
-
-                Divider(),
+                const Divider(height: 2,),
+                buildDateRecessedRegistrationWidget(dataBundleNotifier),
+                const Divider(height: 2,),
                 Padding(
                   padding: const EdgeInsets.all(0.0),
                   child: Row(
@@ -157,39 +157,30 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ],
                     future: populateProductsListForTodayOrders(dataBundleNotifier),
                     builder: (context, snapshot){
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: buildOrderIncomingTodayListWidget(dataBundleNotifier),
-                    ),
-                  );
-                }
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return Column(
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(width: getProportionateScreenWidth(10),),
-                          Text('Eventi in programma oggi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                        ],
+                      SizedBox(
+                        height: getProportionateScreenHeight(170),
+                        child: PageView.builder(
+                          onPageChanged: (value) {
+                            setState(() {
+                              currentOrderIndex = value;
+                            });
+                          },
+                          itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
+                          itemBuilder: (context, index) => buildCard(retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)[index], dataBundleNotifier),
+                        ),
                       ),
-                      CupertinoButton(
-                        onPressed: (){
-                          Navigator.pushNamed(context, CreatePdfWidget.routeName);
-                          //Navigator.pushNamed(context, PageScc.routeName);
-                        },
-                        child: Row(
-                          children: [
-                            Text('Dettaglio Eventi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                          ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
+                              (index) => buildDot(index: index),
                         ),
                       ),
                     ],
-                  ),
+                  );
+                }
                 ),
                 dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
                   children: [
@@ -258,7 +249,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                     LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
                   ],
                 ),
-                buildDateRecessedRegistrationWidget(dataBundleNotifier),
                 Divider(height: getProportionateScreenHeight(30),),
                 buildActionsList(dataBundleNotifier.currentBranchActionsList),
                 dataBundleNotifier.currentBranchActionsList.isEmpty ? SizedBox(height: 500,) : SizedBox(height: 0,),
@@ -396,76 +386,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     });
     return branchWidgetList;
   }
-  buildDateList(DataBundleNotifier dataBundleNotifier, BuildContext context) {
-    List<Widget> branchWidgetList = [];
-    List<DateTime> dateTimeList = [
-      DateTime.now().subtract(const Duration(days: 9)),
-      DateTime.now().subtract(const Duration(days: 8)),
-      DateTime.now().subtract(const Duration(days: 7)),
-      DateTime.now().subtract(const Duration(days: 6)),
-      DateTime.now().subtract(const Duration(days: 5)),
-      DateTime.now().subtract(const Duration(days: 4)),
-      DateTime.now().subtract(const Duration(days: 3)),
-      DateTime.now().subtract(const Duration(days: 2)),
-      DateTime.now().subtract(const Duration(days: 1)),
-      DateTime.now(),
-      DateTime.now().add(const Duration(days: 1)),
-      DateTime.now().add(const Duration(days: 2)),
-      DateTime.now().add(const Duration(days: 3)),
-      DateTime.now().add(const Duration(days: 4)),
-      DateTime.now().add(const Duration(days: 5)),
-      DateTime.now().add(const Duration(days: 6)),
-      DateTime.now().add(const Duration(days: 7)),
-      DateTime.now().add(const Duration(days: 8)),
-      DateTime.now().add(const Duration(days: 9)),
-      DateTime.now().add(const Duration(days: 10)),
-      DateTime.now().add(const Duration(days: 11)),
-    ];
-
-    dateTimeList.forEach((currentDate) {
-      branchWidgetList.add(
-        GestureDetector(
-          child: Container(
-            decoration: BoxDecoration(
-              color: (dataBundleNotifier.currentDateTime.day == currentDate.day
-                  && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.grey : kCustomWhite,
-              border: const Border(
-                bottom: BorderSide(width: 1.0, color: Colors.blueGrey),
-
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  currentDate.day == DateTime.now().day ?
-                  Text('  OGGI',
-                    style: TextStyle(
-                      fontSize: (dataBundleNotifier.currentDateTime.day == currentDate.day
-                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
-                      color: (dataBundleNotifier.currentDateTime.day == currentDate.day
-                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.white : Colors.black,
-                    ),) :
-                  Text('  '  + currentDate.day.toString() + '.' + currentDate.month.toString() + ' ' + getNameDayFromWeekDay(currentDate.weekday),
-                    style: TextStyle(
-                      fontSize: (dataBundleNotifier.currentDateTime.day == currentDate.day
-                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
-                      color: (dataBundleNotifier.currentDateTime.day == currentDate.day
-                          && dataBundleNotifier.currentDateTime.month == currentDate.month) ? Colors.white : Colors.black,
-                    ),),
-                ],
-              ),
-            ),
-          ),
-          onTap: () {
-            dataBundleNotifier.setCurrentDateTime(currentDate);
-            Navigator.pop(context);
-          },
-        ),
-      );
-    });
-    return branchWidgetList;
-  }
 
   Widget buildActionsList(List<ActionModel> currentBranchActionsList) {
 
@@ -555,6 +475,19 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
+  AnimatedContainer buildDot({int index}) {
+    return AnimatedContainer(
+      duration: kAnimationDuration,
+      margin: const EdgeInsets.only(right: 5),
+      height: 8,
+      width: currentOrderIndex == index ? 20 : 6,
+      decoration: BoxDecoration(
+        color: currentOrderIndex == index ? kPrimaryColor : const Color(0xFFD8D8D8),
+        borderRadius: BorderRadius.circular(3),
+      ),
+    );
+  }
+
   buildOrderIncomingTodayListWidget(DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> ordersList = [];
@@ -562,81 +495,69 @@ class _HomePageBodyState extends State<HomePageBody> {
     dataBundleNotifier.currentUnderWorkingOrdersList.forEach((order) {
       if(isToday(order.delivery_date)) {
         ordersList.add(
-          GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                productList: orderIdProductListMap[order.pk_order_id],),),);
-            },
-            child: Column(
-              children: [
-                Row(
+          SizedBox(
+            width: getProportionateScreenWidth(250),
+            child: Card(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+                    productList: orderIdProductListMap[order.pk_order_id],),),);
+                },
+                child: Column(
                   children: [
-                    OrderState.getIconWidget(OrderState.INCOMING),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                          style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
+                          style: TextStyle(fontSize: getProportionateScreenHeight(18), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
                         Text(
                           '       #' + order.code,
                           style: TextStyle(
-                              fontSize: getProportionateScreenHeight(12)),
+                              fontSize: getProportionateScreenHeight(11)),
                         ),
                       ],
                     ),
-                    SizedBox(width: getProportionateScreenWidth(90)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    SizedBox(width: getProportionateScreenHeight(110),),
                     Row(
                       children: [
-                        Row(
-                          children: [
-                            Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
-                              style: TextStyle(
-                                  color: kPinaColor,
-                                  fontSize: getProportionateScreenHeight(13),
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              ' x Prodotti',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(13),),
-                            ),
-
-                          ],
+                        Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
+                          style: TextStyle(
+                              color: kPinaColor,
+                              fontSize: getProportionateScreenHeight(12),
+                              fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(width: getProportionateScreenHeight(20),),
-                        Row(
-                          children: [
-                            Text(
-                              '€ ' +
-                                  calculatePriceFromProductList(
-                                      orderIdProductListMap[
-                                      order.pk_order_id]),
-                              style: TextStyle(
-                                  color: kPinaColor,
-                                  fontSize: getProportionateScreenHeight(13),
-                                  fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            Text(
-                              ' (Prezzo Stimato)',
-                              style: TextStyle(
-                                  fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
-                            ),
+                        Text(
+                          ' x Prodotti',
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(13),),
+                        ),
 
-                          ],
+                      ],
+                    ),
+                    SizedBox(width: getProportionateScreenHeight(20),),
+                    Row(
+                      children: [
+                        Text(
+                          '€ ' +
+                              calculatePriceFromProductList(
+                                  orderIdProductListMap[
+                                  order.pk_order_id]),
+                          style: TextStyle(
+                              color: kPinaColor,
+                              fontSize: getProportionateScreenHeight(13),
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        Text(
+                          ' (Prezzo Stimato)',
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
                         ),
 
                       ],
                     ),
                   ],
                 ),
-                Divider(indent: getProportionateScreenHeight(100),),
-              ],
+              ),
             ),
           ),
         );
@@ -645,7 +566,6 @@ class _HomePageBodyState extends State<HomePageBody> {
 
     if(ordersList.isEmpty){
       ordersList.add(SizedBox(
-
           width: getProportionateScreenWidth(400),
           child: Card(
             child: Column(
@@ -707,9 +627,8 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+
         Padding(
           padding: const EdgeInsets.all(15.0),
           child: Card(
@@ -719,23 +638,218 @@ class _HomePageBodyState extends State<HomePageBody> {
             elevation: 2,
             child: Column(
               children: [
-                Text('Registra Incasso'),
+                Padding(
+                  padding: const EdgeInsets.all(0.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SizedBox(width: getProportionateScreenWidth(10),),
+                          Text('Registra spese', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                        ],
+                      ),
+                      CupertinoButton(
+                        onPressed: (){
+
+                        },
+                        child: Row(
+                          children: [
+                            Text('Dettaglio Spese', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
+                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: IconButton(icon: Icon(
-                        Icons.arrow_back_ios,
-                        size: getProportionateScreenWidth(15),
-                        color: kPrimaryColor,
-                      ), onPressed: () { dataBundleNotifier.removeOneDayToDate(); },),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                          child: Text('Importo'),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 300,
+                          child: CupertinoTextField(
+                            controller: expenceController,
+                            onChanged: (text) {
+
+                            },
+                            textInputAction: TextInputAction.next,
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true, signed: true),
+                            clearButtonMode: OverlayVisibilityMode.never,
+                            textAlign: TextAlign.center,
+                            autocorrect: false,
+                          ),
+                        ),
+
+                      ],
                     ),
-                    GestureDetector(
-                        onTap: (){
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                          child: Text('Descrizione'),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 200,
+                          child: CupertinoTextField(
+                            controller: casualeExpenceController,
+                            onChanged: (text) {
+
+                            },
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.text,
+                            clearButtonMode: OverlayVisibilityMode.never,
+                            textAlign: TextAlign.center,
+                            autocorrect: false,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child: FormError(errors: errors),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: SizedBox(
+                    width: getProportionateScreenWidth(320),
+                    child: CupertinoButton(
+                      pressedOpacity: 0.5,
+                      child: const Text('Salva Spesa'),
+                      color: Colors.green.shade600.withOpacity(0.8),
+                      onPressed: () async {
+                        try{
+                        KeyboardUtil.hideKeyboard(context);
+                        if(expenceController.text == ''){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                              duration: const Duration(milliseconds: 2000),
+                              backgroundColor: Colors.redAccent.withOpacity(0.8),
+                              content: const Text('Inserire importo', style: TextStyle(color: Colors.white),)));
+                        }else if(double.tryParse(expenceController.text) == null){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                              duration: const Duration(milliseconds: 2000),
+                              backgroundColor: Colors.redAccent.withOpacity(0.8),
+                              content: const Text('Inserire un importo corretto', style: TextStyle(color: Colors.white),)));
+                        }else if(casualeExpenceController.text == ''){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                              duration: const Duration(milliseconds: 2000),
+                              backgroundColor: Colors.redAccent.withOpacity(0.8),
+                              content: const Text('Inserire casuale', style: TextStyle(color: Colors.white),)));
+                        }else{
+                          Widget fiscalButton = TextButton(
+                            child: Text("Fiscale", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15)),),
+                            onPressed:  () async {
+                              try{
+                                ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+
+                                await clientService.performSaveExpence(
+                                    double.parse(expenceController.text),
+                                    casualeExpenceController.text,
+                                    0,
+                                    dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                    dataBundleNotifier.currentBranch.pkBranchId,
+                                    'Y',
+                                    ActionModel(
+                                        date: DateTime.now().millisecondsSinceEpoch,
+                                        description: 'Ha registrato spesa fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                        type: ActionType.EXPENCE_CREATION
+                                    )
+                                );
+
+                                List<ExpenceModel> _expencesModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
+                                dataBundleNotifier.addCurrentExpencesList(_expencesModelList);
+                                expenceController.clear();
+                                casualeExpenceController.clear();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.green.shade800.withOpacity(0.6),
+                                    content: Text('Spesa fiscale registrata', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                              }catch(e){
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: const Duration(milliseconds: 6000),
+                                    backgroundColor: Colors.red,
+                                    content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                              }
+
+
+                              Navigator.of(context).pop();
+                            },
+                          );
+                          Widget notFiscalButton = TextButton(
+                            child: Text("Non Fiscale", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15)),),
+                            onPressed:  () async {
+                              try{
+                                ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+
+                                await clientService.performSaveExpence(
+                                    double.parse(expenceController.text),
+                                    casualeExpenceController.text,
+                                    0,
+                                    dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                    dataBundleNotifier.currentBranch.pkBranchId,
+                                    'N',
+                                    ActionModel(
+                                        date: DateTime.now().millisecondsSinceEpoch,
+                                        description: 'Ha registrato spesa ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                        type: ActionType.EXPENCE_CREATION
+                                    )
+                                );
+
+                                List<ExpenceModel> _expencesModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
+                                dataBundleNotifier.addCurrentExpencesList(_expencesModelList);
+                                expenceController.clear();
+                                casualeExpenceController.clear();
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: Duration(milliseconds: 2000),
+                                    backgroundColor: Colors.blue.shade700.withOpacity(0.6),
+                                    content: Text('Spesa non fiscale registrata', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+
+                              }catch(e){
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: const Duration(milliseconds: 6000),
+                                    backgroundColor: Colors.red,
+                                    content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                              }
+
+                              Navigator.of(context).pop();
+                            },
+                          );
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog (
+                                actions: [
+                                  ButtonBar(
+                                    alignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      notFiscalButton,
+                                      fiscalButton
+                                    ],
+                                  ),
+                                ],
                                 contentPadding: EdgeInsets.zero,
                                 shape: const RoundedRectangleBorder(
                                     borderRadius:
@@ -743,10 +857,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                                         Radius.circular(10.0))),
                                 content: Builder(
                                   builder: (context) {
-                                    var height = MediaQuery.of(context).size.height;
                                     var width = MediaQuery.of(context).size.width;
                                     return SizedBox(
-                                      height: height - 250,
                                       width: width - 90,
                                       child: SingleChildScrollView(
                                         scrollDirection: Axis.vertical,
@@ -764,8 +876,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                     children: [
-                                                      Text('  Calendario',style: TextStyle(
-                                                        fontSize: getProportionateScreenWidth(20),
+                                                      Text('    Registra Spesa',style: TextStyle(
+                                                        fontSize: getProportionateScreenWidth(15),
                                                         fontWeight: FontWeight.bold,
                                                         color: kCustomWhite,
                                                       ),),
@@ -773,20 +885,27 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                         Icons.clear,
                                                         color: kCustomWhite,
                                                       ), onPressed: () { Navigator.pop(context); },),
-
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    children: [
-                                                      Column(
-                                                        children: buildDateList(dataBundleNotifier, context),
-                                                      ),
                                                     ],
                                                   ),
                                                 ],
                                               ),
                                             ),
-                                            // buildDateList(),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text('Descrizione: ' , style: TextStyle(fontSize: getProportionateScreenHeight(14)),),
+                                                Text(casualeExpenceController.text.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                            const Divider(),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                              children: [
+                                                Text('Importo : ' , style: TextStyle(fontSize: getProportionateScreenHeight(14)),),
+                                                Text('€ ' + expenceController.text.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
+                                              ],
+                                            ),
+                                            Divider(),
                                           ],
                                         ),
                                       ),
@@ -795,242 +914,26 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 ),
                               )
                           );
-                        },
-                        child: Text(dataBundleNotifier.getCurrentDate(), style: TextStyle(fontSize: 15),)),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-                      child: IconButton(icon: Icon(
-                        Icons.arrow_forward_ios,
-                        size: getProportionateScreenWidth(15),
-                        color: kPrimaryColor,
-                      ), onPressed: () { dataBundleNotifier.addOneDayToDate(); },),
+                        }
+                        }catch(e){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                              duration: const Duration(milliseconds: 6000),
+                              backgroundColor: Colors.red,
+                              content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                        }
+                      },
                     ),
-                  ],
-                ),
-
-                Column(
-                  children: [
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        SizedBox(width: 28,),
-                        Text('Importo'),
-                      ],
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 75,
-                      child: CupertinoTextField(
-                        controller: recessedController,
-                        onChanged: (text) {
-
-                        },
-                        textInputAction: TextInputAction.next,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true, signed: true),
-                        clearButtonMode: OverlayVisibilityMode.never,
-                        textAlign: TextAlign.center,
-                        autocorrect: false,
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        SizedBox(width: 28,),
-                        Text('Casuale'),
-                      ],
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 75,
-                      child: CupertinoTextField(
-                        controller: casualeRecessedController,
-                        onChanged: (text) {
-
-                        },
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        clearButtonMode: OverlayVisibilityMode.never,
-                        textAlign: TextAlign.center,
-                        autocorrect: false,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      child: FormError(errors: errors),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: DefaultButton(
-                        text: "Salva Incasso",
-                        press: () async {
-                            KeyboardUtil.hideKeyboard(context);
-                            try{
-                              if(recessedController.text == ''){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 2000),
-                                    backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                    content: const Text('Inserire importo', style: TextStyle(color: Colors.white),)));
-                              }else if(double.tryParse(recessedController.text) == null){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 2000),
-                                    backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                    content: const Text('Inserire un importo corretto', style: TextStyle(color: Colors.white),)));
-                              }else if(casualeRecessedController.text == ''){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 2000),
-                                    backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                    content: const Text('Inserire casuale', style: TextStyle(color: Colors.white),)));
-                              }else{
-                                ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-
-                                await clientService.performSaveRecessed(
-                                    double.parse(recessedController.text),
-                                    casualeRecessedController.text,
-                                    dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
-                                    dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
-                                    dataBundleNotifier.currentBranch.pkBranchId,
-                                    ActionModel(
-                                        date: DateTime.now().millisecondsSinceEpoch,
-                                        description: 'Ha registrato incasso ${recessedController.text} € con casuale [${casualeRecessedController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
-                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                        type: ActionType.RECESSED_CREATION
-                                    )
-                                );
-
-                                List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                                dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                                dataBundleNotifier.recalculateGraph();
-                                recessedController.clear();
-                                casualeRecessedController.clear();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: Duration(milliseconds: 2000),
-                                    backgroundColor: Colors.green.shade700.withOpacity(0.8),
-                                    content: Text('Importo registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                              }
-                            }catch(e){
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  duration: const Duration(milliseconds: 6000),
-                                  backgroundColor: Colors.red,
-                                  content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                            }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-
-              ],
-            ),
-          ),
-        ),
-
-        buildLas5RecessedRegisteredWidget(dataBundleNotifier),
-      ],
-    );
-  }
-
-  buildLas5RecessedRegisteredWidget(DataBundleNotifier dataBundleNotifier) {
-
-      if (dataBundleNotifier
-          .getCurrentListRecessed()
-          .isEmpty) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Nessun incasso registrato'),
-            )
-          ],
-        );
-      }
-      List<Widget> rowChildrenWidget = [];
-
-      int lenght = 0;
-      if (dataBundleNotifier
-          .getCurrentListRecessed()
-          .length > 5) {
-        lenght = 5;
-      }else{
-        lenght = dataBundleNotifier
-            .getCurrentListRecessed()
-            .length;
-      }
-        dataBundleNotifier.getCurrentListRecessed().sublist(0, lenght).forEach((
-            recessedModel) {
-
-          DateTime currentDateTime = DateTime.fromMillisecondsSinceEpoch(recessedModel.dateTimeRecessed);
-          rowChildrenWidget.add(Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Stack(
-                  children: [
-                    Container(
-                      height: getProportionateScreenWidth(40),
-                      decoration: BoxDecoration(
-                          color: Colors.green.shade700.withOpacity(0.5),
-                          shape: BoxShape.circle
-                      ),
-                      width: getProportionateScreenWidth(50),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: SvgPicture.asset('assets/icons/euro.svg', color: Colors.green.shade900,),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Text(recessedModel.amount.toStringAsFixed(2), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
-              Text('IVA ' + recessedModel.vat.toStringAsFixed(2) + '%', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold,fontSize: 5),),
-              Text(normalizeCalendarValue(currentDateTime.day)
-                  + '/' + normalizeCalendarValue(currentDateTime.month)
-                  .toString()),
-
-            ],
-          ));
-        });
-
-      return Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    SizedBox(width: getProportionateScreenWidth(10),),
-                    Text('Ultimi 5 incassi registrati', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                  ],
-                ),
-                CupertinoButton(
-                  onPressed: (){
-                    Navigator.pushNamed(context, RecessedManagerScreen.routeName);
-                  },
-                  child: Row(
-                    children: [
-                      Text('Dettaglio Incassi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                      Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                    ],
                   ),
                 ),
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: rowChildrenWidget.reversed.toList(),),
-        ],
-      );
-    }
+        ),
+      ],
+    );
+  }
+
 
   String normalizeCalendarValue(int day) {
     if(day < 10){
@@ -1038,6 +941,113 @@ class _HomePageBodyState extends State<HomePageBody> {
     }else{
       return day.toString();
     }
+  }
+
+  buildCard(OrderModel order, DataBundleNotifier dataBundleNotifier) {
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        elevation: 2,
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+              productList: orderIdProductListMap[order.pk_order_id],),),);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                          child: SvgPicture.asset(
+                            'assets/icons/supplier.svg',
+                            height: getProportionateScreenHeight(22),
+                          ),
+                        ),
+                        Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                          style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                      ],
+                    ),
+                    Text(
+                      '#' + order.code,
+                      style: TextStyle(fontSize: getProportionateScreenHeight(18), color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                  ],
+                ),
+                const Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        Text(
+                          'Prodotti',
+                          style: TextStyle(
+                            fontSize: getProportionateScreenHeight(13),),
+                        ),
+                        Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
+                          style: TextStyle(
+                              color: kPinaColor,
+                              fontSize: getProportionateScreenHeight(18),
+                              fontWeight: FontWeight.bold),
+                        ),
+
+                      ],
+                    ),
+
+
+                    Column(
+                      children: [
+                        Text(
+                          'Prezzo Stimato',
+                          style: TextStyle(
+                              fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '€ ' +
+                              calculatePriceFromProductList(
+                                  orderIdProductListMap[
+                                  order.pk_order_id]),
+                          style: TextStyle(
+                              color: kPinaColor,
+                              fontSize: getProportionateScreenHeight(18),
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+
+
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(width: getProportionateScreenHeight(20),),
+                Divider(),
+                Center(child: Text(order.status)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+  }
+
+  retrieveTodayOrdersList(List<OrderModel> currentUnderWorkingOrdersList) {
+    List<OrderModel> toReturnTodayOrders = [];
+    currentUnderWorkingOrdersList.forEach((element) {
+      if(isToday(element.delivery_date)){
+        toReturnTodayOrders.add(element);
+      }
+    });
+
+    return toReturnTodayOrders;
   }
 }
 
