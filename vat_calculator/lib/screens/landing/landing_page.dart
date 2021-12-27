@@ -17,8 +17,8 @@ class LandingScreen extends StatelessWidget {
       overlayWidget: LoaderOverlayWidget(),
       child: Scaffold(
         appBar: AppBar(
+          backgroundColor: Colors.black,
           leading: const SizedBox(),
-          title: const Text("Login Success"),
         ),
         body: LandingBody(email: email,),
       ),

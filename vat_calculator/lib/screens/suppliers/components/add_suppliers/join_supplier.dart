@@ -37,7 +37,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            backgroundColor: kPrimaryColor,
+            backgroundColor: Colors.black,
             bottomSheet: Padding(
               padding: const EdgeInsets.all(8.0),
             ),
@@ -49,7 +49,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                   }
               ),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              backgroundColor: Colors.black,
               centerTitle: true,
               title: Column(
                 children: [

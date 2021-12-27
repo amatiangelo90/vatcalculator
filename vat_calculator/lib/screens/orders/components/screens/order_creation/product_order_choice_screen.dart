@@ -1,14 +1,8 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../constants.dart';

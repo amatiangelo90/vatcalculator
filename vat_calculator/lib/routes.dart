@@ -16,6 +16,7 @@ import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
+import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/components/add_storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
@@ -35,7 +36,7 @@ import 'client/pdf/pdf_generator.dart';
 import 'screens/sign_up/sign_up_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
-  SplashScreen.routeName: (context) => SplashScreen(),
+  SplashAnim.routeName: (context) => SplashAnim(),
   SignInScreen.routeName: (context) => SignInScreen(),
   ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
   SignUpScreen.routeName: (context) => SignUpScreen(),
@@ -70,4 +71,5 @@ final Map<String, WidgetBuilder> routes = {
   OrderConfirmationScreen.routeName: (context) => OrderConfirmationScreen(),
   RecessedManagerScreen.routeName: (context) => RecessedManagerScreen(),
   CreatePdfWidget.routeName: (context) => CreatePdfWidget(),
+  SplashScreen.routeName: (context) => SplashScreen(),
 };

@@ -89,8 +89,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           return RefreshIndicator(
             onRefresh: (){
               dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-              setState(() {
-              });
+              setState(() {});
               return Future.delayed(Duration(milliseconds: 500));
             },
             child: SingleChildScrollView(
@@ -105,6 +104,35 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
                   ),
                 ),
+                dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
+                  children: [
+                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : GestureDetector(
+                      onTap: (){
+                        Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(9, 1, 9, 2),
+                        child: Card(
+                          color: Colors.teal.shade800.withOpacity(0.7),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/iva.svg',
+                                  color: kCustomWhite,
+                                  width: 22,
+                                ),
+                                const Text('Registra provider fatturatione elettronica', style: TextStyle(color: kCustomWhite),),
+                                Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: kCustomWhite),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ), ],
+                ) : SizedBox(height: 0,),
                 const Divider(height: 2,),
                 buildDateRecessedRegistrationWidget(dataBundleNotifier),
                 const Divider(height: 2,),
@@ -182,35 +210,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                   );
                 }
                 ),
-                dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
-                  children: [
-                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('') : GestureDetector(
-                      onTap: (){
-                        Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(18.0),
-                        child: Card(
-                          color: Colors.teal.shade800.withOpacity(0.7),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/iva.svg',
-                                  color: kCustomWhite,
-                                  width: 22,
-                                ),
-                                const Text('Registra provider fatturatione elettronica', style: TextStyle(color: kCustomWhite),),
-                                Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: kCustomWhite),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ), ],
-                ) : Column(
+                dataBundleNotifier.currentBranch.providerFatture == '' ? const Text('') : Column(
                   children: [
                     Divider(),
                     Row(
@@ -810,7 +810,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     'N',
                                     ActionModel(
                                         date: DateTime.now().millisecondsSinceEpoch,
-                                        description: 'Ha registrato spesa ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                        description: 'Ha registrato spesa non fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
                                         fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                         user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                         type: ActionType.EXPENCE_CREATION

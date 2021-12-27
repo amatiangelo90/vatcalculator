@@ -21,115 +21,133 @@ import '../../../size_config.dart';
 class LandingBody extends StatelessWidget {
   final String email;
   const LandingBody({Key key, this.email}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataBundleNotifier>(
-      builder: (context, dataBundleNotifier, child){
-        return Column(
-          children: [
-            SizedBox(height: SizeConfig.screenHeight * 0.04),
-            Image.asset(
-              "assets/images/success.png",
-              height: SizeConfig.screenHeight * 0.4,
-            ),
-            SizedBox(height: SizeConfig.screenHeight * 0.08),
-            Flexible(
-              child: Text(
-                "Benvenuto " + email,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(20),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+    return Container(
+      color: Colors.black,
+      child: Consumer<DataBundleNotifier>(
+        builder: (context, dataBundleNotifier, child){
+          return Scaffold(
+            backgroundColor: Colors.black,
+            appBar: AppBar(backgroundColor: Colors.black,),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Center(
+                  child: Image.asset(
+                    "assets/logo/K-15.png",
+                    height: SizeConfig.screenHeight * 0.4,
+                  ),
                 ),
-              ),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: SizeConfig.screenWidth * 0.6,
-              child: DefaultButton(
-                text: "Procediamo",
-                press: () async {
-
-                  context.loaderOverlay.show();
-
-                  ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                  UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
-                  if(userModelRetrieved != null){
-                    Response response = await clientService.checkSpecialUser(userModelRetrieved);
-                    if(response != null && response.statusCode != null && response.statusCode == 200){
-                      if(response.data){
-                        print('Enable special user');
-                        dataBundleNotifier.enableSpecialUser();
+                Column(
+                  children: [
+                    Text(
+                      'Benvenuto',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(17),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      email,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(18),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: getProportionateScreenHeight(100),),
+                Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: DefaultButton(
+                    color: Colors.yellowAccent.shade400.withOpacity(0.7),
+                    text: "Procediamo",
+                    press: () async {
+                      context.loaderOverlay.show();
+                      ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+                      UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
+                      if(userModelRetrieved != null){
+                        Response response = await clientService.checkSpecialUser(userModelRetrieved);
+                        if(response != null && response.statusCode != null && response.statusCode == 200){
+                          if(response.data){
+                            print('Enable special user');
+                            dataBundleNotifier.enableSpecialUser();
+                          }
+                        }
                       }
-                    }
-                  }
-                  print('Privilege: ' + userModelRetrieved.privilege.toString());
-                  DataBundle dataBundle = DataBundle(
-                      userModelRetrieved.id,
-                      userModelRetrieved.mail,
-                      '',
-                      userModelRetrieved.name,
-                      userModelRetrieved.lastName,
-                      userModelRetrieved.phone,
-                      userModelRetrieved.privilege,
-                      []);
+                      print('Privilege: ' + userModelRetrieved.privilege.toString());
+                      DataBundle dataBundle = DataBundle(
+                          userModelRetrieved.id,
+                          userModelRetrieved.mail,
+                          '',
+                          userModelRetrieved.name,
+                          userModelRetrieved.lastName,
+                          userModelRetrieved.phone,
+                          userModelRetrieved.privilege,
+                          []);
 
 
-                  List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
-                  dataBundleNotifier.addDataBundle(dataBundle);
-                  dataBundleNotifier.addBranches(_branchList);
+                      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
+                      dataBundleNotifier.addDataBundle(dataBundle);
+                      dataBundleNotifier.addBranches(_branchList);
 
-                  List<RecessedModel> _recessedModelList = [];
+                      List<RecessedModel> _recessedModelList = [];
 
-                  if(dataBundleNotifier.currentBranch != null){
-                    _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                    dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                  }
+                      if(dataBundleNotifier.currentBranch != null){
+                        _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                      }
 
-                  List<ExpenceModel> _expenceModelList = [];
+                      List<ExpenceModel> _expenceModelList = [];
 
-                  if(dataBundleNotifier.currentBranch != null){
-                    _expenceModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
-                    dataBundleNotifier.addCurrentExpencesList(_expenceModelList);
-                  }
+                      if(dataBundleNotifier.currentBranch != null){
+                        _expenceModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
+                        dataBundleNotifier.addCurrentExpencesList(_expenceModelList);
+                      }
 
 
-                  // TODO sistemare la questione addizionare amount se esiste già una data contenente un incasso
-                  dataBundleNotifier.recessedListCharData.clear();
-                  _recessedModelList.forEach((recessedElement) {
-                    dataBundleNotifier.recessedListCharData.add(
-                        CharData(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed), recessedElement.amount)
-                    );
-                  });
+                      // TODO sistemare la questione addizionare amount se esiste già una data contenente un incasso
+                      dataBundleNotifier.recessedListCharData.clear();
+                      _recessedModelList.forEach((recessedElement) {
+                        dataBundleNotifier.recessedListCharData.add(
+                            CharData(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed), recessedElement.amount)
+                        );
+                      });
 
-                  if(dataBundleNotifier.currentBranch != null){
-                    List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
-                    dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
-                  }
-                  if(dataBundleNotifier.currentBranch != null){
-                    List<StorageModel> _storageModelList = await clientService.retrieveStorageListByBranch(dataBundleNotifier.currentBranch);
-                    dataBundleNotifier.addCurrentStorageList(_storageModelList);
-                  }
+                      if(dataBundleNotifier.currentBranch != null){
+                        List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                        dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
+                      }
+                      if(dataBundleNotifier.currentBranch != null){
+                        List<StorageModel> _storageModelList = await clientService.retrieveStorageListByBranch(dataBundleNotifier.currentBranch);
+                        dataBundleNotifier.addCurrentStorageList(_storageModelList);
+                      }
 
-                  if(dataBundleNotifier.currentBranch != null){
-                    List<OrderModel> _orderModelList = await clientService.retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
-                    dataBundleNotifier.addCurrentOrdersList(_orderModelList);
-                  }
+                      if(dataBundleNotifier.currentBranch != null){
+                        List<OrderModel> _orderModelList = await clientService.retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
+                        dataBundleNotifier.addCurrentOrdersList(_orderModelList);
+                      }
 
-                  dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                      dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
 
-                  context.loaderOverlay.hide();
+                      context.loaderOverlay.hide();
 
-                  Navigator.pushNamed(context, HomeScreen.routeName);
-                },
-              ),
+                      Navigator.pushNamed(context, HomeScreen.routeName);
+                    },
+                  ),
+                ),
+              ],
             ),
-            const Spacer(),
-          ],
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

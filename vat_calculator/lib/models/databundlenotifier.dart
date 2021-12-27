@@ -104,7 +104,7 @@ class DataBundleNotifier extends ChangeNotifier {
   bool editProfile = false;
   bool searchStorageButton = false;
   bool isZtoAOrderded = false;
-  bool editOrder = false;
+  bool editOrder = true;
 
   int daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
   int currentYear = DateTime.now().year;

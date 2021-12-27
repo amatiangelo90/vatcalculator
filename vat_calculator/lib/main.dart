@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/routes.dart';
+import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/theme.dart';
 import 'models/databundlenotifier.dart';
@@ -22,9 +23,9 @@ class MyApp extends StatelessWidget {
       create: (context) => DataBundleNotifier(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Ivano',
+        title: 'KONTUM',
         theme: theme(),
-        initialRoute: SplashScreen.routeName,
+        initialRoute: SplashAnim.routeName,
         routes: routes,
         //builder: EasyLoading.init(),
       ),

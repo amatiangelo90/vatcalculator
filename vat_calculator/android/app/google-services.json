@@ -29,6 +29,13 @@
             {
               "client_id": "897416784718-k4qstnq6dfoifr1k4ofmm1d1646lc7hj.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "897416784718-arn1h26tf8j9ae023tonlrb09bv76gb2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.acorp.vatCalculator"
+              }
             }
           ]
         }

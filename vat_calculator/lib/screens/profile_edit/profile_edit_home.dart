@@ -15,6 +15,7 @@ import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
+import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
@@ -406,7 +407,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                             style: TextStyle(
                                 fontFamily: 'LoraFont', color: Colors.white),
                           )));
-                      Navigator.pushNamed(context, SplashScreen.routeName);
+                      Navigator.pushNamed(context, SplashAnim.routeName);
                     },
                     child: Row(
                       children: [

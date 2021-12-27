@@ -14,15 +14,15 @@ class _BodyState extends State<Body> {
   int currentPage = 0;
   List<Map<String, String>> splashData = [
     {
-      "text": "Benvenuti!!",
+      "text": "E' gestione semplificata per fornitori, ordini e magazzini",
       "image": "assets/images/splash_1.png"
     },
     {
-      "text": "Tieni sotto controllo le tue spese!",
+      "text": "E' controllo delle spese",
       "image": "assets/images/splash_2.png"
     },
     {
-      "text": "Ivano è integrato con Aruba e FattureInCloud..\n e molti altri ne arriveranno!:)",
+      "text": "E' conoscenza della tua situazione Iva",
       "image": "assets/images/aruba-fcloud.jpeg"
     },
   ];
