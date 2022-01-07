@@ -1,11 +1,11 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:flutter/material.dart';
-import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
+import 'package:vat_calculator/size_config.dart';
 
 class SplashAnim extends StatefulWidget {
-
-  static String routeName = 'splashanim';
+  static String routeName = 'splash_anim';
   @override
   _SplashAnimState createState() => _SplashAnimState();
 }
@@ -13,131 +13,128 @@ class SplashAnim extends StatefulWidget {
 class _SplashAnimState extends State<SplashAnim> {
   @override
   Widget build(BuildContext context) {
-    return SecondPage();
+    return SecondClass();
   }
 }
 
-class SecondPage extends StatefulWidget {
+class SecondClass extends StatefulWidget {
   @override
-  _SecondPageState createState() => _SecondPageState();
+  _SecondClassState createState() => _SecondClassState();
 }
 
-class _SecondPageState extends State<SecondPage> {
+class _SecondClassState extends State<SecondClass>
+    with TickerProviderStateMixin {
+  AnimationController scaleController;
+  Animation<double> scaleAnimation;
+
+  double _opacity = 0;
+  bool _value = true;
+
   @override
   void initState() {
     super.initState();
 
-    Timer(Duration(milliseconds: 400), () {
+    scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1800),
+    )..addStatusListener(
+          (status) {
+        if (status == AnimationStatus.completed) {
+          Navigator.of(context).pushReplacement(
+            ThisIsFadeRoute(
+              route: SignInScreen(),
+            ),
+          );
+          Timer(
+            const Duration(milliseconds: 300),
+                () {
+              scaleController.reset();
+            },
+          );
+        }
+      },
+    );
+
+    scaleAnimation =
+        Tween<double>(begin: 0.0, end: 12).animate(scaleController);
+
+    Timer(const Duration(milliseconds: 600), () {
       setState(() {
-        _a = true;
+        _opacity = 1.0;
+        _value = false;
       });
     });
-    Timer(Duration(milliseconds: 400), () {
+    Timer(const Duration(milliseconds: 2000), () {
       setState(() {
-        _b = true;
-      });
-    });
-    Timer(Duration(milliseconds: 1300), () {
-      setState(() {
-        _c = true;
-      });
-    });
-    Timer(Duration(milliseconds: 1700), () {
-      setState(() {
-        _e = true;
-      });
-    });
-    Timer(Duration(milliseconds: 3400), () {
-      setState(() {
-        _d = true;
-      });
-    });
-    Timer(Duration(milliseconds: 3850), () {
-      setState(() {
-        Navigator.of(context).pushReplacement(
-          ThisIsFadeRoute(
-            route: SignInScreen(),
-          ),
-        );
+        scaleController.forward();
       });
     });
   }
-
-  bool _a = false;
-  bool _b = false;
-  bool _c = false;
-  bool _d = false;
-  bool _e = false;
 
   @override
   void dispose() {
+    // TODO: implement dispose
+    scaleController.dispose();
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    double _h = MediaQuery.of(context).size.height;
-    double _w = MediaQuery.of(context).size.width;
+    SizeConfig().init(context);
     return Scaffold(
       backgroundColor: Colors.black,
-      body: Center(
-        child: Column(
-          children: [
-
-            AnimatedContainer(
-              duration: Duration(milliseconds: _d ? 900 : 2500),
-              curve: _d ? Curves.fastLinearToSlowEaseIn : Curves.elasticOut,
-              height: _d
-                  ? 0
-                  : _a
-                  ? _h / 2
-                  : 20,
-              width: 20,
-              // color: Colors.deepPurpleAccent,
-            ),
-            AnimatedContainer(
-              duration: Duration(
-                  seconds: _d
-                      ? 1
-                      : _c
-                      ? 2
-                      : 0),
+      body: Stack(
+        children: [
+          Center(
+            child: AnimatedOpacity(
               curve: Curves.fastLinearToSlowEaseIn,
-              height: _d
-                  ? _h
-                  : _c
-                  ? 80
-                  : 20,
-              width: _d
-                  ? _w
-                  : _c
-                  ? 200
-                  : 20,
-              decoration: BoxDecoration(
-                  color: _b ? Colors.white : Colors.transparent,
-                  // shape: _c? BoxShape.rectangle : BoxShape.circle,
-                  borderRadius:
-                  _d ? BorderRadius.only() : BorderRadius.circular(30)),
-              child: Center(
-                child: _e
-                    ? AnimatedTextKit(
-                  totalRepeatCount: 1,
-                  animatedTexts: [
-                    FadeAnimatedText(
-                      'KONTUM',
-                      duration: Duration(milliseconds: 1700),
-                      textStyle: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w700,
-                      ),
+              duration: const Duration(seconds: 6),
+              opacity: _opacity,
+              child: AnimatedContainer(
+                curve: Curves.fastLinearToSlowEaseIn,
+                duration: const Duration(seconds: 6),
+                height: _value ? 50 : 200,
+                width: _value ? 50 : 200,
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.deepPurpleAccent.withOpacity(.2),
+                      blurRadius: 100,
+                      spreadRadius: 10,
                     ),
                   ],
-                )
-                    : SizedBox(),
+                  color: kCustomYellow,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Stack(
+                  children :[ Center(
+                    child: Container(
+                      width: 450,
+                      height: 450,
+                      decoration: const BoxDecoration(
+                          color: kCustomYellow, shape: BoxShape.circle),
+                      child: AnimatedBuilder(
+                        animation: scaleAnimation,
+                        builder: (c, child) => Transform.scale(
+                          scale: scaleAnimation.value,
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: kCustomYellow,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                    Image.asset('assets/logo/2-rb.png',width: 2500,),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

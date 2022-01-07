@@ -97,19 +97,33 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                     ).show();
                   }else{
 
-                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
+                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailByKontumServiceApi(
                           supplierName: widget.currentSupplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
-                          message: OrderUtils.buildMessageFromCurrentOrderListFromDraft(dataBundleNotifier.currentProdOrderModelList),
+
+                          message: OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                              orderId: code,
+                              branchName: dataBundleNotifier.currentBranch.companyName,
+                              orderProductList: dataBundleNotifier.currentProdOrderModelList,
+                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                              supplierName: widget.currentSupplier.nome,
+                              currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
+                              storageAddress: currentStorageModel.address,
+                              storageCap: currentStorageModel.cap,
+                              storageCity: currentStorageModel.city,
+                          ),
                           orderCode: code,
                           supplierEmail: widget.currentSupplier.mail,
                           userEmail: dataBundleNotifier.dataBundleList[0].email,
                           userName: dataBundleNotifier.dataBundleList[0].firstName,
-                          addressBranch: currentStorageModel.address + ' ' + currentStorageModel.city + ' ' + currentStorageModel.cap.toString(),
+                          addressBranch: currentStorageModel.address,
+                          addressBranchCap: currentStorageModel.cap,
+                          addressBranchCity: currentStorageModel.city,
+                          branchNumber: dataBundleNotifier.dataBundleList[0].phone,
                           deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
 
-
-                      if (sendEmailResponse.data == 'OK') {
+                      print('sendEmailResponse.statusCode: ' + sendEmailResponse.statusCode.toString());
+                      if (sendEmailResponse.statusCode == 200) {
                         await dataBundleNotifier
                             .getclientServiceInstance()
                             .updateOrderStatus(
@@ -152,7 +166,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                                   var width =
                                       MediaQuery.of(context).size.width;
                                   return SizedBox(
-                                    height: height - 250,
+                                    height: height - 350,
                                     width: width - 90,
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
@@ -168,7 +182,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                                                   topLeft:
                                                   Radius.circular(
                                                       10.0)),
-                                              color: kPrimaryColor,
+                                              color: kPinaColor,
                                             ),
                                             child: Column(
                                               children: [
@@ -200,15 +214,21 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                                                     ),
                                                   ],
                                                 ),
-                                                Column(
-                                                  children: const [
-                                                    Text('E\' stato riscontrato un errore durate l\'invio dell\'ordine. Controlla che la mail sia giusta oppure riprova fra un paio di minuti. L\'ordine è stato salvato come bozza.' ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
                                           ),
-                                          // buildDateList(),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Text('E\' stato riscontrato un errore durate l\''
+                                                    'invio dell\'ordine. Controlla che la mail ['+ widget.currentSupplier.mail +'] sia corretta oppure riprova fra '
+                                                    'un paio di minuti.\n\n' , textAlign: TextAlign.center,),
+
+                                                const Text('Se non disponi della mail puoi inviare il presente ordine tramite what\'s app.  ' , textAlign: TextAlign.center,),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
@@ -442,7 +462,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(currentProduct.nome, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
-                      Text(currentProduct.prezzo_lordo.toString(), style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                      Text(currentProduct.prezzo_lordo.toString() + ' €', style: TextStyle( fontSize: getProportionateScreenWidth(12))),
                     ],
                   ),
                   Row(

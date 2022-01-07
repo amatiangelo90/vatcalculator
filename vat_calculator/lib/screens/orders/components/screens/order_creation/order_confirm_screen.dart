@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
@@ -108,13 +110,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                             description: 'Ha creato l\'ordine #$code per il fornitore ${widget.currentSupplier.nome} per conto di ' + dataBundleNotifier.currentBranch.companyName,
                             fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                             user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                            type: ActionType.DRAFT_ORDER_CREATION
+                            type: ActionType.DRAFT_ORDER_CREATION, pkActionId: 0
                         )
                     );
 
                     if(performSaveOrderId != null){
-                      dataBundleNotifier.currentProductModelListForSupplier.forEach((element) {
-                        dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
+                      dataBundleNotifier.currentProductModelListForSupplier.forEach((element) async {
+                        await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
                             element.prezzo_lordo,
                             element.pkProductId,
                             performSaveOrderId.data
@@ -123,18 +125,33 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     }
 
                     if(performSaveOrderId != null){
-                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmail(
+                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailByKontumServiceApi(
                           supplierName: widget.currentSupplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
-                          message: OrderUtils.buildMessageFromCurrentOrderList(dataBundleNotifier.currentProductModelListForSupplier),
+                          message: OrderUtils.buildMessageFromCurrentOrderList(
+                            branchName: dataBundleNotifier.currentBranch.companyName,
+                              orderId: code,
+                              productList: dataBundleNotifier.currentProductModelListForSupplier,
+                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                              supplierName: widget.currentSupplier.nome,
+                              currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
+                              storageAddress: currentStorageModel.address,
+                              storageCap: currentStorageModel.cap,
+                              storageCity: currentStorageModel.city,
+                          ),
                           orderCode: code,
                           supplierEmail: widget.currentSupplier.mail,
                           userEmail: dataBundleNotifier.dataBundleList[0].email,
                           userName: dataBundleNotifier.dataBundleList[0].firstName,
-                          addressBranch: currentStorageModel.address + ' ' + currentStorageModel.city + ' ' + currentStorageModel.cap.toString(),
+                          addressBranch: currentStorageModel.address,
+                          addressBranchCap: currentStorageModel.cap,
+                          addressBranchCity: currentStorageModel.city,
+                          branchNumber: dataBundleNotifier.dataBundleList[0].phone,
                           deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
 
-                      if (sendEmailResponse.data == 'OK') {
+                      print('Response from email service ' + sendEmailResponse.data.toString());
+
+                      if (sendEmailResponse.statusCode == 200) {
                         print('Save order as SENT. OrderId: ' + performSaveOrderId.data.toString() );
                         await dataBundleNotifier
                             .getclientServiceInstance()
@@ -156,8 +173,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 user: dataBundleNotifier
                                     .retrieveNameLastNameCurrentUser(),
                                 type: ActionType.SENT_ORDER));
-                        dataBundleNotifier
-                            .setCurrentBranch(dataBundleNotifier.currentBranch);
+
+                        dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -179,7 +197,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                   var width =
                                       MediaQuery.of(context).size.width;
                                   return SizedBox(
-                                    height: height - 250,
+                                    height: height - 350,
                                     width: width - 90,
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
@@ -195,7 +213,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                                   topLeft:
                                                   Radius.circular(
                                                       10.0)),
-                                              color: kPrimaryColor,
+                                              color: kPinaColor,
                                             ),
                                             child: Column(
                                               children: [
@@ -227,15 +245,21 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                                     ),
                                                   ],
                                                 ),
-                                                Column(
-                                                  children: [
-                                                    Text('E\' stato riscontrato un errore durate l\'invio dell\'ordine. Controlla che la mail sia giusta oppure riprova fra un paio di minuti. L\'ordine è stato salvato come bozza.' ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
                                           ),
-                                          // buildDateList(),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Column(
+                                              children: [
+                                                Text('E\' stato riscontrato un errore durate l\''
+                                                    'invio dell\'ordine. Controlla che la mail ['+ widget.currentSupplier.mail +'] sia corretta oppure riprova fra '
+                                                    'un paio di minuti.\n\n' , textAlign: TextAlign.center,),
+
+                                                const Text('Se non disponi della mail puoi inviare il messaggio tramite what\'s app.  ' , textAlign: TextAlign.center,),
+                                              ],
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),

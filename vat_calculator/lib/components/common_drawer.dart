@@ -65,28 +65,39 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           children: [
                             Row(
                               children: [
-                                SizedBox(
-                                  child: Image.asset('assets/logo/kontum_logo.png'),
-                                  height: getProportionateScreenHeight(110),
+                                GestureDetector(
+                                  onTap: (){
+                                    Navigator.popAndPushNamed(context, HomeScreen.routeName);
+                                  },
+                                  child: SizedBox(
+                                    child: Image.asset('assets/logo/1.png'),
+                                    height: getProportionateScreenHeight(100),
+                                  ),
                                 ),
-                                SizedBox(height: 0,),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const SizedBox(width: 20,),
-                                    dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
-                                    const SizedBox(width: 0,),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.yellow.shade700,
-                                    ) : const SizedBox(width: 0,),
-                                    const SizedBox(width: 20,),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            const SizedBox(width: 20,),
+                                            dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
+                                            const SizedBox(width: 0,),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.yellow.shade700,
+                                            ) : const SizedBox(width: 0,),
+                                            const SizedBox(width: 20,),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+
                                   ],
                                 ),
                               ],

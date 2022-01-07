@@ -13,7 +13,6 @@ import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
-import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -161,7 +160,16 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ],
                   ),
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: CupertinoButton(
+                    color: Colors.blueAccent.shade700.withOpacity(0.6),
+                    onPressed: (){
+                      Navigator.pushNamed(context, CreateOrderScreen.routeName);
+                    },
+                    child: const Text('Crea Ordine'),
+                  ),
+                ),
                 FutureBuilder(
                     initialData: <Widget>[
                       const Center(
@@ -488,107 +496,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  buildOrderIncomingTodayListWidget(DataBundleNotifier dataBundleNotifier) {
-
-    List<Widget> ordersList = [];
-
-    dataBundleNotifier.currentUnderWorkingOrdersList.forEach((order) {
-      if(isToday(order.delivery_date)) {
-        ordersList.add(
-          SizedBox(
-            width: getProportionateScreenWidth(250),
-            child: Card(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                    productList: orderIdProductListMap[order.pk_order_id],),),);
-                },
-                child: Column(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                          style: TextStyle(fontSize: getProportionateScreenHeight(18), color: Colors.black54.withOpacity(0.6), fontWeight: FontWeight.bold),),
-                        Text(
-                          '       #' + order.code,
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(11)),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: [
-                        Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
-                          style: TextStyle(
-                              color: kPinaColor,
-                              fontSize: getProportionateScreenHeight(12),
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          ' x Prodotti',
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(13),),
-                        ),
-
-                      ],
-                    ),
-                    SizedBox(width: getProportionateScreenHeight(20),),
-                    Row(
-                      children: [
-                        Text(
-                          '€ ' +
-                              calculatePriceFromProductList(
-                                  orderIdProductListMap[
-                                  order.pk_order_id]),
-                          style: TextStyle(
-                              color: kPinaColor,
-                              fontSize: getProportionateScreenHeight(13),
-                              fontWeight: FontWeight.bold
-                          ),
-                        ),
-                        Text(
-                          ' (Prezzo Stimato)',
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
-                        ),
-
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      }
-    });
-
-    if(ordersList.isEmpty){
-      ordersList.add(SizedBox(
-          width: getProportionateScreenWidth(400),
-          child: Card(
-            child: Column(
-              children: [
-                Center(child: Text('Nessun ordine in arrivo per oggi', style: TextStyle(fontSize: getProportionateScreenWidth(16)),)),
-                Padding(
-                  padding: const EdgeInsets.all(28.0),
-                  child: CupertinoButton(
-                    color: Colors.blueAccent.shade700.withOpacity(0.6),
-                    onPressed: (){
-                      Navigator.pushNamed(context, CreateOrderScreen.routeName);
-                    },
-                    child: const Text('Crea Ordine'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-      ));
-    }
-
-    return ordersList;
-  }
   bool isToday(int delivery_date) {
     DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(delivery_date);
     DateTime now = DateTime.now();
@@ -1039,7 +946,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   }
 
-  retrieveTodayOrdersList(List<OrderModel> currentUnderWorkingOrdersList) {
+  List<OrderModel> retrieveTodayOrdersList(List<OrderModel> currentUnderWorkingOrdersList) {
     List<OrderModel> toReturnTodayOrders = [];
     currentUnderWorkingOrdersList.forEach((element) {
       if(isToday(element.delivery_date)){

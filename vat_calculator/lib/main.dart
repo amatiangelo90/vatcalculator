@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       create: (context) => DataBundleNotifier(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'KONTUM',
+        title: 'KONTO',
         theme: theme(),
         initialRoute: SplashAnim.routeName,
         routes: routes,
