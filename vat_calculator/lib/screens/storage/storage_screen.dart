@@ -107,7 +107,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
           drawer: const CommonDrawer(),
           bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.storage),
           appBar: AppBar(
-            iconTheme: const IconThemeData(color: kPrimaryColor),
+            iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
             title: dataBundleNotifier.searchStorageButton ? SizedBox(
               height: getProportionateScreenHeight(40),
@@ -128,19 +128,19 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
               },
               child: Text(
                 dataBundleNotifier.currentStorageList.isNotEmpty ?
-                dataBundleNotifier.currentStorage.name : dataBundleNotifier.currentBranch == null ? 'Area Gestione Magazzini' : 'Crea Magazzino',
+                'Area Magazzino' : dataBundleNotifier.currentBranch == null ? 'Area Gestione Magazzini' : 'Crea Magazzino',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(13),
-                  color: kPrimaryColor,
+                  color: Colors.white,
                 ),
               ),
             ),
-            backgroundColor: kCustomWhite,
+            backgroundColor: Colors.black.withOpacity(0.9),
             actions: [
               dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : IconButton(
                   icon: Icon(
                     dataBundleNotifier.searchStorageButton ? Icons.cancel_outlined : Icons.search,
-                    color: dataBundleNotifier.searchStorageButton ? kPinaColor : kPrimaryColor,
+                    color: dataBundleNotifier.searchStorageButton ? kPinaColor : Colors.white,
                     size: getProportionateScreenHeight(30),
                   ),
                   onPressed: () {
@@ -391,7 +391,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
-          color: Colors.lightBlue.shade700.withOpacity(0.8),
+          color: Colors.black.withOpacity(0.8),
           elevation: 7,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -404,7 +404,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                   '   ' + dataBundleNotifier.currentStorage.name
                       + ' (' + dataBundleNotifier.currentStorageProductListForCurrentStorage.length.toString() + ')',
                   style: TextStyle(
-                      color: Colors.white,
+                      color: kCustomYellowDarker,
                       fontSize: getProportionateScreenWidth(15)),
                 ),
               ),
@@ -495,7 +495,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
             decoration: BoxDecoration(
               color: dataBundleNotifier.currentStorage.name ==
                   currentStorageElement.name
-                  ? Colors.lightBlue.shade700.withOpacity(0.8)
+                  ? Colors.black.withOpacity(0.7)
                   : Colors.white,
               border: const Border(
                 bottom: BorderSide(width: 1.0, color: Colors.grey),
@@ -508,7 +508,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                 children: [
                   Row(
                     children: [
-                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', width: getProportionateScreenWidth(16),), ),
+                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: Colors.yellow.shade700.withOpacity(0.8), width: getProportionateScreenWidth(16),), ),
                       Text(
                         '   ' + currentStorageElement.name,
                         style: TextStyle(
@@ -529,6 +529,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                     padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
                     child: SvgPicture.asset(
                       'assets/icons/success-green.svg',
+                      color: Colors.yellow.shade700.withOpacity(0.8),
                       width: 22,
                     ),
                   ) : SizedBox(height: 0,),

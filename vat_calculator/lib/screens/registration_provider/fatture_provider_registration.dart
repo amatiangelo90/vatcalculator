@@ -224,7 +224,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              ],
            ),
            appBar: AppBar(
-             iconTheme: const IconThemeData(color: Colors.white),
+             iconTheme: IconThemeData(color: kCustomYellow800),
              backgroundColor: kPrimaryColor,
              leading: GestureDetector(
                child: const Icon(Icons.arrow_back_ios),
@@ -236,7 +236,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                GestureDetector(
                  child: SvgPicture.asset(
                    'assets/icons/question-mark.svg',
-                   color: kCustomWhite,
+                   color: kCustomYellow800,
                    width: 25,
                  ),
                  onTap: (){
@@ -332,8 +332,8 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                  Text(
                    'Fatturazione Elettronica',
                    style: TextStyle(
-                     fontSize: getProportionateScreenWidth(13),
-                     color: kCustomWhite,
+                     fontSize: getProportionateScreenWidth(16),
+                     color: kCustomYellow800,
                    ),
                  ),
                ],
@@ -351,7 +351,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                    children: <Widget>[
                      const Text('Ciao, grazie per aver registrato la tua attività. '),
                      const Text('Cosa possiamo fare adesso? Grazie all\'integrazione con alcuni dei piu famosi provider per la fatturazione elettronica, puoi, in un attimo e con un solo click, scoprire la tua situazione iva. ', textAlign: TextAlign.center,),
-                     const Text('Ho solo bisogno delle tue credenziali;)', textAlign: TextAlign.center,),
+                     const Text('Ho solo bisogno delle tue credenziali.', textAlign: TextAlign.center,),
                      const SizedBox(height: 20),
                      SingleChildScrollView(
                        scrollDirection: Axis.horizontal,

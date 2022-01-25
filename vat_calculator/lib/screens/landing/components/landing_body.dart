@@ -36,10 +36,13 @@ class LandingBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Center(
-                  child: Image.asset(
-                    "assets/logo/1.png",
-                    height: SizeConfig.screenHeight * 0.4,
+                Padding(
+                  padding: const EdgeInsets.all(25.0),
+                  child: Center(
+                    child: Image.asset(
+                      "assets/logo/20-3.png",
+                      height: SizeConfig.screenHeight * 0.2,
+                    ),
                   ),
                 ),
                 Column(

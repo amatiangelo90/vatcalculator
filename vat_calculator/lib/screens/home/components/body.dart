@@ -17,8 +17,8 @@ import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
-import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
@@ -89,7 +89,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             onRefresh: (){
               dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
               setState(() {});
-              return Future.delayed(Duration(milliseconds: 500));
+              return Future.delayed(const Duration(milliseconds: 500));
             },
             child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
@@ -158,16 +158,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                         ),
                       ),
                     ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(28.0),
-                  child: CupertinoButton(
-                    color: Colors.blueAccent.shade700.withOpacity(0.6),
-                    onPressed: (){
-                      Navigator.pushNamed(context, CreateOrderScreen.routeName);
-                    },
-                    child: const Text('Crea Ordine'),
                   ),
                 ),
                 FutureBuilder(
@@ -271,6 +261,8 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   GestureDetector buildGestureDetectorBranchSelector(BuildContext context,
       DataBundleNotifier dataBundleNotifier) {
+
+
     return GestureDetector(
                 onTap: () {
                   showDialog(
@@ -291,11 +283,11 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      decoration: const BoxDecoration(
-                                        borderRadius: BorderRadius.only(
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
                                             topRight: Radius.circular(10.0),
                                             topLeft: Radius.circular(10.0) ),
-                                        color: kPrimaryColor,
+                                        color: Colors.black.withOpacity(0.9),
                                       ),
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -328,7 +320,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
                   ),
-                  color: Colors.black.withOpacity(0.9),
+                  color: Colors.black.withOpacity(0.8),
                   elevation: 7,
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
@@ -340,11 +332,11 @@ class _HomePageBodyState extends State<HomePageBody> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
                           child: Text('' + dataBundleNotifier.currentBranch.companyName,
-                            style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(15)),),
+                            style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                          child: Icon(Icons.keyboard_arrow_down_rounded, color: Colors.white, size: getProportionateScreenWidth(18),),
+                          child: Icon(Icons.keyboard_arrow_down_rounded, color: kCustomYellow800, size: getProportionateScreenWidth(20),),
                         ),
                       ],
                     ),
@@ -362,22 +354,40 @@ class _HomePageBodyState extends State<HomePageBody> {
         GestureDetector(
             child: Container(
                   decoration: BoxDecoration(
-                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.blue.shade700.withOpacity(0.8) : Colors.white,
+                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.black.withOpacity(0.8) : Colors.white,
                     border: const Border(
                       bottom: BorderSide(width: 1.0, color: Colors.grey),
                     ),
                  ),
                 child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(10.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
-                    Icon(currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Icons.person : Icons.vpn_key_outlined, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
-                    Text('   ' + currentBranch.companyName,
-                      style: TextStyle(
-                      fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
-                        color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : Colors.black,
-                    ),),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.yellow.shade700.withOpacity(0.8) : kPrimaryColor,),
+                        Icon(currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Icons.person : Icons.vpn_key_outlined,
+                          color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.yellow.shade700.withOpacity(0.8) : kPrimaryColor,),
+                        Text('   ' + currentBranch.companyName,
+                          style: TextStyle(
+                            fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
+                            color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.yellow.shade700.withOpacity(0.8) : Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
+                    dataBundleNotifier.currentBranch.companyName ==
+                        currentBranch.companyName ? Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
+                      child: SvgPicture.asset(
+                        'assets/icons/success-green.svg',
+                        color: Colors.yellow.shade700.withOpacity(0.8),
+                        width: 22,
+                      ),
+                    ) : const SizedBox(height: 0,),
                   ],
                 ),
               ),
@@ -392,6 +402,29 @@ class _HomePageBodyState extends State<HomePageBody> {
         ),
       );
     });
+    branchWidgetList.add(
+      Padding(
+        padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
+        child: SizedBox(
+          height: getProportionateScreenHeight(50),
+          width: MediaQuery.of(context).size.width,
+          child: CupertinoButton(
+            child: const Text('Crea Attività'),
+            color: Colors.green.shade900.withOpacity(0.9),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BranchChoiceCreationEnjoy(
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
     return branchWidgetList;
   }
 

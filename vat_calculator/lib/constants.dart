@@ -20,11 +20,13 @@ import 'client/vatservice/model/product_order_amount_model.dart';
 // #d2c5b9	(210,197,185)
 const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kCustomYellow = Color(0XFFFFDE55);
+const Color kCustomYellowDarker = Color(0XFFFFDA00);
+Color kCustomYellow800 = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
 const Color kWinterGreen = Color(0XFF2f4a36);
 const Color kPinaColor = Color(0XFF803037);
-const Color kBeigeColor = Color(0XFFd2c5b9);
+const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF405169);
 const Color kCustomGrey = Color(0xFF2d2d2d);

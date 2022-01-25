@@ -281,7 +281,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     Navigator.of(context).pop(),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black54.withOpacity(0.6),
+              backgroundColor: Colors.black54.withOpacity(0.8),
               centerTitle: true,
               title: Text(
                 'Conferma Ordine',
@@ -345,7 +345,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             child: Card(
               child: Column(
                 children: [
-                  Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25), color: Colors.deepOrangeAccent),),
+                  Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25), color: Colors.yellow.shade800.withOpacity(0.9)),),
                   Text('#' + code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
                   Divider(endIndent: 40, indent: 40,),
                   Row(
@@ -359,7 +359,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('  In data: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(buildDateFromMilliseconds(DateTime.now().millisecondsSinceEpoch)  + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                      Text(buildDateFromMilliseconds(DateTime.now().millisecondsSinceEpoch)
+                          + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                     ],
                   ),
                   SizedBox(height: 20,),
@@ -427,7 +428,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         currentDate == null ? CupertinoButton(
                           child:
                           const Text('Seleziona data consegna'),
-                          color: Colors.blueAccent,
+                          color: Colors.black.withOpacity(0.8),
                           onPressed: () => _selectDate(context),
                         ) : SizedBox(height: 0,),
                         currentDate == null
@@ -436,20 +437,15 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               child: Text(''),
                             )
                             : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              children: [
-                                Text('  '),
-                                const Text('Data Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange.shade900.withOpacity(0.9)),),
-                                IconButton(onPressed: () => _selectDate(context), icon: Icon(Icons.edit, color: Colors.green.shade900.withOpacity(0.9),)),
-                              ],
-                            ),
+                            CupertinoButton(
+                              child:
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomYellow800),),
+                              color: Colors.black.withOpacity(0.8),
+                              onPressed: () => _selectDate(context),
+                            )
                           ],
                         ),
                         currentDate != null && currentStorageModel != null ?
@@ -478,7 +474,23 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
       ),);
       return list;
     }
-    list.add(Center(child: Text(supplier.nome)));
+    list.add(Card(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
+          ),
+          CupertinoButton(
+              child: Text('Modifica', style: TextStyle(color: Colors.black54),),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    ));
     dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
       TextEditingController controller = TextEditingController(text: currentProduct.prezzo_lordo.toString());
 
@@ -532,7 +544,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
   String buildDateFromMilliseconds(int date) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return dateTime.day.toString() + '/' + dateTime.month.toString() + '/' + dateTime.year.toString();
+    return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
   }
 
   void setCurrentStorage(String storage, DataBundleNotifier dataBundleNotifier) {
@@ -546,6 +558,30 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              backgroundColor: Colors.black,
+              dialogBackgroundColor: Colors.black,
+              colorScheme: ColorScheme.dark(
+                onSurface: kCustomYellow800,
+                primary: kCustomYellow800,
+                secondary: Colors.black.withOpacity(0.9),
+                onSecondary: Colors.grey.withOpacity(0.9),
+                background: Colors.black.withOpacity(0.9),
+                onBackground: Colors.black.withOpacity(0.9),
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: kCustomYellow800, // button// text color
+                ),
+              ),
+            ),
+            child: child,
+          );
+        },
+
+        helpText: "Seleziona data consegna",
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),

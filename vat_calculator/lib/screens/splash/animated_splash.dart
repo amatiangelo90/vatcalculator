@@ -128,7 +128,10 @@ class _SecondClassState extends State<SecondClass>
                       ),
                     ),
                   ),
-                    Image.asset('assets/logo/2-rb.png',width: 2500,),
+                    Padding(
+                      padding: const EdgeInsets.all(28.0),
+                      child: Image.asset('assets/logo/20-removebg-preview.png',width: getProportionateScreenWidth(2000),),
+                    ),
                   ],
                 ),
               ),

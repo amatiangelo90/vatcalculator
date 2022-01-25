@@ -33,7 +33,7 @@ class CreateOrderScreen extends StatelessWidget {
                     Navigator.pushNamed(context, HomeScreen.routeName),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black54.withOpacity(0.6),
+              backgroundColor: Colors.black.withOpacity(0.9),
               centerTitle: true,
               title: Column(
                 children: [
@@ -43,7 +43,7 @@ class CreateOrderScreen extends StatelessWidget {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(17),
-                          color: kCustomWhite,
+                          color: kCustomYellowDarker,
                         ),
                       ),
                       Text(

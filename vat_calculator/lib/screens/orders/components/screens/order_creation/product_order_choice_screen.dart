@@ -64,7 +64,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     Navigator.pushNamed(context, CreateOrderScreen.routeName),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black54.withOpacity(0.6),
+              backgroundColor: Colors.black.withOpacity(0.9),
               centerTitle: true,
               title: Column(
                 children: [

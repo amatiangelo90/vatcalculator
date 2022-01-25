@@ -65,41 +65,53 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           children: [
                             Row(
                               children: [
-                                GestureDetector(
-                                  onTap: (){
-                                    Navigator.popAndPushNamed(context, HomeScreen.routeName);
-                                  },
-                                  child: SizedBox(
-                                    child: Image.asset('assets/logo/1.png'),
-                                    height: getProportionateScreenHeight(100),
+                                Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      Navigator.popAndPushNamed(context, HomeScreen.routeName);
+                                    },
+                                    child: SizedBox(
+                                      child: Image.asset('assets/logo/logo_home_yellow.png'),
+                                      height: getProportionateScreenHeight(50),
+                                    ),
                                   ),
                                 ),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const SizedBox(width: 20,),
-                                            dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
-                                            const SizedBox(width: 0,),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.yellow.shade700,
-                                            ) : const SizedBox(width: 0,),
-                                            const SizedBox(width: 20,),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                                    Text('20m2', style: TextStyle(fontWeight: FontWeight.w600, color: kCustomYellow, fontSize: getProportionateScreenHeight(18))),
+                                    Text('IVA, ORDINI E GESTIONE', style: TextStyle(fontWeight: FontWeight.w300, color: kBeigeColor, fontSize: getProportionateScreenHeight(9)),),
 
                                   ],
                                 ),
+                              ],
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 20,),
+                                        dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
+                                        const SizedBox(width: 0,),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.green.shade700,
+                                        ) : const SizedBox(width: 0,),
+                                        const SizedBox(width: 20,),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
                               ],
                             ),
                             Row(
@@ -109,104 +121,113 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               ],
                             ),
                             const SizedBox(height: 10,),
+                            SizedBox(height: 2,child: Container(color: Colors.white,),),
                             dataBundleNotifier.currentBranch == null ? const Padding(
                               padding: EdgeInsets.all(15.0),
                               child: CreateBranchButton(),
-                            ) : GestureDetector(
-                              onTap: (){
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                      contentPadding: EdgeInsets.zero,
-                                      shape: const RoundedRectangleBorder(
-                                          borderRadius:
-                                          BorderRadius.all(
-                                              Radius.circular(10.0))),
-                                      content: Builder(
-                                        builder: (context) {
-                                          var height = MediaQuery.of(context).size.height;
-                                          var width = MediaQuery.of(context).size.width;
-                                          return SizedBox(
-                                            height: height - 350,
-                                            width: width,
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.vertical,
-                                              child: Column(
-                                                children: [
-                                                  Container(
-                                                    decoration: const BoxDecoration(
-                                                      borderRadius: BorderRadius.only(
-                                                          topRight: Radius.circular(10.0),
-                                                          topLeft: Radius.circular(10.0) ),
-                                                      color: kPrimaryColor,
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Text('  Lista Attività',style: TextStyle(
-                                                          fontSize: getProportionateScreenWidth(17),
-                                                          color: Colors.white,
-                                                        ),),
-                                                        IconButton(icon: const Icon(
-                                                          Icons.clear,
-                                                          color: Colors.white,
-                                                        ), onPressed: () {
-                                                          Navigator.popAndPushNamed(context, HomeScreen.routeName);
-                                                          },),
-                                                      ],
-                                                    ),
+                            ) : SizedBox(
+                              height: getProportionateScreenHeight(40),
+                              child: Container(
+                                color: kBeigeColor,
+                                child: GestureDetector(
+                                  onTap: (){
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          contentPadding: EdgeInsets.zero,
+                                          shape: const RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.all(
+                                                  Radius.circular(10.0))),
+                                          content: Builder(
+                                            builder: (context) {
+                                              var height = MediaQuery.of(context).size.height;
+                                              var width = MediaQuery.of(context).size.width;
+                                              return SizedBox(
+                                                height: height - 350,
+                                                width: width,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection: Axis.vertical,
+                                                  child: Column(
+                                                    children: [
+                                                      Container(
+                                                        decoration: const BoxDecoration(
+                                                          borderRadius: BorderRadius.only(
+                                                              topRight: Radius.circular(10.0),
+                                                              topLeft: Radius.circular(10.0) ),
+                                                          color: kPrimaryColor,
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text('  Lista Attività',style: TextStyle(
+                                                              fontSize: getProportionateScreenWidth(17),
+                                                              color: Colors.white,
+                                                            ),),
+                                                            IconButton(icon: const Icon(
+                                                              Icons.clear,
+                                                              color: Colors.white,
+                                                            ), onPressed: () {
+                                                              Navigator.popAndPushNamed(context, HomeScreen.routeName);
+                                                              },),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Column(
+                                                        children: buildListBranches(dataBundleNotifier),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  Column(
-                                                    children: buildListBranches(dataBundleNotifier),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    )
-                                );
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        )
+                                    );
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const SizedBox(width: 20,),
-                                      dataBundleNotifier.currentBranch != null ? Text(dataBundleNotifier.currentBranch.companyName, style:const TextStyle(color: kCustomWhite)) : const SizedBox(width: 0,),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.keyboard_arrow_down, color: kCustomWhite,),
-                                      const SizedBox(width: 20,),
-                                      GestureDetector(
-                                          onTap: () {
-                                            Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-                                          },
-                                          child: const Icon(Icons.add_circle_outline_rounded, color: kBeigeColor,size: 29,)
+                                      Row(
+                                        children: [
+                                          const SizedBox(width: 20,),
+                                          dataBundleNotifier.currentBranch != null ? Text(dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15))) : const SizedBox(width: 0,),
+                                        ],
                                       ),
-                                      const SizedBox(width: 20,),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.keyboard_arrow_down, color: kCustomWhite,),
+                                          const SizedBox(width: 20,),
+                                          GestureDetector(
+                                              onTap: () {
+                                                Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
+                                              },
+                                              child: const Icon(Icons.add_circle_outline_rounded, color: Colors.white,size: 29,)
+                                          ),
+                                          const SizedBox(width: 10,),
+                                        ],
+                                      ),
+
                                     ],
+
                                   ),
-
-                                ],
-
+                                ),
                               ),
                             ),
-                            const SizedBox(height: 10,),
+                            SizedBox(height: 2,child: Container(color: Colors.white,),),
                           ],
                         ),
                       ),
-                      buildDrawerRow('assets/icons/home.svg','Home',(){
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(context, HomeScreen.routeName);
-                      },
-                          kCustomWhite,
-                          Colors.black54.withOpacity(0.1),
-                          kCustomWhite),
-
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 17, 0, 0),
+                        child: buildDrawerRow('assets/icons/home.svg','Home',(){
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, HomeScreen.routeName);
+                        },
+                            Colors.white,
+                            Colors.black54.withOpacity(0.1),
+                            kCustomWhite),
+                      ),
                       buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
                         if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                           showDialog(
@@ -242,7 +263,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               break;
                           }
                         }
-                      }, kCustomWhite,
+                      }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
                       buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
@@ -268,7 +289,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         } else{
 
                         }
-                      }, kCustomWhite,
+                      }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
                       Padding(
@@ -287,7 +308,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               SizedBox(width: 9,),
                               SvgPicture.asset(
                                 'assets/icons/receipt.svg',
-                                color: kCustomWhite,
+                                color: Colors.white,
                                 width: 22,
                               ),
                               const SizedBox(width: 20),
@@ -336,7 +357,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               SizedBox(width: 9,),
                               SvgPicture.asset(
                                 'assets/icons/supplier.svg',
-                                color: kCustomWhite,
+                                color: Colors.white,
                                 width: 22,
                               ),
                               const SizedBox(width: 20),
@@ -570,13 +591,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             .showSnackBar(const SnackBar(
                             duration: Duration(milliseconds: 2700),
                             backgroundColor: kPinaColor,
-                            content: Text('Logging out...', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                            content: Text('Logging out...', style: TextStyle(color: Colors.white),)));
                         Navigator.pushNamed(context, SplashAnim.routeName);
                       }, kCustomWhite,
                           kPinaColor,
                           kCustomWhite),
                       const SizedBox(height: 90,),
-                      const Text('Developed by Angelo Amati', style: TextStyle(fontSize: 10)),
+                      Text('Developed by A.A.', style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                       const SizedBox(height: 20,),
                     ],
                   ),
@@ -589,7 +610,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
     );
   }
 
-  buildDrawerRow(String icon,String description, Function onPress, Color iconColor, Color backgroundColor, Color textColor){
+  buildDrawerRow(String icon, String description, Function onPress, Color iconColor, Color backgroundColor, Color textColor){
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: TextButton(

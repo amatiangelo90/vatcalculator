@@ -58,7 +58,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           ? Card(
                         color: kCustomGreyBlue,
                           child: Text(' Home ',
-                            style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                            style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
                           ),
                       ) : const SizedBox(height: 0,)
                     ],
@@ -83,7 +83,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           ? Card(
                         color: kCustomGreyBlue,
                         child: Text(' Magazzino ',
-                          style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                          style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
                         ),
                       ) : const SizedBox(height: 0,)
                      ],
@@ -170,7 +170,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           ? Card(
                         color: kCustomGreyBlue,
                         child: Text(' Ordini ',
-                          style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                          style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
                         ),
                       ) : const SizedBox(height: 0,)],
                   ),
@@ -197,7 +197,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           ? Card(
                         color: kCustomGreyBlue,
                         child: Text(' Gestione ',
-                          style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(11)),
+                          style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
                         ),
                       ) : const SizedBox(height: 0,)
                     ],
