@@ -48,7 +48,10 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
           backgroundColor: Colors.grey.shade900,
           appBar: AppBar(
             backgroundColor: Colors.grey.shade900,
-            title: const Text('Bozze Ordini', style: TextStyle(color: kCustomWhite),),
+            title: Text('Bozze Ordini', style: TextStyle(
+              fontSize: getProportionateScreenWidth(17),
+              color: kCustomYellow800,
+            ),),
             centerTitle: true,
             titleTextStyle: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),
             leading: GestureDetector(
@@ -292,7 +295,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                 fontSize: getProportionateScreenHeight(13)),
                           ),
                           pressedOpacity: 0.9,
-                          color: Colors.orange,
+                          color: kCustomYellow800,
                           onPressed: () async {
 
                             List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier

@@ -130,8 +130,8 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                 dataBundleNotifier.currentStorageList.isNotEmpty ?
                 'Area Magazzino' : dataBundleNotifier.currentBranch == null ? 'Area Gestione Magazzini' : 'Crea Magazzino',
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(13),
-                  color: Colors.white,
+                  fontSize: getProportionateScreenWidth(17),
+                  color: kCustomYellow800,
                 ),
               ),
             ),

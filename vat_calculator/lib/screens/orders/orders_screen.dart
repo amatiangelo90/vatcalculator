@@ -38,6 +38,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                         icon: SvgPicture.asset(
                           "assets/icons/archive.svg",
                           width: 25,
+                          color: kCustomWhite,
                         ),
                         onPressed: () {
                           dataBundleNotifier.setShowIvaButtonToFalse();
@@ -86,6 +87,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                         icon: SvgPicture.asset(
                           "assets/icons/draft.svg",
                           width: 25,
+                          color: kCustomWhite,
                         ),
                         onPressed: () {
                           dataBundleNotifier.setShowIvaButtonToFalse();
@@ -127,16 +129,16 @@ class _OrdersScreenState extends State<OrdersScreen>
                 ],
               ),
             ],
-            iconTheme: const IconThemeData(color: kPrimaryColor),
+            iconTheme: IconThemeData(color: kCustomWhite),
             centerTitle: true,
             title: Text(
               'Ordini',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(20),
-                color: kPrimaryColor,
+                color: kCustomYellow800,
               ),
             ),
-            backgroundColor: kCustomWhite,
+            backgroundColor: kPrimaryColor,
           ),
           body: dataBundleNotifier.currentBranch == null ? Column(
             mainAxisAlignment: MainAxisAlignment.center,

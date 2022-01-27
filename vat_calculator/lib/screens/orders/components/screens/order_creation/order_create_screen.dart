@@ -42,8 +42,8 @@ class CreateOrderScreen extends StatelessWidget {
                       Text(
                         'Crea Ordine',
                         style: TextStyle(
-                          fontSize: getProportionateScreenWidth(17),
-                          color: kCustomYellowDarker,
+                          fontSize: getProportionateScreenWidth(19),
+                          color: kCustomYellow800,
                         ),
                       ),
                       Text(
@@ -217,10 +217,12 @@ class CreateOrderScreen extends StatelessWidget {
                                     color: kBeigeColor,
                                     fontSize: getProportionateScreenWidth(12),
                                   )),
-                            ],
+                              ],
                           ),
                         ],
                       ),
+                      draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier) ? Text('Bozza') : Text(''),
+
                       const Icon(Icons.arrow_forward_ios),
                     ],
                   ),

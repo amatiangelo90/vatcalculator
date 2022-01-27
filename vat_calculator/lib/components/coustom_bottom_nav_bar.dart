@@ -24,11 +24,11 @@ class CustomBottomNavBar extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.transparent,
+          decoration: BoxDecoration(
+            color: kPrimaryColor,
             border: Border(
               top: BorderSide(
-                color: kCustomWhite,
+                color: kCustomYellow800,
                 width: 1.0,
               ),
             ),
@@ -44,7 +44,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           icon: SvgPicture.asset(
                             "assets/icons/home.svg",
                             color: MenuState.home == selectedMenu
-                                ? Colors.black
+                                ? kCustomYellow800
                                 : inActiveIconColor,
                             width: 30,
                           ),
@@ -70,7 +70,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           icon: SvgPicture.asset(
                             "assets/icons/storage.svg",
                             color: MenuState.storage == selectedMenu
-                                ? kPrimaryColor
+                                ? kCustomYellow800
                                 : inActiveIconColor,
                             width: 30,
                           ),
@@ -103,7 +103,7 @@ class CustomBottomNavBar extends StatelessWidget {
                                 icon: SvgPicture.asset(
                                   "assets/icons/receipt.svg",
                                   color: MenuState.orders == selectedMenu
-                                      ? kPrimaryColor
+                                      ? kCustomYellow800
                                       : inActiveIconColor,
                                   width: 30,
                                 ),
@@ -183,7 +183,7 @@ class CustomBottomNavBar extends StatelessWidget {
                             icon: SvgPicture.asset(
                               "assets/icons/Settings.svg",
                               color: MenuState.profile == selectedMenu
-                                  ? kPrimaryColor
+                                  ? kCustomYellow800
                                   : inActiveIconColor,
                               width: 30,
                             ),

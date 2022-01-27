@@ -376,7 +376,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   widget.currentSupplier.nome,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
-                    color: kCustomWhite,
+                    color: kCustomYellow800,
                   ),
                 ),
                 elevation: 2,

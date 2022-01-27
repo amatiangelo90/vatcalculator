@@ -31,8 +31,8 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
         centerTitle: true,
         title: Text('Registra la tua attività',
           style: TextStyle(
-            fontSize: getProportionateScreenWidth(17),
-            color: Colors.white,
+            fontSize: getProportionateScreenWidth(19),
+            color: kCustomYellow800,
           ),
         ),
         backgroundColor: kPrimaryColor,
@@ -56,7 +56,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                           'Dal Magazzino ai Fornitori. '
                           'Registra Spese ed Incassi. Perchè dovresti? '
                           'Perchè cosi puoi calcolare, in totale automonia e in modo istantaneo la tua situazione Iva. '
-                          'Scopri se hai maturato iva a credito o debito, con un solo click.', textAlign: TextAlign.center,),
+                          'Scopri se hai maturato iva a credito o debito, con un solo click.', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite),),
                     ),
 
                     Padding(
@@ -92,7 +92,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                     Padding(
                       padding: const EdgeInsets.all(18.0),
                       child: Text('Sei un socio oppure un dipendente?'
-                          ' Associa il tuo account con una attività già esistente. Scopri come..', textAlign: TextAlign.center,),
+                          ' Associa il tuo account con una attività già esistente. Scopri come..', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),

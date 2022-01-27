@@ -59,16 +59,16 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
       return Scaffold(
         drawer: const CommonDrawer(),
         appBar: AppBar(
-          iconTheme: const IconThemeData(color: kPrimaryColor),
+          iconTheme: const IconThemeData(color: kCustomWhite),
           centerTitle: true,
           title: Text(
-            'Gestione Profilo',
+            'Gestione',
             style: TextStyle(
-              fontSize: getProportionateScreenWidth(17),
-              color: kPrimaryColor,
+              fontSize: getProportionateScreenWidth(19),
+              color: kCustomYellow800,
             ),
           ),
-          backgroundColor: kCustomWhite,
+          backgroundColor: kPrimaryColor,
         ),
         body: RefreshIndicator(
           onRefresh: (){
@@ -86,12 +86,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                   child: SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: Card(
-                      color: kBeigeColor,
+                      color: kPrimaryColor,
                       child: Center(
                           child: Text(
                         'Gestione Profilo',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: kPrimaryColor),
+                            fontWeight: FontWeight.bold, color: kCustomYellow800),
                       )),
                     ),
                   ),
@@ -262,10 +262,10 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                         child: SizedBox(
                                           width: MediaQuery.of(context).size.width * 0.85,
                                           child: CupertinoButton(
-                                            color: Colors.orange.withOpacity(0.7),
+                                            color: kPrimaryColor,
                                               child: Text(
                                                 'Salva Modifiche',
-                                                style: TextStyle(color: kCustomWhite),
+                                                style: TextStyle(color: kCustomYellow800),
                                               ),
                                               onPressed: () {}),
                                         ),
@@ -334,13 +334,13 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
                     width: getProportionateScreenWidth(400),
-                    child: const Card(
-                      color: kBeigeColor,
+                    child: Card(
+                      color: kPrimaryColor,
                       child: Center(
                           child: Text(
                         'Gestione Attività',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: kPrimaryColor),
+                            fontWeight: FontWeight.bold, color: kCustomYellow800),
                       )),
                     ),
                   ),
@@ -473,7 +473,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                               bottom: getProportionateScreenHeight(60)),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: kBeigeColor,
+                            color: kPrimaryColor,
                           ),
                           child: Container(
                             decoration: const BoxDecoration(
@@ -499,8 +499,8 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(companyList[index].companyName,
                                         style: TextStyle(
-                                            color: Colors.blue,
-                                            fontWeight: FontWeight.w200,
+                                            color: kCustomYellow800,
+                                            fontWeight: FontWeight.w500,
                                             fontSize:
                                                 getProportionateScreenHeight(
                                                     22))),
@@ -533,7 +533,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           ? dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString()
                                           + ' x ' : '0 x ',
                                           style: TextStyle(
-                                              color: kCustomWhite,
+                                              color: kCustomYellow800,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
                                           width:
@@ -543,7 +543,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           child: SvgPicture.asset(
                                             'assets/icons/people-branch.svg',
                                             fit: BoxFit.contain,
-                                            color: kCustomWhite,
+                                            color: kCustomYellow800,
                                           )),
                                     ],
                                   ),
@@ -560,8 +560,8 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                   .supplierModelList
                                                   .length
                                                   .toString() + ' x' : '0 x',
-                                          style: const TextStyle(
-                                              color: kCustomWhite,
+                                          style: TextStyle(
+                                              color: kCustomYellow800,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
                                           width:
@@ -571,7 +571,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           child: SvgPicture.asset(
                                             'assets/icons/supplier.svg',
                                             fit: BoxFit.contain,
-                                            color: kCustomWhite,
+                                            color: kCustomYellow800,
                                           )),
                                     ],
                                   ),
@@ -589,7 +589,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                   .length
                                                   .toString() + ' x ' : '0 x ',
                                           style: TextStyle(
-                                              color: kCustomWhite,
+                                              color: kCustomYellow800,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
                                           width:
@@ -599,17 +599,17 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           child: SvgPicture.asset(
                                             'assets/icons/storage.svg',
                                             fit: BoxFit.contain,
-                                            color: kCustomWhite,
+                                            color: kCustomYellow800,
                                           )),
                                     ],
                                   )
                                 ],
                               ),
                               companyList[index].accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
-                                width: getProportionateScreenWidth(300),
+                                width: getProportionateScreenWidth(400),
                                 height: getProportionateScreenHeight(50),
                                 child: CupertinoButton(
-                                  color: Colors.deepOrange,
+                                  color: kCustomYellow800,
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -660,6 +660,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                 companyList[index].pkBranchId),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
+                                                color: kCustomYellow800,
                                                 fontSize:
                                                     getProportionateScreenHeight(
                                                         20))),
@@ -818,7 +819,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   IconButton(
                                     icon: Icon(
                                       Icons.share,
-                                      color: kCustomGreyBlue,
+                                      color: kCustomYellow800,
                                     ),
                                     onPressed: () {
                                       launch('https://api.whatsapp.com/send/?text=Ciao,'
@@ -875,7 +876,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
       height: 10,
       width: currentPage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentPage == index ? kCustomGreyBlue : kBeigeColor,
+        color: currentPage == index ? kCustomGreyBlue : kCustomYellow800,
         borderRadius: BorderRadius.circular(15),
       ),
     );

@@ -144,7 +144,16 @@ class _HomePageBodyState extends State<HomePageBody> {
                       Row(
                         children: [
                           SizedBox(width: getProportionateScreenWidth(10),),
-                          Text('Ordini in arrivo oggi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                          Text('Ordini in arrivo oggi: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                          SizedBox(
+                            height: getProportionateScreenHeight(28),
+                            width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
+                            child: Card(
+                              color: kPrimaryColor,
+                              child: Center(child: Text(retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length.toString()
+                                , style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14.0, color: kCustomYellow800),),),
+                            ),
+                          ),
                         ],
                       ),
                       CupertinoButton(

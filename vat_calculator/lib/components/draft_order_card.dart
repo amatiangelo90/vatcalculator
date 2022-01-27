@@ -12,8 +12,8 @@ import 'package:vat_calculator/screens/orders/components/edit_order_underworking
 import '../constants.dart';
 import '../size_config.dart';
 
-class OrderCard extends StatelessWidget {
-  const OrderCard({Key key, @required this.order, @required this.orderIdProductListMap, @required this.showExpandedTile}) : super(key: key);
+class DraftOrderCard extends StatelessWidget {
+  const DraftOrderCard({Key key, @required this.order, @required this.orderIdProductListMap, @required this.showExpandedTile}) : super(key: key);
 
   final OrderModel order;
   final Map<int, List<ProductOrderAmountModel>> orderIdProductListMap;

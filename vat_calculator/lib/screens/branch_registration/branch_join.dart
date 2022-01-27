@@ -34,7 +34,6 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
   TextEditingController branchCodeController = TextEditingController();
 
   TextEditingController controllerBranchName = TextEditingController();
-  TextEditingController controllerPassword = TextEditingController();
 
 
   StreamController<ErrorAnimationType> errorController;
@@ -61,8 +60,8 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
               centerTitle: true,
               title: Text('Unisciti ad una attività',
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(17),
-                  color: Colors.white,
+                  fontSize: getProportionateScreenWidth(19),
+                  color: kCustomYellow800,
                 ),
               ),
               backgroundColor: kPrimaryColor,
@@ -78,7 +77,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.all(38.0),
-                        child: Center(child: Text('Aggiungi attività tramite codice')),
+                        child: Center(child: Text('Aggiungi attività tramite codice', style: TextStyle(color: kCustomWhite),)),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -135,6 +134,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                     retrieveBranchByBranchId = await dataBundleNotifier.getclientServiceInstance().retrieveBranchByBranchId(codeBranch);
 
                                     if(retrieveBranchByBranchId.length == 0){
+
                                       showDialog(
                                           context: context,
                                           builder: (_) => AlertDialog (
@@ -642,7 +642,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                         )
                                     );
                                   }
-                                  //branchCodeController.clear();
+                                  branchCodeController.clear();
                                 },
                                 onChanged: (value) {
                                   setState(() {
