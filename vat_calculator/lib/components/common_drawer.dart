@@ -47,7 +47,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayOpacity: 0.9,
-      overlayWidget: const LoaderOverlayWidget(),
+      overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati...',),
       child: Drawer(
         elevation: 6.0,
         child: Consumer<DataBundleNotifier>(

@@ -6,7 +6,9 @@ import '../constants.dart';
 import '../size_config.dart';
 
 class LoaderOverlayWidget extends StatelessWidget {
-  const LoaderOverlayWidget({Key key}) : super(key: key);
+  const LoaderOverlayWidget({Key key, this.message}) : super(key: key);
+
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class LoaderOverlayWidget extends StatelessWidget {
                         size: getProportionateScreenHeight(50),
                       ),
                       SizedBox(height: getProportionateScreenHeight(4),),
-                      const Text('Stiamo caricando i tuoi dati..'),
+                      Text(message),
                     ],
                   ),
                 ),

@@ -8,11 +8,13 @@ class DefaultButton extends StatelessWidget {
     Key key,
     this.text,
     this.press,
+    this.textColor,
     @required this.color
   }) : super(key: key);
   final String text;
   final Function press;
   final Color color;
+  final Color textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class DefaultButton extends StatelessWidget {
           text,
           style: TextStyle(
             fontSize: getProportionateScreenWidth(16),
-            color: Colors.white,
+            color: textColor == null ? Colors.white : textColor,
           ),
         ),
       ),

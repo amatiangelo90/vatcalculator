@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -37,7 +38,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayOpacity: 0.9,
-      overlayWidget: LoaderOverlayWidget(),
+      overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati...',),
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child){
           return Scaffold(
@@ -211,15 +212,35 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               ],
             ),
             appBar: AppBar(
+              actions: [
+                IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/textmessage.svg',
+                      height: getProportionateScreenHeight(30),
+                    ),
+                    onPressed: () => {
+                      //launch('sms:${refactorNumber(number)}?body=$message');
+                    }
+                ),
+                IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/ws.svg',
+                      height: getProportionateScreenHeight(30),
+                    ),
+                    onPressed: () => {
+                      //launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$message');
+                    }
+                ),
+              ],
               leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.deepOrangeAccent),
+                icon: Icon(Icons.arrow_back_ios, color: kCustomYellow800),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               backgroundColor: kPrimaryColor,
               centerTitle: true,
               automaticallyImplyLeading: true,
-              title: const Text(
-                'Dettaglio Ordine', style: TextStyle(color: Colors.deepOrangeAccent),
+              title: Text(
+                'Dettaglio Ordine', style: TextStyle(color: kCustomYellow800),
               ),
             ),
             body: SingleChildScrollView(

@@ -132,7 +132,7 @@ class _OrdersScreenState extends State<OrdersScreen>
             title: Text(
               'Ordini',
               style: TextStyle(
-                fontSize: getProportionateScreenWidth(17),
+                fontSize: getProportionateScreenWidth(20),
                 color: kPrimaryColor,
               ),
             ),

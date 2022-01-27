@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/routes.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
-import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/theme.dart';
 import 'models/databundlenotifier.dart';
 

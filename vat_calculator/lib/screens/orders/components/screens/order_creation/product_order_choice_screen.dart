@@ -32,6 +32,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
             bottomSheet: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DefaultButton(
+                textColor: kCustomYellow800,
                 text: 'Procedi',
                 press: () async {
 
@@ -54,7 +55,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     );
                   }
                 },
-                color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
+                color: Colors.black.withOpacity(0.8),
               ),
             ),
             appBar: AppBar(
@@ -71,8 +72,8 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                   Text(
                     'Crea Ordine',
                     style: TextStyle(
-                      fontSize: getProportionateScreenWidth(17),
-                      color: kCustomWhite,
+                      fontSize: getProportionateScreenWidth(18),
+                      color: kCustomYellow800,
                     ),
                   ),
                   Text(

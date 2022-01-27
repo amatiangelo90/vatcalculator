@@ -27,6 +27,30 @@ class OrderUtils{
     return orderString;
   }
 
+  static buildWhatsAppMessageFromCurrentOrderList({List<ProductModel> productList,
+    String branchName,
+    String orderId,
+    String supplierName,
+    String storageAddress,
+    String storageCity,
+    String storageCap,
+    String deliveryDate,
+    String currentUserName
+  }) {
+    String orderString = 'Ciao $supplierName,%0a%0aOrdine #$orderId%0a%0aCarrello%0a----------------%0a';
+    productList.forEach((currentProductOrderAmount) {
+      if(currentProductOrderAmount.prezzo_lordo != 0){
+
+        orderString = orderString + currentProductOrderAmount.nome +
+            ' x ' + currentProductOrderAmount.prezzo_lordo.toString() + ' ${currentProductOrderAmount.unita_misura} %0a';
+      }
+    });
+    orderString = orderString + '----------------';
+    orderString = orderString + '%0a%0aDa consegnare $deliveryDate%0aa $storageCity ($storageCap)%0ain via: $storageAddress.';
+    orderString = orderString + '%0a%0aCordiali Saluti%0a${currentUserName}%0a%0a$branchName';
+    return orderString;
+  }
+
   static buildMessageFromCurrentOrderListFromDraft({List<ProductOrderAmountModel> orderProductList,
     String branchName,
     String orderId,

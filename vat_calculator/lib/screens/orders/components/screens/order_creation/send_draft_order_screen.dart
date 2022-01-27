@@ -3,6 +3,7 @@ import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
@@ -11,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import '../../../../../constants.dart';
@@ -39,78 +41,83 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Consumer<DataBundleNotifier>(
-        builder: (context, dataBundleNotifier, child) {
+    return Consumer<DataBundleNotifier>(
+      builder: (context, dataBundleNotifier, child) {
 
-          return Scaffold(
+        return LoaderOverlay(
+          useDefaultLoading: false,
+          overlayOpacity: 0.9,
+          overlayWidget: const LoaderOverlayWidget(message: 'Invio ordine in corso...',),
+          child: Scaffold(
             bottomSheet: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DefaultButton(
                 text: 'Conferma ed Invia',
                 press: () async {
-                  print('Performing send order ...');
 
-                  dataBundleNotifier.currentProdOrderModelList.forEach((element) async {
-                    if(element.pkOrderProductId == 0){
-                      await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(element.amount, element.pkProductId, widget.draftOrder.pk_order_id);
+                  try{
+                    print('Performing send order ...');
+                    context.loaderOverlay.show();
+                    dataBundleNotifier.currentProdOrderModelList.forEach((element) async {
+                      if(element.pkOrderProductId == 0){
+                        await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(element.amount, element.pkProductId, widget.draftOrder.pk_order_id);
+                      }else{
+                        await dataBundleNotifier.getclientServiceInstance().updateProductAmountIntoOrder(element.pkOrderProductId, element.amount, element.pkProductId, widget.draftOrder.pk_order_id);
+                      }
+                    });
+
+                    if(_selectedStorage == 'Seleziona Magazzino'){
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.SCALE,
+                        dialogType: DialogType.ERROR,
+                        body: const Center(child: Text(
+                          'Selezionare il magazzino',
+                        ),),
+                        title: 'This is Ignored',
+                        desc:   'This is also Ignored',
+                        btnOkOnPress: () {},
+                      ).show();
+                    }else if(currentStorageModel == null){
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.SCALE,
+                        dialogType: DialogType.ERROR,
+                        body: const Center(child: Text(
+                          'Selezionare il magazzino',
+                        ),),
+                        title: 'This is Ignored',
+                        desc:   'This is also Ignored',
+                        btnOkOnPress: () {},
+                      ).show();
+                    }else if(currentDate == null) {
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.RIGHSLIDE,
+                        dialogType: DialogType.ERROR,
+                        body: const Center(child: Text(
+                          'Selezionare la data di consegna',
+                        ),),
+                        title: 'This is Ignored',
+                        desc:   'This is also Ignored',
+                        btnOkOnPress: () {},
+                      ).show();
                     }else{
-                      await dataBundleNotifier.getclientServiceInstance().updateProductAmountIntoOrder(element.pkOrderProductId, element.amount, element.pkProductId, widget.draftOrder.pk_order_id);
-                    }
-                  });
-
-                  if(_selectedStorage == 'Seleziona Magazzino'){
-                    AwesomeDialog(
-                      context: context,
-                      animType: AnimType.SCALE,
-                      dialogType: DialogType.ERROR,
-                      body: const Center(child: Text(
-                        'Selezionare il magazzino',
-                      ),),
-                      title: 'This is Ignored',
-                      desc:   'This is also Ignored',
-                      btnOkOnPress: () {},
-                    ).show();
-                  }else if(currentStorageModel == null){
-                    AwesomeDialog(
-                      context: context,
-                      animType: AnimType.SCALE,
-                      dialogType: DialogType.ERROR,
-                      body: const Center(child: Text(
-                        'Selezionare il magazzino',
-                      ),),
-                      title: 'This is Ignored',
-                      desc:   'This is also Ignored',
-                      btnOkOnPress: () {},
-                    ).show();
-                  }else if(currentDate == null) {
-                    AwesomeDialog(
-                      context: context,
-                      animType: AnimType.RIGHSLIDE,
-                      dialogType: DialogType.ERROR,
-                      body: const Center(child: Text(
-                        'Selezionare la data di consegna',
-                      ),),
-                      title: 'This is Ignored',
-                      desc:   'This is also Ignored',
-                      btnOkOnPress: () {},
-                    ).show();
-                  }else{
 
                       Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailByKontumServiceApi(
                           supplierName: widget.currentSupplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
 
                           message: OrderUtils.buildMessageFromCurrentOrderListFromDraft(
-                              orderId: code,
-                              branchName: dataBundleNotifier.currentBranch.companyName,
-                              orderProductList: dataBundleNotifier.currentProdOrderModelList,
-                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                              supplierName: widget.currentSupplier.nome,
-                              currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
-                              storageAddress: currentStorageModel.address,
-                              storageCap: currentStorageModel.cap,
-                              storageCity: currentStorageModel.city,
+                            orderId: code,
+                            branchName: dataBundleNotifier.currentBranch.companyName,
+                            orderProductList: dataBundleNotifier.currentProdOrderModelList,
+                            deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                            supplierName: widget.currentSupplier.nome,
+                            currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
+                            storageAddress: currentStorageModel.address,
+                            storageCap: currentStorageModel.cap,
+                            storageCity: currentStorageModel.city,
                           ),
                           orderCode: code,
                           supplierEmail: widget.currentSupplier.mail,
@@ -237,7 +244,14 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                               ),
                             ));
                       }
+                    }
+                  }catch(e){
+                    print('Errore da gestire');
+                    context.loaderOverlay.show();
+                  }finally{
+                    context.loaderOverlay.show();
                   }
+
                 },
                 color: Colors.green.shade900.withOpacity(0.8),
               ),
@@ -297,9 +311,9 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                 }
               },
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -313,7 +327,8 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
             child: Card(
               child: Column(
                 children: [
-                  Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25), color: Colors.deepOrangeAccent),),
+                  Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold,
+                      fontSize: getProportionateScreenHeight(25), color: Colors.yellow.shade800.withOpacity(0.9)),),
                   Text('#' + code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
                   Divider(endIndent: 40, indent: 40,),
                   Row(
@@ -395,7 +410,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                         currentDate == null ? CupertinoButton(
                           child:
                           const Text('Seleziona data consegna'),
-                          color: Colors.blueAccent,
+                          color: Colors.black.withOpacity(0.8),
                           onPressed: () => _selectDate(context),
                         ) : SizedBox(height: 0,),
                         currentDate == null
@@ -404,20 +419,15 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                           child: Text(''),
                         )
                             : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              children: const [
-                                Text('  '),
-                                Text('Data Consegna: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.deepOrange.shade900.withOpacity(0.9)),),
-                                IconButton(onPressed: () => _selectDate(context), icon: Icon(Icons.edit, color: Colors.green.shade900.withOpacity(0.9),)),
-                              ],
-                            ),
+                            CupertinoButton(
+                              child:
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomYellow800),),
+                              color: Colors.black.withOpacity(0.8),
+                              onPressed: () => _selectDate(context),
+                            )
                           ],
                         ),
                         currentDate != null && currentStorageModel != null ?
@@ -500,7 +510,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
 
   String buildDateFromMilliseconds(int date) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return dateTime.day.toString() + '/' + dateTime.month.toString() + '/' + dateTime.year.toString();
+    return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
   }
 
   void setCurrentStorage(String storage, DataBundleNotifier dataBundleNotifier) {
@@ -514,6 +524,30 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
+        builder: (context, child) {
+          return Theme(
+            data: Theme.of(context).copyWith(
+              backgroundColor: Colors.black,
+              dialogBackgroundColor: Colors.black,
+              colorScheme: ColorScheme.dark(
+                onSurface: kCustomYellow800,
+                primary: kCustomYellow800,
+                secondary: Colors.black.withOpacity(0.9),
+                onSecondary: Colors.grey.withOpacity(0.9),
+                background: Colors.black.withOpacity(0.9),
+                onBackground: Colors.black.withOpacity(0.9),
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                  primary: kCustomYellow800, // button// text color
+                ),
+              ),
+            ),
+            child: child,
+          );
+        },
+
+        helpText: "Seleziona data consegna",
         context: context,
         initialDate: DateTime.now(),
         firstDate: DateTime.now(),

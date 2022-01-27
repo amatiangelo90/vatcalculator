@@ -14,7 +14,7 @@ class LandingScreen extends StatelessWidget {
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayOpacity: 0.9,
-      overlayWidget: LoaderOverlayWidget(),
+      overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati...',),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.black,

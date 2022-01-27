@@ -14,6 +14,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
+import 'package:vat_calculator/components/order_card.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
@@ -186,7 +187,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                   return Column(
                     children: [
                       SizedBox(
-                        height: getProportionateScreenHeight(170),
+                        height: getProportionateScreenHeight(215),
                         child: PageView.builder(
                           onPageChanged: (value) {
                             setState(() {
@@ -194,14 +195,25 @@ class _HomePageBodyState extends State<HomePageBody> {
                             });
                           },
                           itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
-                          itemBuilder: (context, index) => buildCard(retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)[index], dataBundleNotifier),
+                          itemBuilder: (context, index) => OrderCard(order: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)[index],
+                            showExpandedTile: false,
+                            orderIdProductListMap: orderIdProductListMap,
+                          ),
+
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
-                              (index) => buildDot(index: index),
+
+                      Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
+                                  (index) => buildDot(index: index),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -554,16 +566,6 @@ class _HomePageBodyState extends State<HomePageBody> {
 
     return [];
   }
-  String calculatePriceFromProductList(List<ProductOrderAmountModel> orderIdProductListMap) {
-    double total = 0.0;
-
-    if(orderIdProductListMap != null && orderIdProductListMap.isNotEmpty){
-      orderIdProductListMap.forEach((currentProduct) {
-        total = total + (currentProduct.amount * currentProduct.prezzo_lordo);
-      });
-    }
-    return total.toStringAsFixed(2);
-  }
 
   buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
     return Column(
@@ -881,102 +883,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     }else{
       return day.toString();
     }
-  }
-
-  buildCard(OrderModel order, DataBundleNotifier dataBundleNotifier) {
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Card(
-        elevation: 2,
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-              productList: orderIdProductListMap[order.pk_order_id],),),);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                          child: SvgPicture.asset(
-                            'assets/icons/supplier.svg',
-                            height: getProportionateScreenHeight(22),
-                          ),
-                        ),
-                        Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                          style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                      ],
-                    ),
-                    Text(
-                      '#' + order.code,
-                      style: TextStyle(fontSize: getProportionateScreenHeight(18), color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                  ],
-                ),
-                const Divider(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        Text(
-                          'Prodotti',
-                          style: TextStyle(
-                            fontSize: getProportionateScreenHeight(13),),
-                        ),
-                        Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
-                          style: TextStyle(
-                              color: kPinaColor,
-                              fontSize: getProportionateScreenHeight(18),
-                              fontWeight: FontWeight.bold),
-                        ),
-
-                      ],
-                    ),
-
-
-                    Column(
-                      children: [
-                        Text(
-                          'Prezzo Stimato',
-                          style: TextStyle(
-                              fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '€ ' +
-                              calculatePriceFromProductList(
-                                  orderIdProductListMap[
-                                  order.pk_order_id]),
-                          style: TextStyle(
-                              color: kPinaColor,
-                              fontSize: getProportionateScreenHeight(18),
-                              fontWeight: FontWeight.bold
-                          ),
-                        ),
-
-
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(width: getProportionateScreenHeight(20),),
-                Divider(),
-                Center(child: Text(order.status)),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-
   }
 
   List<OrderModel> retrieveTodayOrdersList(List<OrderModel> currentUnderWorkingOrdersList) {
