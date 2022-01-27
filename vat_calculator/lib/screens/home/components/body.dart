@@ -113,7 +113,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(9, 1, 9, 2),
                         child: Card(
-                          color: Colors.teal.shade800.withOpacity(0.7),
+                          color: Colors.greenAccent.shade700,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -680,7 +680,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: CupertinoButton(
                       pressedOpacity: 0.5,
                       child: const Text('Salva Spesa'),
-                      color: Colors.green.shade600.withOpacity(0.8),
+                      color: Colors.greenAccent
+                          .shade700,
                       onPressed: () async {
                         try{
                         KeyboardUtil.hideKeyboard(context);
