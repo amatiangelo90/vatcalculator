@@ -9,7 +9,6 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
-import 'package:vat_calculator/components/column_chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
@@ -675,7 +674,6 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: rowChildrenWidget.reversed.toList(),
         ),
-        ColumnRecessedChartWidget(),
         SizedBox(height: getProportionateScreenHeight(60),),
       ],
     );

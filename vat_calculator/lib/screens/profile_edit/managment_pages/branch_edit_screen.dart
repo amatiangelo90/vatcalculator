@@ -46,16 +46,16 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                 widget.callBackFuntion();
                 Navigator.of(context).pop();
               },
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
+                color: kCustomYellow800,
               ),
             ),
             centerTitle: true,
             title: Text(widget.currentBranch.companyName,
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: Colors.blue,
+                color: kCustomYellow800,
                 fontWeight: FontWeight.bold
               ),
             ),

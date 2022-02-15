@@ -129,7 +129,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoButton(
-                          color: Colors.green.shade500,
+                          color: kCustomYellow800,
                           child: const Text('Crea Attività'),
                           onPressed: () async {
                             if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
@@ -198,7 +198,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
             title: Text('Crea nuova attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: Colors.white,
+                color: kCustomYellow800,
               ),
             ),
             backgroundColor: Colors.grey.shade900.withOpacity(0.9),

@@ -18,7 +18,7 @@ import 'model/storage_product_model.dart';
 import 'model/user_branch_relation_model.dart';
 import 'model/user_model.dart';
 
-class ClientVatService{
+class ClientVatService {
 
   Future<Response> performSaveUser(String firstName,String lastName, String phoneNumber, String eMail, String privileges, int relatedUserId) async {
     var dio = Dio();

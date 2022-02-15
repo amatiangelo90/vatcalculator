@@ -19,7 +19,6 @@ class FileSaveHelper {
     } else {
       path = await PathProviderPlatform.instance.getApplicationSupportPath();
     }
-    print('List int pdf ');
     print(bytes.toString());
     final File file =
         File(Platform.isWindows ? '$path\\$fileName' : '$path/$fileName');

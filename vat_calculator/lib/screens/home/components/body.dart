@@ -104,35 +104,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
                   ),
                 ),
-                dataBundleNotifier.currentBranch.providerFatture == '' ? Column(
-                  children: [
-                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : GestureDetector(
-                      onTap: (){
-                        Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(9, 1, 9, 2),
-                        child: Card(
-                          color: Colors.greenAccent.shade700,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                SvgPicture.asset(
-                                  'assets/icons/iva.svg',
-                                  color: kCustomWhite,
-                                  width: 22,
-                                ),
-                                const Text('Registra provider fatturatione elettronica', style: TextStyle(color: kCustomWhite),),
-                                Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: kCustomWhite),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ), ],
-                ) : SizedBox(height: 0,),
                 const Divider(height: 2,),
                 buildDateRecessedRegistrationWidget(dataBundleNotifier),
                 const Divider(height: 2,),
@@ -431,7 +402,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           width: MediaQuery.of(context).size.width,
           child: CupertinoButton(
             child: const Text('Crea Attività'),
-            color: Colors.green.shade900.withOpacity(0.9),
+            color: kCustomYellow800,
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(

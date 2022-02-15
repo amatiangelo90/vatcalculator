@@ -3,11 +3,15 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
+import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
+import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
+import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
@@ -31,6 +35,32 @@ class HomeScreen extends StatelessWidget {
               iconTheme: const IconThemeData(color: kCustomWhite),
               backgroundColor: Colors.black.withOpacity(0.9),
               actions: [
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
+                  children: [
+                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') :
+
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/iva.svg',
+                        color: getProviderColor(dataBundleNotifier.currentBranch.providerFatture),
+                        width: 25,
+                      ),
+                      onPressed: () {
+                        switch(dataBundleNotifier.currentBranch.providerFatture){
+                          case 'fatture_in_cloud':
+                            Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
+                            break;
+                          case 'aruba':
+                            Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
+                            break;
+                          case '':
+                            Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
+                            break;
+                        }
+                      },
+                    ),
+                  ],
+                ),
                 Stack(
                   children: [ IconButton(
                     icon: SvgPicture.asset(
@@ -103,5 +133,16 @@ class HomeScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  Color getProviderColor(String providerFatture) {
+    switch(providerFatture){
+      case 'fatture_in_cloud':
+        return Colors.blueAccent;
+      case 'aruba':
+        return Colors.orange;
+      default:
+        return Colors.white;
+    }
   }
 }

@@ -135,7 +135,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     );
                   }
                 },
-                color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
+                color: kCustomYellow800,
               ),
             ),
           ),
@@ -144,7 +144,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             actions: [
               IconButton(
                 icon: Icon(Icons.save, size: getProportionateScreenHeight(35),),
-                  color: Colors.yellow.shade600.withOpacity(0.6),
+                  color: Colors.green.withOpacity(0.6),
                   onPressed: () async {
 
                   }
@@ -238,7 +238,6 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                                           textAlign: TextAlign.center,),
                                       ),
                                       const Text(''),
-                                      Text('Continuare?', style: TextStyle(fontWeight: FontWeight.bold,),),
                                     ],
                                   ),
                                 ),
