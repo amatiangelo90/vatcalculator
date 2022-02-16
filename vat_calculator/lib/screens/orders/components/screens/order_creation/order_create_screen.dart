@@ -108,7 +108,7 @@ class CreateOrderScreen extends StatelessWidget {
                         text: "Crea Fornitore",
                         press: () async {
                           Navigator.pushNamed(
-                              context, AddSupplierScreen.routeName);
+                              context, SupplierChoiceCreationEnjoy.routeName);
                         },
                       ),
                     ),

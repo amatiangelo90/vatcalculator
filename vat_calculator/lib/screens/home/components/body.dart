@@ -19,7 +19,7 @@ import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
-import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
+import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
@@ -48,7 +48,6 @@ class _HomePageBodyState extends State<HomePageBody> {
   @override
   void initState() {
     super.initState();
-    DateTime currentDate = DateTime.now();
     Timer(const Duration(milliseconds: 1500), () {
       setState(() {});
     });
@@ -820,7 +819,10 @@ class _HomePageBodyState extends State<HomePageBody> {
               ],
             ),
             CupertinoButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(
+                    context, ExpenceScreen.routeName);
+              },
               child: Row(
                 children: [
                   Text(
@@ -847,9 +849,6 @@ class _HomePageBodyState extends State<HomePageBody> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Divider(
-                  color: kCustomYellow800,
-                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
@@ -859,10 +858,10 @@ class _HomePageBodyState extends State<HomePageBody> {
                       children: [
                         const Padding(
                           padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
-                          child: Text('Importo'),
+                          child: Text('Importo (€)', style: TextStyle(color: Colors.white),),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width - 300,
+                          width: getProportionateScreenWidth(100),
                           child: CupertinoTextField(
                             controller: expenceController,
                             onChanged: (text) {},
@@ -882,10 +881,10 @@ class _HomePageBodyState extends State<HomePageBody> {
                       children: [
                         const Padding(
                           padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
-                          child: Text('Descrizione'),
+                          child: Text('Casuale', style: TextStyle(color: Colors.white)),
                         ),
                         SizedBox(
-                          width: MediaQuery.of(context).size.width - 200,
+                          width: getProportionateScreenWidth(240),
                           child: CupertinoTextField(
                             controller: casualeExpenceController,
                             onChanged: (text) {},
@@ -904,7 +903,11 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ],
                 ),
-                Divider(),
+                Divider(
+                  color: kCustomYellow800,
+                  endIndent: 10,
+                  indent: 10,
+                ),
                 SizedBox(
                   width: getProportionateScreenWidth(400),
                   child: Padding(
@@ -914,7 +917,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       child: CupertinoButton(
                         pressedOpacity: 0.5,
                         child: const Text('Salva Spesa'),
-                        color: Colors.greenAccent.shade700,
+                        color: kCustomYellow800,
                         onPressed: () async {
                           try {
                             KeyboardUtil.hideKeyboard(context);
