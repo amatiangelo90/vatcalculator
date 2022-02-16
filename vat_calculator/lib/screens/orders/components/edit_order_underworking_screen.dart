@@ -22,6 +22,7 @@ import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import 'package:vat_calculator/size_config.dart';
 
 import '../orders_screen.dart';
@@ -223,6 +224,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                       height: getProportionateScreenHeight(30),
                     ),
                     onPressed: () => {
+
                       //launch('sms:${refactorNumber(number)}?body=$message');
                     }
                 ),

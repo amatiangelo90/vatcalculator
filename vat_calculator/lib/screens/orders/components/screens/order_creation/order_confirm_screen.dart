@@ -629,7 +629,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
     Widget cancelButton = TextButton(
 
-      child: Center(child: const Text("No Grazie, ho finito!", style: TextStyle(color: kPrimaryColor),)),
+      child: const Center(child: Text("No Grazie, ho finito!", style: TextStyle(color: kPrimaryColor),)),
       onPressed:  () {
         Navigator.of(context).pop();
       },
@@ -654,7 +654,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     Container(
                       decoration: BoxDecoration(
                         borderRadius:
-                        BorderRadius.only(
+                        const BorderRadius.only(
                             topRight:
                             Radius.circular(
                                 10.0),
@@ -718,15 +718,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                   width: 1.0,
                                 ),
                               ),
-                              // SingleChildScrollView should be
-                              // wrapped in an Expanded Widget
                               child: Expanded(
-
-                                // SingleChildScrollView contains a
-                                // single child which is scrollable
                                 child: SingleChildScrollView(
-
-                                  // for Vertical scrolling
                                   scrollDirection: Axis.vertical,
                                   child: Text(
                                     messageToShow,

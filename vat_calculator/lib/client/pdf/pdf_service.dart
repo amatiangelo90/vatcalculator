@@ -34,7 +34,7 @@ class PdfService{
 
   PdfLayoutResult _drawHeader(PdfPage page, Size pageSize, PdfGrid grid, OrderModel order, List<ProductOrderAmountModel> productList, BranchModel currentBranch) {
     page.graphics.drawRectangle(
-        brush: PdfSolidBrush(PdfColor(91, 126, 215, 255)),
+        brush: PdfSolidBrush(PdfColor(0, 34, 34)),
         bounds: Rect.fromLTWH(0, 0, pageSize.width - 115, 90));
 
     page.graphics.drawString(
@@ -44,7 +44,7 @@ class PdfService{
         format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.middle));
     page.graphics.drawRectangle(
         bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 90),
-        brush: PdfSolidBrush(PdfColor(65, 104, 205)));
+        brush: PdfSolidBrush(PdfColor(0, 34, 34)));
     page.graphics.drawString('€' + _getTotalAmount(grid).toString(),
         PdfStandardFont(PdfFontFamily.helvetica, 18),
         bounds: Rect.fromLTWH(400, 0, pageSize.width - 400, 100),
@@ -124,14 +124,13 @@ class PdfService{
   //Draw the invoice footer data.
   void _drawFooter(PdfPage page, Size pageSize, OrderModel order) {
     final PdfPen linePen =
-    PdfPen(PdfColor(142, 170, 219, 255), dashStyle: PdfDashStyle.custom);
+    PdfPen(PdfColor(0, 170, 0, 255), dashStyle: PdfDashStyle.custom);
     linePen.dashPattern = <double>[3, 3];
-    //Draw line
     page.graphics.drawLine(linePen, Offset(0, pageSize.height - 100),
         Offset(pageSize.width, pageSize.height - 100));
     String footerContent =
         order.details;
-    //Added 30 as a margin for the layout
+
     page.graphics.drawString(
         footerContent, PdfStandardFont(PdfFontFamily.helvetica, 9),
         format: PdfStringFormat(alignment: PdfTextAlignment.right),

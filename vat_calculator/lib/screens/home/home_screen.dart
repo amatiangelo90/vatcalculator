@@ -42,7 +42,7 @@ class HomeScreen extends StatelessWidget {
                     IconButton(
                       icon: SvgPicture.asset(
                         'assets/icons/iva.svg',
-                        color: getProviderColor(dataBundleNotifier.currentBranch.providerFatture),
+                        color: getProviderColor(dataBundleNotifier),
                         width: 25,
                       ),
                       onPressed: () {
@@ -135,14 +135,19 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Color getProviderColor(String providerFatture) {
-    switch(providerFatture){
-      case 'fatture_in_cloud':
-        return Colors.blueAccent;
-      case 'aruba':
-        return Colors.orange;
-      default:
-        return Colors.white;
+  Color getProviderColor(DataBundleNotifier dataBundleNotifier) {
+    if(dataBundleNotifier.currentBranch == null || dataBundleNotifier.currentBranch.providerFatture == '' &&  dataBundleNotifier.currentBranch.providerFatture == null){
+      return Colors.white;
+    }else{
+      switch(dataBundleNotifier.currentBranch.providerFatture){
+        case 'fatture_in_cloud':
+          return Colors.blueAccent;
+        case 'aruba':
+          return Colors.orange;
+        default:
+          return Colors.white;
+      }
     }
+
   }
 }

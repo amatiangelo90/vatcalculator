@@ -20,6 +20,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
+import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
@@ -35,7 +36,6 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
-
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
   final List<String> errors = [];
@@ -45,352 +45,543 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   int currentOrderIndex = 0;
 
-
-
   @override
   void initState() {
     super.initState();
     DateTime currentDate = DateTime.now();
     Timer(const Duration(milliseconds: 1500), () {
-      setState(() {
-      });
+      setState(() {});
     });
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
-      builder: (context, dataBundleNotifier, child){
-        if (dataBundleNotifier.dataBundleList.isEmpty || dataBundleNotifier.dataBundleList[0].companyList.isEmpty) {
+      builder: (context, dataBundleNotifier, child) {
+        if (dataBundleNotifier.dataBundleList.isEmpty ||
+            dataBundleNotifier.dataBundleList[0].companyList.isEmpty) {
           return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(13),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sembra che tu non abbia configurato ancora nessuna attività. ",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(13),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 30,),
-              SizedBox(
-                width: SizeConfig.screenWidth * 0.6,
-                child: CreateBranchButton(),
-              ),
-            ],
-          ),
-        );
+                const SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.6,
+                  child: CreateBranchButton(),
+                ),
+              ],
+            ),
+          );
         } else {
           return RefreshIndicator(
-            onRefresh: (){
-              dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+            onRefresh: () {
+              dataBundleNotifier
+                  .setCurrentBranch(dataBundleNotifier.currentBranch);
               setState(() {});
               return Future.delayed(const Duration(milliseconds: 500));
             },
             child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: getProportionateScreenHeight(56),
-                    child: buildGestureDetectorBranchSelector(context, dataBundleNotifier),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: getProportionateScreenHeight(56),
+                      child: buildGestureDetectorBranchSelector(
+                          context, dataBundleNotifier),
+                    ),
                   ),
-                ),
-                const Divider(height: 2,),
-                buildDateRecessedRegistrationWidget(dataBundleNotifier),
-                const Divider(height: 2,),
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(width: getProportionateScreenWidth(10),),
-                          Text('Ordini in arrivo oggi: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                          SizedBox(
-                            height: getProportionateScreenHeight(28),
-                            width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
-                            child: Card(
-                              color: kPrimaryColor,
-                              child: Center(child: Text(retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length.toString()
-                                , style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14.0, color: kCustomYellow800),),),
-                            ),
-                          ),
-                        ],
-                      ),
-                      CupertinoButton(
-                        onPressed: (){
-                          Navigator.pushNamed(context, OrdersScreen.routeName);
-                        },
-                        child: Row(
-                          children: [
-                            Text('Dettaglio Ordini', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                          ],
-                        ),
-                      ),
-                    ],
+                  const Divider(
+                    height: 2,
                   ),
-                ),
-                FutureBuilder(
-                    initialData: <Widget>[
-                      const Center(
-                          child: CircularProgressIndicator(
-                            color: kPinaColor,
-                          )),
-                      const SizedBox(),
-                      Column(
-                        children: const [
-                          Center(
-                            child: Text(
-                              'Caricamento Ordini..',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: kPrimaryColor,
-                                  fontFamily: 'LoraFont'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                    future: populateProductsListForTodayOrders(dataBundleNotifier),
-                    builder: (context, snapshot){
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: getProportionateScreenHeight(215),
-                        child: PageView.builder(
-                          onPageChanged: (value) {
-                            setState(() {
-                              currentOrderIndex = value;
-                            });
-                          },
-                          itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
-                          itemBuilder: (context, index) => OrderCard(order: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)[index],
-                            showExpandedTile: false,
-                            orderIdProductListMap: orderIdProductListMap,
-                          ),
-
-                        ),
-                      ),
-
-                      Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: List.generate(
-                              retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
-                                  (index) => buildDot(index: index),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }
-                ),
-                dataBundleNotifier.currentBranch.providerFatture == '' ? const Text('') : Column(
-                  children: [
-                    Divider(),
-                    Row(
+                  buildDateRecessedRegistrationWidget(dataBundleNotifier),
+                  const Divider(
+                    height: 2,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            SizedBox(width: getProportionateScreenWidth(10),),
-                            Text('Andamento Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                            SizedBox(
+                              width: getProportionateScreenWidth(10),
+                            ),
+                            Text(
+                              'Ordini in arrivo oggi: ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: getProportionateScreenWidth(12)),
+                            ),
+                            SizedBox(
+                              height: getProportionateScreenHeight(28),
+                              width: dataBundleNotifier
+                                          .currentListSuppliers.length >
+                                      90
+                                  ? getProportionateScreenWidth(35)
+                                  : getProportionateScreenWidth(28),
+                              child: Card(
+                                color: kPrimaryColor,
+                                child: Center(
+                                  child: Text(
+                                    retrieveTodayOrdersList(dataBundleNotifier
+                                            .currentUnderWorkingOrdersList)
+                                        .length
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                        color: kCustomYellow800),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                         CupertinoButton(
-                          onPressed: (){
-                            dataBundleNotifier.setShowIvaButtonToFalse();
-                            switch(dataBundleNotifier.currentBranch.providerFatture){
-                              case 'fatture_in_cloud':
-                                Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                                break;
-                              case 'aruba':
-                                Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                                break;
-                              case '':
-                                Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                                break;
-                            }
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, OrdersScreen.routeName);
                           },
                           child: Row(
                             children: [
-                              Text('Dettaglio Andamendo Iva', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                              Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                              Text(
+                                'Dettaglio Ordini',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: getProportionateScreenWidth(12),
+                                    color: Colors.grey),
+                              ),
+                              Icon(Icons.arrow_forward_ios,
+                                  size: getProportionateScreenWidth(15),
+                                  color: Colors.grey),
                             ],
                           ),
                         ),
                       ],
                     ),
-                    LineChartWidget(currentDateTimeRange: dataBundleNotifier.currentDateTimeRange),
-                  ],
-                ),
-                Divider(height: getProportionateScreenHeight(30),),
-                buildActionsList(dataBundleNotifier.currentBranchActionsList),
-                dataBundleNotifier.currentBranchActionsList.isEmpty ? SizedBox(height: 500,) : SizedBox(height: 0,),
-              ],
+                  ),
+                  FutureBuilder(
+                      initialData: <Widget>[
+                        const Center(
+                            child: CircularProgressIndicator(
+                          color: kPinaColor,
+                        )),
+                        const SizedBox(),
+                        Column(
+                          children: const [
+                            Center(
+                              child: Text(
+                                'Caricamento Ordini..',
+                                style: TextStyle(
+                                    fontSize: 16.0,
+                                    color: kPrimaryColor,
+                                    fontFamily: 'LoraFont'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                      future: populateProductsListForTodayOrders(
+                          dataBundleNotifier),
+                      builder: (context, snapshot) {
+                        return Column(
+                          children: [
+                            dataBundleNotifier
+                                    .currentUnderWorkingOrdersList.isEmpty
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      width: getProportionateScreenWidth(400),
+                                      child: CupertinoButton(
+                                        color: kPrimaryColor,
+                                        onPressed: () {
+                                          Navigator.pushNamed(context,
+                                              CreateOrderScreen.routeName);
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(''),
+                                            Text(
+                                              'Effettua Ordine',
+                                              style: TextStyle(
+                                                  color: kCustomYellow800,
+                                                  fontSize:
+                                                      getProportionateScreenWidth(
+                                                          17)),
+                                            ),
+                                            Stack(
+                                              children: [
+                                                IconButton(
+                                                  icon: SvgPicture.asset(
+                                                    'assets/icons/receipt.svg',
+                                                    color: kCustomWhite,
+                                                    width: 25,
+                                                  ),
+                                                  onPressed: () {},
+                                                ),
+                                                Positioned(
+                                                  top: 26.0,
+                                                  right: 9.0,
+                                                  child: Stack(
+                                                    children: const <Widget>[
+                                                      Icon(
+                                                        Icons.brightness_1,
+                                                        size: 18,
+                                                        color: kPrimaryColor,
+                                                      ),
+                                                      Positioned(
+                                                        right: 2.5,
+                                                        top: 2.5,
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons
+                                                                .add_circle_outline,
+                                                            size: 13,
+                                                            color:
+                                                                kCustomYellowDarker,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox(
+                                    height: getProportionateScreenHeight(215),
+                                    child: PageView.builder(
+                                      onPageChanged: (value) {
+                                        setState(() {
+                                          currentOrderIndex = value;
+                                        });
+                                      },
+                                      itemCount: retrieveTodayOrdersList(
+                                              dataBundleNotifier
+                                                  .currentUnderWorkingOrdersList)
+                                          .length,
+                                      itemBuilder: (context, index) =>
+                                          OrderCard(
+                                        order: retrieveTodayOrdersList(
+                                                dataBundleNotifier
+                                                    .currentUnderWorkingOrdersList)[
+                                            index],
+                                        showExpandedTile: false,
+                                        orderIdProductListMap:
+                                            orderIdProductListMap,
+                                      ),
+                                    ),
+                                  ),
+                            Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    retrieveTodayOrdersList(dataBundleNotifier
+                                            .currentUnderWorkingOrdersList)
+                                        .length,
+                                    (index) => buildDot(index: index),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                  dataBundleNotifier.currentBranch.providerFatture == ''
+                      ? const Text('')
+                      : Column(
+                          children: [
+                            Divider(),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: getProportionateScreenWidth(10),
+                                    ),
+                                    Text(
+                                      'Andamento Iva',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize:
+                                              getProportionateScreenWidth(12)),
+                                    ),
+                                  ],
+                                ),
+                                CupertinoButton(
+                                  onPressed: () {
+                                    dataBundleNotifier
+                                        .setShowIvaButtonToFalse();
+                                    switch (dataBundleNotifier
+                                        .currentBranch.providerFatture) {
+                                      case 'fatture_in_cloud':
+                                        Navigator.pushNamed(
+                                            context,
+                                            FattureInCloudCalculatorScreen
+                                                .routeName);
+                                        break;
+                                      case 'aruba':
+                                        Navigator.pushNamed(context,
+                                            ArubaCalculatorScreen.routeName);
+                                        break;
+                                      case '':
+                                        Navigator.pushNamed(
+                                            context,
+                                            RegisterFattureProviderScreen
+                                                .routeName);
+                                        break;
+                                    }
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        'Dettaglio Andamendo Iva',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize:
+                                                getProportionateScreenWidth(12),
+                                            color: Colors.grey),
+                                      ),
+                                      Icon(Icons.arrow_forward_ios,
+                                          size: getProportionateScreenWidth(15),
+                                          color: Colors.grey),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            LineChartWidget(
+                                currentDateTimeRange:
+                                    dataBundleNotifier.currentDateTimeRange),
+                          ],
+                        ),
+                  Divider(
+                    height: getProportionateScreenHeight(30),
+                  ),
+                  buildActionsList(dataBundleNotifier.currentBranchActionsList),
+                  dataBundleNotifier.currentBranchActionsList.isEmpty
+                      ? SizedBox(
+                          height: 500,
+                        )
+                      : SizedBox(
+                          height: 0,
+                        ),
+                ],
+              ),
             ),
-        ),
           );
         }
       },
     );
   }
 
-  GestureDetector buildGestureDetectorBranchSelector(BuildContext context,
-      DataBundleNotifier dataBundleNotifier) {
-
-
+  GestureDetector buildGestureDetectorBranchSelector(
+      BuildContext context, DataBundleNotifier dataBundleNotifier) {
     return GestureDetector(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        contentPadding: EdgeInsets.zero,
-                        shape: const RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.all(
-                                Radius.circular(10.0))),
-                        content: Builder(
-                          builder: (context) {
-
-                            return SizedBox(
-                              width: getProportionateScreenWidth(800),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: Column(
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: Builder(
+                    builder: (context) {
+                      return SizedBox(
+                        width: getProportionateScreenWidth(800),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(10.0),
+                                      topLeft: Radius.circular(10.0)),
+                                  color: Colors.black.withOpacity(0.9),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.only(
-                                            topRight: Radius.circular(10.0),
-                                            topLeft: Radius.circular(10.0) ),
-                                        color: Colors.black.withOpacity(0.9),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('  Lista Attività',style: TextStyle(
-                                            fontSize: getProportionateScreenWidth(17),
-                                            color: Colors.white,
-                                          ),),
-                                          IconButton(icon: const Icon(
-                                            Icons.clear,
-                                            color: Colors.white,
-                                          ), onPressed: () { Navigator.pop(context); },),
-                                        ],
+                                    Text(
+                                      '  Lista Attività',
+                                      style: TextStyle(
+                                        fontSize:
+                                            getProportionateScreenWidth(17),
+                                        color: Colors.white,
                                       ),
                                     ),
-                                    Column(
-                                      children: buildListBranches(dataBundleNotifier),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.clear,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
                                     ),
-                                    SizedBox(height: getProportionateScreenHeight(10),),
                                   ],
                                 ),
                               ),
-                            );
-                          },
+                              Column(
+                                children: buildListBranches(dataBundleNotifier),
+                              ),
+                              SizedBox(
+                                height: getProportionateScreenHeight(10),
+                              ),
+                            ],
+                          ),
                         ),
-                      )
-                  );
-                },
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
+                      );
+                    },
                   ),
-                  color: Colors.black.withOpacity(0.8),
-                  elevation: 7,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                          child: Text('' + dataBundleNotifier.currentBranch.companyName,
-                            style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                          child: Icon(Icons.keyboard_arrow_down_rounded, color: kCustomYellow800, size: getProportionateScreenWidth(20),),
-                        ),
-                      ],
-                    ),
-                  ),
+                ));
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        color: Colors.black.withOpacity(0.8),
+        elevation: 7,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
+                child: Text(
+                  '' + dataBundleNotifier.currentBranch.companyName,
+                  style: TextStyle(
+                      color: kCustomYellow800,
+                      fontSize: getProportionateScreenWidth(15),
+                      fontWeight: FontWeight.bold),
                 ),
-              );
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                child: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  color: kCustomYellow800,
+                  size: getProportionateScreenWidth(20),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   buildListBranches(DataBundleNotifier dataBundleNotifier) {
-
     List<Widget> branchWidgetList = [];
 
     dataBundleNotifier.dataBundleList[0].companyList.forEach((currentBranch) {
       branchWidgetList.add(
         GestureDetector(
-            child: Container(
-                  decoration: BoxDecoration(
-                    color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.black.withOpacity(0.8) : Colors.white,
-                    border: const Border(
-                      bottom: BorderSide(width: 1.0, color: Colors.grey),
-                    ),
-                 ),
-                child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.yellow.shade700.withOpacity(0.8) : kPrimaryColor,),
-                        Icon(currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Icons.person : Icons.vpn_key_outlined,
-                          color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.yellow.shade700.withOpacity(0.8) : kPrimaryColor,),
-                        Text('   ' + currentBranch.companyName,
-                          style: TextStyle(
-                            fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
-                            color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.yellow.shade700.withOpacity(0.8) : Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                    dataBundleNotifier.currentBranch.companyName ==
-                        currentBranch.companyName ? Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
-                      child: SvgPicture.asset(
-                        'assets/icons/success-green.svg',
-                        color: Colors.yellow.shade700.withOpacity(0.8),
-                        width: 22,
-                      ),
-                    ) : const SizedBox(height: 0,),
-                  ],
-                ),
+          child: Container(
+            decoration: BoxDecoration(
+              color: dataBundleNotifier.currentBranch.companyName ==
+                      currentBranch.companyName
+                  ? Colors.black.withOpacity(0.8)
+                  : Colors.white,
+              border: const Border(
+                bottom: BorderSide(width: 1.0, color: Colors.grey),
               ),
             ),
-            onTap: () async {
-              context.loaderOverlay.show();
-              Navigator.pop(context);
-              await dataBundleNotifier.setCurrentBranch(currentBranch);
-              context.loaderOverlay.hide();
-
-            },
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.format_align_right_rounded,
+                        color: dataBundleNotifier.currentBranch.companyName ==
+                                currentBranch.companyName
+                            ? Colors.yellow.shade700.withOpacity(0.8)
+                            : kPrimaryColor,
+                      ),
+                      Icon(
+                        currentBranch.accessPrivilege == Privileges.EMPLOYEE
+                            ? Icons.person
+                            : Icons.vpn_key_outlined,
+                        color: dataBundleNotifier.currentBranch.companyName ==
+                                currentBranch.companyName
+                            ? Colors.yellow.shade700.withOpacity(0.8)
+                            : kPrimaryColor,
+                      ),
+                      Text(
+                        '   ' + currentBranch.companyName,
+                        style: TextStyle(
+                          fontSize:
+                              dataBundleNotifier.currentBranch.companyName ==
+                                      currentBranch.companyName
+                                  ? getProportionateScreenWidth(16)
+                                  : getProportionateScreenWidth(13),
+                          color: dataBundleNotifier.currentBranch.companyName ==
+                                  currentBranch.companyName
+                              ? Colors.yellow.shade700.withOpacity(0.8)
+                              : Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  dataBundleNotifier.currentBranch.companyName ==
+                          currentBranch.companyName
+                      ? Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
+                          child: SvgPicture.asset(
+                            'assets/icons/success-green.svg',
+                            color: Colors.yellow.shade700.withOpacity(0.8),
+                            width: 22,
+                          ),
+                        )
+                      : const SizedBox(
+                          height: 0,
+                        ),
+                ],
+              ),
+            ),
+          ),
+          onTap: () async {
+            context.loaderOverlay.show();
+            Navigator.pop(context);
+            await dataBundleNotifier.setCurrentBranch(currentBranch);
+            context.loaderOverlay.hide();
+          },
         ),
       );
     });
@@ -408,8 +599,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BranchChoiceCreationEnjoy(
-                  ),
+                  builder: (context) => BranchChoiceCreationEnjoy(),
                 ),
               );
             },
@@ -421,7 +611,6 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   Widget buildActionsList(List<ActionModel> currentBranchActionsList) {
-
     List<Padding> rows = [
       Padding(
         padding: const EdgeInsets.all(0.0),
@@ -430,18 +619,33 @@ class _HomePageBodyState extends State<HomePageBody> {
           children: [
             Row(
               children: [
-                SizedBox(width: getProportionateScreenWidth(10),),
-                Text('Ultime Azioni', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                SizedBox(
+                  width: getProportionateScreenWidth(10),
+                ),
+                Text(
+                  'Ultime Azioni',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: getProportionateScreenWidth(12)),
+                ),
               ],
             ),
             CupertinoButton(
-              onPressed: (){
+              onPressed: () {
                 Navigator.pushNamed(context, ActionsDetailsScreen.routeName);
               },
               child: Row(
                 children: [
-                  Text('Visualizza Tutte', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                  Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
+                  Text(
+                    'Visualizza Tutte',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: getProportionateScreenWidth(12),
+                        color: Colors.grey),
+                  ),
+                  Icon(Icons.arrow_forward_ios,
+                      size: getProportionateScreenWidth(15),
+                      color: Colors.grey),
                 ],
               ),
             ),
@@ -452,11 +656,13 @@ class _HomePageBodyState extends State<HomePageBody> {
 
     rows.add(const Padding(
       padding: EdgeInsets.all(0.0),
-      child: Divider(height: 1,),
+      child: Divider(
+        height: 1,
+      ),
     ));
 
     currentBranchActionsList.forEach((action) {
-      if(rows.length < 10){
+      if (rows.length < 10) {
         rows.add(
           Padding(
             padding: const EdgeInsets.all(3.0),
@@ -464,35 +670,75 @@ class _HomePageBodyState extends State<HomePageBody> {
               children: [
                 Row(
                   children: [
-                    ActionType.getIconWidget(action.type) ?? const Text('ICONA'),
+                    ActionType.getIconWidget(action.type) ??
+                        const Text('ICONA'),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(action.user, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),),
                           Text(
-                              DateTime.fromMillisecondsSinceEpoch(action.date).day.toString() + '/' +
-                                  DateTime.fromMillisecondsSinceEpoch(action.date).month.toString() + '/' +
-                                  DateTime.fromMillisecondsSinceEpoch(action.date).year.toString() + '  ' +
-                                  DateTime.fromMillisecondsSinceEpoch(action.date).hour.toString() + ':' +
-                                  (DateTime.fromMillisecondsSinceEpoch(action.date).minute > 9
-                                      ? DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString()
-                                      : '0' + DateTime.fromMillisecondsSinceEpoch(action.date).minute.toString())
-
-                              , style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold)
+                            action.user,
+                            style: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: getProportionateScreenWidth(15),
+                                fontWeight: FontWeight.bold),
                           ),
+                          Text(
+                              DateTime.fromMillisecondsSinceEpoch(action.date)
+                                      .day
+                                      .toString() +
+                                  '/' +
+                                  DateTime.fromMillisecondsSinceEpoch(action.date)
+                                      .month
+                                      .toString() +
+                                  '/' +
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                          action.date)
+                                      .year
+                                      .toString() +
+                                  '  ' +
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                          action.date)
+                                      .hour
+                                      .toString() +
+                                  ':' +
+                                  (DateTime.fromMillisecondsSinceEpoch(
+                                                  action.date)
+                                              .minute >
+                                          9
+                                      ? DateTime.fromMillisecondsSinceEpoch(
+                                              action.date)
+                                          .minute
+                                          .toString()
+                                      : '0' +
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                                  action.date)
+                                              .minute
+                                              .toString()),
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
                   ],
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(58), 0, getProportionateScreenWidth(10), 2),
-                  child: Text(action.description, textAlign: TextAlign.start, overflow: TextOverflow.visible, style: TextStyle(fontWeight: FontWeight.bold),),
+                  padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(58),
+                      0, getProportionateScreenWidth(10), 2),
+                  child: Text(
+                    action.description,
+                    textAlign: TextAlign.start,
+                    overflow: TextOverflow.visible,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                 ),
-                Divider(height: 1, indent: getProportionateScreenWidth(58),),
+                Divider(
+                  height: 1,
+                  indent: getProportionateScreenWidth(58),
+                ),
               ],
             ),
           ),
@@ -515,7 +761,9 @@ class _HomePageBodyState extends State<HomePageBody> {
       height: 8,
       width: currentOrderIndex == index ? 20 : 6,
       decoration: BoxDecoration(
-        color: currentOrderIndex == index ? kPrimaryColor : const Color(0xFFD8D8D8),
+        color: currentOrderIndex == index
+            ? kPrimaryColor
+            : const Color(0xFFD8D8D8),
         borderRadius: BorderRadius.circular(3),
       ),
     );
@@ -526,20 +774,25 @@ class _HomePageBodyState extends State<HomePageBody> {
     DateTime now = DateTime.now();
     bool result = false;
 
-    if(currentDate.day == now.day &&
+    if (currentDate.day == now.day &&
         currentDate.month == now.month &&
-          currentDate.year == now.year){
+        currentDate.year == now.year) {
       result = true;
     }
     return result;
   }
-  Future<List<Widget>> populateProductsListForTodayOrders(DataBundleNotifier dataBundleNotifier) async {
 
+  Future<List<Widget>> populateProductsListForTodayOrders(
+      DataBundleNotifier dataBundleNotifier) async {
     dataBundleNotifier.currentUnderWorkingOrdersList.forEach((element) async {
-      if(isToday(element.delivery_date)){
-        List<ProductOrderAmountModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveProductByOrderId(
-          OrderModel(pk_order_id: element.pk_order_id,),
-        );
+      if (isToday(element.delivery_date)) {
+        List<ProductOrderAmountModel> list = await dataBundleNotifier
+            .getclientServiceInstance()
+            .retrieveProductByOrderId(
+              OrderModel(
+                pk_order_id: element.pk_order_id,
+              ),
+            );
         orderIdProductListMap[element.pk_order_id] = list;
       }
     });
@@ -550,40 +803,52 @@ class _HomePageBodyState extends State<HomePageBody> {
   buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
     return Column(
       children: [
-
-        Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Card(
-            shape: BeveledRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            elevation: 2,
-            child: Column(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(0.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(width: getProportionateScreenWidth(10),),
-                          Text('Registra spese', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                        ],
-                      ),
-                      CupertinoButton(
-                        onPressed: (){
-
-                        },
-                        child: Row(
-                          children: [
-                            Text('Dettaglio Spese', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                            Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                          ],
-                        ),
-                      ),
-                    ],
+                SizedBox(
+                  width: getProportionateScreenWidth(10),
+                ),
+                Text(
+                  'Registra spese',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: getProportionateScreenWidth(12)),
+                ),
+              ],
+            ),
+            CupertinoButton(
+              onPressed: () {},
+              child: Row(
+                children: [
+                  Text(
+                    'Dettaglio Spese',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: getProportionateScreenWidth(12),
+                        color: Colors.grey),
                   ),
+                  Icon(Icons.arrow_forward_ios,
+                      size: getProportionateScreenWidth(15),
+                      color: Colors.grey),
+                ],
+              ),
+            ),
+          ],
+        ),
+        Card(
+          color: kPrimaryColor,
+          elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Divider(
+                  color: kCustomYellow800,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -600,9 +865,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           width: MediaQuery.of(context).size.width - 300,
                           child: CupertinoTextField(
                             controller: expenceController,
-                            onChanged: (text) {
-
-                            },
+                            onChanged: (text) {},
                             textInputAction: TextInputAction.next,
                             keyboardType: const TextInputType.numberWithOptions(
                                 decimal: true, signed: true),
@@ -611,7 +874,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                             autocorrect: false,
                           ),
                         ),
-
                       ],
                     ),
                     Column(
@@ -626,9 +888,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           width: MediaQuery.of(context).size.width - 200,
                           child: CupertinoTextField(
                             controller: casualeExpenceController,
-                            onChanged: (text) {
-
-                            },
+                            onChanged: (text) {},
                             textInputAction: TextInputAction.next,
                             keyboardType: TextInputType.text,
                             clearButtonMode: OverlayVisibilityMode.never,
@@ -644,208 +904,359 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    width: getProportionateScreenWidth(320),
-                    child: CupertinoButton(
-                      pressedOpacity: 0.5,
-                      child: const Text('Salva Spesa'),
-                      color: Colors.greenAccent
-                          .shade700,
-                      onPressed: () async {
-                        try{
-                        KeyboardUtil.hideKeyboard(context);
-                        if(expenceController.text == ''){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              duration: const Duration(milliseconds: 2000),
-                              backgroundColor: Colors.redAccent.withOpacity(0.8),
-                              content: const Text('Inserire importo', style: TextStyle(color: Colors.white),)));
-                        }else if(double.tryParse(expenceController.text) == null){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              duration: const Duration(milliseconds: 2000),
-                              backgroundColor: Colors.redAccent.withOpacity(0.8),
-                              content: const Text('Inserire un importo corretto', style: TextStyle(color: Colors.white),)));
-                        }else if(casualeExpenceController.text == ''){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              duration: const Duration(milliseconds: 2000),
-                              backgroundColor: Colors.redAccent.withOpacity(0.8),
-                              content: const Text('Inserire casuale', style: TextStyle(color: Colors.white),)));
-                        }else{
-                          Widget fiscalButton = TextButton(
-                            child: Text("Fiscale", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15)),),
-                            onPressed:  () async {
-                              try{
-                                ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-
-                                await clientService.performSaveExpence(
-                                    double.parse(expenceController.text),
-                                    casualeExpenceController.text,
-                                    0,
-                                    dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
-                                    dataBundleNotifier.currentBranch.pkBranchId,
-                                    'Y',
-                                    ActionModel(
-                                        date: DateTime.now().millisecondsSinceEpoch,
-                                        description: 'Ha registrato spesa fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
-                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                        type: ActionType.EXPENCE_CREATION
-                                    )
-                                );
-
-                                List<ExpenceModel> _expencesModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
-                                dataBundleNotifier.addCurrentExpencesList(_expencesModelList);
-                                expenceController.clear();
-                                casualeExpenceController.clear();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: Duration(milliseconds: 2000),
-                                    backgroundColor: Colors.green.shade800.withOpacity(0.6),
-                                    content: Text('Spesa fiscale registrata', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                              }catch(e){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 6000),
-                                    backgroundColor: Colors.red,
-                                    content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                              }
-
-
-                              Navigator.of(context).pop();
-                            },
-                          );
-                          Widget notFiscalButton = TextButton(
-                            child: Text("Non Fiscale", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15)),),
-                            onPressed:  () async {
-                              try{
-                                ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-
-                                await clientService.performSaveExpence(
-                                    double.parse(expenceController.text),
-                                    casualeExpenceController.text,
-                                    0,
-                                    dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
-                                    dataBundleNotifier.currentBranch.pkBranchId,
-                                    'N',
-                                    ActionModel(
-                                        date: DateTime.now().millisecondsSinceEpoch,
-                                        description: 'Ha registrato spesa non fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
-                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                        type: ActionType.EXPENCE_CREATION
-                                    )
-                                );
-
-                                List<ExpenceModel> _expencesModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
-                                dataBundleNotifier.addCurrentExpencesList(_expencesModelList);
-                                expenceController.clear();
-                                casualeExpenceController.clear();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: Duration(milliseconds: 2000),
-                                    backgroundColor: Colors.blue.shade700.withOpacity(0.6),
-                                    content: Text('Spesa non fiscale registrata', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-
-                              }catch(e){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 6000),
-                                    backgroundColor: Colors.red,
-                                    content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                              }
-
-                              Navigator.of(context).pop();
-                            },
-                          );
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog (
-                                actions: [
-                                  ButtonBar(
-                                    alignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      notFiscalButton,
-                                      fiscalButton
-                                    ],
-                                  ),
-                                ],
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                content: Builder(
-                                  builder: (context) {
-                                    var width = MediaQuery.of(context).size.width;
-                                    return SizedBox(
-                                      width: width - 90,
-                                      child: SingleChildScrollView(
-                                        scrollDirection: Axis.vertical,
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              decoration: const BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight: Radius.circular(10.0),
-                                                    topLeft: Radius.circular(10.0) ),
-                                                color: kPrimaryColor,
-                                              ),
-                                              child: Column(
-                                                children: [
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      Text('    Registra Spesa',style: TextStyle(
-                                                        fontSize: getProportionateScreenWidth(15),
-                                                        fontWeight: FontWeight.bold,
-                                                        color: kCustomWhite,
-                                                      ),),
-                                                      IconButton(icon: const Icon(
-                                                        Icons.clear,
-                                                        color: kCustomWhite,
-                                                      ), onPressed: () { Navigator.pop(context); },),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text('Descrizione: ' , style: TextStyle(fontSize: getProportionateScreenHeight(14)),),
-                                                Text(casualeExpenceController.text.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
-                                              ],
-                                            ),
-                                            const Divider(),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Text('Importo : ' , style: TextStyle(fontSize: getProportionateScreenHeight(14)),),
-                                                Text('€ ' + expenceController.text.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
-                                              ],
-                                            ),
-                                            Divider(),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
+                Divider(),
+                SizedBox(
+                  width: getProportionateScreenWidth(400),
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SizedBox(
+                      width: getProportionateScreenWidth(320),
+                      child: CupertinoButton(
+                        pressedOpacity: 0.5,
+                        child: const Text('Salva Spesa'),
+                        color: Colors.greenAccent.shade700,
+                        onPressed: () async {
+                          try {
+                            KeyboardUtil.hideKeyboard(context);
+                            if (expenceController.text == '') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      duration:
+                                          const Duration(milliseconds: 2000),
+                                      backgroundColor:
+                                          Colors.redAccent.withOpacity(0.8),
+                                      content: const Text(
+                                        'Inserire importo',
+                                        style: TextStyle(color: Colors.white),
+                                      )));
+                            } else if (double.tryParse(
+                                    expenceController.text) ==
+                                null) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      duration:
+                                          const Duration(milliseconds: 2000),
+                                      backgroundColor:
+                                          Colors.redAccent.withOpacity(0.8),
+                                      content: const Text(
+                                        'Inserire un importo corretto',
+                                        style: TextStyle(color: Colors.white),
+                                      )));
+                            } else if (casualeExpenceController.text == '') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      duration:
+                                          const Duration(milliseconds: 2000),
+                                      backgroundColor:
+                                          Colors.redAccent.withOpacity(0.8),
+                                      content: const Text(
+                                        'Inserire casuale',
+                                        style: TextStyle(color: Colors.white),
+                                      )));
+                            } else {
+                              Widget fiscalButton = TextButton(
+                                child: Text(
+                                  "Fiscale",
+                                  style: TextStyle(
+                                      color: Colors.green,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          getProportionateScreenHeight(15)),
                                 ),
-                              )
-                          );
-                        }
-                        }catch(e){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              duration: const Duration(milliseconds: 6000),
-                              backgroundColor: Colors.red,
-                              content: Text('Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                        }
-                      },
+                                onPressed: () async {
+                                  try {
+                                    ClientVatService clientService =
+                                        dataBundleNotifier
+                                            .getclientServiceInstance();
+
+                                    await clientService.performSaveExpence(
+                                        double.parse(expenceController.text),
+                                        casualeExpenceController.text,
+                                        0,
+                                        dataBundleNotifier.currentDateTime
+                                            .millisecondsSinceEpoch,
+                                        dataBundleNotifier
+                                            .currentBranch.pkBranchId,
+                                        'Y',
+                                        ActionModel(
+                                            date: DateTime.now()
+                                                .millisecondsSinceEpoch,
+                                            description:
+                                                'Ha registrato spesa fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                            fkBranchId: dataBundleNotifier
+                                                .currentBranch.pkBranchId,
+                                            user: dataBundleNotifier
+                                                .retrieveNameLastNameCurrentUser(),
+                                            type: ActionType.EXPENCE_CREATION));
+
+                                    List<ExpenceModel> _expencesModelList =
+                                        await clientService
+                                            .retrieveExpencesListByBranch(
+                                                dataBundleNotifier
+                                                    .currentBranch);
+                                    dataBundleNotifier.addCurrentExpencesList(
+                                        _expencesModelList);
+                                    expenceController.clear();
+                                    casualeExpenceController.clear();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration:
+                                                Duration(milliseconds: 2000),
+                                            backgroundColor: Colors
+                                                .green.shade800
+                                                .withOpacity(0.6),
+                                            content: Text(
+                                              'Spesa fiscale registrata',
+                                              style: TextStyle(
+                                                  fontFamily: 'LoraFont',
+                                                  color: Colors.white),
+                                            )));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration: const Duration(
+                                                milliseconds: 6000),
+                                            backgroundColor: Colors.red,
+                                            content: Text(
+                                              'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                              style: const TextStyle(
+                                                  fontFamily: 'LoraFont',
+                                                  color: Colors.white),
+                                            )));
+                                  }
+
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                              Widget notFiscalButton = TextButton(
+                                child: Text(
+                                  "Non Fiscale",
+                                  style: TextStyle(
+                                      color: kPinaColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          getProportionateScreenHeight(15)),
+                                ),
+                                onPressed: () async {
+                                  try {
+                                    ClientVatService clientService =
+                                        dataBundleNotifier
+                                            .getclientServiceInstance();
+
+                                    await clientService.performSaveExpence(
+                                        double.parse(expenceController.text),
+                                        casualeExpenceController.text,
+                                        0,
+                                        dataBundleNotifier.currentDateTime
+                                            .millisecondsSinceEpoch,
+                                        dataBundleNotifier
+                                            .currentBranch.pkBranchId,
+                                        'N',
+                                        ActionModel(
+                                            date: DateTime.now()
+                                                .millisecondsSinceEpoch,
+                                            description:
+                                                'Ha registrato spesa non fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                            fkBranchId: dataBundleNotifier
+                                                .currentBranch.pkBranchId,
+                                            user: dataBundleNotifier
+                                                .retrieveNameLastNameCurrentUser(),
+                                            type: ActionType.EXPENCE_CREATION));
+
+                                    List<ExpenceModel> _expencesModelList =
+                                        await clientService
+                                            .retrieveExpencesListByBranch(
+                                                dataBundleNotifier
+                                                    .currentBranch);
+                                    dataBundleNotifier.addCurrentExpencesList(
+                                        _expencesModelList);
+                                    expenceController.clear();
+                                    casualeExpenceController.clear();
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration:
+                                                Duration(milliseconds: 2000),
+                                            backgroundColor: Colors
+                                                .blue.shade700
+                                                .withOpacity(0.6),
+                                            content: Text(
+                                              'Spesa non fiscale registrata',
+                                              style: TextStyle(
+                                                  fontFamily: 'LoraFont',
+                                                  color: Colors.white),
+                                            )));
+                                  } catch (e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration: const Duration(
+                                                milliseconds: 6000),
+                                            backgroundColor: Colors.red,
+                                            content: Text(
+                                              'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                              style: const TextStyle(
+                                                  fontFamily: 'LoraFont',
+                                                  color: Colors.white),
+                                            )));
+                                  }
+
+                                  Navigator.of(context).pop();
+                                },
+                              );
+                              showDialog(
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                        actions: [
+                                          ButtonBar(
+                                            alignment:
+                                                MainAxisAlignment.spaceAround,
+                                            children: [
+                                              notFiscalButton,
+                                              fiscalButton
+                                            ],
+                                          ),
+                                        ],
+                                        contentPadding: EdgeInsets.zero,
+                                        shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0))),
+                                        content: Builder(
+                                          builder: (context) {
+                                            var width = MediaQuery.of(context)
+                                                .size
+                                                .width;
+                                            return SizedBox(
+                                              width: width - 90,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical,
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      decoration:
+                                                          const BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.only(
+                                                                topRight: Radius
+                                                                    .circular(
+                                                                        10.0),
+                                                                topLeft: Radius
+                                                                    .circular(
+                                                                        10.0)),
+                                                        color: kPrimaryColor,
+                                                      ),
+                                                      child: Column(
+                                                        children: [
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Text(
+                                                                '    Registra Spesa',
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize:
+                                                                      getProportionateScreenWidth(
+                                                                          15),
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  color:
+                                                                      kCustomWhite,
+                                                                ),
+                                                              ),
+                                                              IconButton(
+                                                                icon:
+                                                                    const Icon(
+                                                                  Icons.clear,
+                                                                  color:
+                                                                      kCustomWhite,
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Text(
+                                                          'Descrizione: ',
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  getProportionateScreenHeight(
+                                                                      14)),
+                                                        ),
+                                                        Text(
+                                                          casualeExpenceController
+                                                              .text
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  getProportionateScreenHeight(
+                                                                      15),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const Divider(),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Text(
+                                                          'Importo : ',
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  getProportionateScreenHeight(
+                                                                      14)),
+                                                        ),
+                                                        Text(
+                                                          '€ ' +
+                                                              expenceController
+                                                                  .text
+                                                                  .toString(),
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  getProportionateScreenHeight(
+                                                                      15),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Divider(),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ));
+                            }
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                duration: const Duration(milliseconds: 6000),
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                  style: const TextStyle(
+                                      fontFamily: 'LoraFont',
+                                      color: Colors.white),
+                                )));
+                          }
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -857,19 +1268,19 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-
   String normalizeCalendarValue(int day) {
-    if(day < 10){
+    if (day < 10) {
       return '0' + day.toString();
-    }else{
+    } else {
       return day.toString();
     }
   }
 
-  List<OrderModel> retrieveTodayOrdersList(List<OrderModel> currentUnderWorkingOrdersList) {
+  List<OrderModel> retrieveTodayOrdersList(
+      List<OrderModel> currentUnderWorkingOrdersList) {
     List<OrderModel> toReturnTodayOrders = [];
     currentUnderWorkingOrdersList.forEach((element) {
-      if(isToday(element.delivery_date)){
+      if (isToday(element.delivery_date)) {
         toReturnTodayOrders.add(element);
       }
     });
@@ -877,4 +1288,3 @@ class _HomePageBodyState extends State<HomePageBody> {
     return toReturnTodayOrders;
   }
 }
-

@@ -1,23 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
-import 'client/vatservice/model/product_order_amount_model.dart';
-
-//const Color kPrimaryColor = Color(0XFF66855F);
-//const Color kPrimaryColor = Color(0XFF127410);
-
-//Draft https://www.color-hex.com/color-palette/115661
-//#081730	(8,23,48)
-// #2c3c5c	(44,60,92)
-// #171717	(23,23,23)
-// #e38f54	(227,143,84)
-// #152440	(21,36,64)
-
-//#2f4a36	(47,74,54)
-// #405169	(64,81,105)
-// #e7e5e1	(231,229,225)
-// #a8acab	(168,172,171)
-// #d2c5b9	(210,197,185)
 const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kCustomYellow = Color(0XFFFFDE55);
 const Color kCustomYellowDarker = Color(0XFFFFDA00);
@@ -25,7 +8,7 @@ Color kCustomYellow800 = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
 const Color kWinterGreen = Color(0XFF2f4a36);
-const Color kPinaColor = Color(0XFF803037);
+const Color kPinaColor = Color(0XFFd0093b);
 const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF405169);
