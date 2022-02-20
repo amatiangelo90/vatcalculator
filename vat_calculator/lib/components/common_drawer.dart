@@ -12,6 +12,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
+import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
@@ -287,7 +288,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               )
                           );
                         } else{
-
+                          Navigator.pushNamed(
+                              context, ExpenceScreen.routeName);
                         }
                       }, Colors.white,
                           Colors.black54.withOpacity(0.1),

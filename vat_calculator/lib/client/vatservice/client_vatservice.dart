@@ -119,7 +119,13 @@ class ClientVatService {
   }
 
 
-  Future<Response> performSaveExpence(double amount, String description, int iva, int dateTimeExpence, int pkBranchId, String fiscal, ActionModel actionModel) async{
+  Future<Response> performSaveExpence(double amount,
+      String description,
+      int iva,
+      int dateTimeExpence,
+      int pkBranchId,
+      String fiscal,
+      ActionModel actionModel) async{
 
     var dio = Dio();
     String body = json.encode(
@@ -128,7 +134,7 @@ class ClientVatService {
             vat: iva,
             dateTimeExpence: dateTimeExpence,
             description: description,
-            dateTimeExpenceInsert: DateTime.now().millisecondsSinceEpoch,
+            dateTimeExpenceInsert: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch,
             fkBranchId: pkBranchId,
             pkExpenceId: null,
             fiscal: fiscal
@@ -891,6 +897,7 @@ class ClientVatService {
                 dateTimeExpence: expenceElement['dateTimeExpence'],
                 dateTimeExpenceInsert: expenceElement['dateTimeExpenceInsert'],
                 amount: expenceElement['amount'],
+                fiscal: expenceElement['fiscal'],
                 pkExpenceId: expenceElement['pkExpenceId']
             ));
       });

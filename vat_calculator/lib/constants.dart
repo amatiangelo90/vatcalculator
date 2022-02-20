@@ -90,6 +90,27 @@ String getDayFromWeekDay(int weekDay){
   }
 }
 
+String getDayFromWeekDayTrim(int weekDay){
+  switch(weekDay){
+    case 1:
+      return 'Lun';
+    case 2:
+      return 'Mar';
+    case 3:
+      return 'Mer';
+    case 4:
+      return 'Gio';
+    case 5:
+      return 'Ven';
+    case 6:
+      return 'Sab';
+    case 7:
+      return 'Dom';
+    default:
+      return 'Error retrieve week day';
+  }
+}
+
 String getMonthFromMonthNumber(int month){
   switch(month){
     case 1:

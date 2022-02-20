@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
-
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'components/expence_body.dart';
@@ -45,6 +44,11 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
                   ),
                 ],
               ),
+              actions: [
+                IconButton(
+                  icon: Icon(Icons.calendar_today, color: Colors.white,), onPressed: () {  },
+                ),
+              ],
               elevation: 2,
             ),
             body: const ExpenceBodyWidget(),

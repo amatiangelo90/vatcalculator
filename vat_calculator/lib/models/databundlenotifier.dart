@@ -108,8 +108,8 @@ class DataBundleNotifier extends ChangeNotifier {
 
   int daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
   int currentYear = DateTime.now().year;
-
   DateTime currentDate = DateTime.now();
+  DateTimeRange currentWeek;
 
   double totalIvaAcquisti = 0.0;
   double totalIvaFatture = 0.0;
@@ -203,14 +203,22 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+    return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+  }
+
+  DateTime findLastDateOfTheWeek(DateTime dateTime) {
+    return dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+  }
+
   void initializeCurrentDateTimeRangeWeekly() {
     DateTime date = DateTime.now();
-
     currentDateTimeRange = DateTimeRange(
       start: DateTime(date.year, date.month, 1, 0, 0, 0, 0,0),
       end: DateTime(date.year, date.month, DateTime(date.year, date.month + 1, 0).day, 0, 0, 0, 0,0),
     );
 
+    currentWeek = DateTimeRange(start: findFirstDateOfTheWeek(date), end: findLastDateOfTheWeek(date));
     if(currentBranch != null){
       if(currentBranch.providerFatture == 'fatture_in_cloud'){
         retrieveDataToDrawChartFattureInCloud(currentDateTimeRange);
@@ -305,6 +313,7 @@ class DataBundleNotifier extends ChangeNotifier {
       return listToReturn;
     }
   }
+
   List<int> getIvaList(){
     return ivaList;
   }
