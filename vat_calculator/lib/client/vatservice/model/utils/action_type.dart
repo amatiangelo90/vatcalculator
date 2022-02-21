@@ -40,6 +40,7 @@ class ActionType{
   static const String ORDER_DELETE                    = 'CANCELLAZIONE ORDINE';
   static const String PROVIDER_DELETE                 = 'CANCELLAZIONE PROVIDER FATTURAZIONE';
   static const String PRODUCT_DELETE                  = 'CANCELLAZIONE PRODOTTO';
+  static const String EXPENCE_DELETE                  = 'CANCELLAZIONE SPESA';
   static const String REMOVE_PRODUCT_FROM_STORAGE     = 'RIMOZIONE PRODOTTO DA MAGAZZINO';
 
   //LOAD/UNLOAD Storage
@@ -135,6 +136,8 @@ class ActionType{
         case ORDER_EDIT:
         break;
         case PRODUCT_EDIT:
+        break;
+        case EXPENCE_DELETE:
         break;
         case EXPENCE_UPDATE:
         break;
