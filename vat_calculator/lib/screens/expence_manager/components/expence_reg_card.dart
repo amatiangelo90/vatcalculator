@@ -46,7 +46,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       DatePicker(
-                        DateTime.now().subtract(Duration(days: 8)),
+                        DateTime.now().subtract(Duration(days: 4)),
                         initialSelectedDate: DateTime.now(),
                         selectionColor: kCustomYellow800,
                         selectedTextColor: Colors.white,

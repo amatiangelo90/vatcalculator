@@ -1,11 +1,9 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-
+import 'package:vat_calculator/client/vatservice/service_interface.dart';
 import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
 import 'model/expence_model.dart';
@@ -18,8 +16,8 @@ import 'model/storage_product_model.dart';
 import 'model/user_branch_relation_model.dart';
 import 'model/user_model.dart';
 
-class ClientVatService {
-
+class ClientVatService implements VatServiceInterface{
+  @override
   Future<Response> performSaveUser(String firstName,String lastName, String phoneNumber, String eMail, String privileges, int relatedUserId) async {
     var dio = Dio();
     String body = json.encode(
@@ -48,6 +46,7 @@ class ClientVatService {
     }
     return post;
   }
+  @override
   Future<Response> checkSpecialUser(UserModel usermodel) async {
 
     var dio = Dio();
@@ -73,8 +72,7 @@ class ClientVatService {
     }
     return post;
   }
-
-  //Action Done
+  @override
   Future<Response> performSaveRecessed(double amount, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
 
     var dio = Dio();
@@ -117,15 +115,8 @@ class ClientVatService {
       rethrow;
     }
   }
-
-
-  Future<Response> performSaveExpence(double amount,
-      String description,
-      int iva,
-      int dateTimeExpence,
-      int pkBranchId,
-      String fiscal,
-      ActionModel actionModel) async{
+  @override
+  Future<Response> performSaveExpence(double amount, String description, int iva, int dateTimeExpence, int pkBranchId, String fiscal, ActionModel actionModel) async{
 
     var dio = Dio();
     String body = json.encode(
@@ -167,9 +158,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
-
-  //Action Done
+  @override
   Future<Response> performSaveStorage({StorageModel storageModel, ActionModel actionModel}) async{
     var dio = Dio();
     String body = json.encode(
@@ -204,7 +193,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> performSaveOrder({OrderModel orderModel, ActionModel actionModel}) async {
 
     var dio = Dio();
@@ -239,6 +228,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ProductOrderAmountModel>> retrieveProductByOrderId(OrderModel orderModel) async {
 
     var dio = Dio();
@@ -288,7 +278,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> performSaveSupplier({ResponseAnagraficaFornitori anagraficaFornitore, ActionModel actionModel}) async{
 
     var dio = Dio();
@@ -323,7 +313,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> performSaveBranch(BranchModel company, ActionModel actionModel) async {
 
     var dio = Dio();
@@ -361,7 +351,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> performSaveProduct({ProductModel product, ActionModel actionModel}) async {
 
     var dio = Dio();
@@ -394,7 +384,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> performSaveProductIntoStorage({SaveProductToStorageRequest saveProductToStorageRequest, ActionModel actionModel}) async {
 
     var dio = Dio();
@@ -433,7 +423,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
+  @override
   Future<Response> performSaveProductIntoOrder(double amount, int productId, int orderId) async {
 
     var dio = Dio();
@@ -467,7 +457,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> performUpdateProduct({ProductModel product}) async {
 
     var dio = Dio();
@@ -497,15 +487,42 @@ class ClientVatService {
     }
 
   }
-  //Action Done
+  @override
+  Future<Response> performUpdateExpence({ExpenceModel expenceModel, ActionModel actionModel}) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        expenceModel.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_EXPENCE + '...');
+    print('Body Request update exence: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_EXPENCE,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_EXPENCE + '): ' + post.data.toString());
+      }
+      return post;
+    }catch(e){
+      rethrow;
+    }
+
+  }
+  @override
   Future<Response> performDeleteProduct({ProductModel product, ActionModel actionModel}) async {
 
     var dio = Dio();
 
     String body = json.encode(
         product.toMap());
-
-
     print('Calling ' + VAT_SERVICE_URL_DELETE_PRODUCT + '...');
     print('Body Request delete product: ' + body);
 
@@ -516,12 +533,8 @@ class ClientVatService {
         data: body,
       );
 
-
-
       if(post != null){
-
         print('Response From VatService removed product(' + VAT_SERVICE_URL_DELETE_PRODUCT + '): ' + post.data.toString());
-
         try{
           String actionBody = json.encode(actionModel.toMap());
           await dio.post(
@@ -532,13 +545,12 @@ class ClientVatService {
           print('Exception: ' + e.toString());
         }
       }
-
       return post;
     }catch(e){
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> removeProductFromStorage({StorageProductModel storageProductModel, ActionModel actionModel}) async {
 
     var dio = Dio();
@@ -576,7 +588,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
+  @override
   Future<UserModel> retrieveUserByEmail(String eMail) async {
 
     var dio = Dio();
@@ -618,6 +630,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<BranchModel>> retrieveBranchesByUserId(int id) async {
 
     var dio = Dio();
@@ -673,6 +686,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ActionModel>> retrieveActionsByBranchId(int branchId) async {
 
     var dio = Dio();
@@ -719,7 +733,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
+  @override
   Future<List<ActionModel>> retrieveLastWeekActionsByBranchId(int branchId) async {
 
     var dio = Dio();
@@ -766,6 +780,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(int pkStorageId) async {
 
     var dio = Dio();
@@ -823,6 +838,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<RecessedModel>> retrieveRecessedListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -865,6 +881,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ExpenceModel>> retrieveExpencesListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -908,6 +925,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<OrderModel>> retrieveOrdersByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -955,6 +973,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
@@ -1006,6 +1025,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ProductModel>> retrieveProductsBySupplier(ResponseAnagraficaFornitori currentSupplier) async {
     var dio = Dio();
     List<ProductModel> productsList = [];
@@ -1047,6 +1067,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel) async {
     var dio = Dio();
     List<ProductModel> productsList = [];
@@ -1088,6 +1109,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<StorageModel>> retrieveStorageListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
     List<StorageModel> storageList = [];
@@ -1129,6 +1151,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<BranchModel>> retrieveBranchByBranchId(String codeBranch) async {
     var dio = Dio();
 
@@ -1190,6 +1213,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<UserModel>> retrieveUserListRelatedWithBranchByBranchId(BranchModel branchModel) async {
 
     var dio = Dio();
@@ -1233,8 +1257,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
-  //Action Done
+  @override
   Future<void> updateStock({List<StorageProductModel> currentStorageProductListForCurrentStorageUnload, ActionModel actionModel}) async {
     var dio = Dio();
     String body = '[';
@@ -1272,7 +1295,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action DONE
+  @override
   Future<void> deleteOrder({OrderModel orderModel, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1307,7 +1330,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<void> deleteStorage({StorageModel storageModel, ActionModel actionModel}) async{
     var dio = Dio();
 
@@ -1341,7 +1364,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<void> updateOrderStatus({OrderModel orderModel, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1376,7 +1399,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> addProviderDetailsToBranch({BranchModel branchModel, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1410,6 +1433,7 @@ class ClientVatService {
       rethrow;
     }
   }
+  @override
   Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByCode({String code}) async {
     var dio = Dio();
 
@@ -1479,7 +1503,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<int> addSupplierToCurrentBranch({ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1517,9 +1541,8 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
-  Future<void> removeSupplierFromCurrentBranch({ResponseAnagraficaFornitori requestRemoveSupplierFromBranch,
-    ActionModel actionModel}) async {
+  @override
+  Future<void> removeSupplierFromCurrentBranch({ResponseAnagraficaFornitori requestRemoveSupplierFromBranch, ActionModel actionModel}) async {
     var dio = Dio();
     String body = json.encode(
         requestRemoveSupplierFromBranch.toMap());
@@ -1551,7 +1574,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> removeProviderFromBranch({BranchModel branchModel, ActionModel actionModel}) async {
     var dio = Dio();
     String body = json.encode(
@@ -1583,7 +1606,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> createUserBranchRelation({int fkUserId, int fkBranchId, String accessPrivilege, ActionModel actionModel}) async {
 
     var dio = Dio();
@@ -1622,7 +1645,7 @@ class ClientVatService {
       return null;
     }
   }
-  //Action Done
+  @override
   Future<Response> updatePrivilegeForUserBranchRelation({int branchId, int userId, String privilegeType, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1663,7 +1686,7 @@ class ClientVatService {
       rethrow;
     }
   }
-  //Action Done
+  @override
   Future<Response> removeUserBranchRelation({int branchId, int userId, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1703,7 +1726,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
+  @override
   Future<Response> performEditSupplier({ResponseAnagraficaFornitori anagraficaFornitore, ActionModel actionModel}) async {
     var dio = Dio();
 
@@ -1737,7 +1760,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
+  @override
   Future<Response> removeProductFromOrder(ProductOrderAmountModel element) async {
     var dio = Dio();
 
@@ -1764,7 +1787,7 @@ class ClientVatService {
       rethrow;
     }
   }
-
+  @override
   Future<Response> updateProductAmountIntoOrder(int pkOrderProductId, double amount, int pkProductId, int pk_order_id) async {
     var dio = Dio();
 
@@ -1795,6 +1818,41 @@ class ClientVatService {
     }catch(e){
       rethrow;
     }
+  }
+  @override
+  Future<void> deleteExpence({ExpenceModel expenceModel, ActionModel actionModel}) async {
+
+    var dio = Dio();
+
+    String body = json.encode(expenceModel.toMap());
+
+    Response post;
+    print('Calling delete expence method ' + VAT_SERVICE_URL_DELETE_EXPENCE + ' to delete expence with id ${expenceModel.pkExpenceId} from current branch ');
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_EXPENCE,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_DELETE_EXPENCE + '): ' + post.data.toString());
+        try{
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+
   }
 
 }

@@ -111,6 +111,19 @@ String getDayFromWeekDayTrim(int weekDay){
   }
 }
 
+bool isToday(int delivery_date) {
+  DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(delivery_date);
+  DateTime now = DateTime.now();
+  bool result = false;
+
+  if (currentDate.day == now.day &&
+      currentDate.month == now.month &&
+      currentDate.year == now.year) {
+    result = true;
+  }
+  return result;
+}
+
 String getMonthFromMonthNumber(int month){
   switch(month){
     case 1:

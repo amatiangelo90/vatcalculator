@@ -35,12 +35,23 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
               centerTitle: true,
               title: Column(
                 children: [
-                  Text(
-                    'Area Gestione Spese',
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(17),
-                      color: kCustomYellow800,
-                    ),
+                  Column(
+                    children: [
+                      Text(
+                        'Area Gestione Spese',
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(17),
+                          color: kCustomYellow800,
+                        ),
+                      ),
+                      Text(
+                        dataBundleNotifier.currentBranch.companyName,
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(11),
+                          color: kCustomWhite,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
