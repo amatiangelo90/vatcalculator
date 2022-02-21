@@ -23,7 +23,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            backgroundColor: kPrimaryColor,
+            backgroundColor: Colors.white,
             appBar: AppBar(
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),

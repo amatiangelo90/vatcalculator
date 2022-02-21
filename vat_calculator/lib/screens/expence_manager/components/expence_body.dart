@@ -36,7 +36,6 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             child: Column(
               children: [
                 const ExpenceCard(),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -56,7 +55,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                         getMonthFromMonthNumber(
                             dataBundleNotifier.currentWeek.end.month)),
                     IconButton(
-                      icon: Icon(Icons.arrow_forward_ios_outlined),
+                      icon: const Icon(Icons.arrow_forward_ios_outlined),
                       onPressed: (){
                         dataBundleNotifier.addWeekToDateTimeRangeWeekly();
                       },
@@ -87,28 +86,19 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
 
   _retrieveExpencesByBranchIdAndRangeDate(
       DataBundleNotifier dataBundleNotifier) async {
-    List<ExpenceModel> retrieveExpencesListByBranch =
-        dataBundleNotifier.getCurrentListExpences();
+
+    List<ExpenceModel> retrieveExpencesListByBranch = dataBundleNotifier.getCurrentListExpences();
 
     try {
       Map<String, List<ExpenceModel>> expenceMap = {};
       retrieveExpencesListByBranch.forEach((exepence) {
-        if (dataBundleNotifier.currentWeek.start.isBefore(
-                DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence)
-                    .add(Duration(days: 1))) &&
-            dataBundleNotifier.currentWeek.end.isAfter(
-                DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence)
-                    .subtract(const Duration(days: 1)))) {
-          if (expenceMap.containsKey(_buildDateKeyFromDate(
-              DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence)))) {
-            expenceMap[_buildDateKeyFromDate(
-                    DateTime.fromMillisecondsSinceEpoch(
-                        exepence.dateTimeExpence))]
-                .add(exepence);
+        if(dataBundleNotifier.currentWeek.start.isBefore(DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence).add(const Duration(days: 1))) &&
+            dataBundleNotifier.currentWeek.end.isAfter(DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence).subtract(const Duration(days: 1)))) {
+
+          if(expenceMap.containsKey(_buildDateKeyFromDate(DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence)))) {
+            expenceMap[_buildDateKeyFromDate(DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence))].add(exepence);
           } else {
-            expenceMap[_buildDateKeyFromDate(
-                DateTime.fromMillisecondsSinceEpoch(
-                    exepence.dateTimeExpence))] = [exepence];
+            expenceMap[_buildDateKeyFromDate(DateTime.fromMillisecondsSinceEpoch(exepence.dateTimeExpence))] = [exepence];
           }
         }
       });
@@ -118,13 +108,53 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
           dataBundleNotifier.currentWeek.end);
 
       List<Widget> listWidget = [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('dataBundleNotifier.totFiscalExpences.toString()'),
-            Text('Tot'),
-            Text('dataBundleNotifier.totNotFiscalExpences.toString()'),
-          ],
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: kPrimaryColor,
+            ),
+            width: MediaQuery.of(context).size.width * 0.99,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    '€ ' + dataBundleNotifier.totalFiscalExpences.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: getProportionateScreenWidth(18),
+                        fontWeight: FontWeight.w500,
+                        color: Colors.greenAccent),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    'Tot',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: getProportionateScreenWidth(18),
+                        fontWeight: FontWeight.w100,
+                        color: kCustomYellow800),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    '€ ' + dataBundleNotifier.totalNotFiscalExpences.toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: getProportionateScreenWidth(18),
+                        fontWeight: FontWeight.w500,
+                        color: Colors.lightBlueAccent),
+                  ),
+                ),
+              ],
+            ),
+          ),
         )
       ];
 
@@ -134,7 +164,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
       });
 
       return Container(
-        color: kCustomWhite,
+        color: Colors.white,
         child: Column(
           children: listWidget,
         ),
@@ -585,6 +615,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                           expence.amount.toString(),
                           style: TextStyle(
                               fontSize: getProportionateScreenWidth(17),
+                              color: Colors.black,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
@@ -606,10 +637,10 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
     if (list.isEmpty) {
       list.add(SizedBox(
         width: width * 1 / 2.12,
-        height: height * 1 / 16,
+        height: height * 1 / 40,
         child: Card(
           elevation: 0,
-          color: kCustomWhite,
+          color: Colors.white,
           child: Row(
             mainAxisAlignment:
                 fiscal == 'Y' ? MainAxisAlignment.end : MainAxisAlignment.start,

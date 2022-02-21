@@ -127,6 +127,9 @@ class DataBundleNotifier extends ChangeNotifier {
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
+  double totalNotFiscalExpences = 0.0;
+  double totalFiscalExpences = 0.0;
+
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
     notifyListeners();
@@ -256,6 +259,21 @@ class DataBundleNotifier extends ChangeNotifier {
       end: currentWeek.end.add(const Duration(
           days: 7)),
     );
+
+    totalFiscalExpences = 0.0;
+    totalNotFiscalExpences = 0.0;
+
+    currentListExpences.forEach((expence) {
+      if(currentWeek.start.isBefore(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence).add(const Duration(days: 1))) &&
+          currentWeek.end.isAfter(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence).subtract(const Duration(days: 1)))) {
+
+        if(expence.fiscal == 'Y'){
+          totalFiscalExpences = totalFiscalExpences + expence.amount;
+        }else if(expence.fiscal == 'N'){
+          totalNotFiscalExpences = totalNotFiscalExpences + expence.amount;
+        }
+      }
+    });
     notifyListeners();
   }
 
@@ -266,6 +284,10 @@ class DataBundleNotifier extends ChangeNotifier {
       end: currentWeek.end.subtract(const Duration(
           days: 7)),
     );
+
+
+    calculateFiscalNotFiscalAmount();
+
     notifyListeners();
   }
 
@@ -421,6 +443,10 @@ class DataBundleNotifier extends ChangeNotifier {
     currentListExpences.clear();
     currentListExpences.addAll(_expenceModelList);
 
+    totalFiscalExpences = 0.0;
+    totalNotFiscalExpences = 0.0;
+
+    calculateFiscalNotFiscalAmount();
 
     recessedListCharData.clear();
     _recessedModelList.forEach((recessedElement) {
@@ -648,6 +674,11 @@ class DataBundleNotifier extends ChangeNotifier {
   void addCurrentExpencesList(List<ExpenceModel> expenceList) {
     currentListExpences.clear();
     currentListExpences = expenceList;
+
+    totalFiscalExpences = 0.0;
+    totalNotFiscalExpences = 0.0;
+
+    calculateFiscalNotFiscalAmount();
 
     notifyListeners();
   }
@@ -1535,6 +1566,23 @@ class DataBundleNotifier extends ChangeNotifier {
   void setCurrentProductListToSendDraftOrder(List<ProductOrderAmountModel> prodOrderModelList) {
     currentProdOrderModelList.clear();
     currentProdOrderModelList.addAll(prodOrderModelList);
+    notifyListeners();
+  }
+
+  void calculateFiscalNotFiscalAmount() {
+    totalFiscalExpences = 0.0;
+    totalNotFiscalExpences = 0.0;
+    currentListExpences.forEach((expence) {
+      if(currentWeek.start.isBefore(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence).add(const Duration(days: 1))) &&
+          currentWeek.end.isAfter(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence))) {
+
+        if(expence.fiscal == 'Y'){
+          totalFiscalExpences = totalFiscalExpences + expence.amount;
+        }else if(expence.fiscal == 'N'){
+          totalNotFiscalExpences = totalNotFiscalExpences + expence.amount;
+        }
+      }
+    });
     notifyListeners();
   }
 }
