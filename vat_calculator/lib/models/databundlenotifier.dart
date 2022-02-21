@@ -127,7 +127,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
-
   void setCurrentPrivilegeType(String privilege){
     currentPrivilegeType = privilege;
     notifyListeners();
@@ -249,6 +248,28 @@ class DataBundleNotifier extends ChangeNotifier {
     );
     notifyListeners();
   }
+
+  void addWeekToDateTimeRangeWeekly(){
+    currentWeek = DateTimeRange(
+      start: currentWeek.start
+          .add(const Duration(days: 7)),
+      end: currentWeek.end.add(const Duration(
+          days: 7)),
+    );
+    notifyListeners();
+  }
+
+  void subtractWeekToDateTimeRangeWeekly(){
+    currentWeek = DateTimeRange(
+      start: currentWeek.start
+          .subtract(const Duration(days: 7)),
+      end: currentWeek.end.subtract(const Duration(
+          days: 7)),
+    );
+    notifyListeners();
+  }
+
+
   bool showIvaButtonPressed = false;
   int indexIvaList = 0;
   List<int> ivaList = [22, 10, 4, 0];

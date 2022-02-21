@@ -36,15 +36,33 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             child: Column(
               children: [
                 const ExpenceCard(),
-                Text(dataBundleNotifier.currentWeek.start.day.toString() +
-                    ' ' +
-                    getMonthFromMonthNumber(
-                        dataBundleNotifier.currentWeek.start.month) +
-                    ' - ' +
-                    dataBundleNotifier.currentWeek.end.day.toString() +
-                    ' ' +
-                    getMonthFromMonthNumber(
-                        dataBundleNotifier.currentWeek.end.month)),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back_ios),
+                      onPressed: (){
+                        dataBundleNotifier.subtractWeekToDateTimeRangeWeekly();
+                      },
+                    ),
+                    Text(dataBundleNotifier.currentWeek.start.day.toString() +
+                        ' ' +
+                        getMonthFromMonthNumber(
+                            dataBundleNotifier.currentWeek.start.month) +
+                        ' - ' +
+                        dataBundleNotifier.currentWeek.end.day.toString() +
+                        ' ' +
+                        getMonthFromMonthNumber(
+                            dataBundleNotifier.currentWeek.end.month)),
+                    IconButton(
+                      icon: Icon(Icons.arrow_forward_ios_outlined),
+                      onPressed: (){
+                        dataBundleNotifier.addWeekToDateTimeRangeWeekly();
+                      },
+                    ),
+                  ],
+                ),
                 FutureBuilder(
                   future: _retrieveExpencesByBranchIdAndRangeDate(
                       dataBundleNotifier),
@@ -99,7 +117,16 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
           dataBundleNotifier.currentWeek.start,
           dataBundleNotifier.currentWeek.end);
 
-      List<Widget> listWidget = [];
+      List<Widget> listWidget = [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('dataBundleNotifier.totFiscalExpences.toString()'),
+            Text('Tot'),
+            Text('dataBundleNotifier.totNotFiscalExpences.toString()'),
+          ],
+        )
+      ];
 
       listDate.forEach((element) {
         listWidget.add(buildNormalizedExpenceWidget(
@@ -141,6 +168,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
       DateTime dateTime,
       Map<String, List<ExpenceModel>> expenceMap,
       DataBundleNotifier dataBundleNotifier) {
+
     List<Widget> fiscalDataListWidget =
         buildWidgetListExpence(dateTime, expenceMap, 'Y', dataBundleNotifier);
     List<Widget> notFiscalDataListWidget =
