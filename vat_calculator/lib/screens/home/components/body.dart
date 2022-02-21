@@ -582,7 +582,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           width: MediaQuery.of(context).size.width,
           child: CupertinoButton(
             child: const Text('Crea Attività'),
-            color: kCustomYellow800,
+            color: Colors.greenAccent.shade700,
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(

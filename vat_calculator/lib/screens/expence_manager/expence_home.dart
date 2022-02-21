@@ -56,9 +56,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
                 ],
               ),
               actions: [
-                IconButton(
-                  icon: Icon(Icons.calendar_today, color: Colors.white,), onPressed: () {  },
-                ),
+
               ],
               elevation: 2,
             ),

@@ -89,7 +89,7 @@ class LandingBody extends StatelessWidget {
                           }
                         }
                         print('Privilege: ' + userModelRetrieved.privilege.toString());
-                        DataBundle dataBundle = DataBundle(
+                        UserDetailsModel dataBundle = UserDetailsModel(
                             userModelRetrieved.id,
                             userModelRetrieved.mail,
                             '',

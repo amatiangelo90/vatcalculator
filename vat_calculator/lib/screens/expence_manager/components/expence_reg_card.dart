@@ -172,9 +172,9 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                   } else {
                                     Widget fiscalButton = TextButton(
                                       child: Text(
-                                        "Fiscale",
+                                        "Daniele",
                                         style: TextStyle(
-                                            color: Colors.green,
+                                            color: Colors.greenAccent.shade700,
                                             fontWeight: FontWeight.bold,
                                             fontSize:
                                             getProportionateScreenHeight(15)),
@@ -197,7 +197,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                   date: DateTime.now()
                                                       .millisecondsSinceEpoch,
                                                   description:
-                                                  'Ha registrato spesa fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                                  'Ha registrato spesa per Daniele ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
                                                   fkBranchId: dataBundleNotifier
                                                       .currentBranch.pkBranchId,
                                                   user: dataBundleNotifier
@@ -217,11 +217,10 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                               SnackBar(
                                                   duration:
                                                   Duration(milliseconds: 2000),
-                                                  backgroundColor: Colors
-                                                      .green.shade800
-                                                      .withOpacity(0.6),
+                                                  backgroundColor: Colors.greenAccent
+                                                      .withOpacity(0.8),
                                                   content: const Text(
-                                                    'Spesa fiscale registrata',
+                                                    'Spesa per Daniele registrata',
                                                     style: TextStyle(
                                                         fontFamily: 'LoraFont',
                                                         color: Colors.white),
@@ -245,9 +244,9 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                     );
                                     Widget notFiscalButton = TextButton(
                                       child: Text(
-                                        "Non Fiscale",
+                                        "Mattia",
                                         style: TextStyle(
-                                            color: kPinaColor,
+                                            color: Colors.lightBlueAccent,
                                             fontWeight: FontWeight.bold,
                                             fontSize:
                                             getProportionateScreenHeight(15)),
@@ -268,7 +267,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                   date: DateTime.now()
                                                       .millisecondsSinceEpoch,
                                                   description:
-                                                  'Ha registrato spesa non fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                                  'Ha registrato spesa per Mattia ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
                                                   fkBranchId: dataBundleNotifier
                                                       .currentBranch.pkBranchId,
                                                   user: dataBundleNotifier
@@ -292,7 +291,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                       .blue.shade700
                                                       .withOpacity(0.6),
                                                   content: Text(
-                                                    'Spesa non fiscale registrata',
+                                                    'Spesa per Mattia registrata',
                                                     style: TextStyle(
                                                         fontFamily: 'LoraFont',
                                                         color: Colors.white),

@@ -1,22 +1,19 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
-import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/helper/keyboard.dart';
+import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
-import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
@@ -50,11 +47,6 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
 
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-
-      _nameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty? '' : dataBundleNotifier.dataBundleList[0].firstName);
-      _lastNameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].lastName);
-      _phoneController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].phone);
-      _eMailController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].email);
 
       return Scaffold(
         drawer: const CommonDrawer(),
@@ -102,7 +94,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                     child: SizedBox(
                       width: getProportionateScreenWidth(830),
                       child: Card(
-                        elevation: dataBundleNotifier.editProfile ? 5 : 2,
+                        elevation: 2,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
                         ),
@@ -118,161 +110,269 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   child: IconButton(
                                     icon: SvgPicture.asset(
                                       'assets/icons/edit-cust.svg',
-                                      width: dataBundleNotifier.editProfile
-                                          ? getProportionateScreenWidth(30)
-                                          : getProportionateScreenWidth(25),
+                                      width: getProportionateScreenWidth(25),
                                       color: kPrimaryColor,
                                     ),
                                     onPressed: () {
-                                      dataBundleNotifier
-                                          .changeEditProfileBoolValue();
+
+                                      _nameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty? '' : dataBundleNotifier.dataBundleList[0].firstName);
+                                      _lastNameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].lastName);
+                                      _phoneController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].phone);
+
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            actions: [
+                                              ButtonBar(
+                                                alignment: MainAxisAlignment.spaceAround,
+                                                children: [
+                                                  TextButton(
+                                                    child: Text(
+                                                      "Aggiorna",
+                                                      style: TextStyle(
+                                                          color: Colors.green,
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize:
+                                                          getProportionateScreenHeight(15)),
+                                                    ),
+                                                    onPressed: () async {
+                                                      try {
+                                                        KeyboardUtil.hideKeyboard(context);
+                                                        if (_nameController.text == '') {
+                                                          ScaffoldMessenger.of(context)
+                                                              .showSnackBar(SnackBar(
+                                                              duration: const Duration(
+                                                                  milliseconds: 2000),
+                                                              backgroundColor: Colors
+                                                                  .redAccent
+                                                                  .withOpacity(0.8),
+                                                              content: const Text(
+                                                                'Inserire nome',
+                                                                style: TextStyle(
+                                                                    color: Colors.white),
+                                                              )));
+                                                        }else if (_lastNameController.text == '') {
+                                                          ScaffoldMessenger.of(context)
+                                                              .showSnackBar(SnackBar(
+                                                              duration: const Duration(
+                                                                  milliseconds: 2000),
+                                                              backgroundColor: Colors
+                                                                  .redAccent
+                                                                  .withOpacity(0.8),
+                                                              content: const Text(
+                                                                'Inserire cognome',
+                                                                style: TextStyle(
+                                                                    color: Colors.white),
+                                                              )));
+
+                                                        }else if (_phoneController.text == '') {
+                                                          ScaffoldMessenger.of(context)
+                                                              .showSnackBar(SnackBar(
+                                                              duration: const Duration(
+                                                                  milliseconds: 2000),
+                                                              backgroundColor: Colors
+                                                                  .redAccent
+                                                                  .withOpacity(0.8),
+                                                              content: const Text(
+                                                                'Inserire numero di telefono',
+                                                                style: TextStyle(
+                                                                    color: Colors.white),
+                                                              )));
+
+                                                        } else {
+                                                          ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
+                                                          UserDetailsModel userDetail = dataBundleNotifier.dataBundleList[0];
+
+                                                          userDetail.firstName = _nameController.value.text;
+                                                          userDetail.lastName = _lastNameController.value.text;
+                                                          userDetail.phone = _phoneController.value.text;
+
+                                                          clientService.updateUserData(userDetail);
+
+                                                        }
+                                                        ScaffoldMessenger.of(context)
+                                                            .showSnackBar(SnackBar(
+                                                            duration: const Duration(
+                                                                milliseconds: 2000),
+                                                            backgroundColor: Colors.green.withOpacity(0.6),
+                                                            content: Text(
+                                                              'Utente aggiornato',
+                                                              style: const TextStyle(
+                                                                  color: Colors.white),
+                                                            )));
+                                                        Navigator.of(context).pop();
+                                                      } catch (e) {
+                                                        ScaffoldMessenger.of(context)
+                                                            .showSnackBar(SnackBar(
+                                                            duration: const Duration(
+                                                                milliseconds: 6000),
+                                                            backgroundColor: Colors.red,
+                                                            content: Text(
+                                                              'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                              style: const TextStyle(
+                                                                  fontFamily: 'LoraFont',
+                                                                  color: Colors.white),
+                                                            )));
+                                                      }
+
+
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                            contentPadding: EdgeInsets.zero,
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.all(Radius.circular(10.0))),
+                                            content: Builder(
+                                              builder: (context) {
+                                                var height = MediaQuery.of(context).size.height;
+                                                var width = MediaQuery.of(context).size.width;
+                                                return SizedBox(
+                                                  width: width - 90,
+                                                  child: SingleChildScrollView(
+                                                    scrollDirection: Axis.vertical,
+                                                    child: Column(
+                                                      children: [
+                                                        Container(
+                                                          decoration: const BoxDecoration(
+                                                            borderRadius: BorderRadius.only(
+                                                                topRight: Radius.circular(10.0),
+                                                                topLeft: Radius.circular(10.0)),
+                                                            color: kPrimaryColor,
+                                                          ),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment.spaceBetween,
+                                                            children: [
+                                                              Text(' Modifica Dati Profilo',
+                                                                  textAlign: TextAlign.center,
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                    getProportionateScreenWidth(
+                                                                        15),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: kCustomWhite,
+                                                                  )),
+                                                              IconButton(
+                                                                icon: const Icon(
+                                                                  Icons.clear,
+                                                                  color: kCustomWhite,
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(8.0),
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                                children: [
+                                                                  const Text('Nome'),
+                                                                  SizedBox(
+                                                                    width:
+                                                                    getProportionateScreenWidth(
+                                                                        150),
+                                                                    child: CupertinoTextField(
+                                                                      controller:
+                                                                      _nameController,
+                                                                      onChanged: (text) {},
+                                                                      textInputAction:
+                                                                      TextInputAction.next,
+                                                                      clearButtonMode:
+                                                                      OverlayVisibilityMode
+                                                                          .never,
+                                                                      textAlign: TextAlign.center,
+                                                                      autocorrect: false,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                                children: [
+                                                                  const Text('Cognome'),
+                                                                  SizedBox(
+                                                                    width:
+                                                                    getProportionateScreenWidth(
+                                                                        150),
+                                                                    child: CupertinoTextField(
+                                                                      controller:
+                                                                      _lastNameController,
+                                                                      onChanged: (text) {},
+                                                                      textInputAction:
+                                                                      TextInputAction.next,
+                                                                      clearButtonMode:
+                                                                      OverlayVisibilityMode
+                                                                          .never,
+                                                                      textAlign: TextAlign.center,
+                                                                      autocorrect: false,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                                children: [
+                                                                  const Text('Cell'),
+                                                                  SizedBox(
+                                                                    width:
+                                                                    getProportionateScreenWidth(
+                                                                        150),
+                                                                    child: CupertinoTextField(
+                                                                      controller:
+                                                                      _phoneController,
+                                                                      onChanged: (text) {},
+                                                                      textInputAction:
+                                                                      TextInputAction.next,
+                                                                      keyboardType:
+                                                                      const TextInputType
+                                                                          .numberWithOptions(
+                                                                          decimal: true,
+                                                                          signed: false),
+                                                                      clearButtonMode:
+                                                                      OverlayVisibilityMode
+                                                                          .never,
+                                                                      textAlign: TextAlign.center,
+                                                                      autocorrect: false,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ));
                                     },
                                   ),
                                 ),
                               ],
                             ),
-                            dataBundleNotifier.editProfile
-                                ? Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text('Modifica profilo'),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 11,
-                                          ),
-                                          Text('   Nome',
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize:
-                                                      getProportionateScreenWidth(
-                                                          12))),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 4, 20, 0),
-                                        child: SizedBox(
-                                          height:
-                                              MediaQuery.of(context).size.height *
-                                                  0.05,
-                                          child: CupertinoTextField(
-                                            controller: _nameController,
-                                            textInputAction: TextInputAction.next,
-                                            keyboardType: TextInputType.text,
-                                            clearButtonMode:
-                                                OverlayVisibilityMode.editing,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 11,
-                                          ),
-                                          Text('   Cognome',
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize:
-                                                      getProportionateScreenWidth(
-                                                          12))),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 4, 20, 0),
-                                        child: SizedBox(
-                                          height:
-                                              MediaQuery.of(context).size.height *
-                                                  0.05,
-                                          child: CupertinoTextField(
-                                            controller: _lastNameController,
-                                            textInputAction: TextInputAction.next,
-                                            keyboardType: TextInputType.text,
-                                            clearButtonMode:
-                                                OverlayVisibilityMode.editing,
-                                            autocorrect: false,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 11,
-                                          ),
-                                          Text('   Cellulare',
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize:
-                                                      getProportionateScreenWidth(
-                                                          12))),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 4, 20, 0),
-                                        child: SizedBox(
-                                          height:
-                                              MediaQuery.of(context).size.height *
-                                                  0.05,
-                                          child: CupertinoTextField(
-                                            controller: _phoneController,
-                                            textInputAction: TextInputAction.next,
-                                            keyboardType: TextInputType.text,
-                                            clearButtonMode:
-                                                OverlayVisibilityMode.editing,
-                                            autocorrect: false,
-                                          ),
-                                        ),
-                                      ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(
-                                            width: 11,
-                                          ),
-                                          Text('   Email',
-                                              style: TextStyle(
-                                                  color: kPrimaryColor,
-                                                  fontSize:
-                                                      getProportionateScreenWidth(
-                                                          12))),
-                                        ],
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            20, 4, 20, 0),
-                                        child: SizedBox(
-                                          height:
-                                              MediaQuery.of(context).size.height *
-                                                  0.05,
-                                          child: CupertinoTextField(
-                                            controller: _eMailController,
-                                            textInputAction: TextInputAction.next,
-                                            keyboardType: TextInputType.text,
-                                            clearButtonMode:
-                                                OverlayVisibilityMode.editing,
-                                            autocorrect: false,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(8, 25, 8, 25),
-                                        child: SizedBox(
-                                          width: MediaQuery.of(context).size.width * 0.85,
-                                          child: CupertinoButton(
-                                            color: kPrimaryColor,
-                                              child: Text(
-                                                'Salva Modifiche',
-                                                style: TextStyle(color: kCustomYellow800),
-                                              ),
-                                              onPressed: () {}),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : Padding(
+                            Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Column(
                                       mainAxisAlignment:

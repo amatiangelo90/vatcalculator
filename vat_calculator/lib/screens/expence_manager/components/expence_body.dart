@@ -558,7 +558,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 10,
                                             ),
                                             Row(

@@ -1,8 +1,7 @@
 ///Api
 /// url test http://217.160.242.158:8080/
-
+///
 const String host = '217.160.242.158';
-
 const String VAT_SERVICE_URL_SAVE_USER = 'http://$host:8080/vatservices/api/v1/create/user';
 const String VAT_SERVICE_URL_SAVE_BRANCH = 'http://$host:8080/vatservices/api/v1/create/branch';
 const String VAT_SERVICE_URL_SAVE_PRODUCT = 'http://$host:8080/vatservices/api/v1/create/product';
@@ -13,7 +12,6 @@ const String VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH = 'http://$host:8080/vatse
 const String VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE = 'http://$host:8080/vatservices/api/v1/save/productinstorage';
 const String VAT_SERVICE_URL_SAVE_PRODUCT_INTO_ORDER = 'http://$host:8080/vatservices/api/v1/save/productinorder';
 const String VAT_SERVICE_URL_SAVE_ORDER = 'http://$host:8080/vatservices/api/v1/create/order';
-
 const String VAT_SERVICE_URL_RETRIEVE_USER_BY_EMAIL = 'http://$host:8080/vatservices/api/v1/retrieve/user';
 const String VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL = 'http://$host:8080/vatservices/api/v1/retrieve/branches';
 const String VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/branchesbybranchid';
@@ -26,11 +24,8 @@ const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_SUPPLIER = 'http://$host:8080/
 const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_BRANCH = 'http://$host:8080/vatservices/api/v1/retrieve/productsbybranch';
 const String VAT_SERVICE_URL_RETRIEVE_STORAGE_BY_BRANCH = 'http://$host:8080/vatservices/api/v1/retrieve/storages';
 const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID = 'http://$host:8080/vatservices/api/v1/retrieve/productsbyorderid';
-
 const String VAT_SERVICE_URL_CHECK_SPECIAL_USER = 'http://$host:8080/vatservices/api/v1/check/specialuser';
-
 const String VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH = 'http://$host:8080/vatservices/api/v1/create/relationbranchsupplier';
-
 //Update url
 const String VAT_SERVICE_URL_UPDATE_PRODUCT = 'http://$host:8080/vatservices/api/v1/update/product';
 const String VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID = 'http://$host:8080/vatservices/api/v1/update/orderstatus';
@@ -38,6 +33,7 @@ const String VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE = 'http://$host:
 const String VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER = 'http://$host:8080/vatservices/api/v1/update/amountproductinorder';
 const String VAT_SERVICE_URL_UPDATE_SUPPLIER = 'http://$host:8080/vatservices/api/v1/update/supplier';
 const String VAT_SERVICE_URL_UPDATE_EXPENCE = 'http://$host:8080/vatservices/api/v1/update/expence';
+const String VAT_SERVICE_URL_UPDATE_USER_DATA = 'http://$host:8080/vatservices/api/v1/update/user';
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';

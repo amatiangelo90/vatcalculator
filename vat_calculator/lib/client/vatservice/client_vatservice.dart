@@ -4,6 +4,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/service_interface.dart';
+import 'package:vat_calculator/models/databundle.dart';
 import 'constant/utils_vatservice.dart';
 import 'model/branch_model.dart';
 import 'model/expence_model.dart';
@@ -91,7 +92,6 @@ class ClientVatService implements VatServiceInterface{
     print('Save import recessed request body: ' + body);
     try{
       post = await dio.post(
-
         VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH,
         data: body,
       );
@@ -1853,6 +1853,42 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
 
+  }
+
+  @override
+  Future<void> updateUserData(UserDetailsModel userDetail) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        {
+          "id" : userDetail.id,
+          "name" : userDetail.firstName,
+          "lastName" : userDetail.lastName,
+          "phone" : userDetail.phone,
+          "mail" : userDetail.email,
+          "privilege" : userDetail.privilege,
+          "relatedUserId" : 0,
+        });
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_USER_DATA + '...');
+    print('Body Request update amount product in Order: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_USER_DATA,
+        data: body,
+      );
+
+      if(post != null){
+        print('Response From VatService. Updated user data result (url: ' + VAT_SERVICE_URL_UPDATE_USER_DATA + '). Result: ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
   }
 
 }

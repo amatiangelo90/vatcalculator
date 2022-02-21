@@ -26,7 +26,7 @@ import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
 
-  List<DataBundle> dataBundleList = [
+  List<UserDetailsModel> dataBundleList = [
   ];
 
   List<RecessedModel> currentListRecessed = [
@@ -101,7 +101,6 @@ class DataBundleNotifier extends ChangeNotifier {
   DateTimeRange currentDateTimeRange;
 
   bool cupertinoSwitch = false;
-  bool editProfile = false;
   bool searchStorageButton = false;
   bool isZtoAOrderded = false;
   bool editOrder = true;
@@ -361,7 +360,7 @@ class DataBundleNotifier extends ChangeNotifier {
     return ivaList;
   }
 
-  void addDataBundle(DataBundle bundle){
+  void addDataBundle(UserDetailsModel bundle){
     print('Adding bundle to Notifier' + bundle.email.toString());
     dataBundleList.add(bundle);
     clearAndUpdateMapBundle();
@@ -1027,15 +1026,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeEditProfileBoolValue() {
-    if(editProfile){
-      editProfile = false;
-    }else{
-      editProfile = true;
-    }
-    notifyListeners();
-  }
-
   void filterStorageProductList(String currentText) {
 
     if(currentText == '' || currentText == 'Tutti i fornitori'){
@@ -1585,4 +1575,6 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     notifyListeners();
   }
+
+
 }

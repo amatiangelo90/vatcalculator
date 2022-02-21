@@ -130,88 +130,30 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               height: getProportionateScreenHeight(40),
                               child: Container(
                                 color: kBeigeColor,
-                                child: GestureDetector(
-                                  onTap: (){
-                                    showDialog(
-                                        context: context,
-                                        builder: (_) => AlertDialog(
-                                          contentPadding: EdgeInsets.zero,
-                                          shape: const RoundedRectangleBorder(
-                                              borderRadius:
-                                              BorderRadius.all(
-                                                  Radius.circular(10.0))),
-                                          content: Builder(
-                                            builder: (context) {
-                                              var height = MediaQuery.of(context).size.height;
-                                              var width = MediaQuery.of(context).size.width;
-                                              return SizedBox(
-                                                height: height - 350,
-                                                width: width,
-                                                child: SingleChildScrollView(
-                                                  scrollDirection: Axis.vertical,
-                                                  child: Column(
-                                                    children: [
-                                                      Container(
-                                                        decoration: const BoxDecoration(
-                                                          borderRadius: BorderRadius.only(
-                                                              topRight: Radius.circular(10.0),
-                                                              topLeft: Radius.circular(10.0) ),
-                                                          color: kPrimaryColor,
-                                                        ),
-                                                        child: Row(
-                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                          children: [
-                                                            Text('  Lista Attività',style: TextStyle(
-                                                              fontSize: getProportionateScreenWidth(17),
-                                                              color: Colors.white,
-                                                            ),),
-                                                            IconButton(icon: const Icon(
-                                                              Icons.clear,
-                                                              color: Colors.white,
-                                                            ), onPressed: () {
-                                                              Navigator.popAndPushNamed(context, HomeScreen.routeName);
-                                                              },),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      Column(
-                                                        children: buildListBranches(dataBundleNotifier),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              );
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 20,),
+                                        dataBundleNotifier.currentBranch != null ? Text(dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15))) : const SizedBox(width: 0,),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 20,),
+                                        GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
                                             },
-                                          ),
-                                        )
-                                    );
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          const SizedBox(width: 20,),
-                                          dataBundleNotifier.currentBranch != null ? Text(dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15))) : const SizedBox(width: 0,),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          const Icon(Icons.keyboard_arrow_down, color: kCustomWhite,),
-                                          const SizedBox(width: 20,),
-                                          GestureDetector(
-                                              onTap: () {
-                                                Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-                                              },
-                                              child: const Icon(Icons.add_circle_outline_rounded, color: Colors.white,size: 29,)
-                                          ),
-                                          const SizedBox(width: 10,),
-                                        ],
-                                      ),
+                                            child: const Icon(Icons.add_circle_outline_rounded, color: Colors.white,size: 29,)
+                                        ),
+                                        const SizedBox(width: 10,),
+                                      ],
+                                    ),
 
-                                    ],
+                                  ],
 
-                                  ),
                                 ),
                               ),
                             ),
@@ -496,7 +438,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     width: getProportionateScreenWidth(28),
                                     child: Card(
                                       color: Colors.redAccent.withOpacity(0.8),
-                                      child: Center(child: dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
+                                      child: Center(child: dataBundleNotifier.dataBundleList.isNotEmpty
+                                          ? Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
                                     ),
                                   ),
@@ -513,18 +456,18 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         child: buildDrawerRow('','Crea',(){
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(context, CreationBranchScreen.routeName);
-                        }, kPrimaryColor,
-                            kCustomWhite,
-                            kPrimaryColor),
+                        }, kCustomWhite,
+                            kPrimaryColor,
+                            kCustomWhite),
                       ) : SizedBox(width: 0,),
                       showBranchStuff ? Padding(
                         padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                         child: buildDrawerRow('','Associa tramite Codice',(){
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(context, BranchJoinScreen.routeName);
-                        }, kPrimaryColor,
-                            kCustomWhite,
-                            kPrimaryColor),
+                        }, kCustomWhite,
+                            kPrimaryColor,
+                            kCustomWhite),
                       ) : SizedBox(width: 0,),
                       showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
                       Padding(
@@ -642,16 +585,17 @@ class _CommonDrawerState extends State<CommonDrawer> {
   Widget buildBranchList(DataBundleNotifier dataBundleNotifier) {
     List<Widget> branchList = [];
 
-    dataBundleNotifier.dataBundleList[0].companyList.forEach((element) {
+    dataBundleNotifier.dataBundleList[0].companyList.forEach((branch) {
       branchList.add(
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-            child: buildDrawerRow('',element.companyName,(){
+            child: buildDrawerRow('',branch.companyName,(){
               dataBundleNotifier.setShowIvaButtonToFalse();
-              Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
+              dataBundleNotifier.setCurrentBranch(branch);
+              Navigator.popAndPushNamed(context, HomeScreen.routeName);
             }, kPrimaryColor,
-                kCustomWhite,
-                kPinaColor),
+                kPrimaryColor,
+                kCustomYellow800),
           ),
       );
     });

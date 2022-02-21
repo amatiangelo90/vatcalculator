@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../client/vatservice/model/branch_model.dart';
 
-class DataBundle {
+class UserDetailsModel {
 
   int _id;
   String _email;
@@ -14,7 +14,7 @@ class DataBundle {
   List<BranchModel> _companyList;
 
 
-  DataBundle(this._id,
+  UserDetailsModel(this._id,
       this._email,
       this._password,
       this._firstName,
