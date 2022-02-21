@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 import 'expence_reg_card.dart';
@@ -33,7 +37,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                ExpenceCard(),
+                const ExpenceCard(),
                 Text(dataBundleNotifier.currentWeek.start.day.toString() + ' ' + getMonthFromMonthNumber(dataBundleNotifier.currentWeek.start.month)
                     + ' - ' +  dataBundleNotifier.currentWeek.end.day.toString() + ' ' + getMonthFromMonthNumber(dataBundleNotifier.currentWeek.end.month)),
                 FutureBuilder(
@@ -81,7 +85,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
       List<Widget> listWidget = [];
 
       listDate.forEach((element) {
-        listWidget.add(buildSome(element, expenceMap));
+        listWidget.add(buildNormalizedExpenceWidget(element, expenceMap, dataBundleNotifier));
       });
 
       return Container(
@@ -115,9 +119,9 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
     }
   }
 
-  Widget buildSome(DateTime dateTime, Map<String, List<ExpenceModel>> expenceMap) {
-    List<Widget> fiscalDataListWidget = buildWidgetListExpence(dateTime, expenceMap, 'Y');
-    List<Widget> notFiscalDataListWidget = buildWidgetListExpence(dateTime, expenceMap, 'N');
+  Widget buildNormalizedExpenceWidget(DateTime dateTime, Map<String, List<ExpenceModel>> expenceMap, DataBundleNotifier dataBundleNotifier) {
+    List<Widget> fiscalDataListWidget = buildWidgetListExpence(dateTime, expenceMap, 'Y', dataBundleNotifier);
+    List<Widget> notFiscalDataListWidget = buildWidgetListExpence(dateTime, expenceMap, 'N', dataBundleNotifier);
 
     Column column = Column(
       children: [
@@ -133,7 +137,6 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
               Text('Daniele', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(8),fontWeight: FontWeight.w100, color: Colors.greenAccent),),
               Text(_buildDateKeyFromDate(dateTime), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomYellow800),),
               Text('Mattia', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(8),fontWeight: FontWeight.w100, color: Colors.lightBlueAccent),),
-
             ],
           ),
         ),
@@ -159,7 +162,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
 
   }
 
-  List<Widget> buildWidgetListExpence(DateTime date, Map<String, List<ExpenceModel>> expenceMap, String fiscal) {
+  List<Widget> buildWidgetListExpence(DateTime date, Map<String, List<ExpenceModel>> expenceMap, String fiscal, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> list = [];
 
@@ -171,9 +174,9 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             height: height * 1/15,
             child: GestureDetector(
               onTap: (){
-                TextEditingController _amountContoller = TextEditingController(text: expence.amount.toString());
-                TextEditingController _descriptionContoller = TextEditingController(text: expence.description);
-                TextEditingController _fiscalContoller = TextEditingController(text: expence.fiscal);
+                TextEditingController expenceController = TextEditingController(text: expence.amount.toString());
+                TextEditingController casualeExpenceController = TextEditingController(text: expence.description);
+
 
                 showDialog(
                     context: context,
@@ -182,7 +185,115 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                         ButtonBar(
                           alignment: MainAxisAlignment.spaceAround,
                           children: [
+                    TextButton(
+                    child: Text(
+                      "Aggiorna",
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          getProportionateScreenHeight(15)),
+                    ),
+                  onPressed: () async {
+                    try {
+                      KeyboardUtil.hideKeyboard(context);
+                      if (expenceController.text == '') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                duration:
+                                const Duration(milliseconds: 2000),
+                                backgroundColor:
+                                Colors.redAccent.withOpacity(0.8),
+                                content: const Text(
+                                  'Inserire importo',
+                                  style: TextStyle(color: Colors.white),
+                                )));
+                      } else if (double.tryParse(
+                          expenceController.text) ==
+                          null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                duration:
+                                const Duration(milliseconds: 2000),
+                                backgroundColor:
+                                Colors.redAccent.withOpacity(0.8),
+                                content: const Text(
+                                  'Inserire un importo corretto',
+                                  style: TextStyle(color: Colors.white),
+                                )));
+                      } else if (casualeExpenceController.text == '') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                duration:
+                                const Duration(milliseconds: 2000),
+                                backgroundColor:
+                                Colors.redAccent.withOpacity(0.8),
+                                content: const Text(
+                                  'Inserire casuale',
+                                  style: TextStyle(color: Colors.white),
+                                )));
+                      }else{
+                        ClientVatService clientService =
+                        dataBundleNotifier
+                            .getclientServiceInstance();
 
+                        expence.description = casualeExpenceController.value.text;
+                        expence.amount = double.parse(expenceController.value.text);
+
+                        await clientService.performUpdateExpence(
+                            expenceModel: expence,
+                            actionModel: ActionModel(
+                                date: DateTime.now()
+                                    .millisecondsSinceEpoch,
+                                description:
+                                'Ha registrato spesa fiscale ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                fkBranchId: dataBundleNotifier
+                                    .currentBranch.pkBranchId,
+                                user: dataBundleNotifier
+                                    .retrieveNameLastNameCurrentUser(),
+                                type: ActionType.EXPENCE_UPDATE));
+
+                        List<ExpenceModel> _expencesModelList =
+                        await clientService
+                            .retrieveExpencesListByBranch(
+                            dataBundleNotifier
+                                .currentBranch);
+                        dataBundleNotifier.addCurrentExpencesList(
+                            _expencesModelList);
+                        expenceController.clear();
+                        casualeExpenceController.clear();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                duration:
+                                Duration(milliseconds: 2000),
+                                backgroundColor: Colors
+                                    .green.shade800
+                                    .withOpacity(0.6),
+                                content: const Text(
+                                  'Spesa fiscale registrata',
+                                  style: TextStyle(
+                                      fontFamily: 'LoraFont',
+                                      color: Colors.white),
+                                )));
+                      }
+
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              duration: const Duration(
+                                  milliseconds: 6000),
+                              backgroundColor: Colors.red,
+                              content: Text(
+                                'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                style: const TextStyle(
+                                    fontFamily: 'LoraFont',
+                                    color: Colors.white),
+                              )));
+                    }
+
+                    Navigator.of(context).pop();
+                  },
+                ),
                           ],
                         ),
                       ],
@@ -196,7 +307,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                           var height = MediaQuery.of(context).size.height;
                           var width = MediaQuery.of(context).size.width;
                           return SizedBox(
-                            height: getProportionateScreenHeight(400),
+
                             width: width - 90,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
@@ -226,21 +337,49 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                                       ],
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Text('Importo'),
-                                      SizedBox(
-                                        height: 50,
-                                        width: 130,
-                                        child: TextField(
-                                        controller: _amountContoller,
-                                        decoration: InputDecoration(
-                                        border: OutlineInputBorder(),
-                                        labelText: 'Amount Name',
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text('Importo'),
+                                            SizedBox(
+                                              width: getProportionateScreenWidth(100),
+                                              child: CupertinoTextField(
+                                                controller: expenceController,
+                                                onChanged: (text) {},
+                                                textInputAction: TextInputAction.next,
+                                                keyboardType: const TextInputType.numberWithOptions(
+                                                    decimal: true, signed: true),
+                                                clearButtonMode: OverlayVisibilityMode.never,
+                                                textAlign: TextAlign.center,
+                                                autocorrect: false,
+                                              ),
+                                            ),
+                                          ],
                                         ),
+                                        SizedBox(height: 10,),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text('Descrizione'),
+                                            SizedBox(
+                                              width: getProportionateScreenWidth(100),
+                                              child: CupertinoTextField(
+                                                controller: casualeExpenceController,
+                                                onChanged: (text) {},
+                                                textInputAction: TextInputAction.next,
+                                                clearButtonMode: OverlayVisibilityMode.never,
+                                                textAlign: TextAlign.center,
+                                                autocorrect: false,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),

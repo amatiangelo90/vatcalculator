@@ -30,6 +30,7 @@ class ActionType{
   static const String EVENT_EDIT                      = 'MODIFICA EVENTO';
   static const String ORDER_EDIT                      = 'MODIFICA ORDINE';
   static const String PRODUCT_EDIT                    = 'MODIFICA PRODOTTO';
+  static const String EXPENCE_UPDATE                  = 'MODIFICA SPESA';
 
   // Delete Actions
   static const String BRANCH_DELETE                   = 'CANCELLAZIONE ATTIVITA';
@@ -134,6 +135,8 @@ class ActionType{
         case ORDER_EDIT:
         break;
         case PRODUCT_EDIT:
+        break;
+        case EXPENCE_UPDATE:
         break;
         case BRANCH_DELETE:
         break;
