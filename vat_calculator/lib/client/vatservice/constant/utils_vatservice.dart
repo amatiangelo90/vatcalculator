@@ -24,6 +24,7 @@ const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_SUPPLIER = 'http://$host:8080/
 const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_BRANCH = 'http://$host:8080/vatservices/api/v1/retrieve/productsbybranch';
 const String VAT_SERVICE_URL_RETRIEVE_STORAGE_BY_BRANCH = 'http://$host:8080/vatservices/api/v1/retrieve/storages';
 const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID = 'http://$host:8080/vatservices/api/v1/retrieve/productsbyorderid';
+const String VAT_SERVICE_URL_RETRIEVE_EVENTS_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/eventsbybranchid';
 const String VAT_SERVICE_URL_CHECK_SPECIAL_USER = 'http://$host:8080/vatservices/api/v1/check/specialuser';
 const String VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH = 'http://$host:8080/vatservices/api/v1/create/relationbranchsupplier';
 //Update url

@@ -3,6 +3,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/models/databundle.dart';
 import 'model/action_model.dart';
 import 'model/branch_model.dart';
+import 'model/event_model.dart';
 import 'model/expence_model.dart';
 import 'model/order_model.dart';
 import 'model/product_model.dart';
@@ -62,5 +63,5 @@ abstract class VatServiceInterface{
   Future<Response> removeProductFromOrder(ProductOrderAmountModel element);
   Future<Response> updateProductAmountIntoOrder(int pkOrderProductId, double amount, int pkProductId, int pk_order_id);
   Future<void>  updateUserData(UserDetailsModel userDetail);
-
+  Future<List<EventModel>> retrieveEventsListByBranchId(BranchModel currentBranch);
 }

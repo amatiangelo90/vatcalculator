@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart'
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
@@ -81,10 +82,11 @@ class DataBundleNotifier extends ChangeNotifier {
   ];
 
   List<ProductModel> productListForChoicedSupplierToPerformOrder = [];
-
   List<CharData> charDataCreditIva = [];
   List<CharData> charDataDebitIva = [];
   List<CharData> recessedListCharData = [];
+
+  List<EventModel> eventModelList = [];
 
   String currentPrivilegeType;
 
@@ -122,6 +124,7 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ResponseFattureApi> retrieveListaFatture = [];
   List<ResponseNDCApi> retrieveListaNDC = [];
 
+  List<ProductModel> storageTempListProduct = [];
   List<ProductOrderAmountModel> currentProdOrderModelList = [];
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
@@ -751,7 +754,11 @@ class DataBundleNotifier extends ChangeNotifier {
           unitMeasure: element.unitMeasure));
     });
 
+
     List<ProductModel> retrieveProductsByBranch = await getclientServiceInstance().retrieveProductsByBranch(currentBranch);
+
+    storageTempListProduct.addAll(retrieveProductsByBranch);
+
     List<int> listProductIdsToRemove = [];
     print('coming list size ' + retrieveProductsByBranch.length.toString());
     currentStorageProductListForCurrentStorage.forEach((currentProductAlreadyPresent) {
@@ -761,9 +768,23 @@ class DataBundleNotifier extends ChangeNotifier {
     retrieveProductsByBranch.removeWhere((element) =>
         listProductIdsToRemove.contains(element.pkProductId),
     );
-
     print('coming list size ' + retrieveProductsByBranch.length.toString());
     addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
+    notifyListeners();
+  }
+
+  updateProductToAddToCurrentStorageList(){
+    List<int> listProductIdsToRemove = [];
+    print('coming list size ' + storageTempListProduct.length.toString());
+    currentStorageProductListForCurrentStorage.forEach((currentProductAlreadyPresent) {
+      listProductIdsToRemove.add(currentProductAlreadyPresent.fkProductId);
+    });
+
+    storageTempListProduct.removeWhere((element) =>
+        listProductIdsToRemove.contains(element.pkProductId),
+    );
+    print('coming list size ' + storageTempListProduct.length.toString());
+    addAllCurrentListProductToProductListToAddToStorage(storageTempListProduct);
     notifyListeners();
   }
 
@@ -1110,11 +1131,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeObjectFromStorageProductList(StorageProductModel element) {
-    currentStorageProductListForCurrentStorageDuplicated.remove(element);
-    notifyListeners();
-  }
-
   StorageModel getStorageFromCurrentStorageListByStorageId(int storageId) {
     StorageModel storageResult;
     currentStorageList.forEach((storage) {
@@ -1158,14 +1174,6 @@ class DataBundleNotifier extends ChangeNotifier {
     }else{
       return 'Error retrieving user name';
     }
-  }
-
-  void removeProductFromStorage(StorageProductModel productStorageElementToRemove) {
-    currentStorageProductListForCurrentStorage.remove(productStorageElementToRemove);
-    currentStorageProductListForCurrentStorageDuplicated.remove(productStorageElementToRemove);
-    currentStorageProductListForCurrentStorageUnload.remove(productStorageElementToRemove);
-    currentStorageProductListForCurrentStorageLoad.remove(productStorageElementToRemove);
-    notifyListeners();
   }
 
   retrieveDataToDrawChartFattureInCloud(DateTimeRange currentDateTimeRange) async {
@@ -1573,6 +1581,43 @@ class DataBundleNotifier extends ChangeNotifier {
         }
       }
     });
+    notifyListeners();
+  }
+
+  void removeProductFromCurrentStorage(StorageProductModel productStorageElementToRemove) {
+
+    currentStorageProductListForCurrentStorage.removeWhere((element) =>
+      productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
+    currentStorageProductListForCurrentStorageDuplicated.removeWhere((element) =>
+    productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
+    currentStorageProductListForCurrentStorageLoad.removeWhere((element) =>
+    productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
+    currentStorageProductListForCurrentStorageUnload.removeWhere((element) =>
+    productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
+    notifyListeners();
+  }
+
+  int retrieveEventsNumberForCurrentDate(DateTime date) {
+
+    int counter = 0;
+    if(eventModelList.isEmpty){
+      return counter;
+    }else{
+      eventModelList.forEach((eventItem) {
+        print(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).toString());
+        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day == date.day &&
+        DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == date.month &&
+        DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == date.year){
+          counter = counter + 1;
+        }
+      });
+      return counter;
+    }
+  }
+
+  void addCurrentEventsList(List<EventModel> eventList) {
+    eventModelList.clear();
+    eventModelList.addAll(eventList);
     notifyListeners();
   }
 

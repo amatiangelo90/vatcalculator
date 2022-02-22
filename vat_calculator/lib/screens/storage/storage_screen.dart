@@ -670,26 +670,29 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                     const SizedBox(width: 9,),
                     GestureDetector(
                         onTap: (){
-                          dataBundleNotifier.removeObjectFromStorageProductList(productStorageElementToRemove);
-                          dataBundleNotifier.removeProductFromStorage(productStorageElementToRemove);
-                          dataBundleNotifier.getclientServiceInstance()
-                              .removeProductFromStorage(
-                              storageProductModel: productStorageElementToRemove,
-                              actionModel: ActionModel(
-                                  date: DateTime.now().millisecondsSinceEpoch,
-                                  description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                      'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.PRODUCT_DELETE
-                              )
-                          );
+                          try{
+                            var removeProductFromStorage = dataBundleNotifier.getclientServiceInstance()
+                                .removeProductFromStorage(
+                                storageProductModel: productStorageElementToRemove,
+                                actionModel: ActionModel(
+                                    date: DateTime.now().millisecondsSinceEpoch,
+                                    description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                        'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
+                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                    type: ActionType.PRODUCT_DELETE
+                                )
+                            );
+                            dataBundleNotifier.removeProductFromCurrentStorage(productStorageElementToRemove);
+                            dataBundleNotifier.updateProductToAddToCurrentStorageList();
+                          }catch(e){
+                            print('Impossible to remove product from storage. Exception: ' + e);
+                          }
+                          //dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
 
-
-                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                          suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
+                          //suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
                         },
-                        child: Icon(Icons.delete_forever, color: Colors.red.shade800, size: getProportionateScreenHeight(30),)
+                        child: Icon(Icons.delete, color: Colors.red.shade800, size: getProportionateScreenHeight(30),)
                     ),
                     SizedBox(width: 4,),
                   ],

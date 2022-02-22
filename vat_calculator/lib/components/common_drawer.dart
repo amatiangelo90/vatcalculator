@@ -12,6 +12,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
+import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
@@ -373,11 +374,11 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             backgroundColor: Colors.black54.withOpacity(0.1),
                           ),
                           onPressed: (){
-
+                            Navigator.pushNamed(context, EventHomeScreen.routeName);
                           },
                           child: Row(
                             children: [
-                              SizedBox(width: 9,),
+                              const SizedBox(width: 9,),
                               SvgPicture.asset(
                                 'assets/icons/party.svg',
                                 color: kCustomWhite,
@@ -392,8 +393,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
                                       color: Colors.redAccent.withOpacity(0.8),
-                                      child: Center(child: Text('0'
-                                        , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                      child: const Center(child: Text('0'
+                                        , style: TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
                                   ),
                                   const Icon(Icons.arrow_forward_ios,color: kCustomWhite,),

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
@@ -139,6 +140,11 @@ class LandingBody extends StatelessWidget {
                         if(dataBundleNotifier.currentBranch != null){
                           List<OrderModel> _orderModelList = await clientService.retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
                           dataBundleNotifier.addCurrentOrdersList(_orderModelList);
+                        }
+
+                        if(dataBundleNotifier.currentBranch != null){
+                          List<EventModel> _eventModelList = await clientService.retrieveEventsListByBranchId(dataBundleNotifier.currentBranch);
+                          dataBundleNotifier.addCurrentEventsList(_eventModelList);
                         }
 
                         dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
