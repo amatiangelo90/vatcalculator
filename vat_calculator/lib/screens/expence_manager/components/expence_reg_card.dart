@@ -37,6 +37,9 @@ class _ExpenceCardState extends State<ExpenceCard> {
           child: Column(
             children: [
               Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
                 color: kPrimaryColor,
                 elevation: 5,
                 child: Padding(

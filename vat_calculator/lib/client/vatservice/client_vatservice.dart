@@ -1928,6 +1928,7 @@ class ClientVatService implements VatServiceInterface{
                 fkBranchId: orderElement['fkBranchId'],
                 fkStorageId: orderElement['fkStorageId'],
                 owner: orderElement['owner'],
+                location: orderElement['location'],
             ));
       });
       return eventList;

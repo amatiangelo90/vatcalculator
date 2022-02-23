@@ -11,7 +11,9 @@ import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
-import 'package:vat_calculator/components/order_card.dart';
+import 'package:vat_calculator/screens/event/component/event_card.dart';
+import 'package:vat_calculator/screens/event/event_home.dart';
+import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
@@ -35,6 +37,7 @@ class HomePageBody extends StatefulWidget {
 class _HomePageBodyState extends State<HomePageBody> {
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
   int currentOrderIndex = 0;
+  int currentEventIndex = 0;
 
   @override
   void initState() {
@@ -260,7 +263,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     ),
                                   )
                                 : SizedBox(
-                                    height: getProportionateScreenHeight(215),
+                                    height: getProportionateScreenHeight(205),
                                     child: PageView.builder(
                                       onPageChanged: (value) {
                                         setState(() {
@@ -301,6 +304,99 @@ class _HomePageBodyState extends State<HomePageBody> {
                           ],
                         );
                       }),
+                  Padding(
+                    padding: const EdgeInsets.all(0.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: getProportionateScreenWidth(10),
+                            ),
+                            Text(
+                              'Eventi in programma oggi: ',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: getProportionateScreenWidth(12)),
+                            ),
+                            SizedBox(
+                              height: getProportionateScreenHeight(28),
+                              width: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).length >
+                                  90
+                                  ? getProportionateScreenWidth(35)
+                                  : getProportionateScreenWidth(28),
+                              child: Card(
+                                color: kPrimaryColor,
+                                child: Center(
+                                  child: Text(
+                                    dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())
+                                        .length
+                                        .toString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                        color: kCustomYellow800),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        CupertinoButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, EventHomeScreen.routeName);
+                          },
+                          child: Row(
+                            children: [
+                              Text(
+                                'Gestione Eventi',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: getProportionateScreenWidth(12),
+                                    color: Colors.grey),
+                              ),
+                              Icon(Icons.arrow_forward_ios,
+                                  size: getProportionateScreenWidth(15),
+                                  color: Colors.grey),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: getProportionateScreenHeight(240),
+                    child: PageView.builder(
+                      onPageChanged: (value) {
+                        setState(() {
+                          currentEventIndex = value;
+                        });
+                      },
+                      itemCount: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).length,
+                      itemBuilder: (context, index) =>
+                          EventCard(
+                            event: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())[index],
+                          ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())
+                              .length,
+                              (index) => buildDotEvent(index: index),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   dataBundleNotifier.currentBranch.providerFatture == ''
                       ? const Text('')
                       : Column(
@@ -751,6 +847,21 @@ class _HomePageBodyState extends State<HomePageBody> {
       width: currentOrderIndex == index ? 20 : 6,
       decoration: BoxDecoration(
         color: currentOrderIndex == index
+            ? kPrimaryColor
+            : const Color(0xFFD8D8D8),
+        borderRadius: BorderRadius.circular(3),
+      ),
+    );
+  }
+
+  AnimatedContainer buildDotEvent({int index}) {
+    return AnimatedContainer(
+      duration: kAnimationDuration,
+      margin: const EdgeInsets.only(right: 5),
+      height: 8,
+      width: currentEventIndex == index ? 20 : 6,
+      decoration: BoxDecoration(
+        color: currentEventIndex == index
             ? kPrimaryColor
             : const Color(0xFFD8D8D8),
         borderRadius: BorderRadius.circular(3),

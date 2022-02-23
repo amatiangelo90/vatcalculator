@@ -1604,7 +1604,6 @@ class DataBundleNotifier extends ChangeNotifier {
       return counter;
     }else{
       eventModelList.forEach((eventItem) {
-        print(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).toString());
         if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day == date.day &&
         DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == date.month &&
         DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == date.year){
@@ -1615,11 +1614,42 @@ class DataBundleNotifier extends ChangeNotifier {
     }
   }
 
+  List<EventModel> retrieveEventsForCurrentDate(DateTime date) {
+
+    List<EventModel> events = [];
+
+    if(eventModelList.isEmpty){
+      return events;
+    }else{
+      eventModelList.forEach((eventItem) {
+        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day == date.day &&
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == date.month &&
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == date.year){
+          events.add(eventItem);
+        }
+      });
+      return events;
+    }
+  }
+
   void addCurrentEventsList(List<EventModel> eventList) {
     eventModelList.clear();
     eventModelList.addAll(eventList);
     notifyListeners();
   }
 
-
+  String retrieveEventsNumberOpenStatus() {
+    int counter = 0;
+    if(eventModelList.isEmpty){
+      return counter.toString();
+    }else{
+      eventModelList.forEach((eventItem) {
+        print(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).toString());
+        if(eventItem.closed == 'N'){
+          counter = counter + 1;
+        }
+      });
+      return counter.toString();
+    }
+  }
 }

@@ -35,7 +35,7 @@ class DateWidget extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width * 1/7,
+                width: MediaQuery.of(context).size.width * 1/6,
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(Radius.circular(6.0)),
                   color: selectionColor,
@@ -62,12 +62,12 @@ class DateWidget extends StatelessWidget {
                   children: <Widget>[
                     Icon(
                       Icons.brightness_1,
-                      size: getProportionateScreenWidth(17),
+                      size: getProportionateScreenWidth(19),
                       color: Colors.red.shade700,
                     ),
                     Positioned(
-                      right: dataBundlerNotifier.retrieveEventsNumberForCurrentDate(date) > 9 ? 4 : 6.5,
-                      top: 3.0,
+                      right: dataBundlerNotifier.retrieveEventsNumberForCurrentDate(date) > 9 ? 4.5 : 7.5,
+                      top: 4.0,
                       child: Center(
                         child: Text(
                           '' + dataBundlerNotifier.retrieveEventsNumberForCurrentDate(date).toString(),

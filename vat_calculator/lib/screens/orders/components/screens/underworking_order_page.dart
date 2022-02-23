@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
-import 'package:vat_calculator/components/order_card.dart';
+import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';

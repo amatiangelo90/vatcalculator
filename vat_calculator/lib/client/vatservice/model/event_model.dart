@@ -7,6 +7,7 @@ class EventModel{
   int eventDate;
   String closed;
   String owner;
+  String location;
   int fkStorageId;
   int fkBranchId;
 
@@ -17,6 +18,7 @@ class EventModel{
     @required this.eventDate,
     @required this.closed,
     @required this.owner,
+    @required this.location,
     @required this.fkStorageId,
     @required this.fkBranchId,
   });
@@ -30,6 +32,7 @@ class EventModel{
       'eventDate' : eventDate,
       'closed' : closed,
       'owner' : owner,
+      'location' : location,
       'fkStorageId' : fkStorageId,
       'fkBranchId' : fkBranchId,
     };

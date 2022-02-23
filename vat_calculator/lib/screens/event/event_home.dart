@@ -9,8 +9,6 @@ import 'component/event_body.dart';
 
 class EventHomeScreen extends StatefulWidget {
   const EventHomeScreen({Key key}) : super(key: key);
-
-
   static String routeName = "/eventscreen";
 
   @override

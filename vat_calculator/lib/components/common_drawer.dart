@@ -390,11 +390,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 children: [
                                   SizedBox(
                                     height: getProportionateScreenHeight(28),
-                                    width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
+                                    width: dataBundleNotifier.eventModelList.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
                                       color: Colors.redAccent.withOpacity(0.8),
-                                      child: const Center(child: Text('0'
-                                        , style: TextStyle(fontSize: 12.0, color: Colors.white),),),
+                                      child: Center(child: Text(dataBundleNotifier.retrieveEventsNumberOpenStatus(), style: TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
                                   ),
                                   const Icon(Icons.arrow_forward_ios,color: kCustomWhite,),

@@ -9,8 +9,8 @@ import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.da
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 
-import '../constants.dart';
-import '../size_config.dart';
+import '../../../constants.dart';
+import '../../../size_config.dart';
 
 class OrderCard extends StatelessWidget {
   const OrderCard({Key key, @required this.order, @required this.orderIdProductListMap, @required this.showExpandedTile}) : super(key: key);
@@ -24,6 +24,9 @@ class OrderCard extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
           color: kPrimaryColor,
           elevation: 5,
           child: GestureDetector(
