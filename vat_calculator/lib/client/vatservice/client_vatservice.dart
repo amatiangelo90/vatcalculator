@@ -1940,4 +1940,9 @@ class ClientVatService implements VatServiceInterface{
 
   }
 
+  performCreateEvent({EventModel eventModel, ActionModel actionModel}) {
+
+    // TODO to implement
+  }
+
 }

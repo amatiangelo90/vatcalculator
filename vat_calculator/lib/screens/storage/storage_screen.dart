@@ -105,7 +105,19 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
         _panelHeightOpen = MediaQuery.of(context).size.height * .75;
         return Scaffold(
           drawer: const CommonDrawer(),
-          bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.storage),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.redAccent,
+            elevation: 2.0,
+            child: Icon(Icons.add),
+            onPressed: (){},
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomNavigationBar: const BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            notchMargin: 3,
+            color: kPrimaryColor,
+            child: CustomBottomNavBar(selectedMenu: MenuState.storage),
+          ),
           appBar: AppBar(
             iconTheme: const IconThemeData(color: Colors.white),
             centerTitle: true,
@@ -1067,7 +1079,6 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     );
 
     if(dataBundleNotifier.productToAddToStorage.isNotEmpty){
-
       Map<String, List<ProductModel>> mapSupplierListProduct = {};
 
       dataBundleNotifier.productToAddToStorage.forEach((product) {

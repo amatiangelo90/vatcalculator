@@ -12,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/screens/event/component/event_card.dart';
+import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -270,9 +271,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                           currentOrderIndex = value;
                                         });
                                       },
-                                      itemCount: retrieveTodayOrdersList(
-                                              dataBundleNotifier
-                                                  .currentUnderWorkingOrdersList)
+                                      itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)
                                           .length,
                                       itemBuilder: (context, index) =>
                                           OrderCard(
@@ -366,6 +365,73 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ],
                     ),
                   ),
+                  dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).isEmpty ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: getProportionateScreenWidth(400),
+                      child: CupertinoButton(
+                        color: kPrimaryColor,
+                        onPressed: () {
+                          Navigator.pushNamed(context,
+                              EventCreateScreen.routeName);
+                        },
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(''),
+                            Text(
+                              'Crea Evento',
+                              style: TextStyle(
+                                  color: kCustomYellow800,
+                                  fontSize:
+                                  getProportionateScreenWidth(
+                                      17)),
+                            ),
+                            Stack(
+                              children: [
+                                IconButton(
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/party.svg',
+                                    color: kCustomWhite,
+                                    width: 50,
+                                  ),
+                                  onPressed: () {},
+                                ),
+                                Positioned(
+                                  top: 26.0,
+                                  right: 9.0,
+                                  child: Stack(
+                                    children: const <Widget>[
+                                      Icon(
+                                        Icons.brightness_1,
+                                        size: 18,
+                                        color: kPrimaryColor,
+                                      ),
+                                      Positioned(
+                                        right: 2.5,
+                                        top: 2.5,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons
+                                                .add_circle_outline,
+                                            size: 13,
+                                            color:
+                                            kCustomYellowDarker,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ) :
+
                   SizedBox(
                     height: getProportionateScreenHeight(240),
                     child: PageView.builder(

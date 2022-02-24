@@ -534,9 +534,19 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: const CustomBottomNavBar(
-          selectedMenu: MenuState.profile,
-        ),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.redAccent,
+            elevation: 2.0,
+            child: Icon(Icons.add),
+            onPressed: (){},
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomNavigationBar: const BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            notchMargin: 3,
+            color: kPrimaryColor,
+            child: CustomBottomNavBar(selectedMenu: MenuState.profile),
+          ),
       );
     });
   }

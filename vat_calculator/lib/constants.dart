@@ -206,5 +206,11 @@ String getNameDayFromWeekDay(int weekday) {
       return 'Domenica';
 
   }
+
+  String buildDateFromMilliseconds(int date) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+    return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
+  }
+
 }
 

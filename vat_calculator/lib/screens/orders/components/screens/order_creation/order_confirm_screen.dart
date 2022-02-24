@@ -570,11 +570,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     return list;
   }
 
-  String buildDateFromMilliseconds(int date) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
-  }
-
   void setCurrentStorage(String storage, DataBundleNotifier dataBundleNotifier) {
     setState(() {
       _selectedStorage = storage;
@@ -786,5 +781,10 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     }else{
       return '+39' + number;
     }
+  }
+
+  String buildDateFromMilliseconds(int date) {
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
+    return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
   }
 }

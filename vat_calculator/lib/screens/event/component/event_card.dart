@@ -53,7 +53,7 @@ class EventCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(event.eventName,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomYellow800, fontWeight: FontWeight.bold),),
                               Text(
                                 'Creato da: ' + event.owner,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -64,6 +64,16 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     event.location,
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Magazzino di riferimento: ',
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                                  Text(
+                                    dataBundleNotifier.retrieveStorageById(event.fkStorageId),
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -85,7 +95,7 @@ class EventCard extends StatelessWidget {
                                     'Evento Aperto: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    event.closed == 'N' ? 'NO' : 'SI',
+                                    event.closed == 'N' ? 'SI' : 'NO',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -99,7 +109,7 @@ class EventCard extends StatelessWidget {
                     indent: 20,
                     endIndent: 20,
                     color: kCustomYellow800,
-                    height: 70,
+                    height: getProportionateScreenHeight(49),
                   ),
                   SizedBox(
                     width: getProportionateScreenWidth(400),

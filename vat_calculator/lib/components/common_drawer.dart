@@ -62,7 +62,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   child: Column(
                     children: [
                       Container(
-                        color: Colors.black.withOpacity(0.9),
+                        color: kBeigeColor,
                         child: Column(
                           children: [
                             Row(
@@ -74,7 +74,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                       Navigator.popAndPushNamed(context, HomeScreen.routeName);
                                     },
                                     child: SizedBox(
-                                      child: Image.asset('assets/logo/logo_home_yellow.png'),
+                                      child: Image.asset('assets/logo/logo_home_nero.png'),
                                       height: getProportionateScreenHeight(50),
                                     ),
                                   ),
@@ -84,7 +84,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('20m2', style: TextStyle(fontWeight: FontWeight.w600, color: kCustomYellow, fontSize: getProportionateScreenHeight(18))),
-                                    Text('IVA, ORDINI E GESTIONE', style: TextStyle(fontWeight: FontWeight.w300, color: kBeigeColor, fontSize: getProportionateScreenHeight(9)),),
+                                    Text('IVA, ORDINI E GESTIONE', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
 
                                   ],
                                 ),
@@ -100,13 +100,13 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     Row(
                                       children: [
                                         const SizedBox(width: 20,),
-                                        dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: kBeigeColor, fontSize: 20)) :
+                                        dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: Colors.white, fontSize: 20)) :
                                         const SizedBox(width: 0,),
                                       ],
                                     ),
                                     Row(
                                       children: [
-                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.green.shade700,
+                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.greenAccent,
                                         ) : const SizedBox(width: 0,),
                                         const SizedBox(width: 20,),
                                       ],

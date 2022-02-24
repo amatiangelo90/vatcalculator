@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
+import 'package:vat_calculator/components/fab/fab_widget.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
@@ -127,7 +128,14 @@ class HomeScreen extends StatelessWidget {
               elevation: 0,
             ),
             body: const HomePageBody(),
-            bottomNavigationBar: const CustomBottomNavBar(selectedMenu: MenuState.home),
+            floatingActionButton: FancyFab(),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            bottomNavigationBar: const BottomAppBar(
+              shape: CircularNotchedRectangle(),
+              notchMargin: 3,
+              color: kPrimaryColor,
+              child: CustomBottomNavBar(selectedMenu: MenuState.home),
+            ),
           ),
         );
       },

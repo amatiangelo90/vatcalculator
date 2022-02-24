@@ -129,8 +129,8 @@ class _SecondClassState extends State<SecondClass>
                     ),
                   ),
                     Padding(
-                      padding: const EdgeInsets.all(28.0),
-                      child: Image.asset('assets/logo/20-removebg-preview.png',width: getProportionateScreenWidth(2000),),
+                      padding: const EdgeInsets.all(6.0),
+                      child: Image.asset('assets/logo/logo_home_nero.png',width: getProportionateScreenWidth(2000),),
                     ),
                   ],
                 ),

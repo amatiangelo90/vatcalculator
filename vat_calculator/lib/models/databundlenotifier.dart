@@ -1652,4 +1652,16 @@ class DataBundleNotifier extends ChangeNotifier {
       return counter.toString();
     }
   }
+
+  String retrieveStorageById(int fkStorageId) {
+    StorageModel storage;
+    currentStorageList.forEach((element) {
+      storage = element;
+    });
+    if(storage != null && storage.name != null && storage.name != ''){
+      return storage.name;
+    }else{
+     return 'Nessun magazzino trovato';
+    }
+  }
 }

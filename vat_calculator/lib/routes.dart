@@ -3,6 +3,7 @@ import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
+import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_confirm_screen.dart';
@@ -74,4 +75,5 @@ final Map<String, WidgetBuilder> routes = {
   SplashScreen.routeName: (context) => SplashScreen(),
   ExpenceScreen.routeName: (context) => ExpenceScreen(),
   EventHomeScreen.routeName: (context) => EventHomeScreen(),
+  EventCreateScreen.routeName: (context) => EventCreateScreen(),
 };

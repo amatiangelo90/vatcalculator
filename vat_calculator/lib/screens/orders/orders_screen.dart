@@ -159,8 +159,20 @@ class _OrdersScreenState extends State<OrdersScreen>
               ),
             ],
           ) : const UnderWorkingOrderPage(),
-          bottomNavigationBar:
-              const CustomBottomNavBar(selectedMenu: MenuState.orders),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.redAccent,
+            elevation: 2.0,
+            child: Icon(Icons.add),
+            onPressed: (){},
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomNavigationBar: const BottomAppBar(
+            shape: CircularNotchedRectangle(),
+            notchMargin: 3,
+            color: kPrimaryColor,
+            child: CustomBottomNavBar(selectedMenu: MenuState.orders),
+          ),
+
         );
       },
     );
