@@ -576,7 +576,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     });
 
     currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage);
-    print(currentStorageModel.toMap());
+
   }
 
   Future<void> _selectDate(BuildContext context) async {

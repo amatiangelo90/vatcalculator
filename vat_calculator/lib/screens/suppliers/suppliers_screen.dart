@@ -11,7 +11,6 @@ import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_su
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'components/edit_supplier_screen.dart';
-import 'components/add_suppliers/add_supplier_screen.dart';
 
 class SuppliersScreen extends StatelessWidget {
   const SuppliersScreen({Key key}) : super(key: key);
@@ -37,7 +36,7 @@ class SuppliersScreen extends StatelessWidget {
                       width: MediaQuery.of(context).size.width - 39,
                       child: CupertinoButton(
                         color: kCustomYellow800,
-                          child: Text('Aggiungi Nuovo'), onPressed: () {
+                          child: const Text('Aggiungi Nuovo'), onPressed: () {
                         Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                       }),
                     ),
@@ -45,7 +44,7 @@ class SuppliersScreen extends StatelessWidget {
                 ),
               ),
             ) : const Text(''),
-        backgroundColor: kPrimaryColor,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
@@ -64,12 +63,19 @@ class SuppliersScreen extends StatelessWidget {
                   color: kCustomYellow800,
                 ),
               ),
+              Text(
+                'Pagina gestione fornitori',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(10),
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
           elevation: 2,
         ),
         body: Container(
-          color: kPrimaryColor,
+          color: Colors.white,
           child: dataBundleNotifier.currentBranch == null
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -156,18 +162,18 @@ class SuppliersScreen extends StatelessWidget {
               children: const [
                 Icon(
                   Icons.circle,
-                  color: kPinaColor,
+                  color: Colors.lightBlueAccent,
                 ),
-                Text(' Importati', style: TextStyle(color: kCustomWhite),),
+                Text(' Importati', style: TextStyle(color: kPrimaryColor),),
               ],
             ),
             Row(
               children: [
                 Icon(
                   Icons.circle,
-                  color: kCustomYellow800,
+                  color: kBeigeColor,
                 ),
-                Text(' Creati dall\'utente', style: TextStyle(color: kCustomWhite),),
+                const Text(' Creati dall\'utente', style: TextStyle(color: kPrimaryColor),),
               ],
             ),
           ],
@@ -202,15 +208,15 @@ class SuppliersScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 color: dataBundleNotifier.dataBundleList[0].id.toString() ==
                         supplier.id
-                    ? kCustomYellow800
-                    : kPinaColor,
+                    ? kBeigeColor
+                    :  Colors.lightBlueAccent,
               ),
               child: Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0)),
-                  color: Colors.white,
+                  color:kCustomWhite,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),

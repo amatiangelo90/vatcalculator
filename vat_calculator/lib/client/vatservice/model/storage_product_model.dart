@@ -13,6 +13,8 @@ class StorageProductModel{
   double price;
   int vatApplied;
   String unitMeasure;
+  double amountHundred;
+  bool selected;
 
   StorageProductModel({
     @required this.pkStorageProductId,
@@ -25,7 +27,9 @@ class StorageProductModel{
     @required this.supplierName,
     @required this.price,
     @required this.vatApplied,
-    @required this.unitMeasure
+    @required this.unitMeasure,
+    @required this.amountHundred,
+    @required this.selected,
   });
 
   toMap(){
@@ -41,6 +45,8 @@ class StorageProductModel{
       'price': price,
       'vatApplied': vatApplied,
       'unitMeasure': unitMeasure,
+      'amountHundred': amountHundred,
+      'selected' : selected
     };
   }
 

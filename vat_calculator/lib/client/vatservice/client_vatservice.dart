@@ -829,7 +829,8 @@ class ClientVatService implements VatServiceInterface{
               price: branchElement['price'],
               vatApplied : branchElement['vatApplied'],
               unitMeasure : branchElement['unitMeasure'],
-
+              amountHundred: branchElement['amountHundred'],
+              selected: false
             ));
       });
       return storageProoductModelRelationList;

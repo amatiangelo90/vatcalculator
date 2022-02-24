@@ -223,7 +223,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     const SizedBox(width: 11,),
                     Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
                   ],
-                ),Padding(
+                ),
+                Padding(
                   padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height *0.05,
