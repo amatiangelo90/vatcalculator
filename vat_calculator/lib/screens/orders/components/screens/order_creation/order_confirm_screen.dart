@@ -105,8 +105,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
                         orderModel: OrderModel(
                             code: code,
-                            details: 'Ordine eseguito da ' + dataBundleNotifier.dataBundleList[0].firstName + ' ' +
-                                dataBundleNotifier.dataBundleList[0].lastName + ' per ' +
+                            details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
+                                dataBundleNotifier.userDetailsList[0].lastName + ' per ' +
                                 dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
                             total: 0.0,
                             status: OrderState.DRAFT,
@@ -114,7 +114,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                             delivery_date: null,
                             fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
                             fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                            fk_user_id: dataBundleNotifier.dataBundleList[0].id,
+                            fk_user_id: dataBundleNotifier.userDetailsList[0].id,
                             pk_order_id: 0,
                             fk_supplier_id: widget.currentSupplier.pkSupplierId
                         ),
@@ -147,19 +147,19 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               productList: dataBundleNotifier.currentProductModelListForSupplier,
                               deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
                               supplierName: widget.currentSupplier.nome,
-                              currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
+                              currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
                               storageAddress: currentStorageModel.address,
                               storageCap: currentStorageModel.cap,
                               storageCity: currentStorageModel.city,
                           ),
                           orderCode: code,
                           supplierEmail: widget.currentSupplier.mail,
-                          userEmail: dataBundleNotifier.dataBundleList[0].email,
-                          userName: dataBundleNotifier.dataBundleList[0].firstName,
+                          userEmail: dataBundleNotifier.userDetailsList[0].email,
+                          userName: dataBundleNotifier.userDetailsList[0].firstName,
                           addressBranch: currentStorageModel.address,
                           addressBranchCap: currentStorageModel.cap,
                           addressBranchCity: currentStorageModel.city,
-                          branchNumber: dataBundleNotifier.dataBundleList[0].phone,
+                          branchNumber: dataBundleNotifier.userDetailsList[0].phone,
                           deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
 
                       print('Response from email service ' + sendEmailResponse.data.toString());
@@ -200,7 +200,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           productList: dataBundleNotifier.currentProductModelListForSupplier,
                           deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
                           supplierName: widget.currentSupplier.nome,
-                          currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
+                          currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
                           storageAddress: currentStorageModel.address,
                           storageCap: currentStorageModel.cap,
                           storageCity: currentStorageModel.city,
@@ -380,7 +380,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('  Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                      Text(dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                     ],
                   ),
                   Row(

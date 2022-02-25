@@ -232,7 +232,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
         cf: '',
         extra: getUniqueCustomId(),
         fax: '',
-        id: dataBundleNotifier.dataBundleList[0].id.toString(),
+        id: dataBundleNotifier.userDetailsList[0].id.toString(),
         indirizzo_cap: controllerCap.text,
         indirizzo_citta: controllerCity.text,
         indirizzo_extra: '',

@@ -100,7 +100,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     Row(
                                       children: [
                                         const SizedBox(width: 20,),
-                                        dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].firstName, style:const TextStyle(color: Colors.white, fontSize: 20)) :
+                                        dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].firstName, style:const TextStyle(color: Colors.white, fontSize: 20)) :
                                         const SizedBox(width: 0,),
                                       ],
                                     ),
@@ -119,7 +119,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Row(
                               children: [
                                 const SizedBox(width: 20,),
-                                dataBundleNotifier.dataBundleList.isNotEmpty ? Text(dataBundleNotifier.dataBundleList[0].email, style:const TextStyle(color: kCustomWhite)) : const SizedBox(width: 0,),
+                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomWhite)) : const SizedBox(width: 0,),
                               ],
                             ),
                             const SizedBox(height: 10,),
@@ -438,8 +438,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     width: getProportionateScreenWidth(28),
                                     child: Card(
                                       color: Colors.redAccent.withOpacity(0.8),
-                                      child: Center(child: dataBundleNotifier.dataBundleList.isNotEmpty
-                                          ? Text(dataBundleNotifier.dataBundleList[0].companyList.length.toString()
+                                      child: Center(child: dataBundleNotifier.userDetailsList.isNotEmpty
+                                          ? Text(dataBundleNotifier.userDetailsList[0].companyList.length.toString()
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
                                     ),
                                   ),
@@ -585,7 +585,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
   Widget buildBranchList(DataBundleNotifier dataBundleNotifier) {
     List<Widget> branchList = [];
 
-    dataBundleNotifier.dataBundleList[0].companyList.forEach((branch) {
+    dataBundleNotifier.userDetailsList[0].companyList.forEach((branch) {
       branchList.add(
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
@@ -605,7 +605,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
   buildListBranches(DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> branchWidgetList = [];
-    dataBundleNotifier.dataBundleList[0].companyList.forEach((currentBranch) {
+    dataBundleNotifier.userDetailsList[0].companyList.forEach((currentBranch) {
       branchWidgetList.add(
         GestureDetector(
           child: Container(

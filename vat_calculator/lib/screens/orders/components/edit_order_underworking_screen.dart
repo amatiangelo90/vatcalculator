@@ -110,7 +110,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                       pk_order_id: widget.orderModel.pk_order_id,
                                       status: OrderState.RECEIVED_ARCHIVED,
                                       delivery_date: DateTime.now().millisecondsSinceEpoch,
-                                      closedby: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName
+                                      closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
                                   ),
                                   actionModel: ActionModel(
                                       date: DateTime.now().millisecondsSinceEpoch,
@@ -120,7 +120,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                       type: ActionType.RECEIVED_ORDER
                                   )
                                 );
-                                dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName);
+                                dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
                                 dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
 
                                 Navigator.push(

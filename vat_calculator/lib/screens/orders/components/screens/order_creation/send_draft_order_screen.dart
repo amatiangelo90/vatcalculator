@@ -114,19 +114,19 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                             orderProductList: dataBundleNotifier.currentProdOrderModelList,
                             deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
                             supplierName: widget.currentSupplier.nome,
-                            currentUserName: dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName,
+                            currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
                             storageAddress: currentStorageModel.address,
                             storageCap: currentStorageModel.cap,
                             storageCity: currentStorageModel.city,
                           ),
                           orderCode: code,
                           supplierEmail: widget.currentSupplier.mail,
-                          userEmail: dataBundleNotifier.dataBundleList[0].email,
-                          userName: dataBundleNotifier.dataBundleList[0].firstName,
+                          userEmail: dataBundleNotifier.userDetailsList[0].email,
+                          userName: dataBundleNotifier.userDetailsList[0].firstName,
                           addressBranch: currentStorageModel.address,
                           addressBranchCap: currentStorageModel.cap,
                           addressBranchCity: currentStorageModel.city,
-                          branchNumber: dataBundleNotifier.dataBundleList[0].phone,
+                          branchNumber: dataBundleNotifier.userDetailsList[0].phone,
                           deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
 
                       print('sendEmailResponse.statusCode: ' + sendEmailResponse.statusCode.toString());
@@ -335,7 +335,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('  Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(dataBundleNotifier.dataBundleList[0].firstName + ' ' + dataBundleNotifier.dataBundleList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                      Text(dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                     ],
                   ),
                   Row(

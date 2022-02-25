@@ -27,7 +27,7 @@ import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
 
-  List<UserDetailsModel> dataBundleList = [
+  List<UserDetailsModel> userDetailsList = [
   ];
 
   List<RecessedModel> currentListRecessed = [
@@ -103,7 +103,6 @@ class DataBundleNotifier extends ChangeNotifier {
   DateTimeRange currentDateTimeRange;
 
   bool cupertinoSwitch = false;
-  bool searchStorageButton = false;
   bool isZtoAOrderded = false;
   bool editOrder = true;
 
@@ -365,17 +364,17 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void addDataBundle(UserDetailsModel bundle){
     print('Adding bundle to Notifier' + bundle.email.toString());
-    dataBundleList.add(bundle);
+    userDetailsList.add(bundle);
     clearAndUpdateMapBundle();
     notifyListeners();
   }
 
   Future<void> addBranches(List<BranchModel> branchList) async {
-    dataBundleList[0].companyList.clear();
-    dataBundleList[0].companyList = branchList;
+    userDetailsList[0].companyList.clear();
+    userDetailsList[0].companyList = branchList;
 
-    if(dataBundleList[0].companyList.isNotEmpty){
-      currentBranch = dataBundleList[0].companyList[0];
+    if(userDetailsList[0].companyList.isNotEmpty){
+      currentBranch = userDetailsList[0].companyList[0];
       initializeCurrentDateTimeRangeWeekly();
       setCurrentPrivilegeType(currentBranch.accessPrivilege);
       List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
@@ -592,8 +591,8 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void clearAll(){
-    if(dataBundleList.isNotEmpty){
-      dataBundleList.clear();
+    if(userDetailsList.isNotEmpty){
+      userDetailsList.clear();
     }
     if(currentBranch != null){
       currentBranch = null;
@@ -770,21 +769,6 @@ class DataBundleNotifier extends ChangeNotifier {
     );
     print('coming list size ' + retrieveProductsByBranch.length.toString());
     addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
-    notifyListeners();
-  }
-
-  updateProductToAddToCurrentStorageList(){
-    List<int> listProductIdsToRemove = [];
-    print('coming list size ' + storageTempListProduct.length.toString());
-    currentStorageProductListForCurrentStorage.forEach((currentProductAlreadyPresent) {
-      listProductIdsToRemove.add(currentProductAlreadyPresent.fkProductId);
-    });
-
-    storageTempListProduct.removeWhere((element) =>
-        listProductIdsToRemove.contains(element.pkProductId),
-    );
-    print('coming list size ' + storageTempListProduct.length.toString());
-    addAllCurrentListProductToProductListToAddToStorage(storageTempListProduct);
     notifyListeners();
   }
 
@@ -1069,21 +1053,11 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   refreshSearchButtonStoreConfiguration(){
-    searchStorageButton = false;
     isZtoAOrderded = false;
-    notifyListeners();
-  }
-  void switchSearchProductStorageButton() {
-    if(searchStorageButton){
-      searchStorageButton = false;
-    }else{
-      searchStorageButton = true;
-    }
     notifyListeners();
   }
 
   void sortCurrentStorageListDuplicatedFromAToZ() {
-
     if(isZtoAOrderded){
       currentStorageProductListForCurrentStorageDuplicated.sort((a, b) => a.productName.toLowerCase().compareTo(b.productName.toLowerCase()));
       isZtoAOrderded = false;
@@ -1098,7 +1072,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void clearAndUpdateMapBundle() {
     currentMapBranchIdBundleSupplierStorageUsers.clear();
-    dataBundleList[0].companyList.forEach((currentBranch) async {
+    userDetailsList[0].companyList.forEach((currentBranch) async {
 
       List<StorageModel> listStorages = await getclientServiceInstance().retrieveStorageListByBranch(BranchModel(
           pkBranchId: currentBranch.pkBranchId
@@ -1169,8 +1143,8 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   String retrieveNameLastNameCurrentUser() {
-    if(dataBundleList.isNotEmpty){
-      return dataBundleList[0].firstName + ' ' + dataBundleList[0].lastName;
+    if(userDetailsList.isNotEmpty){
+      return userDetailsList[0].firstName + ' ' + userDetailsList[0].lastName;
     }else{
       return 'Error retrieving user name';
     }
@@ -1584,19 +1558,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void removeProductFromCurrentStorage(StorageProductModel productStorageElementToRemove) {
-
-    currentStorageProductListForCurrentStorage.removeWhere((element) =>
-      productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
-    currentStorageProductListForCurrentStorageDuplicated.removeWhere((element) =>
-    productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
-    currentStorageProductListForCurrentStorageLoad.removeWhere((element) =>
-    productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
-    currentStorageProductListForCurrentStorageUnload.removeWhere((element) =>
-    productStorageElementToRemove.pkStorageProductId == element.pkStorageProductId);
-    notifyListeners();
-  }
-
   int retrieveEventsNumberForCurrentDate(DateTime date) {
 
     int counter = 0;
@@ -1663,5 +1624,12 @@ class DataBundleNotifier extends ChangeNotifier {
     }else{
      return 'Nessun magazzino trovato';
     }
+  }
+
+  void setToSelectedFalseAllItemOnCurrentStorageProductListForCurrentStorageDuplicated() {
+    currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+      element.selected = false;
+    });
+    notifyListeners();
   }
 }

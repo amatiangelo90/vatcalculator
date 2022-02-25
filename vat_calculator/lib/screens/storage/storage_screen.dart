@@ -15,6 +15,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/save_product_into_storage_request.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
@@ -22,12 +23,14 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
 import 'components/add_storage_screen.dart';
+import 'components/product_datasource_storage.dart';
 
 class StorageScreen extends StatefulWidget{
   static String routeName = "/storagescreen";
@@ -61,6 +64,8 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
   String _selectedSupplier = 'Seleziona Fornitore';
 
   ResponseAnagraficaFornitori currentSupplierToSaveProduct;
+
+  int _rowsPerPage = 7;
 
   Map<int, Widget> ivaListCupertino = {
     0 : const Text('Crea e Aggiungi'),
@@ -97,127 +102,32 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     double _panelHeightOpen = 0;
     double _panelHeightClosed = 45.0;
 
+
+
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         suppliersList.clear();
         suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
 
+        dataBundleNotifier.setToSelectedFalseAllItemOnCurrentStorageProductListForCurrentStorageDuplicated();
         _panelHeightOpen = MediaQuery.of(context).size.height * .75;
-        return Scaffold(
-          drawer: const CommonDrawer(),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.redAccent,
-            elevation: 2.0,
-            child: Icon(Icons.add),
-            onPressed: (){},
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          bottomNavigationBar: const BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            notchMargin: 3,
-            color: kPrimaryColor,
-            child: CustomBottomNavBar(selectedMenu: MenuState.storage),
-          ),
-          appBar: AppBar(
-            iconTheme: const IconThemeData(color: Colors.white),
-            centerTitle: true,
-            title: dataBundleNotifier.searchStorageButton ? SizedBox(
-              height: getProportionateScreenHeight(40),
-              width: getProportionateScreenWidth(300),
-              child: CupertinoTextField(
-                textInputAction: TextInputAction.next,
-                restorationId: 'Ricerca per nome o fornitore',
-                keyboardType: TextInputType.text,
-                clearButtonMode: OverlayVisibilityMode.editing,
-                placeholder: 'Ricerca per nome o fornitore',
-                onChanged: (currentText) {
-                  dataBundleNotifier.filterStorageProductList(currentText);
-                },
-              ),
-            ) : GestureDetector(
-              onTap: () {
-                buildStorageChooserDialog(context, dataBundleNotifier);
-              },
-              child: Text(
-                dataBundleNotifier.currentStorageList.isNotEmpty ?
-                'Area Magazzino' : dataBundleNotifier.currentBranch == null ? 'Area Gestione Magazzini' : 'Crea Magazzino',
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(17),
-                  color: kCustomYellow800,
-                ),
-              ),
-            ),
-            backgroundColor: Colors.black.withOpacity(0.9),
-            actions: [
-              dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : IconButton(
-                  icon: Icon(
-                    dataBundleNotifier.searchStorageButton ? Icons.cancel_outlined : Icons.search,
-                    color: dataBundleNotifier.searchStorageButton ? kPinaColor : Colors.white,
-                    size: getProportionateScreenHeight(30),
-                  ),
-                  onPressed: () {
-                    dataBundleNotifier.filterStorageProductList('');
-                    dataBundleNotifier.switchSearchProductStorageButton();
-                  }
-              ),
+        return SafeArea(
+          child: Scaffold(
+            drawer: const CommonDrawer(),
 
-              dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
-                  icon: Icon(
-                    Icons.arrow_circle_down_outlined,
-                    color: kPinaColor,
-                    size: getProportionateScreenHeight(30),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, UnloadStorageScreen.routeName);
-                  }
-              ),
-              dataBundleNotifier.currentStorage == null ? SizedBox(width: 0,) : dataBundleNotifier.searchStorageButton ? SizedBox(width: 0,) : IconButton(
-                  icon: Icon(
-                    Icons.arrow_circle_up_outlined,
-                    color: Colors.green,
-                    size: getProportionateScreenHeight(30),
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, LoadStorageScreen.routeName);
-                  }
-              ),
-            ],
-          ),
-          body: dataBundleNotifier.currentBranch == null
-              ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(13),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                width: SizeConfig.screenWidth * 0.6,
-                child: CreateBranchButton(),
-              ),
-            ],
-          )
-              : dataBundleNotifier.currentStorageList.isEmpty
-              ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  dataBundleNotifier.dataBundleList.isNotEmpty
-                      ? "Ciao ${dataBundleNotifier.dataBundleList[0].firstName}, sembra "
-                      "che tu non abbia configurato ancora nessun magazzino per ${dataBundleNotifier.currentBranch.companyName}. "
-                      "Ti ricordo che è possibile inserire prodotti al tuo magazzino solo dopo averli creati ed associati ad uno dei tuoi fornitori."
-                      : "",
+            floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+            bottomNavigationBar: const BottomAppBar(
+              shape: CircularNotchedRectangle(),
+              notchMargin: 3,
+              color: kPrimaryColor,
+              child: CustomBottomNavBar(selectedMenu: MenuState.storage),
+            ),
+            body: dataBundleNotifier.currentBranch == null
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Sembra che tu non abbia configurato ancora nessuna attività. ",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(13),
@@ -225,99 +135,240 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                     color: Colors.black,
                   ),
                 ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                width: SizeConfig.screenWidth * 0.6,
-                child: DefaultButton(
-                  text: "Crea Magazzino",
-                  press: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddStorageScreen(
-                          branch: dataBundleNotifier.currentBranch,
-                        ),
-                      ),
-                    );
-                  },
+                const SizedBox(
+                  height: 30,
                 ),
-              ),
-            ],
-          )
-              : Consumer<DataBundleNotifier>(
-              builder: (context, dataBundleNotifier, child) {
-                return Stack(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            width: double.infinity,
-                            height: getProportionateScreenHeight(56),
-                            child: buildGestureDetectorStoragesSelector(
-                                context, dataBundleNotifier),
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.6,
+                  child: CreateBranchButton(),
+                ),
+              ],
+            )
+                : dataBundleNotifier.currentStorageList.isEmpty
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    dataBundleNotifier.userDetailsList.isNotEmpty
+                        ? "Ciao ${dataBundleNotifier.userDetailsList[0].firstName}, sembra "
+                        "che tu non abbia configurato ancora nessun magazzino per ${dataBundleNotifier.currentBranch.companyName}. "
+                        "Ti ricordo che è possibile inserire prodotti al tuo magazzino solo dopo averli creati ed associati ad uno dei tuoi fornitori."
+                        : "",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(13),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.6,
+                  child: DefaultButton(
+                    text: "Crea Magazzino",
+                    press: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddStorageScreen(
+                            branch: dataBundleNotifier.currentBranch,
                           ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            )
+                : Consumer<DataBundleNotifier>(
+                builder: (context, dataBundleNotifier, child) {
+                  return Stack(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              width: double.infinity,
+                              height: getProportionateScreenHeight(56),
+                              child: buildGestureDetectorStoragesSelector(
+                                  context, dataBundleNotifier),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                SizedBox(width: 5,),
-                                IconButton(
-                                    icon: dataBundleNotifier.isZtoAOrderded ? SvgPicture.asset('assets/icons/sort_a_to_z.svg') : SvgPicture.asset('assets/icons/sort_z_to_a.svg'),
-                                    onPressed: () {
-                                      dataBundleNotifier.sortCurrentStorageListDuplicatedFromAToZ();
-                                    }
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Text('   SCARICO', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.arrow_circle_down_outlined,
+                                            color: kPinaColor,
+                                            size: getProportionateScreenHeight(30),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pushNamed(context, UnloadStorageScreen.routeName);
+                                          }
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                Content(
-                                  child: ChipsChoice<String>.single(
-                                    choiceActiveStyle: C2ChoiceStyle(
-                                      color: Colors.blueAccent.shade700.withOpacity(0.8),
-                                      elevation: 2,
-                                      showCheckmark: false,
-                                    ),
-                                    value: supplierChoiced,
-                                    onChanged: (val) => setState(() {
-                                      supplierChoiced = val;
-                                      dataBundleNotifier.filterStorageProductList(val);
-                                    }),
-                                    choiceItems: C2Choice.listFrom<String, String>(
-                                      source: suppliersList,
-                                      value: (i, v) => v,
-                                      label: (i, v) => v,
-                                      tooltip: (i, v) => v,
-                                    ),
+
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Text('   CARICO', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.arrow_circle_up_outlined,
+                                            color: Colors.green,
+                                            size: getProportionateScreenHeight(30),
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pushNamed(context, LoadStorageScreen.routeName);
+                                          }
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : Card(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Text('   ELIMINA', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                            size: getProportionateScreenHeight(30),
+                                          ),
+                                          onPressed: () {
+                                            try{
+                                              List<StorageProductModel> productToRemove = [];
+                                              dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                                                if(element.selected){
+                                                  productToRemove.add(element);
+                                                }
+                                              });
+                                              if(productToRemove.isEmpty){
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                    duration: Duration(milliseconds: 400),
+                                                    content: Text('Nessun prodotto selezionato')));
+                                              }else{
+                                                productToRemove.forEach((productStorageElementToRemove) async {
+                                                  await dataBundleNotifier.getclientServiceInstance()
+                                                      .removeProductFromStorage(
+                                                      storageProductModel: productStorageElementToRemove,
+                                                      actionModel: ActionModel(
+                                                          date: DateTime.now().millisecondsSinceEpoch,
+                                                          description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                                              'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
+                                                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                          type: ActionType.PRODUCT_DELETE
+                                                      )
+                                                  );
+                                                });
+                                                dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                              }
+                                            }catch(e){
+                                              print('Impossible to remove product from storage. Exception: ' + e);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                  duration: const Duration(milliseconds: 400),
+                                                  content: Text('Impossible to remove product from storage. Exception: ' + e)));
+                                            }
+                                        }
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                          ),
-                          buildCurrentListProductTable(dataBundleNotifier, context),
-                        ],
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 10,),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(40),
+                                    width: getProportionateScreenWidth(200),
+                                    child: CupertinoTextField(
+                                      textInputAction: TextInputAction.next,
+                                      restorationId: 'Ricerca per nome o fornitore',
+                                      keyboardType: TextInputType.text,
+                                      clearButtonMode: OverlayVisibilityMode.editing,
+                                      placeholder: 'Ricerca per nome o fornitore',
+                                      onChanged: (currentText) {
+                                        dataBundleNotifier.filterStorageProductList(currentText);
+                                      },
+                                    ),
+                                  ),
+                                  Content(
+                                    child: ChipsChoice<String>.single(
+                                      choiceActiveStyle: C2ChoiceStyle(
+                                        color: Colors.blueAccent.shade700.withOpacity(0.8),
+                                        elevation: 2,
+                                        showCheckmark: false,
+                                      ),
+                                      value: supplierChoiced,
+                                      onChanged: (val) => setState(() {
+                                        supplierChoiced = val;
+                                        dataBundleNotifier.filterStorageProductList(val);
+                                      }),
+                                      choiceItems: C2Choice.listFrom<String, String>(
+                                        source: suppliersList,
+                                        value: (i, v) => v,
+                                        label: (i, v) => v,
+                                        tooltip: (i, v) => v,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            buildCurrentListProductTable(dataBundleNotifier, context),
+                            const SizedBox(height: 100,),
+                          ],
+                        ),
                       ),
-                    ),
-                    SlidingUpPanel(
-                      maxHeight: _panelHeightOpen,
-                      minHeight: _panelHeightClosed,
-                      parallaxEnabled: true,
-                      parallaxOffset: .3,
-                      panelBuilder: (sc) => _panel(sc, dataBundleNotifier),
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(18.0),
-                          topRight: Radius.circular(18.0)),
-                      onPanelSlide: (double pos) => setState(() {
-                        _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
-                            _initFabHeight;
-                      }),
-                    ),
-                  ],
-                );
-              }
-          ),
+                      SlidingUpPanel(
+                        maxHeight: _panelHeightOpen,
+                        minHeight: _panelHeightClosed,
+                        parallaxEnabled: true,
+                        parallaxOffset: .3,
+                        panelBuilder: (sc) => _panel(sc, dataBundleNotifier),
+                        borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(18.0),
+                            topRight: Radius.circular(18.0)),
+                        onPanelSlide: (double pos) => setState(() {
+                          _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
+                              _initFabHeight;
+                        }),
+                      ),
+                    ],
+                  );
+                }
+            ),
 
+          ),
         );
       },
     );
@@ -585,143 +636,45 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     return storagesWidgetList;
   }
 
-  buildCurrentListProductTable(
-      DataBundleNotifier dataBundleNotifier, context) {
+  buildCurrentListProductTable(DataBundleNotifier dataBundleNotifier, context) {
 
-    List<Widget> rows = [
-    ];
-
-    if(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.isEmpty){
-      rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, getProportionateScreenHeight(200), 0, 0),
-              child: const Center(child: Text('Nessun prodotto presente')),
-            ),
-          ],
-        ),
-      );
-    }
-
-    dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated
-        .forEach((productStorageElementToRemove) {
-      TextEditingController controller =
-      TextEditingController(text: productStorageElementToRemove.stock.toString());
-      rows.add(
-        Divider(height: 2, indent: 10, color: Colors.black54),
-      );
-      rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 9),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    productStorageElementToRemove.productName,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(15)),
-                  ),
-                  Text(
-                    productStorageElementToRemove.supplierName,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(8)),
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        productStorageElementToRemove.unitMeasure,
-                        style:
-                        TextStyle(fontSize: getProportionateScreenWidth(8)),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Icon(
-                          FontAwesomeIcons.dotCircle,
-                          size: getProportionateScreenWidth(3),
-                        ),
-                      ),
-                      dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
-                      TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
-                        productStorageElementToRemove.price.toString() + ' €',
-                        style:
-                        TextStyle(fontSize: getProportionateScreenWidth(8)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                Row(
-                  children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints.loose(Size(
-                          getProportionateScreenWidth(60),
-                          getProportionateScreenWidth(50))),
-                      child: CupertinoTextField(
-                        enabled: false,
-                        controller: controller,
-                        onChanged: (text) {
-                        },
-                        textInputAction: TextInputAction.next,
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true, signed: true),
-                        clearButtonMode: OverlayVisibilityMode.never,
-                        textAlign: TextAlign.center,
-                        autocorrect: false,
-                      ),
-                    ),
-                    const SizedBox(width: 9,),
-                    GestureDetector(
-                        onTap: (){
-                          try{
-                            var removeProductFromStorage = dataBundleNotifier.getclientServiceInstance()
-                                .removeProductFromStorage(
-                                storageProductModel: productStorageElementToRemove,
-                                actionModel: ActionModel(
-                                    date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                        'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                    type: ActionType.PRODUCT_DELETE
-                                )
-                            );
-                            dataBundleNotifier.removeProductFromCurrentStorage(productStorageElementToRemove);
-                            dataBundleNotifier.updateProductToAddToCurrentStorageList();
-                          }catch(e){
-                            print('Impossible to remove product from storage. Exception: ' + e);
-                          }
-                          //dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-
-                          //suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
-                        },
-                        child: Icon(Icons.delete, color: Colors.red.shade800, size: getProportionateScreenHeight(30),)
-                    ),
-                    SizedBox(width: 4,),
-                  ],
-                ),
-              ],
-            ),
-
-          ],
-        ),
-      );
-
-    });
-    return Padding(
-      padding: EdgeInsets.fromLTRB(getProportionateScreenHeight(8), getProportionateScreenHeight(8), getProportionateScreenHeight(8), getProportionateScreenHeight(90)),
-      child: Column(
-        children: rows,
+    List<DataColumn> kTableColumns = <DataColumn>[
+      DataColumn(
+        label: Row(children: [ const Text('Prodotto'),
+          IconButton(
+              icon: dataBundleNotifier.isZtoAOrderded ? SvgPicture.asset('assets/icons/sort_a_to_z.svg') : SvgPicture.asset('assets/icons/sort_z_to_a.svg'),
+              onPressed: () {
+                dataBundleNotifier.sortCurrentStorageListDuplicatedFromAToZ();
+              }
+          ),]),
       ),
+      const DataColumn(
+        label: Text('Giacenza'),
+        numeric: true,
+      ),
+      const DataColumn(
+        label: Text('Prezzo'),
+        numeric: true,
+      ),
+      const DataColumn(
+        label: Text('Fornitore'),
+        numeric: true,
+      ),
+    ];
+    return Column(
+      children: [
+        PaginatedDataTable(
+          rowsPerPage: _rowsPerPage,
+          availableRowsPerPage: const <int>[7, 14, 21, 28],
+          onRowsPerPageChanged: (int value) {
+            setState(() {
+              _rowsPerPage = value;
+            });
+          },
+          columns: kTableColumns,
+          source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers),
+        ),
+      ],
     );
   }
 
@@ -837,7 +790,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         height: MediaQuery.of(context).size.height *0.04,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            width: 0.5,
+                            width: 0.1,
                             color: kBeigeColor,
                           ),
                           color: _kgUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
@@ -861,7 +814,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         decoration: BoxDecoration(
                           color: _packagesUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
                           border: Border.all(
-                            width: 0.5,
+                            width: 0.1,
                             color: kBeigeColor,
                           ),
                         ),
@@ -883,7 +836,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         height: MediaQuery.of(context).size.height *0.04,
                         decoration: BoxDecoration(
                           border: Border.all(
-                            width: 0.5,
+                            width: 0.1,
                             color: kBeigeColor,
                           ),
                           color: _otherUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
@@ -914,7 +867,8 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                 const SizedBox(width: 11,),
                 Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(10))),
               ],
-            ),Padding(
+            ),
+            Padding(
               padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
               child: SizedBox(
                 height: MediaQuery.of(context).size.height *0.04,
@@ -927,7 +881,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                 ),
               ),
             ),
-            const SizedBox(height: 10,),
+            SizedBox(height: 50,),
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: CupertinoButton(
@@ -989,7 +943,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                               dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
                               dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
                               pkStorageProductCreationModelId: 0,
-                              user: dataBundleNotifier.dataBundleList[0].firstName
+                              user: dataBundleNotifier.userDetailsList[0].firstName
                           ),
                           actionModel: ActionModel(
                               date: DateTime.now().millisecondsSinceEpoch,
@@ -1116,7 +1070,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                         dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
                         dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
                         pkStorageProductCreationModelId: 0,
-                        user: dataBundleNotifier.dataBundleList[0].firstName
+                        user: dataBundleNotifier.userDetailsList[0].firstName
                     ),
                     actionModel: ActionModel(
                         date: DateTime.now().millisecondsSinceEpoch,
@@ -1161,7 +1115,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
       });
     }else{
       listWidget.add(
-        Center(child: Text('Nessun prodotto disponibile'),)
+        const Center(child: Text('Nessun prodotto disponibile'),)
       );
     }
 
@@ -1200,4 +1154,5 @@ class _ContentState extends State<Content> with AutomaticKeepAliveClientMixin<Co
       ],
     );
   }
+
 }

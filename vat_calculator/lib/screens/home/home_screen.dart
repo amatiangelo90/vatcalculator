@@ -8,6 +8,7 @@ import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/fab/fab_widget.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
@@ -32,13 +33,12 @@ class HomeScreen extends StatelessWidget {
           child: Scaffold(
             drawer: const CommonDrawer(),
             appBar: AppBar(
-              iconTheme: const IconThemeData(color: kCustomWhite),
-              backgroundColor: Colors.black.withOpacity(0.9),
+              iconTheme: const IconThemeData(color: kPrimaryColor),
+              backgroundColor: Colors.white,
               actions: [
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
                   children: [
                     dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') :
-
                     IconButton(
                       icon: SvgPicture.asset(
                         'assets/icons/iva.svg',
@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                   children: [ IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/receipt.svg',
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                       width: 25,
                     ),
                     onPressed: () {
@@ -94,42 +94,80 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                Stack(
+                  children: [
+                    IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icons/party.svg',
+                        color: kPrimaryColor,
+                        width: 50,
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(context,
+                            EventCreateScreen.routeName);
+                      },
+                    ),
+                    Positioned(
+                      top: 26.0,
+                      right: 9.0,
+                      child: Stack(
+                        children: const <Widget>[
+                          Icon(
+                            Icons.brightness_1,
+                            size: 18,
+                            color: kPrimaryColor,
+                          ),
+                          Positioned(
+                            right: 2.5,
+                            top: 2.5,
+                            child: Center(
+                              child: Icon(
+                                Icons
+                                    .add_circle_outline,
+                                size: 13,
+                                color:
+                                kCustomYellowDarker,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 const SizedBox(width: 5,),
               ],
               centerTitle: true,
               title: Column(
                 children: [
                   Text(
-                    "Ciao ${dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].firstName : ''}",
+                    "Ciao ${dataBundleNotifier.userDetailsList.isNotEmpty ? dataBundleNotifier.userDetailsList[0].firstName : ''}",
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(17),
-                      color: kCustomYellow800,
+                      color: kPrimaryColor,
                     ),
                   ),
                   Text(
-                    dataBundleNotifier.dataBundleList.isNotEmpty ? dataBundleNotifier.dataBundleList[0].email : '',
+                    dataBundleNotifier.userDetailsList.isNotEmpty ? dataBundleNotifier.userDetailsList[0].email : '',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(7),
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                     ),
                   ),
                   Text(
-                    dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty ?
+                    dataBundleNotifier.userDetailsList.isNotEmpty && dataBundleNotifier.userDetailsList[0].companyList.isNotEmpty ?
                     dataBundleNotifier.currentBranch.accessPrivilege + ' per ' + dataBundleNotifier.currentBranch.companyName : '',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(5),
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                     ),
                   ),
 
                 ],
               ),
-
               elevation: 0,
             ),
             body: const HomePageBody(),
-            floatingActionButton: FancyFab(),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
             bottomNavigationBar: const BottomAppBar(
               shape: CircularNotchedRectangle(),
               notchMargin: 3,
@@ -152,7 +190,7 @@ class HomeScreen extends StatelessWidget {
         case 'aruba':
           return Colors.orange;
         default:
-          return Colors.white;
+          return kPrimaryColor;
       }
     }
 

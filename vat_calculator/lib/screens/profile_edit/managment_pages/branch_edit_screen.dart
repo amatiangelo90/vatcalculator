@@ -177,7 +177,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(listUserModel[index].privilege, style: TextStyle(color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
-                              listUserModel[index].id == dataBundleNotifier.dataBundleList[0].id ? SizedBox(height: 0,) :
+                              listUserModel[index].id == dataBundleNotifier.userDetailsList[0].id ? SizedBox(height: 0,) :
                               listUserModel[index].privilege == Privileges.OWNER ? SizedBox(width: 0,) : Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
@@ -259,7 +259,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                           ),
                         ),
                       ),
-                      listUserModel[index].id == dataBundleNotifier.dataBundleList[0].id ? const SizedBox(width: 0,) : Column(
+                      listUserModel[index].id == dataBundleNotifier.userDetailsList[0].id ? const SizedBox(width: 0,) : Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Row(

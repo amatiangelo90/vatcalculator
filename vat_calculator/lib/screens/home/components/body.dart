@@ -52,8 +52,8 @@ class _HomePageBodyState extends State<HomePageBody> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
-        if (dataBundleNotifier.dataBundleList.isEmpty ||
-            dataBundleNotifier.dataBundleList[0].companyList.isEmpty) {
+        if (dataBundleNotifier.userDetailsList.isEmpty ||
+            dataBundleNotifier.userDetailsList[0].companyList.isEmpty) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -656,7 +656,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   buildListBranches(DataBundleNotifier dataBundleNotifier) {
     List<Widget> branchWidgetList = [];
 
-    dataBundleNotifier.dataBundleList[0].companyList.forEach((currentBranch) {
+    dataBundleNotifier.userDetailsList[0].companyList.forEach((currentBranch) {
       branchWidgetList.add(
         GestureDetector(
           child: Container(

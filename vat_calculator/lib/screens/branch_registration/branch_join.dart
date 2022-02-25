@@ -208,7 +208,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                         GestureDetector(
                                                           onTap: () {
                                                             launch('https://api.whatsapp.com/send/?phone=+393454937047&text=Ciao, ho avuto dei problemi in fase di creazione/associazione attività con il seguente codice [$code]. '
-                                                                'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.dataBundleList[0].firstName}');
+                                                                'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.userDetailsList[0].firstName}');
                                                           },
                                                           child: Card(
                                                             elevation: 6,
@@ -312,7 +312,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                         GestureDetector(
                                                           onTap: () {
                                                             launch('https://api.whatsapp.com/send/?phone=+393454937047&text=Ciao, ho avuto dei problemi in fase di creazione/associazione attività con il seguente codice [$code]. '
-                                                                'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.dataBundleList[0].firstName}');
+                                                                'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.userDetailsList[0].firstName}');
                                                           },
                                                           child: Card(
                                                             elevation: 6,
@@ -349,7 +349,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                           Response response = await dataBundleNotifier.getclientServiceInstance().createUserBranchRelation(
                                             accessPrivilege: Privileges.EMPLOYEE,
                                             fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
-                                            fkUserId: dataBundleNotifier.dataBundleList[0].id,
+                                            fkUserId: dataBundleNotifier.userDetailsList[0].id,
                                               actionModel: ActionModel(
                                                   date: DateTime.now().millisecondsSinceEpoch,
                                                   description: 'Si è collegato all\'attività ${retrieveBranchByBranchId[0].companyName} tramite il codice $currentPassword.',
@@ -424,7 +424,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                             );
                                           }else{
 
-                                            List<BranchModel> _branchList = await dataBundleNotifier.getclientServiceInstance().retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
+                                            List<BranchModel> _branchList = await dataBundleNotifier.getclientServiceInstance().retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                                             dataBundleNotifier.addBranches(_branchList);
 
                                             if(dataBundleNotifier.currentBranch != null){
@@ -612,7 +612,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                       GestureDetector(
                                                         onTap: () {
                                                           launch('https://api.whatsapp.com/send/?phone=+393454937047&text=Ciao, ho avuto dei problemi in fase di creazione/associazione attività con il seguente codice [$code]. '
-                                                              'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.dataBundleList[0].firstName}');
+                                                              'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.userDetailsList[0].firstName}');
                                                         },
                                                         child: Card(
                                                           elevation: 6,

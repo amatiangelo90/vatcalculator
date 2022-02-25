@@ -34,10 +34,10 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
 
-        if(dataBundleNotifier.dataBundleList.isEmpty){
+        if(dataBundleNotifier.userDetailsList.isEmpty){
           controllerEmail = TextEditingController();
         }else{
-          controllerEmail = TextEditingController(text: dataBundleNotifier.dataBundleList[0].email);
+          controllerEmail = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
         }
         void buildShowErrorDialog(String text) {
           Widget cancelButton = TextButton(
@@ -173,7 +173,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                                   fkBranchId: 0);
                               await clientService.performSaveBranch(company, actionModel);
 
-                              List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.dataBundleList[0].id);
+                              List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                               dataBundleNotifier.addBranches(_branchList);
 
                               Navigator.pushNamed(context, HomeScreen.routeName);

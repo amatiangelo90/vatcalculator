@@ -115,9 +115,9 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     ),
                                     onPressed: () {
 
-                                      _nameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty? '' : dataBundleNotifier.dataBundleList[0].firstName);
-                                      _lastNameController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].lastName);
-                                      _phoneController = TextEditingController(text: dataBundleNotifier.dataBundleList.isEmpty ? '' : dataBundleNotifier.dataBundleList[0].phone);
+                                      _nameController = TextEditingController(text: dataBundleNotifier.userDetailsList.isEmpty? '' : dataBundleNotifier.userDetailsList[0].firstName);
+                                      _lastNameController = TextEditingController(text: dataBundleNotifier.userDetailsList.isEmpty ? '' : dataBundleNotifier.userDetailsList[0].lastName);
+                                      _phoneController = TextEditingController(text: dataBundleNotifier.userDetailsList.isEmpty ? '' : dataBundleNotifier.userDetailsList[0].phone);
 
                                       showDialog(
                                           context: context,
@@ -181,7 +181,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
 
                                                         } else {
                                                           ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                                                          UserDetailsModel userDetail = dataBundleNotifier.dataBundleList[0];
+                                                          UserDetailsModel userDetail = dataBundleNotifier.userDetailsList[0];
 
                                                           userDetail.firstName = _nameController.value.text;
                                                           userDetail.lastName = _lastNameController.value.text;
@@ -391,31 +391,31 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                         ),
                                         getCustomDetailRow(
                                             dataBundleNotifier
-                                                    .dataBundleList.isEmpty
+                                                    .userDetailsList.isEmpty
                                                 ? ''
                                                 : dataBundleNotifier
-                                                    .dataBundleList[0].firstName,
+                                                    .userDetailsList[0].firstName,
                                             Icons.person),
                                         getCustomDetailRow(
                                             dataBundleNotifier
-                                                    .dataBundleList.isEmpty
+                                                    .userDetailsList.isEmpty
                                                 ? ''
                                                 : dataBundleNotifier
-                                                    .dataBundleList[0].lastName,
+                                                    .userDetailsList[0].lastName,
                                             Icons.person),
                                         getCustomDetailRow(
                                             dataBundleNotifier
-                                                    .dataBundleList.isEmpty
+                                                    .userDetailsList.isEmpty
                                                 ? ''
                                                 : dataBundleNotifier
-                                                    .dataBundleList[0].email,
+                                                    .userDetailsList[0].email,
                                             Icons.email),
                                         getCustomDetailRow(
                                             dataBundleNotifier
-                                                    .dataBundleList.isEmpty
+                                                    .userDetailsList.isEmpty
                                                 ? ''
                                                 : dataBundleNotifier
-                                                    .dataBundleList[0].phone,
+                                                    .userDetailsList[0].phone,
                                             Icons.phone),
                                       ],
                                     ),
@@ -445,7 +445,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                     ),
                   ),
                 ),
-                (dataBundleNotifier.dataBundleList != null && dataBundleNotifier.dataBundleList.isNotEmpty && dataBundleNotifier.dataBundleList[0].companyList.isNotEmpty) ? buildBranchList(dataBundleNotifier.dataBundleList[0].companyList,
+                (dataBundleNotifier.userDetailsList != null && dataBundleNotifier.userDetailsList.isNotEmpty && dataBundleNotifier.userDetailsList[0].companyList.isNotEmpty) ? buildBranchList(dataBundleNotifier.userDetailsList[0].companyList,
                     dataBundleNotifier) : Center(child: Column(
                       children: [
                         Text('Nessuna Attività creata'),

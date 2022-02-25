@@ -78,8 +78,8 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                       Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
                           orderModel: OrderModel(
                           code: code,
-                          details: 'Ordine eseguito da ' + dataBundleNotifier.dataBundleList[0].firstName + ' ' +
-                              dataBundleNotifier.dataBundleList[0].lastName + ' per ' +
+                          details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
+                              dataBundleNotifier.userDetailsList[0].lastName + ' per ' +
                               dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
                           total: 0.0,
                           status: OrderState.DRAFT,
@@ -87,7 +87,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                           delivery_date: null,
                           fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
                           fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                          fk_user_id: dataBundleNotifier.dataBundleList[0].id,
+                          fk_user_id: dataBundleNotifier.userDetailsList[0].id,
                           pk_order_id: 0,
                           fk_supplier_id: fkSupplierId
                       ),

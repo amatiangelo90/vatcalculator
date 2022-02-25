@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/size_config.dart';
 
-class ProductDataSource extends DataTableSource {
+class ProductDataSourceEvents extends DataTableSource {
   int _selectedCount = 0;
 
   final List<StorageProductModel> _products;
-  ProductDataSource(this._products);
+  ProductDataSourceEvents(this._products);
+
 
   @override
   DataRow getRow(int index) {
@@ -24,10 +26,15 @@ class ProductDataSource extends DataTableSource {
           }
         },
         cells: <DataCell>[
-          DataCell(Text(product.productName)),
-          DataCell(Text(product.stock.toStringAsFixed(2), style: TextStyle(color: product.stock <= 0 ? Colors.red : Colors.green.shade900),)),
-          DataCell(Text(product.unitMeasure.toString())),
-          DataCell(Text(product.price.toStringAsFixed(2))),
+          DataCell(Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(product.productName, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(product.unitMeasure, style: TextStyle(fontSize: getProportionateScreenHeight(10))),
+            ],
+          )),
+          DataCell(Text(product.stock.toStringAsFixed(2), style: TextStyle(color: product.stock <= 0 ? Colors.red : Colors.green.shade900, fontWeight: FontWeight.bold),)),
           DataCell(Text(product.amountHundred.toStringAsFixed(2))),
         ]
     );

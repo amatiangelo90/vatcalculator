@@ -1,14 +1,20 @@
 import 'package:csc_picker/dropdown_with_search.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/event/component/product_datasource.dart';
+import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
@@ -33,9 +39,11 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
 
   int _barPositionCounter = 0;
   int _champagneriePositionCounter = 0;
-  int _rowsPerPage = 5;
+  int _rowsPerPage = 10;
+  int _rowsPerPageChamp = 10;
 
-  List<StorageProductModel> currentStorageProductModelList = [];
+  List<StorageProductModel> currentStorageProductModelListBar = [];
+  List<StorageProductModel> currentStorageProductModelListChampagnerie = [];
 
   @override
   void initState() {
@@ -50,8 +58,11 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     setState(() {
       _selectedStorage = storage;
     });
+    currentStorageProductModelListChampagnerie.clear();
+    currentStorageProductModelListBar.clear();
     currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage);
-    currentStorageProductModelList = await retrieveProductListFromChoicedStorage(currentStorageModel);
+    currentStorageProductModelListBar = await retrieveProductListFromChoicedStorage(currentStorageModel);
+    currentStorageProductModelListChampagnerie.addAll(currentStorageProductModelListBar);
   }
 
   @override
@@ -258,8 +269,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         Text('    Lista prodotti per carico bar', style: TextStyle(color: kPrimaryColor),),
                       ],
                     ),
-                    _barPositionCounter == 0 ? SizedBox() : PaginatedDataTable(
-
+                    _barPositionCounter == 0 ? const SizedBox() : PaginatedDataTable(
                       rowsPerPage: _rowsPerPage,
                       availableRowsPerPage: const <int>[5, 10, 20, 25],
                       onRowsPerPageChanged: (int value) {
@@ -268,86 +278,10 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         });
                       },
                       columns: kTableColumns,
-                      source: ProductDataSource(currentStorageProductModelList),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('  Postazioni Champagnerie', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    if (_champagneriePositionCounter <= 0) {
-                                    } else {
-                                      _champagneriePositionCounter--;
-                                    }
-                                  });
-                                },
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Icon(
-                                    FontAwesomeIcons.minus,
-                                    color: kPinaColor,
-                                  ),
-                                ),
-                              ),
-                              ConstrainedBox(
-                                constraints: BoxConstraints.loose(Size(
-                                    getProportionateScreenWidth(70),
-                                    getProportionateScreenWidth(60))),
-                                child: CupertinoTextField(
-                                  enabled: false,
-                                  controller: TextEditingController(text: _champagneriePositionCounter.toString()),
-                                  onChanged: (text) {
-                                  },
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: const TextInputType.numberWithOptions(
-                                      decimal: true, signed: true),
-                                  clearButtonMode: OverlayVisibilityMode.never,
-                                  textAlign: TextAlign.center,
-                                  autocorrect: false,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _champagneriePositionCounter = _champagneriePositionCounter + 1;
-                                  });
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Icon(FontAwesomeIcons.plus,
-                                      color: Colors.green.shade900),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    _champagneriePositionCounter == 0 ? SizedBox() : Row(
-                      children: const [
-                        Text('    Lista prodotti per carico champagnerie', style: TextStyle(color: kPrimaryColor),),
-                      ],
-                    ),
-                    _champagneriePositionCounter == 0 ? SizedBox() : PaginatedDataTable(
-
-                      rowsPerPage: _rowsPerPage,
-                      availableRowsPerPage: const <int>[5, 10, 20, 25],
-                      onRowsPerPageChanged: (int value) {
-                        setState(() {
-                          _rowsPerPage = value;
-                        });
-                      },
-                      columns: kTableColumns,
-                      source: ProductDataSource(currentStorageProductModelList),
+                      source: ProductDataSourceEvents(currentStorageProductModelListBar),
                     ),
                     const Divider(height: 25, endIndent: 50, indent: 50,),
-                    SizedBox(height: 100,),
+                    const SizedBox(height: 100,),
                   ],
                 ),
               ),
@@ -358,63 +292,70 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                 text: 'Crea Evento',
                 press: () async {
                   //context.loaderOverlay.show();
-                  print('Performing send order ...');
-                  //if(_selectedStorage == 'Seleziona Magazzino'){
-                  // context.loaderOverlay.hide();
-                //    AwesomeDialog(
-                //      context: context,
-                //      animType: AnimType.SCALE,
-                //      dialogType: DialogType.WARNING,
-                //      body: const Center(child: Text(
-                //        'Selezionare il magazzino',
-                //      ),),
-                //      title: 'This is Ignored',
-                //      desc:   'This is also Ignored',
-                //      btnOkColor: Colors.green.shade800,
-                //      btnOkOnPress: () {},
-                //    ).show();
-                //  }else if(currentStorageModel == null){
-              //  context.loaderOverlay.hide();
-             ////  AwesomeDialog(
-             //        context: context,
-             //        animType: AnimType.SCALE,
-             //        dialogType: DialogType.WARNING,
-             //        body: const Center(child: Text(
-             //          'Selezionare il magazzino',
-             //        ),),
-             //        title: 'This is Ignored',
-             //        desc:   'This is also Ignored',
-             //        btnOkOnPress: () {},
-             //        btnOkColor: Colors.green.shade800,
-             //      ).show();
-              // }else if(currentDate == null) {
-            //   context.loaderOverlay.hide();
-            //   AwesomeDialog(
-                 //     context: context,
-                 //     animType: AnimType.RIGHSLIDE,
-                 //     dialogType: DialogType.WARNING,
-                 //     body: const Center(child: Text(
-                 //       'Selezionare la data di consegna',
-                 //     ),),
-                 //     title: 'This is Ignored',
-                 //     desc:   'This is also Ignored',
-                 //     btnOkOnPress: () {},
-                 //     btnOkColor: Colors.green.shade800,
-                 //   ).show();
-                 // }else{
-                 //   Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performCreateEvent(
-                 //       eventModel: EventModel(
-//
-                 //       ),
-                 //       actionModel: ActionModel(
-                 //           date: DateTime.now().millisecondsSinceEpoch,
-                 //           description: 'Ha creato l\'evento  ' + dataBundleNotifier.currentBranch.companyName,
-                 //           fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                 //           user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                 //           type: ActionType.EVENT_CREATION, pkActionId: 0
-                 //       )
-                 ////   );
-                  //}
+                  print('Performing creation event ...');
+                  if(controllerEventName.text == ''){
+
+                  }else if(controllerLocation.text == ''){
+
+                  }else if(_selectedStorage == 'Seleziona Magazzino'){
+
+                  }else if(currentDate == null) {
+
+                  }else{
+                    Response performSaveEventId = await dataBundleNotifier.getclientServiceInstance().performCreateEvent(
+                        eventModel: EventModel(
+                            owner: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                            fkStorageId: currentStorageModel.pkStorageId,
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            eventName: controllerEventName.value.text,
+                            creationDate: DateTime.now().millisecondsSinceEpoch,
+                            eventDate: currentDate.millisecondsSinceEpoch,
+                            closed: 'N',
+                            location: controllerLocation.value.text,
+                            pkEventId: 0
+                        ),
+                        actionModel: ActionModel(
+                            date: DateTime.now().millisecondsSinceEpoch,
+                            description: 'Ha creato l\'evento ' + controllerEventName.value.text,
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                            type: ActionType.EVENT_CREATION, pkActionId: 0
+                        )
+                    );
+
+                    print('Event saved. Id event on db: ' + performSaveEventId.data.toString());
+
+                    List<WorkstationModel> workstationModelList = [];
+                    if(performSaveEventId != null && performSaveEventId.data > 0){
+                      print('Populate with bar workstation model the workstations list for event with id ${performSaveEventId.data.toString()}');
+                      for(int counter = 0; counter < _barPositionCounter; counter ++){
+                        workstationModelList.add(WorkstationModel(
+                          closed: 'N',
+                          extra: '',
+                          fkEventId: performSaveEventId.data,
+                          id: 0,
+                          name: 'Bar ' + (counter + 1).toString(),
+                          responsible: '',
+                          type: WORKSTATION_TYPE_BAR
+                        ));
+
+                      }
+                    }
+                    print('Populate with champagnerie workstation model the workstations list for event with id ${performSaveEventId.data.toString()}');
+                    for(int counter = 0; counter < _champagneriePositionCounter; counter ++){
+                      workstationModelList.add(WorkstationModel(
+                          closed: 'N',
+                          extra: '',
+                          fkEventId: performSaveEventId.data,
+                          id: 0,
+                          name: 'Champagnerie ' + (counter + 1).toString(),
+                          responsible: '',
+                          type: WORKSTATION_TYPE_CHAMP
+                      ));
+                    }
+                  }
+
+
                   },
                 color: Colors.green.shade900.withOpacity(0.8),
               ),
@@ -471,14 +412,6 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     ),
     const DataColumn(
       label: Text('Giacenza'),
-      numeric: true,
-    ),
-    const DataColumn(
-      label: Text('Misura'),
-      numeric: true,
-    ),
-    const DataColumn(
-      label: Text('Prezzo'),
       numeric: true,
     ),
     const DataColumn(

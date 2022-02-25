@@ -47,9 +47,9 @@ const String VAT_SERVICE_URL_DELETE_EXPENCE = 'http://$host:8080/vatservices/api
 //Retrieve Aggregated Tables
 const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE = 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';
 //Remove product from storage
-const String VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE = 'http://217.160.242.158:8080/vatservices/api/v1/delete/removeproductfromstorage';
+const String VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE = 'http://$host:8080/vatservices/api/v1/delete/removeproductfromstorage';
 //Update Stock
-const String VAT_SERVICE_URL_UPDATE_STOCK = 'http://217.160.242.158:8080/vatservices/api/v1/update/stock';
+const String VAT_SERVICE_URL_UPDATE_STOCK = 'http://$host:8080/vatservices/api/v1/update/stock';
 //Create relation between user and branch
 const String VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH = 'http://$host:8080/vatservices/api/v1/create/userbranchrelation';
 //Retrieve related users list on branch by branch id
@@ -65,3 +65,5 @@ const String VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH = 'http://$host:8080/vatservi
 // retrieve actions by branch id
 const String VAT_SERVICE_URL_RETRIEVE_ACTIONS_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/actionsbybranchid';
 const String VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/lastactionsbybranchid';
+
+const String VAT_SERVICE_URL_CREATE_EVENT = 'http://$host:8080/vatservices/api/v1/create/event';

@@ -586,6 +586,7 @@ class ClientVatService implements VatServiceInterface{
 
       return post;
     }catch(e){
+      print('Exception: ' + e.toString());
       rethrow;
     }
   }
@@ -1608,6 +1609,42 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
+
+  @override
+  Future<Response> performCreateEvent({EventModel eventModel, ActionModel actionModel}) async {
+    var dio = Dio();
+
+    print('Create event ${eventModel.eventName} for branch with id ${eventModel.fkBranchId}');
+    String body = json.encode(
+        eventModel.toMap());
+    print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_EVENT with body request $body');
+
+    Response post;
+    try {
+      post = await dio.post(
+        VAT_SERVICE_URL_CREATE_EVENT,
+        data: body,
+      );
+
+      if(post != null){
+        try{
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+      return post;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+
   @override
   Future<Response> createUserBranchRelation({int fkUserId, int fkBranchId, String accessPrivilege, ActionModel actionModel}) async {
 
@@ -1939,11 +1976,6 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
 
-  }
-
-  performCreateEvent({EventModel eventModel, ActionModel actionModel}) {
-
-    // TODO to implement
   }
 
 }

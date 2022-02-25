@@ -206,7 +206,7 @@ class SuppliersScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: dataBundleNotifier.dataBundleList[0].id.toString() ==
+                color: dataBundleNotifier.userDetailsList[0].id.toString() ==
                         supplier.id
                     ? kBeigeColor
                     :  Colors.lightBlueAccent,

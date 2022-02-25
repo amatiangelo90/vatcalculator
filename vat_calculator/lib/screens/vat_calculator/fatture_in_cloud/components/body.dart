@@ -101,8 +101,8 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
-        if (dataBundleNotifier.dataBundleList.isEmpty ||
-            dataBundleNotifier.dataBundleList[0].companyList.isEmpty) {
+        if (dataBundleNotifier.userDetailsList.isEmpty ||
+            dataBundleNotifier.userDetailsList[0].companyList.isEmpty) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(

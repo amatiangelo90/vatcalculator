@@ -6,6 +6,7 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'component/event_body.dart';
+import 'component/event_create_screen.dart';
 
 class EventHomeScreen extends StatefulWidget {
   const EventHomeScreen({Key key}) : super(key: key);
@@ -54,7 +55,13 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                 ],
               ),
               actions: [
-
+                IconButton(
+                  icon: const Icon(Icons.add),
+                  onPressed: (){
+                    Navigator.pushNamed(
+                        context, EventCreateScreen.routeName);
+                  },
+                ),
               ],
               elevation: 2,
             ),
