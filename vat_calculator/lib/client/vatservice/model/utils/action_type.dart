@@ -82,7 +82,13 @@ class ActionType{
             Colors.blue.shade900,
               STORAGE_CREATION);
         case EVENT_CREATION:
-        break;
+          return CustomIcon.buildIconWidget('assets/icons/party.svg',
+              Colors.black,
+              Colors.greenAccent.withOpacity(0.2),
+              Icons.add_circle_outline,
+              Colors.green.withOpacity(0.6),
+              EVENT_CREATION);
+
         case UPDATE_PRIVILEGE:
           return CustomIcon.buildIconWidget('assets/icons/User.svg',
               Colors.deepPurpleAccent.shade700.withOpacity(0.9),
@@ -132,7 +138,12 @@ class ActionType{
         case STORAGE_EDIT:
         break;
         case EVENT_EDIT:
-        break;
+          return CustomIcon.buildIconWidget('assets/icons/party.svg',
+              Colors.orange.shade300,
+              Colors.yellow.withOpacity(0.2),
+              Icons.edit,
+              Colors.redAccent,
+              EVENT_EDIT);
         case ORDER_EDIT:
         break;
         case PRODUCT_EDIT:

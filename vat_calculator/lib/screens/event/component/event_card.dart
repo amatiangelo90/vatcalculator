@@ -7,6 +7,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import 'event_manager_screen.dart';
 
 class EventCard extends StatelessWidget {
   const EventCard({Key key, @required this.event}) : super(key: key);
@@ -116,7 +117,14 @@ class EventCard extends StatelessWidget {
                     child: CupertinoButton(
                       color: kCustomYellow800,
                       onPressed: (){
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EventManagerScreen(
+                              event: event,
+                            ),
+                          ),
+                        );
                       },
                       child: Text('Accedi a ' + event.eventName),
                     ),
