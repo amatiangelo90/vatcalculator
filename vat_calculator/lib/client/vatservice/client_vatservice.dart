@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/service_interface.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'constant/utils_vatservice.dart';
@@ -1975,6 +1977,68 @@ class ClientVatService implements VatServiceInterface{
       print(e);
       rethrow;
     }
+
+  }
+
+  Future createWorkstations(List<WorkstationModel> workstationModelList) async {
+    var dio = Dio();
+
+    print('Create workstations ${workstationModelList.toString()}');
+    String request = '[';
+
+    workstationModelList.forEach((workstation) {
+      request = request + json.encode(
+          workstation.toMap() ) + ',';
+    });
+
+    if (request != null && request.length > 0) {
+      request = request.substring(0, request.length - 1);
+    }
+    request = request + ']';
+
+
+    print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_WORKSTATIONS with body request $request');
+
+    Response post;
+    try {
+      post = await dio.post(
+        VAT_SERVICE_URL_CREATE_WORKSTATIONS,
+        data: request,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  Future<void> createRelationBetweenWorkstationsAndProductStorage(List<dynamic> listWorkstationIds,
+      List<int> idsListFromCurrentStorageProductList) async {
+
+    if(listWorkstationIds.isNotEmpty && idsListFromCurrentStorageProductList.isNotEmpty){
+      var dio = Dio();
+      Response post;
+      print('Creating relation between workstations and productstorage...');
+      print(listWorkstationIds.toString());
+      print(idsListFromCurrentStorageProductList.toString());
+      String request =  '{"workstationsIdsList":' + listWorkstationIds.toString() + ', "productStorageIdsList":' + idsListFromCurrentStorageProductList.toString()
+          + '}';
+      print(request);
+      try {
+
+        post = await dio.post(
+          VAT_SERVICE_URL_CREATE_WORKSTATIONS_PRODUCTSTORAGE_RELATION,
+          data: request,
+        );
+      }catch(e){
+        print(e);
+      }
+    }else{
+      print('Empty list. Cannot create relations. Workstations list: ' + listWorkstationIds.toString() + ' - prodStorageIdsList : ' + idsListFromCurrentStorageProductList.toString());
+    }
+
+
 
   }
 

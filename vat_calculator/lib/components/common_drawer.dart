@@ -294,12 +294,11 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             backgroundColor: Colors.black54.withOpacity(0.1),
                           ),
                           onPressed: (){
-
                             Navigator.pushNamed(context, SuppliersScreen.routeName);
                           },
                           child: Row(
                             children: [
-                              SizedBox(width: 9,),
+                              const SizedBox(width: 9,),
                               SvgPicture.asset(
                                 'assets/icons/supplier.svg',
                                 color: Colors.white,

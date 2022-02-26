@@ -4,7 +4,7 @@ class WorkstationModel{
   int id;
   String name;
   String type;
-  String responsible;
+  String responsable;
   String extra;
   String closed;
   int fkEventId;
@@ -14,7 +14,7 @@ class WorkstationModel{
         @required this.id,
         @required this.name,
         @required this.type,
-        @required this.responsible,
+        @required this.responsable,
         @required this.extra,
         @required this.closed,
         @required this.fkEventId,
@@ -22,10 +22,10 @@ class WorkstationModel{
 
   toMap(){
     return {
-      'id' : id,
+      'pkWorkstationId' : id,
       'name': name,
       'type': type,
-      'responsible' : responsible,
+      'responsable' : responsable,
       'extra' : extra,
       'closed' : closed,
       'fkEventId' : fkEventId,
@@ -37,7 +37,7 @@ class WorkstationModel{
       id: json['id'] as int,
       name: json['name'] as String,
       type: json['type'] as String,
-      responsible: json['responsible'] as String,
+      responsable: json['responsable'] as String,
       extra: json['extra'] as String,
       closed: json['closed'] as String,
       fkEventId: json['fkEventId'] as int,

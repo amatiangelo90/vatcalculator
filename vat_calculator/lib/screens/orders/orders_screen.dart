@@ -155,17 +155,10 @@ class _OrdersScreenState extends State<OrdersScreen>
               const SizedBox(height: 30,),
               SizedBox(
                 width: SizeConfig.screenWidth * 0.6,
-                child: CreateBranchButton(),
+                child: const CreateBranchButton(),
               ),
             ],
           ) : const UnderWorkingOrderPage(),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.redAccent,
-            elevation: 2.0,
-            child: Icon(Icons.add),
-            onPressed: (){},
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: const BottomAppBar(
             shape: CircularNotchedRectangle(),
             notchMargin: 3,

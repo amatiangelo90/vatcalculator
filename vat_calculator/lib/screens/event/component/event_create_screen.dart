@@ -294,13 +294,25 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                   //context.loaderOverlay.show();
                   print('Performing creation event ...');
                   if(controllerEventName.text == ''){
-
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
+                        duration: Duration(milliseconds: 800),
+                        content: Text('Inserire il nome evento')));
                   }else if(controllerLocation.text == ''){
-
-                  }else if(_selectedStorage == 'Seleziona Magazzino'){
-
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
+                        duration: Duration(milliseconds: 800),
+                        content: Text('Inserire la location')));
                   }else if(currentDate == null) {
-
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
+                        duration: Duration(milliseconds: 800),
+                        content: Text('Selezionare la data dell\'evento')));
+                  }else if(_selectedStorage == 'Seleziona Magazzino'){
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(const SnackBar(
+                        duration: Duration(milliseconds: 800),
+                        content: Text('Associare un magazzino all\'evento')));
                   }else{
                     Response performSaveEventId = await dataBundleNotifier.getclientServiceInstance().performCreateEvent(
                         eventModel: EventModel(
@@ -335,27 +347,21 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           fkEventId: performSaveEventId.data,
                           id: 0,
                           name: 'Bar ' + (counter + 1).toString(),
-                          responsible: '',
+                            responsable: '',
                           type: WORKSTATION_TYPE_BAR
                         ));
-
                       }
                     }
-                    print('Populate with champagnerie workstation model the workstations list for event with id ${performSaveEventId.data.toString()}');
-                    for(int counter = 0; counter < _champagneriePositionCounter; counter ++){
-                      workstationModelList.add(WorkstationModel(
-                          closed: 'N',
-                          extra: '',
-                          fkEventId: performSaveEventId.data,
-                          id: 0,
-                          name: 'Champagnerie ' + (counter + 1).toString(),
-                          responsible: '',
-                          type: WORKSTATION_TYPE_CHAMP
-                      ));
+
+                    Response listpout = await dataBundleNotifier.getclientServiceInstance().createWorkstations(workstationModelList);
+
+                    print('Create relation between storageproduct and workstations');
+                    if(listpout != null && listpout.data != null && listpout.data.length > 0){
+                        await dataBundleNotifier
+                            .getclientServiceInstance()
+                            .createRelationBetweenWorkstationsAndProductStorage(listpout.data, getIdsListFromCurrentStorageProductList(currentStorageProductModelListBar)); 
+                      }
                     }
-                  }
-
-
                   },
                 color: Colors.green.shade900.withOpacity(0.8),
               ),
@@ -425,6 +431,16 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
 
     List<StorageProductModel> storageProductModelList = await clientVatService.retrieveRelationalModelProductsStorage(currentStorageModel.pkStorageId);
     return storageProductModelList;
+  }
+
+  List<int> getIdsListFromCurrentStorageProductList(List<StorageProductModel> currentStorageProductModelListBar) {
+
+    List<int> ids = [];
+    currentStorageProductModelListBar.forEach((element) {
+      ids.add(element.pkStorageProductId);
+    });
+
+    return ids;
   }
 }
 
