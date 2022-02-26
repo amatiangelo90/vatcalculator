@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
 import '../../../constants.dart';
@@ -116,12 +119,18 @@ class EventCard extends StatelessWidget {
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
                       color: kCustomYellow800,
-                      onPressed: (){
+                      onPressed: () async {
+                        List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(event);
+                        print(workstationModelList.toString());
+                        print(workstationModelList.length);
+                        sleep(const Duration(milliseconds: 200));
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => EventManagerScreen(
                               event: event,
+                              workstationModelList: workstationModelList,
                             ),
                           ),
                         );

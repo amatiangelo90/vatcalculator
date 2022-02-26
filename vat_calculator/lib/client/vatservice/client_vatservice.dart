@@ -6,6 +6,7 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/client/vatservice/service_interface.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'constant/utils_vatservice.dart';
@@ -2039,6 +2040,103 @@ class ClientVatService implements VatServiceInterface{
     }
 
 
+
+  }
+
+  Future<List<WorkstationModel>> retrieveWorkstationListByEventId(EventModel eventModel) async {
+
+
+    if(eventModel != null || eventModel.pkEventId > 0){
+      var dio = Dio();
+      Response post;
+      print('Retrieve workstations by event id ${eventModel.toString()}...');
+      print('Retrieve workstations by event id. Calling $VAT_SERVICE_URL_RETRIEVE_WORKSTATIONS_BY_EVENT_ID..');
+
+
+      List<WorkstationModel> workstationList = [];
+      try {
+        String body = json.encode(
+            eventModel.toMap());
+        post = await dio.post(
+          VAT_SERVICE_URL_RETRIEVE_WORKSTATIONS_BY_EVENT_ID,
+          data: body,
+        );
+
+        String encode = json.encode(post.data);
+
+        List<dynamic> valueList = jsonDecode(encode);
+
+        valueList.forEach((workstationElement) {
+
+          workstationList.add(
+              WorkstationModel(
+                type: workstationElement['type'],
+                name: workstationElement['name'],
+                pkWorkstationId: workstationElement['pkWorkstationId'],
+                fkEventId: workstationElement['fkEventId'],
+                extra: workstationElement['extra'],
+                closed: workstationElement['closed'],
+                responsable: workstationElement['responsable'],
+              )
+          );
+        });
+        return workstationList;
+
+      }catch(e){
+        print(e);
+      }
+    }else{
+      print('Impossible to retrieve workstation while event is null or event id is empty or null. Event: ' + eventModel.toString());
+    }
+
+
+  }
+
+  Future<List<WorkstationProductModel>> retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation) async {
+    if(workstation != null || workstation.pkWorkstationId > 0){
+      var dio = Dio();
+      Response post;
+      print('Retrieve workstation product model by workstation id ${workstation.pkWorkstationId.toString()}...');
+      print('Retrieve workstation products list. Calling $VAT_SERVICE_URL_RETRIEVE_WORKSTATION_PRODUCT_LIST_BY_WORKSTATION_ID..');
+
+
+      List<WorkstationProductModel> workstationProductList = [];
+      try {
+        String body = json.encode(
+            workstation.toMap());
+        post = await dio.post(
+          VAT_SERVICE_URL_RETRIEVE_WORKSTATION_PRODUCT_LIST_BY_WORKSTATION_ID,
+          data: body,
+        );
+
+        String encode = json.encode(post.data);
+
+        List<dynamic> valueList = jsonDecode(encode);
+
+        valueList.forEach((workstationElement) {
+
+          workstationProductList.add(
+              WorkstationProductModel(
+                amountHunderd: workstationElement['amountHunderd'],
+                consumed: workstationElement['consumed'],
+                fkStorProdId: workstationElement['fkStorProdId'],
+                fkSupplierId:  workstationElement['fkSupplierId'],
+                fkWorkstationId: workstationElement['fkWorkstationId'],
+                pkWorkstationStorageProductId: workstationElement['pkWorkstationStorageProductId'],
+                productName: workstationElement['productName'],
+                refillStock: workstationElement['refillStock'],
+                storeStock: workstationElement['storeStock'],
+                unitMeasure: workstationElement['unitMeasure'],
+              )
+          );
+        });
+        return workstationProductList;
+      }catch(e){
+        print(e);
+      }
+    }else{
+      print('Impossible to retrieve workstation products while workstationmodel is null or workstation id is empty or null. Event: ' + workstation.toString());
+    }
 
   }
 

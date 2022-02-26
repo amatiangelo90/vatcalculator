@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class WorkstationModel{
-  int id;
+  int pkWorkstationId;
   String name;
   String type;
   String responsable;
@@ -11,7 +11,7 @@ class WorkstationModel{
 
   WorkstationModel(
       {
-        @required this.id,
+        @required this.pkWorkstationId,
         @required this.name,
         @required this.type,
         @required this.responsable,
@@ -22,7 +22,7 @@ class WorkstationModel{
 
   toMap(){
     return {
-      'pkWorkstationId' : id,
+      'pkWorkstationId' : pkWorkstationId,
       'name': name,
       'type': type,
       'responsable' : responsable,
@@ -34,7 +34,7 @@ class WorkstationModel{
 
   factory WorkstationModel.fromJson(dynamic json){
     return WorkstationModel(
-      id: json['id'] as int,
+      pkWorkstationId: json['id'] as int,
       name: json['name'] as String,
       type: json['type'] as String,
       responsable: json['responsable'] as String,

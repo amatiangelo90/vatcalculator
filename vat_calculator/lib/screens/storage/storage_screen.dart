@@ -26,6 +26,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
+import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
@@ -244,124 +245,153 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                       child: Column(
                         children: [
 
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                onTap: (){
-                                  Navigator.pushNamed(context, UnloadStorageScreen.routeName);
-                                },
-                                child: Card(
-                                  color: kPrimaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Text('   SCARICO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.arrow_circle_down_outlined,
-                                            color: Colors.orange,
-                                            size: getProportionateScreenHeight(30),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pushNamed(context, UnloadStorageScreen.routeName);
-                                          }
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                onTap: (){
-                                  Navigator.pushNamed(context, LoadStorageScreen.routeName);
-                                },
-                                child: Card(
-                                  color: kPrimaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Text('   CARICO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.arrow_circle_up_outlined,
-                                            color: Colors.green,
-                                            size: getProportionateScreenHeight(30),
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pushNamed(context, LoadStorageScreen.routeName);
-                                          }
-                                      ),
-                                    ],
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, UnloadStorageScreen.routeName);
+                                  },
+                                  child: Card(
+                                    color: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Text('   SCARICO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),),
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.arrow_circle_down_outlined,
+                                              color: Colors.orange,
+                                              size: getProportionateScreenHeight(30),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, UnloadStorageScreen.routeName);
+                                            }
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
 
-                              dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                onTap: (){
-                                  try{
-                                    List<StorageProductModel> productToRemove = [];
-                                    dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
-                                      if(element.selected){
-                                        productToRemove.add(element);
-                                      }
-                                    });
-                                    if(productToRemove.isEmpty){
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                          duration: Duration(milliseconds: 400),
-                                          content: Text('Nessun prodotto selezionato')));
-                                    }else{
-                                      productToRemove.forEach((productStorageElementToRemove) async {
-                                        await dataBundleNotifier.getclientServiceInstance()
-                                            .removeProductFromStorage(
-                                            storageProductModel: productStorageElementToRemove,
-                                            actionModel: ActionModel(
-                                                date: DateTime.now().millisecondsSinceEpoch,
-                                                description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                                    'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                                type: ActionType.PRODUCT_DELETE
-                                            )
-                                        );
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, LoadStorageScreen.routeName);
+                                  },
+                                  child: Card(
+                                    color: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Text('   CARICO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.arrow_circle_up_outlined,
+                                              color: Colors.green,
+                                              size: getProportionateScreenHeight(30),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, LoadStorageScreen.routeName);
+                                            }
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
+                                  onTap: (){
+                                    try{
+                                      List<StorageProductModel> productToRemove = [];
+                                      dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                                        if(element.selected){
+                                          productToRemove.add(element);
+                                        }
                                       });
-                                      //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
-                                      sleep(const Duration(milliseconds: 500));
-                                      dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                      if(productToRemove.isEmpty){
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                            duration: Duration(milliseconds: 400),
+                                            content: Text('Nessun prodotto selezionato')));
+                                      }else{
+                                        productToRemove.forEach((productStorageElementToRemove) async {
+                                          await dataBundleNotifier.getclientServiceInstance()
+                                              .removeProductFromStorage(
+                                              storageProductModel: productStorageElementToRemove,
+                                              actionModel: ActionModel(
+                                                  date: DateTime.now().millisecondsSinceEpoch,
+                                                  description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                                      'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
+                                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                  type: ActionType.PRODUCT_DELETE
+                                              )
+                                          );
+                                        });
+                                        //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
+                                        sleep(const Duration(milliseconds: 500));
+                                        dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                      }
+                                    }catch(e){
+                                      print('Impossible to remove product from storage. Exception: ' + e);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                          duration: const Duration(milliseconds: 400),
+                                          content: Text('Impossible to remove product from storage. Exception: ' + e)));
                                     }
-                                  }catch(e){
-                                    print('Impossible to remove product from storage. Exception: ' + e);
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                        duration: const Duration(milliseconds: 400),
-                                        content: Text('Impossible to remove product from storage. Exception: ' + e)));
-                                  }
-                                },
-                                child: Card(
-                                  color: kPrimaryColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Text('   ELIMINA', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),),
-                                      IconButton(
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Colors.redAccent,
-                                            size: getProportionateScreenHeight(30),
-                                          ),
-                                      ),
-                                    ],
+                                  },
+                                  child: Card(
+                                    color: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Text('   ELIMINA', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),),
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.delete,
+                                              color: Colors.redAccent,
+                                              size: getProportionateScreenHeight(30),
+                                            ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, AmountHundredScreen.routeName);
+                                  },
+                                  child: Card(
+                                    color: kPrimaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(15.0),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Text('   Q/100', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),),
+                                        IconButton(
+                                            icon: Icon(
+                                              Icons.apps,
+                                              color: Colors.lightBlueAccent,
+                                              size: getProportionateScreenHeight(30),
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, AmountHundredScreen.routeName);
+                                            }
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
                           ),
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,

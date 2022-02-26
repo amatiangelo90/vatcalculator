@@ -23,6 +23,7 @@ import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/components/add_storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
+import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
@@ -76,4 +77,5 @@ final Map<String, WidgetBuilder> routes = {
   ExpenceScreen.routeName: (context) => ExpenceScreen(),
   EventHomeScreen.routeName: (context) => EventHomeScreen(),
   EventCreateScreen.routeName: (context) => EventCreateScreen(),
+  AmountHundredScreen.routeName: (context) => AmountHundredScreen(),
 };

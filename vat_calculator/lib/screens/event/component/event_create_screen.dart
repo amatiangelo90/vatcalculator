@@ -447,7 +447,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                 closed: 'N',
                                 extra: '',
                                 fkEventId: performSaveEventId.data,
-                                id: 0,
+                                pkWorkstationId: 0,
                                 name: 'Bar ' + (counter + 1).toString(),
                                 responsable: '',
                                 type: WORKSTATION_TYPE_BAR
@@ -460,7 +460,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                 closed: 'N',
                                 extra: '',
                                 fkEventId: performSaveEventId.data,
-                                id: 0,
+                                pkWorkstationId: 0,
                                 name: 'Champagnerie ' + (counter + 1).toString(),
                                 responsable: '',
                                 type: WORKSTATION_TYPE_CHAMP

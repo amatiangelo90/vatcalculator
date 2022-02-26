@@ -70,3 +70,6 @@ const String VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID = 'http://$h
 const String VAT_SERVICE_URL_CREATE_EVENT = 'http://$host:8080/vatservices/api/v1/create/event';
 
 const String VAT_SERVICE_URL_CREATE_WORKSTATIONS_PRODUCTSTORAGE_RELATION = 'http://$host:8080/vatservices/api/v1/createrelation/workstationsproductstorage';
+
+const String VAT_SERVICE_URL_RETRIEVE_WORKSTATIONS_BY_EVENT_ID = 'http://$host:8080/vatservices/api/v1/retrieve/workstationlistbyeventid';
+const String VAT_SERVICE_URL_RETRIEVE_WORKSTATION_PRODUCT_LIST_BY_WORKSTATION_ID = 'http://$host:8080/vatservices/api/v1/retrieve/productsbyworkstationid';

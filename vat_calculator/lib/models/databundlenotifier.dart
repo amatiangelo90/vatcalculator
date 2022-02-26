@@ -20,6 +20,8 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/components/vat_data.dart';
 import '../constants.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
