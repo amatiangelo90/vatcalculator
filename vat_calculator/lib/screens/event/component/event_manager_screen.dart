@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/workstation_card.dart';
 import 'package:vat_calculator/size_config.dart';
@@ -77,92 +78,44 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  Future<List<Widget>> populateWorkstationAndWorkstationsProductList(EventModel event, DataBundleNotifier dataBundleNotifier) {
-    //retrieve workstations list by event id
-
-    if(widget.workstationModelList.isNotEmpty){
-      widget.workstationModelList.forEach((workstation) async {
-        List<WorkstationProductModel> tmpList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstation);
-        print('tmpList: ' + tmpList.length.toString());
-        workstationProductModel.addAll(tmpList);
-        print('Size list: ' + workstationProductModel.length.toString());
-      });
-    }
-
-    return null;
-  }
-
-  buildWorkstationsWidget(List<WorkstationModel> workstationModelList) {
-    List<Widget> list = [];
-
-    workstationModelList.forEach((workstationModel) {
-      list.add(Row(
-        children: [
-          Text(workstationModel.name),
-          Text(workstationModel.closed),
-          Text(workstationModel.type),
-          Text(workstationModel.pkWorkstationId.toString()),
-        ],
-      ));
-    });
-    return list;
-  }
 
   buildSettingEventPage(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) {
-    return FutureBuilder(
-      initialData: <Widget>[
-        const Center(
-            child: CircularProgressIndicator(
-              color: kPinaColor,
-            )),
-        const SizedBox(),
-        Column(
-          children: const [
-            Center(
-              child: Text(
-                'Caricamento dati..',
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: kPrimaryColor),
-              ),
-            ),
-          ],
+    List<Widget> listWgBar = [];
+    workstationModelList.where((element) => element.type == WORKSTATION_TYPE_BAR).forEach((wkStation) {
+      listWgBar.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WorkstationCard(
+          eventModel: widget.event,
+          workstationModel: wkStation,
+          isBarType : true,
         ),
-      ],
-      future: buildProductManagmentPage(workstationModelList, dataBundleNotifier),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Padding(
-            padding: EdgeInsets.all(8.0),
-            child: SizedBox(
-              height: getProportionateScreenHeight(205),
-              child: PageView.builder(
-                itemCount: widget.workstationModelList.length,
-                itemBuilder: (context, index) =>
-                    WorkstationCard(
-                      workstationModel: widget.workstationModelList[index],
-                      showExpandedTile: false,
-                      workstationIdProductListMap: workstationIdProductListMap,
-                    ),
-              ),
-            ),
-          );
-        } else {
-          return const CircularProgressIndicator();
-        }
-      },
+      ),);
+    });
+
+    List<Widget> listWgChamp = [];
+    workstationModelList.where((element) => element.type == WORKSTATION_TYPE_CHAMP).forEach((wkStation) {
+      listWgChamp.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: WorkstationCard(
+          eventModel: widget.event,
+          workstationModel: wkStation,
+          isBarType : false,
+        ),
+      ),);
+    });
+
+    return SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(children: [
+          Column(
+            children: listWgBar,
+          ),
+          Column(
+            children: listWgChamp,
+          ),
+        ])
     );
   }
 
-  Future buildProductManagmentPage(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) async {
 
-    List<WorkstationProductModel> workAll = [];
-    workstationModelList.forEach((workstation) async {
-      List<WorkstationProductModel> prodModelWorkstationList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstation);
-      print(prodModelWorkstationList.length.toString());
-      workstationIdProductListMap[workstation.pkWorkstationId] = prodModelWorkstationList;
-    });
-
-    return [];
-  }
 }

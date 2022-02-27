@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
+//const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kCustomYellow = Color(0XFFFFDE55);
 const Color kCustomYellowDarker = Color(0XFFFFDA00);
