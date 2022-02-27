@@ -271,17 +271,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                                           currentOrderIndex = value;
                                         });
                                       },
-                                      itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)
-                                          .length,
+                                      itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
                                       itemBuilder: (context, index) =>
                                           OrderCard(
-                                        order: retrieveTodayOrdersList(
-                                                dataBundleNotifier
-                                                    .currentUnderWorkingOrdersList)[
-                                            index],
+                                        order: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)[index],
                                         showExpandedTile: false,
-                                        orderIdProductListMap:
-                                            orderIdProductListMap,
+                                        orderIdProductListMap: orderIdProductListMap,
                                       ),
                                     ),
                                   ),
@@ -443,7 +438,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                       itemCount: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).length,
                       itemBuilder: (context, index) =>
                           EventCard(
-                            event: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())[index],
+                            eventModel: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())[index],
+                            showButton: true,
+                            showArrow: false,
                           ),
                     ),
                   ),
@@ -937,6 +934,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   Future<List<Widget>> populateProductsListForTodayOrders(
       DataBundleNotifier dataBundleNotifier) async {
+
     dataBundleNotifier.currentUnderWorkingOrdersList.forEach((element) async {
       if (isToday(element.delivery_date)) {
         List<ProductOrderAmountModel> list = await dataBundleNotifier

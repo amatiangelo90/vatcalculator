@@ -24,7 +24,6 @@ class SuppliersScreen extends StatelessWidget {
       return Scaffold(
         bottomSheet:
             dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) :
-
             dataBundleNotifier.currentListSuppliers.isNotEmpty ? Container(
               color: kPrimaryColor,
               child: Padding(

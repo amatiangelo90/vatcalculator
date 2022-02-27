@@ -446,6 +446,12 @@ class DataBundleNotifier extends ChangeNotifier {
     currentListExpences.clear();
     currentListExpences.addAll(_expenceModelList);
 
+
+    List<EventModel> _eventModelList = await clientService.retrieveEventsListByBranchId(currentBranch);
+
+    addCurrentEventsList(_eventModelList);
+
+
     totalFiscalExpences = 0.0;
     totalNotFiscalExpences = 0.0;
 

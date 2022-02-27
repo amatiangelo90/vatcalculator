@@ -7,15 +7,18 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'event_manager_screen.dart';
 
 class EventCard extends StatelessWidget {
-  const EventCard({Key key, @required this.event}) : super(key: key);
+  const EventCard({Key key, @required this.eventModel, @required this.showButton, @required this.showArrow}) : super(key: key);
 
-  final EventModel event;
+  final EventModel eventModel;
+  final bool showButton;
+  final bool showArrow;
 
   @override
   Widget build(BuildContext context) {
@@ -38,28 +41,38 @@ class EventCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
-                            child: ClipRect(
-                              child: SvgPicture.asset(
-                                'assets/icons/party.svg',
-                                height: getProportionateScreenHeight(45),
-                                color: kCustomYellow800,
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              showArrow ? IconButton(
+                                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white,),
+                                  onPressed: () => {
+                                      Navigator.of(context).pop(),
+                                    }
+                                  ) : const SizedBox(width: 0,),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
+                                child: ClipRect(
+                                  child: SvgPicture.asset(
+                                    'assets/icons/party.svg',
+                                    height: getProportionateScreenHeight(45),
+                                    color: kCustomYellow800,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(event.eventName,
+                              Text(eventModel.eventName,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomYellow800, fontWeight: FontWeight.bold),),
                               Text(
-                                'Creato da: ' + event.owner,
+                                'Creato da: ' + eventModel.owner,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
                               Row(
                                 children: [
@@ -67,7 +80,7 @@ class EventCard extends StatelessWidget {
                                     'Location: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    event.location,
+                                    eventModel.location,
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -77,7 +90,7 @@ class EventCard extends StatelessWidget {
                                     'Magazzino di riferimento: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    dataBundleNotifier.retrieveStorageById(event.fkStorageId),
+                                    dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -87,9 +100,9 @@ class EventCard extends StatelessWidget {
                                     'Data Evento: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    DateTime.fromMillisecondsSinceEpoch(event.eventDate).day.toString() + '/' +
-                                    DateTime.fromMillisecondsSinceEpoch(event.eventDate).month.toString() + '/' +
-                                    DateTime.fromMillisecondsSinceEpoch(event.eventDate).year.toString(),
+                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
+                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
+                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -99,7 +112,7 @@ class EventCard extends StatelessWidget {
                                     'Evento Aperto: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    event.closed == 'N' ? 'SI' : 'NO',
+                                    eventModel.closed == 'N' ? 'SI' : 'NO',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -115,12 +128,12 @@ class EventCard extends StatelessWidget {
                     color: kCustomYellow800,
                     height: getProportionateScreenHeight(49),
                   ),
-                  SizedBox(
+                  showButton ? SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
                       color: kCustomYellow800,
                       onPressed: () async {
-                        List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(event);
+                        List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
                         print(workstationModelList.toString());
                         print(workstationModelList.length);
                         sleep(const Duration(milliseconds: 200));
@@ -129,15 +142,15 @@ class EventCard extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EventManagerScreen(
-                              event: event,
+                              event: eventModel,
                               workstationModelList: workstationModelList,
                             ),
                           ),
                         );
                       },
-                      child: Text('Accedi a ' + event.eventName),
+                      child: Text('Accedi a ' + eventModel.eventName),
                     ),
-                  ),
+                  ) : SizedBox(width: 0,)
                 ],
               ),
             ),

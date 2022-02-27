@@ -76,7 +76,9 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
         eventList.add(Padding(
           padding: const EdgeInsets.all(4.0),
           child: EventCard(
-            event: eventItem,
+            eventModel: eventItem,
+            showButton: true,
+            showArrow: false,
           ),
         ),);
       }
