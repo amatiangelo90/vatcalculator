@@ -13,6 +13,8 @@ import 'model/save_product_into_storage_request.dart';
 import 'model/storage_model.dart';
 import 'model/storage_product_model.dart';
 import 'model/user_model.dart';
+import 'model/workstation_model.dart';
+import 'model/workstation_product_model.dart';
 
 abstract class VatServiceInterface{
 
@@ -63,5 +65,7 @@ abstract class VatServiceInterface{
   Future<Response> removeProductFromOrder(ProductOrderAmountModel element);
   Future<Response> updateProductAmountIntoOrder(int pkOrderProductId, double amount, int pkProductId, int pk_order_id);
   Future<void>  updateUserData(UserDetailsModel userDetail);
+  Future<List<WorkstationProductModel>> retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation);
   Future<List<EventModel>> retrieveEventsListByBranchId(BranchModel currentBranch);
+  Future updateWorkstationProductModel(List<WorkstationProductModel> workStationProdModelList, ActionModel actionModel);
 }

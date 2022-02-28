@@ -1263,44 +1263,7 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
-  @override
-  Future<void> updateStock({List<StorageProductModel> currentStorageProductListForCurrentStorageUnload, ActionModel actionModel}) async {
-    var dio = Dio();
-    String body = '[';
-    currentStorageProductListForCurrentStorageUnload.forEach((currentStorageProductElement) {
-      body = body + json.encode(
-          currentStorageProductElement.toMap()) + ',';
-    });
-    body = body.substring(0, body.length - 1);
-    body = body + ']';
 
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_UPDATE_STOCK,
-        data: body,
-      );
-
-      if(post != null){
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
-      print('Request body for Vat Service (Update Stock): ' + body);
-      print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
-
-    }catch(e){
-      print('Errore retrieving storage model : ');
-      print(e);
-      rethrow;
-    }
-  }
   @override
   Future<void> deleteOrder({OrderModel orderModel, ActionModel actionModel}) async {
     var dio = Dio();
@@ -2092,6 +2055,7 @@ class ClientVatService implements VatServiceInterface{
 
   }
 
+  @override
   Future<List<WorkstationProductModel>> retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation) async {
     if(workstation != null || workstation.pkWorkstationId > 0){
       var dio = Dio();
@@ -2138,6 +2102,107 @@ class ClientVatService implements VatServiceInterface{
       print('Impossible to retrieve workstation products while workstationmodel is null or workstation id is empty or null. Event: ' + workstation.toString());
     }
 
+  }
+
+  @override
+  Future<void> updateStock({List<StorageProductModel> currentStorageProductListForCurrentStorageUnload, ActionModel actionModel}) async {
+    var dio = Dio();
+    String body = '[';
+    currentStorageProductListForCurrentStorageUnload.forEach((currentStorageProductElement) {
+      body = body + json.encode(
+          currentStorageProductElement.toMap()) + ',';
+    });
+    body = body.substring(0, body.length - 1);
+    body = body + ']';
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_STOCK,
+        data: body,
+      );
+
+      if(post != null){
+        try{
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+      print('Request body for Vat Service (Update Stock): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
+
+    }catch(e){
+      print('Errore retrieving storage model : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future updateWorkstationProductModel(List<WorkstationProductModel> workStationProdModelList, ActionModel actionModel) async {
+
+    try{
+      var dio = Dio();
+      String body = '[';
+      workStationProdModelList.forEach((workStationProdModel) {
+        body = body + json.encode(
+            workStationProdModel.toMap()) + ',';
+      });
+      body = body.substring(0, body.length - 1);
+      body = body + ']';
+      Response post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_WORKSTATIONS_PRODUCTS,
+        data: body,
+      );
+
+      if(post != null){
+        try{
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+      print('Request body for Vat Service (Update Stock): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
+
+    }catch(e){
+      print('Errore retrieving storage model : ');
+      print(e);
+      rethrow;
+    }
+
+
+  }
+
+  Future updateWorkstationDetails(WorkstationModel workstationModel) async {
+    try{
+      var dio = Dio();
+      String body = json.encode(
+          workstationModel.toMap());
+
+
+      Response post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_WORKSTATIONS_DETAILS,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Update Workstation): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_WORKSTATIONS_DETAILS + '): ' + post.toString());
+
+    }catch(e){
+      print('Errore retrieving storage model : ');
+      print(e);
+      rethrow;
+    }
   }
 
 }

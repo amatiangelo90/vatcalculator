@@ -1641,5 +1641,4 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void refreshEventList() {}
 }

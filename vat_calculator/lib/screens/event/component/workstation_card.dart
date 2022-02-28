@@ -6,28 +6,33 @@ import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/event/component/workstation_manager_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 
 import '../../../constants.dart';
 
-class WorkstationCard extends StatelessWidget {
+class WorkstationCard extends StatefulWidget {
   const WorkstationCard({Key key, this.eventModel, this.workstationModel, this.isBarType}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
   final bool isBarType;
+
+  @override
+  State<WorkstationCard> createState() => _WorkstationCardState();
+}
+
+class _WorkstationCardState extends State<WorkstationCard> {
+
+
+
   @override
   Widget build(BuildContext context) {
-    print('workstation model ' + workstationModel.pkWorkstationId.toString());
-
-    Color barColor = kCustomYellow800;
-    Color champColor = Colors.redAccent;
-
 
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
         return Card(
-          shadowColor: isBarType ? barColor : champColor,
+          shadowColor: widget.isBarType ? kCustomYellow800 : customGreenAccent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -54,9 +59,9 @@ class WorkstationCard extends StatelessWidget {
                                 padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
                                 child: ClipRect(
                                   child: SvgPicture.asset(
-                                    isBarType ? 'assets/icons/bartender.svg' : 'assets/icons/champagnerie.svg',
+                                    widget.isBarType ? 'assets/icons/bartender.svg' : 'assets/icons/bouvette.svg',
                                     height: getProportionateScreenHeight(45),
-                                    color: isBarType ? barColor : champColor,
+                                    color: widget.isBarType ? kCustomYellow800 : customGreenAccent,
                                   ),
                                 ),
                               ),
@@ -66,16 +71,16 @@ class WorkstationCard extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(workstationModel.name,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: isBarType ? barColor : champColor, fontWeight: FontWeight.bold),),
+                              Text(widget.workstationModel.name,
+                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: widget.isBarType ? kCustomYellow800 : customGreenAccent, fontWeight: FontWeight.bold),),
                               Row(
                                 children: [
                                   Text(
                                     'Magazzino di riferimento: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: isBarType ? barColor : champColor, fontWeight: FontWeight.bold),),
+                                    dataBundleNotifier.retrieveStorageById(widget.eventModel.fkStorageId),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomYellow800 : customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -84,8 +89,18 @@ class WorkstationCard extends StatelessWidget {
                                     'Workstation: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    workstationModel.type,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: isBarType ? barColor : champColor, fontWeight: FontWeight.bold),),
+                                    widget.workstationModel.type,
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomYellow800 : customGreenAccent, fontWeight: FontWeight.bold),),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Responsabile: ',
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                                  Text(
+                                    widget.workstationModel.responsable == '' ? '-' : widget.workstationModel.responsable,
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomYellow800 : customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -94,10 +109,10 @@ class WorkstationCard extends StatelessWidget {
                                     'Data Evento: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
-                                        DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
-                                        DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: isBarType ? barColor : champColor, fontWeight: FontWeight.bold),),
+                                    DateTime.fromMillisecondsSinceEpoch(widget.eventModel.eventDate).day.toString() + '/' +
+                                        DateTime.fromMillisecondsSinceEpoch(widget.eventModel.eventDate).month.toString() + '/' +
+                                        DateTime.fromMillisecondsSinceEpoch(widget.eventModel.eventDate).year.toString(),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomYellow800 : customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
 
@@ -125,7 +140,7 @@ class WorkstationCard extends StatelessWidget {
                     ),
                     children: [
                       FutureBuilder(
-                          future: buildProductPage(dataBundleNotifier, workstationModel),
+                          future: buildProductPage(dataBundleNotifier, widget.workstationModel),
                           builder: (context, snapshot) {
                             return Column(
                               children: snapshot.data,
@@ -158,10 +173,23 @@ class WorkstationCard extends StatelessWidget {
                   SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
-                      color: isBarType ? barColor : champColor,
+                      color: widget.isBarType ? kCustomYellow800 : customGreenAccent,
                       onPressed: () async {
+                        List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => WorkstationManagerScreen(
+                                eventModel: widget.eventModel,
+                                workstationModel: widget.workstationModel,
+                                workStationProdModelList: workStationProdModelList,
+                                callbackFuntion: callbackFuntion
+                            ),
+                          ),
+                        );
                       },
-                      child: Text('Accedi a ' + workstationModel.name),
+                      child: Text('Accedi a ' + widget.workstationModel.name),
                     ),
                   ),
                 ],
@@ -174,23 +202,43 @@ class WorkstationCard extends StatelessWidget {
   }
 
   Future buildProductPage(DataBundleNotifier dataBundleNotifier, WorkstationModel workstationModel) async {
-    List<Widget> list = [];
+    List<TableRow> list = [
+      TableRow(
+          children: [
+            Column(children:[Row(
+              children: [
+                Text('Prodotto', style: TextStyle(fontSize: getProportionateScreenHeight(12), color: widget.isBarType ? kCustomYellow800 : customGreenAccent)),
+              ],
+            )]),
+            Column(children:[Text('Carico', style: TextStyle(fontSize: getProportionateScreenHeight(12),color: widget.isBarType ? kCustomYellow800 : customGreenAccent))]),
+            Column(children:[Text('Consumo', style: TextStyle(fontSize: getProportionateScreenHeight(12),color: widget.isBarType ? kCustomYellow800 : customGreenAccent))]),
+          ]
+      )
+    ];
 
     List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
-      workStationProdModelList.forEach((workstationProd) {
-        list.add(Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+
+    workStationProdModelList.forEach((workstationProd) {
+        list.add(TableRow(
           children: [
-            Text(workstationProd.productName),
-            Text(workstationProd.storeStock.toString()),
-            Text(workstationProd.consumed.toString()),
-            Text(workstationProd.amountHunderd.toString()),
-
-
-          ],
+            Column(children:[Row(
+              children: [
+                Text(workstationProd.productName, style: TextStyle(fontSize: 11.0, color: Colors.white)),
+                Text(' (${workstationProd.unitMeasure})', style: TextStyle(fontSize: 11.0)),
+              ],
+            )]),
+            Column(children:[Text(workstationProd.refillStock.toStringAsFixed(2), style: TextStyle(fontSize: 11.0, color: Colors.greenAccent.shade700))]),
+            Column(children:[Text(workstationProd.consumed.toStringAsFixed(2), style: TextStyle(fontSize: 11.0, color: Colors.redAccent.shade400))]),
+          ]
         ));
       });
-    return list;
+    return [Table(
+      children: list,
+    )];
   }
 
+  callbackFuntion() {
+    setState(() {
+    });
+  }
 }

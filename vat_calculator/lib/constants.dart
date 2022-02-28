@@ -3,6 +3,7 @@ import 'package:vat_calculator/size_config.dart';
 
 //const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
+Color customGreenAccent = const Color(0xFF4AB8A1);
 const Color kCustomYellow = Color(0XFFFFDE55);
 const Color kCustomYellowDarker = Color(0XFFFFDA00);
 Color kCustomYellow800 = Colors.yellow.shade700.withOpacity(0.8);

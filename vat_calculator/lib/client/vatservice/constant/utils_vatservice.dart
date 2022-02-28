@@ -36,6 +36,7 @@ const String VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER = 'http://$host:80
 const String VAT_SERVICE_URL_UPDATE_SUPPLIER = 'http://$host:8080/vatservices/api/v1/update/supplier';
 const String VAT_SERVICE_URL_UPDATE_EXPENCE = 'http://$host:8080/vatservices/api/v1/update/expence';
 const String VAT_SERVICE_URL_UPDATE_USER_DATA = 'http://$host:8080/vatservices/api/v1/update/user';
+const String VAT_SERVICE_URL_UPDATE_WORKSTATIONS_DETAILS = 'http://$host:8080/vatservices/api/v1/update/workstationdetails';
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';
@@ -73,3 +74,4 @@ const String VAT_SERVICE_URL_CREATE_WORKSTATIONS_PRODUCTSTORAGE_RELATION = 'http
 
 const String VAT_SERVICE_URL_RETRIEVE_WORKSTATIONS_BY_EVENT_ID = 'http://$host:8080/vatservices/api/v1/retrieve/workstationlistbyeventid';
 const String VAT_SERVICE_URL_RETRIEVE_WORKSTATION_PRODUCT_LIST_BY_WORKSTATION_ID = 'http://$host:8080/vatservices/api/v1/retrieve/productsbyworkstationid';
+const String VAT_SERVICE_URL_UPDATE_WORKSTATIONS_PRODUCTS = 'http://$host:8080/vatservices/api/v1/update/workstationproducts';

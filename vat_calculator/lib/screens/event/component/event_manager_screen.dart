@@ -43,7 +43,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   Tab(icon: SvgPicture.asset('assets/icons/chart.svg', width: getProportionateScreenHeight(27),)),
                   Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomYellow800,)),
                 ],
-
               ),
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),

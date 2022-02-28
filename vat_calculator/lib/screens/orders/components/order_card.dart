@@ -71,7 +71,7 @@ class OrderCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     order.status,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ],

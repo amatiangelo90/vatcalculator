@@ -212,8 +212,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           ),
                         ),
                       ),
-                      const Divider(height: 25, endIndent: 50, indent: 50,),
-                      Padding(
+                      _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : const Divider(height: 25, endIndent: 50, indent: 50,),
+                      _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -287,8 +287,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         columns: kTableColumns,
                         source: ProductDataSourceEvents(currentStorageProductModelListBar),
                       ),
-                      const Divider(height: 25, endIndent: 50, indent: 50,),
-                      Padding(
+                      _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : const Divider(height: 25, endIndent: 50, indent: 50,),
+                      _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

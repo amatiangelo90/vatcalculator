@@ -22,6 +22,8 @@ class ActionType{
   static const String EXPENCE_CREATION = 'CREAZIONE SPESA';
   static const String PRODUCT_CREATION = 'CREAZIONE PRODOTTO';
   static const String ADD_PRODUCT_TO_STORAGE = 'AGGIUNTA PRODOTTO A MAGAZZINO';
+  static const String EVENT_STORAGE_UNLOAD = 'SCARICO POSTAZIONE EVENTO';
+  static const String EVENT_STORAGE_LOAD = 'CARICO POSTAZIONE EVENTO';
 
   // Edit Actions
   static const String BRANCH_EDIT                     = 'MODIFICA ATTIVITA';
@@ -175,6 +177,18 @@ class ActionType{
             Colors.red.withOpacity(0.2),
             Icons.highlight_remove_outlined,
             kPinaColor,ORDER_DELETE);
+          case EVENT_STORAGE_UNLOAD:
+          return CustomIcon.buildIconWidget('assets/icons/party.svg',
+            Colors.red.shade700.withOpacity(0.9),
+            Colors.red.withOpacity(0.2),
+            Icons.arrow_circle_down_sharp,
+            kPinaColor, EVENT_STORAGE_UNLOAD);
+          case EVENT_STORAGE_LOAD:
+          return CustomIcon.buildIconWidget('assets/icons/party.svg',
+            Colors.red.shade700.withOpacity(0.9),
+            Colors.green.withOpacity(0.2),
+            Icons.arrow_circle_up_outlined,
+            kPinaColor, EVENT_STORAGE_LOAD);
         case PROVIDER_DELETE:
           return CustomIcon.buildIconWidget('assets/icons/Parcel.svg',
             Colors.red.shade700.withOpacity(0.9),

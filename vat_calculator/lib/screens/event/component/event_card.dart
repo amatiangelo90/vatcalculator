@@ -81,7 +81,7 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     eventModel.location,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -91,7 +91,7 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -103,7 +103,7 @@ class EventCard extends StatelessWidget {
                                     DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
                                     DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
                                     DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -113,7 +113,7 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     eventModel.closed == 'N' ? 'SI' : 'NO',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: customGreenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ],
