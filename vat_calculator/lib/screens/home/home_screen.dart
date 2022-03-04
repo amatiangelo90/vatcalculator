@@ -76,8 +76,8 @@ class HomeScreen extends StatelessWidget {
                       top: 26.0,
                       right: 9.0,
                       child: Stack(
-                        children: const <Widget>[
-                          Icon(
+                        children: <Widget>[
+                          const Icon(
                             Icons.brightness_1,
                             size: 18,
                             color: Colors.black,
@@ -86,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                             right: 2.5,
                             top: 2.5,
                             child: Center(
-                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomYellowDarker,),
+                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomYellow800,),
                             ),
                           ),
                         ],
@@ -111,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                       top: 26.0,
                       right: 9.0,
                       child: Stack(
-                        children: const <Widget>[
+                        children:  <Widget>[
                           Icon(
                             Icons.brightness_1,
                             size: 18,
@@ -126,7 +126,7 @@ class HomeScreen extends StatelessWidget {
                                     .add_circle_outline,
                                 size: 13,
                                 color:
-                                kCustomYellowDarker,
+                                kCustomYellow800,
                               ),
                             ),
                           ),

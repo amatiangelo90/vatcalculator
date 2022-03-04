@@ -104,7 +104,7 @@ class _SecondClassState extends State<SecondClass>
                       spreadRadius: 10,
                     ),
                   ],
-                  color: kCustomYellow,
+                  color: kCustomYellow800,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Stack(
@@ -112,16 +112,16 @@ class _SecondClassState extends State<SecondClass>
                     child: Container(
                       width: 450,
                       height: 450,
-                      decoration: const BoxDecoration(
-                          color: kCustomYellow, shape: BoxShape.circle),
+                      decoration: BoxDecoration(
+                          color: kCustomYellow800, shape: BoxShape.circle),
                       child: AnimatedBuilder(
                         animation: scaleAnimation,
                         builder: (c, child) => Transform.scale(
                           scale: scaleAnimation.value,
                           child: Container(
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: kCustomYellow,
+                              color: kCustomYellow800,
                             ),
                           ),
                         ),

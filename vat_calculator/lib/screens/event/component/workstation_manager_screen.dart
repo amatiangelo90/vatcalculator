@@ -14,6 +14,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import 'event_manager_screen.dart';
 
 class WorkstationManagerScreen extends StatefulWidget {
   const WorkstationManagerScreen({Key key, this.eventModel, this.workstationModel, this.workStationProdModelList, this.callbackFuntion}) : super(key: key);
@@ -30,7 +31,7 @@ class WorkstationManagerScreen extends StatefulWidget {
 class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController loadPaxController = TextEditingController();
+  TextEditingController loadPaxController = TextEditingController(text: '0');
 
   @override
   Widget build(BuildContext context) {
@@ -257,14 +258,17 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> rows = [
+      Divider(color: kCustomYellow800,),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DefaultButton(
 
-    ];
 
-    workStationProdModelList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.refillStock.toStringAsFixed(2));
-      rows.add(
-        GestureDetector(
-          onTap: (){
+
+          text: loadPaxController.text == '' || loadPaxController.text == 0 ?
+          'Premi per configurare il numero di ospiti attesi':
+          'Carico per ${loadPaxController.text} persone',
+          press: () async {
             showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
@@ -306,7 +310,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                                       backgroundColor: Colors.green.withOpacity(0.9),
-                                      duration: Duration(milliseconds: 1600),
+                                      duration: Duration(milliseconds: 3000),
                                       content: Text(
                                           'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
                                     ));
@@ -329,38 +333,124 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   ),
                 )
             );
-
           },
+          color: kCustomYellow800,
+        ),
+      ),
+    ];
+
+    workStationProdModelList.forEach((element) {
+      TextEditingController controller = TextEditingController(text: element.refillStock.toStringAsFixed(2));
+      rows.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(5, 1, 8, 1),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: getProportionateScreenWidth(200),
-                    child: Text(
-                      element.productName,
-                      overflow: TextOverflow.clip,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16), color: kCustomYellow800),
-                    ),
-                  ),
-                  Row(
-                    children: [
+              GestureDetector(
+                onTap: (){
+                  TextEditingController amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2));
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        content: SizedBox(
+                          height: getProportionateScreenHeight(200),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Q/100 per ${element.productName}'),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: [
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints.loose(Size(
+                                          getProportionateScreenWidth(150),
+                                          getProportionateScreenWidth(60))),
+                                      child: CupertinoTextField(
+                                        controller: amountController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: const TextInputType.numberWithOptions(
+                                            decimal: true, signed: true),
+                                        clearButtonMode: OverlayVisibilityMode.never,
+                                        textAlign: TextAlign.center,
+                                        autocorrect: false,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
 
-                      Text(
-                        element.amountHunderd.toString(),
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: Colors.tealAccent),
+                                        if (double.tryParse(amountController.text) != null) {
+
+                                          try{
+                                            double currentValue = double.parse(amountController.text);
+                                            dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
+                                            setState(() {
+                                              element.amountHunderd = currentValue;
+                                            });
+                                          }catch(e){
+                                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                              backgroundColor: kPinaColor,
+                                              duration: Duration(milliseconds: 600),
+                                              content: Text(
+                                                  'Errore configurazione Q/100. ' + e),
+                                            ));
+                                          }
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: Colors.green.withOpacity(0.9),
+                                            duration: Duration(milliseconds: 1600),
+                                            content: Text(
+                                                'Configurato Q/100 ${amountController.text} per ${element.productName}'),
+                                          ));
+                                        } else {
+                                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                            backgroundColor: kPinaColor,
+                                            duration: Duration(milliseconds: 600),
+                                            content: Text(
+                                                'Immettere un valore numerico corretto per effettuare il carico'),
+                                          ));
+                                        }
+                                        Navigator.of(context).pop();
+                                      }),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                  );
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: getProportionateScreenWidth(200),
+                      child: Text(
+                        element.productName,
+                        overflow: TextOverflow.clip,
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16), color: kCustomYellow800),
                       ),
-                      Text(
-                        ' ' + element.unitMeasure + ' x 100/pax' ,
-                        style:
-                        TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ],
+                    ),
+                    Row(
+                      children: [
+
+                        Text(
+                          element.amountHunderd.toStringAsFixed(2),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: customGreenAccent),
+                        ),
+                        Text(
+                          ' ' + element.unitMeasure + ' x 100/pax' ,
+                          style:
+                          TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
               Row(
                 children: [
@@ -416,59 +506,62 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     });
     return Container(
       color: kPrimaryColor,
-      child: Padding(
-        padding: const EdgeInsets.all(15.0),
-          child: Stack(
-            children: [ SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: rows,
-              ),
+      child: Stack(
+        children: [ SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: rows,
             ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(width: 0,),
-                  DefaultButton(
-
-                    text: 'Effettua Carico',
-                    press: () async {
-                      try{
-
-                        await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                            widget.workStationProdModelList,
-                            ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
-                            )
-                        );
-                        widget.callbackFuntion();
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          backgroundColor: Colors.green.withOpacity(0.8),
-                          duration: Duration(milliseconds: 600),
-                          content: Text(
-                              'Carico per ${widget.workstationModel.name} effettuato'),
-                        ));
-
-                      }catch(e){
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          content: Text(
-                              'Errore durante operazione di scarico bar ' +
-                                  e),
-                        ));
-                      }
-                    },
-                    color: Colors.blueAccent.withOpacity(0.8),
-                  ),
-                ],
-              ),
-          ],
+          ),
         ),
-      ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(width: 0,),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: DefaultButton(
+
+                  text: 'Effettua Carico',
+                  press: () async {
+                    try{
+
+                      await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
+                          widget.workStationProdModelList,
+                          ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
+                          )
+                      );
+                      widget.callbackFuntion();
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor: Colors.green.withOpacity(0.8),
+                        duration: Duration(milliseconds: 600),
+                        content: Text(
+                            'Carico per ${widget.workstationModel.name} effettuato'),
+                      ));
+
+                    }catch(e){
+                      Scaffold.of(context).showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        content: Text(
+                            'Errore durante operazione di scarico bar ' +
+                                e),
+                      ));
+                    }
+                  },
+                  color: Colors.blueAccent.withOpacity(0.8),
+                ),
+              ),
+            ],
+          ),
+      ],
+        ),
     );
   }
 
@@ -479,7 +572,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Form(
-        autovalidate: false,
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -565,6 +657,45 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 color: kPrimaryColor,
                 endIndent: 50,
                 indent: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 100,
+                      child: CupertinoButton(
+                          color: Colors.red.shade700.withOpacity(0.9),
+                          child: Text('Elimina ${widget.workstationModel.name}'),
+                          onPressed: () async {
+                            try{
+                              await dataBundleNotifier.getclientServiceInstance().removeWorkstation(widget.workstationModel);
+                              List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
+
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => EventManagerScreen(
+                                event: widget.eventModel,
+                                workstationModelList: workstationModelList,
+                              ),),);
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 2000),
+                                  backgroundColor: Colors.green.withOpacity(0.9),
+                                  content: Text('Eliminata la postazione ${widget.workstationModel.name}', style: const TextStyle(color: Colors.white),)));
+
+                            }catch(e){
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 5000),
+                                  backgroundColor: Colors.red,
+                                  content: Text('Impossibile eliminare postazione ${widget.workstationModel.name}. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
+                            }
+
+                          }),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

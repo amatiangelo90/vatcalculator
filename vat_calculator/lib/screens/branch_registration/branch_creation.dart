@@ -290,7 +290,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       CupertinoTextField(
                         textInputAction: TextInputAction.next,
                         restorationId: 'Città',
-                        keyboardType: TextInputType.emailAddress,
+                        keyboardType: TextInputType.name,
                         controller: controllerCity,
                         clearButtonMode: OverlayVisibilityMode.editing,
                         autocorrect: false,

@@ -62,7 +62,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   child: Column(
                     children: [
                       Container(
-                        color: kBeigeColor,
+                        color: kPrimaryColor,
                         child: Column(
                           children: [
                             Row(
@@ -74,7 +74,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                       Navigator.popAndPushNamed(context, HomeScreen.routeName);
                                     },
                                     child: SizedBox(
-                                      child: Image.asset('assets/logo/logo_home_nero.png'),
+                                      child: Image.asset('assets/logo/logo_home_white.png'),
                                       height: getProportionateScreenHeight(50),
                                     ),
                                   ),
@@ -83,7 +83,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('20m2', style: TextStyle(fontWeight: FontWeight.w600, color: kCustomYellow, fontSize: getProportionateScreenHeight(18))),
+                                    Text('20m2', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: getProportionateScreenHeight(18))),
                                     Text('IVA, ORDINI E GESTIONE', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
 
                                   ],
@@ -106,7 +106,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     ),
                                     Row(
                                       children: [
-                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: Colors.greenAccent,
+                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: kCustomGreen,
                                         ) : const SizedBox(width: 0,),
                                         const SizedBox(width: 20,),
                                       ],
@@ -264,7 +264,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentOrdersForCurrentBranch.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.blueAccent.withOpacity(0.5),
+                                      color: kCustomBlue,
                                       child: Center(child: Text(dataBundleNotifier.currentUnderWorkingOrdersList.length.toString(),
                                         style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
@@ -273,7 +273,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.orange.withOpacity(0.8),
+                                      color: kCustomOrange,
                                       child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
@@ -312,7 +312,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.redAccent.withOpacity(0.8),
+                                      color: kPinaColor,
                                       child: Center(child: Text(dataBundleNotifier.currentListSuppliers.length.toString()
                                         , style: const TextStyle(fontSize: 12.0, color: kCustomWhite),),),
                                     ),
@@ -352,7 +352,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.redAccent.withOpacity(0.8),
+                                      color: kPinaColor,
                                       child: Center(child: Text(dataBundleNotifier.currentStorageList.length.toString()
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
@@ -391,7 +391,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.eventModelList.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.redAccent.withOpacity(0.8),
+                                      color: kPinaColor,
                                       child: Center(child: Text(dataBundleNotifier.retrieveEventsNumberOpenStatus(), style: TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
                                   ),
@@ -436,7 +436,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.redAccent.withOpacity(0.8),
+                                      color: kPinaColor,
                                       child: Center(child: dataBundleNotifier.userDetailsList.isNotEmpty
                                           ? Text(dataBundleNotifier.userDetailsList[0].companyList.length.toString()
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
@@ -496,7 +496,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentBranchActionsList.length > 100 ? getProportionateScreenWidth(40) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: Colors.purple.withOpacity(0.4),
+                                      color: kCustomPurple,
                                       child: Center(child: Text(dataBundleNotifier.currentBranchActionsList.length > 100 ? '+100' : dataBundleNotifier.currentBranchActionsList.length.toString()
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
@@ -599,47 +599,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
       );
     });
     return Column(children: branchList,);
-  }
-
-  buildListBranches(DataBundleNotifier dataBundleNotifier) {
-
-    List<Widget> branchWidgetList = [];
-    dataBundleNotifier.userDetailsList[0].companyList.forEach((currentBranch) {
-      branchWidgetList.add(
-        GestureDetector(
-          child: Container(
-            decoration: BoxDecoration(
-              color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.green.shade700 : Colors.white,
-              border: const Border(
-                bottom: BorderSide(width: 1.0, color: Colors.grey),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Icon(Icons.format_align_right_rounded, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
-                  Icon(currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Icons.person : Icons.vpn_key_outlined, color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : kPrimaryColor,),
-                  Text('   ' + currentBranch.companyName,
-                    style: TextStyle(
-                      fontSize: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? getProportionateScreenWidth(16) : getProportionateScreenWidth(13),
-                      color: dataBundleNotifier.currentBranch.companyName == currentBranch.companyName ? Colors.white : Colors.black,
-                    ),),
-                ],
-              ),
-            ),
-          ),
-          onTap: () async {
-            context.loaderOverlay.show();
-            Navigator.pop(context);
-            await dataBundleNotifier.setCurrentBranch(currentBranch);
-            context.loaderOverlay.hide();
-
-          },
-        ),
-      );
-    });
-    return branchWidgetList;
   }
 
   String getDraftOrdersNumber(List<OrderModel> currentOrdersForCurrentBranch) {

@@ -2205,4 +2205,48 @@ class ClientVatService implements VatServiceInterface{
     }
   }
 
+  Future<void> removeWorkstation(WorkstationModel workstationModel) async {
+    try{
+      var dio = Dio();
+      String body = json.encode(
+          workstationModel.toMap());
+
+
+      Response post = await dio.post(
+        VAT_SERVICE_URL_DELETE_WORKSTATION,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Delete Workstation): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_DELETE_WORKSTATION + '): ' + post.toString());
+
+    }catch(e){
+      print('Errore retrieving storage model : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> updateAmountHundredIntoStorage(double currentValue, int fkStorProdId) async {
+
+    try{
+      var dio = Dio();
+      String body = '{"pkStorageProduct" : $fkStorProdId, "amountHundred" : $currentValue }';
+
+      print(body);
+      Response post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_AMOUNT_HUNDRED,
+        data: body,
+      );
+
+      print('Request body for Vat Service (update amount hundred on storage): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_AMOUNT_HUNDRED + '): ' + post.toString());
+
+    }catch(e){
+      print('Errore retrieving storage model : ');
+      print(e);
+      rethrow;
+    }
+  }
+
 }

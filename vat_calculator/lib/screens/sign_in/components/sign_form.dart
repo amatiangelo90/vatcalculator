@@ -78,7 +78,6 @@ class _SignFormState extends State<SignForm> {
                 print('password: ' + password.toString());
                 try{
                   final user = await _auth.signInWithEmailAndPassword(email: email.toString(), password: password.toString());
-
                   if(user != null){
                     KeyboardUtil.hideKeyboard(context);
                     Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen(email: email,),),);

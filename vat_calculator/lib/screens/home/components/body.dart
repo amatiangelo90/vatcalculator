@@ -234,7 +234,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                   top: 26.0,
                                                   right: 9.0,
                                                   child: Stack(
-                                                    children: const <Widget>[
+                                                    children: <Widget>[
                                                       Icon(
                                                         Icons.brightness_1,
                                                         size: 18,
@@ -249,7 +249,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                                 .add_circle_outline,
                                                             size: 13,
                                                             color:
-                                                                kCustomYellowDarker,
+                                                                kCustomYellow800,
                                                           ),
                                                         ),
                                                       ),
@@ -397,8 +397,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                                   top: 26.0,
                                   right: 9.0,
                                   child: Stack(
-                                    children: const <Widget>[
-                                      Icon(
+                                    children: <Widget>[
+                                      const Icon(
                                         Icons.brightness_1,
                                         size: 18,
                                         color: kPrimaryColor,
@@ -412,7 +412,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                 .add_circle_outline,
                                             size: 13,
                                             color:
-                                            kCustomYellowDarker,
+                                            kCustomYellow800,
                                           ),
                                         ),
                                       ),
@@ -635,13 +635,83 @@ class _HomePageBodyState extends State<HomePageBody> {
                       fontWeight: FontWeight.bold),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
-                child: Icon(
-                  Icons.keyboard_arrow_down_rounded,
-                  color: kCustomYellow800,
-                  size: getProportionateScreenWidth(20),
-                ),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                    child: IconButton(
+                        icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
+                        onPressed: (){
+                          TextEditingController textController = TextEditingController(text: dataBundleNotifier.currentBranch.companyName);
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                content: SizedBox(
+                                  height: getProportionateScreenHeight(200),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text('Configura Nome Attività'),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            ConstrainedBox(
+                                              constraints: BoxConstraints.loose(Size(
+                                                  getProportionateScreenWidth(150),
+                                                  getProportionateScreenWidth(60))),
+                                              child: CupertinoTextField(
+                                                controller: textController,
+                                                textInputAction: TextInputAction.next,
+                                                keyboardType: TextInputType.name,
+                                                clearButtonMode: OverlayVisibilityMode.never,
+                                                textAlign: TextAlign.center,
+                                                autocorrect: false,
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: CupertinoButton(child: const Text('Salva'), color: Colors.green, onPressed: (){
+
+                                                if (textController.value != null && textController.value != '') {
+
+                                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: Colors.green.withOpacity(0.9),
+                                                    duration: const Duration(milliseconds: 3000),
+                                                    content: Text(
+                                                        'Dettagli attività modificati'),
+                                                  ));
+                                                } else {
+                                                  Scaffold.of(context).showSnackBar(const SnackBar(
+                                                    backgroundColor: kPinaColor,
+                                                    duration: Duration(milliseconds: 600),
+                                                    content: Text(
+                                                        'Il nome dell\'attività non può essere vuoto'),
+                                                  ));
+                                                }
+                                                Navigator.of(context).pop();
+                                              }),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                          );
+                        },
+                    )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+                    child: Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: kCustomYellow800,
+                      size: getProportionateScreenWidth(30),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

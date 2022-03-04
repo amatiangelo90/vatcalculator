@@ -54,7 +54,7 @@ class LandingBody extends StatelessWidget {
                       style: TextStyle(
                         fontSize: getProportionateScreenWidth(16),
                         fontWeight: FontWeight.bold,
-                        color: kCustomYellow,
+                        color: kCustomYellow800,
                       ),
                     ),
                     Text(
@@ -63,7 +63,7 @@ class LandingBody extends StatelessWidget {
                       style: TextStyle(
                         fontSize: getProportionateScreenWidth(18),
                         fontWeight: FontWeight.bold,
-                        color: kCustomYellow,
+                        color: kCustomYellow800,
                       ),
                     ),
                   ],
@@ -75,7 +75,7 @@ class LandingBody extends StatelessWidget {
                     width: getProportionateScreenWidth(500),
                     child: CupertinoButton(
                       child: Text('Avanti', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),),
-                      color: kCustomYellow,
+                      color: kCustomYellow800,
                       onPressed: () async {
                         context.loaderOverlay.show();
                         ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();

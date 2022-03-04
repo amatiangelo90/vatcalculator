@@ -3,26 +3,22 @@ import 'package:vat_calculator/size_config.dart';
 
 //const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
-Color customGreenAccent = const Color(0xFF4AB8A1);
-const Color kCustomYellow = Color(0XFFFFDE55);
-const Color kCustomYellowDarker = Color(0XFFFFDA00);
+Color customGreenAccent = const Color(0xFF0abb9c);
+
 Color kCustomYellow800 = Colors.yellow.shade700.withOpacity(0.8);
+
+
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
-const Color kWinterGreen = Color(0XFF2f4a36);
-const Color kPinaColor = Color(0XFFd0093b);
+const Color kPinaColor = Color(0XFFf94239);
 const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
-const Color kCustomBlue = Color(0xFF405169);
-const Color kCustomGrey = Color(0xFF2d2d2d);
+const Color kCustomBlue = Color(0xFF2750ff);
+const Color kCustomGreen = Color(0xFF0abb9c);
+const Color kCustomOrange = Color(0xFFf2a602);
+const Color kCustomPurple = Color(0xFF9924ff);
 
 const kPrimaryLightColor = Color(0xFFFFECDF);
-const kPrimaryGradientColor = LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  colors: [Color(0xFFFFA53E), Color(0xFFFF7643)],
-);
-const kSecondaryColor = Color(0xFF979797);
 const kTextColor = Color(0xFF757575);
 
 const kAnimationDuration = Duration(milliseconds: 200);

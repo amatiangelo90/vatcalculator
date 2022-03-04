@@ -534,14 +534,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
             ),
           ),
         ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.redAccent,
-            elevation: 2.0,
-            child: Icon(Icons.add),
-            onPressed: (){},
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          bottomNavigationBar: const BottomAppBar(
+        bottomNavigationBar: const BottomAppBar(
             shape: CircularNotchedRectangle(),
             notchMargin: 3,
             color: kPrimaryColor,

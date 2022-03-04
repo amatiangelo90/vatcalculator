@@ -964,7 +964,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   String retrieveSupplierById(int supplierId) {
     String currentSupplier = '';
-    print('Retrieve supplier by current id : ' + supplierId.toString());
     currentListSuppliers.forEach((element) {
       if(element.pkSupplierId == supplierId){
         currentSupplier = element.nome;

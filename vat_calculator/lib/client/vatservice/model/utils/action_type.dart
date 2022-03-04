@@ -85,10 +85,10 @@ class ActionType{
               STORAGE_CREATION);
         case EVENT_CREATION:
           return CustomIcon.buildIconWidget('assets/icons/party.svg',
-              Colors.black,
-              Colors.greenAccent.withOpacity(0.2),
+              customGreenAccent,
+              Colors.black.withOpacity(0.7),
               Icons.add_circle_outline,
-              Colors.green.withOpacity(0.6),
+              customGreenAccent,
               EVENT_CREATION);
 
         case UPDATE_PRIVILEGE:
@@ -185,10 +185,10 @@ class ActionType{
             kPinaColor, EVENT_STORAGE_UNLOAD);
           case EVENT_STORAGE_LOAD:
           return CustomIcon.buildIconWidget('assets/icons/party.svg',
-            Colors.red.shade700.withOpacity(0.9),
+              Colors.green.shade700.withOpacity(0.9),
             Colors.green.withOpacity(0.2),
             Icons.arrow_circle_up_outlined,
-            kPinaColor, EVENT_STORAGE_LOAD);
+            Colors.green.shade700, EVENT_STORAGE_LOAD);
         case PROVIDER_DELETE:
           return CustomIcon.buildIconWidget('assets/icons/Parcel.svg',
             Colors.red.shade700.withOpacity(0.9),

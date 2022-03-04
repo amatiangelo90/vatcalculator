@@ -342,7 +342,6 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
            ),
            body: Form(
              key: formKey,
-             autovalidate: false,
              child: Padding(
                padding: const EdgeInsets.all(10.0),
                child: SingleChildScrollView(

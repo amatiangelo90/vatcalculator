@@ -80,10 +80,8 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                 width: getProportionateScreenWidth(100),
                                 child: CupertinoTextField(
                                   controller: expenceController,
-                                  onChanged: (text) {},
                                   textInputAction: TextInputAction.next,
-                                  keyboardType: const TextInputType.numberWithOptions(
-                                      decimal: true, signed: true),
+                                  keyboardType: const TextInputType.numberWithOptions(signed: true,decimal:  true),
                                   clearButtonMode: OverlayVisibilityMode.never,
                                   textAlign: TextAlign.center,
                                   autocorrect: false,
@@ -103,7 +101,6 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                 width: getProportionateScreenWidth(240),
                                 child: CupertinoTextField(
                                   controller: casualeExpenceController,
-                                  onChanged: (text) {},
                                   textInputAction: TextInputAction.next,
                                   keyboardType: TextInputType.text,
                                   clearButtonMode: OverlayVisibilityMode.never,
@@ -119,7 +116,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                           ),
                         ],
                       ),
-                      Divider(
+                      const Divider(
                         color: kPrimaryColor,
                         endIndent: 10,
                         indent: 10,

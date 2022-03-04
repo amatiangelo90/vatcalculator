@@ -8,6 +8,7 @@ import 'package:vat_calculator/client/vatservice/model/workstation_product_model
 import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/workstation_card.dart';
+import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
 
@@ -47,7 +48,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () => {
-                    Navigator.of(context).pop(),
+                    Navigator.pushNamed(context, HomeScreen.routeName),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,

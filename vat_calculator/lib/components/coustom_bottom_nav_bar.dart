@@ -48,7 +48,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                     child: Text(' Home ',
-                      style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
+                      style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(11)),
                     ),
                 ) : const SizedBox(height: 0,)
               ],
@@ -74,7 +74,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                   child: Text(' Magazzino ',
-                    style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
+                    style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)
                ],
@@ -163,7 +163,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                   child: Text(' Ordini ',
-                    style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
+                    style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)],
             ),
@@ -191,7 +191,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                   child: Text(' Gestione ',
-                    style: TextStyle(color: kCustomYellowDarker, fontSize: getProportionateScreenHeight(11)),
+                    style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)
               ],

@@ -17,13 +17,11 @@ import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/save_product_into_storage_request.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/common_drawer.dart';
 import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
@@ -39,16 +37,15 @@ class StorageScreen extends StatefulWidget{
   State<StorageScreen> createState() => _StorageScreenState();
 }
 
-class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
+class _StorageScreenState extends State<StorageScreen> {
 
-  RestorableInt segmentControlCreateOrAddFromCatalogue;
 
   String supplierChoiced = '';
   List<String> suppliersList = [];
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _unitMeasureController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _unitMeasureController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
 
   bool _selectedValue4 = false;
   bool _selectedValue5 = false;
@@ -60,39 +57,14 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
   bool _packagesUnitMeasure = false;
   bool _otherUnitMeasure = false;
 
-  bool creationProductAndAdd = true;
-
   String _selectedSupplier = 'Seleziona Fornitore';
 
-  ResponseAnagraficaFornitori currentSupplierToSaveProduct;
-
   int _rowsPerPage = 7;
-
-  Map<int, Widget> ivaListCupertino = {
-    0 : const Text('Crea e Aggiungi'),
-    1 : const Text('Aggiungi da catalogo'),
-  };
-
-  @override
-  // TODO: implement restorationId
-  String get restorationId => 'current_add_create';
-
-  @override
-  void restoreState(RestorationBucket oldBucket, bool initialRestore) {
-    registerForRestoration(segmentControlCreateOrAddFromCatalogue, 'current_add_create');
-  }
 
   void setCurrentSupplier(String supplier, DataBundleNotifier dataBundleNotifier) {
     setState(() {
       _selectedSupplier = supplier;
     });
-  }
-
-
-  @override
-  void initState() {
-    super.initState();
-    segmentControlCreateOrAddFromCatalogue = RestorableInt(0);
   }
 
   @override
@@ -108,16 +80,14 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         suppliersList.clear();
-        suppliersList = retrieveListSuppliers(dataBundleNotifier.currentListSuppliers);
-
-        dataBundleNotifier.setToSelectedFalseAllItemOnCurrentStorageProductListForCurrentStorageDuplicated();
+        //dataBundleNotifier.setToSelectedFalseAllItemOnCurrentStorageProductListForCurrentStorageDuplicated();
         _panelHeightOpen = MediaQuery.of(context).size.height * .75;
         return Scaffold(
+
           drawer: const CommonDrawer(),
           appBar: AppBar(
-
+            iconTheme: IconThemeData(color: kCustomWhite),
             actions: [
-
               GestureDetector(
                 onTap: () {
                   buildStorageChooserDialog(context, dataBundleNotifier);
@@ -126,7 +96,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                   children: [ IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/storage.svg',
-                      color: kPrimaryColor,
+                      color: kCustomWhite,
                       width: getProportionateScreenHeight(40),
                     ),
                     onPressed: () {
@@ -137,17 +107,17 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                       top: 26.0,
                       right: 4.0,
                       child: Stack(
-                        children: const <Widget>[
+                        children: <Widget>[
                           Icon(
                             Icons.brightness_1,
                             size: 20,
-                            color: Colors.black,
+                            color: Colors.amber,
                           ),
                           Positioned(
                             right: 3.5,
                             top: 3.5,
                             child: Center(
-                              child: Icon(Icons.compare_arrows_outlined, size: 13, color: kCustomYellowDarker,),
+                              child: Icon(Icons.compare_arrows_outlined, size: 13, color: customGreenAccent,),
                             ),
                           ),
                         ],
@@ -156,13 +126,13 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                   ],
                 ),
               ),
-              const SizedBox(width: 20,),
+              const SizedBox(width: 10,),
             ],
-            backgroundColor: kCustomWhite,
+            backgroundColor: kPrimaryColor,
             centerTitle: true,
             title: Text(dataBundleNotifier.currentStorage.name, style: TextStyle(
-                fontSize: getProportionateScreenWidth(17),
-            color: kPrimaryColor,
+                fontSize: getProportionateScreenWidth(13),
+            color: kCustomWhite,
           ),),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -393,46 +363,21 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                               ],
                             ),
                           ),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: [
-                                SizedBox(width: 10,),
-                                SizedBox(
-                                  height: getProportionateScreenHeight(40),
-                                  width: getProportionateScreenWidth(200),
-                                  child: CupertinoTextField(
-                                    textInputAction: TextInputAction.next,
-                                    restorationId: 'Ricerca per nome o fornitore',
-                                    keyboardType: TextInputType.text,
-                                    clearButtonMode: OverlayVisibilityMode.editing,
-                                    placeholder: 'Ricerca per nome o fornitore',
-                                    onChanged: (currentText) {
-                                      dataBundleNotifier.filterStorageProductList(currentText);
-                                    },
-                                  ),
-                                ),
-                                Content(
-                                  child: ChipsChoice<String>.single(
-                                    choiceActiveStyle: C2ChoiceStyle(
-                                      color: Colors.blueAccent.shade700.withOpacity(0.8),
-                                      elevation: 2,
-                                      showCheckmark: false,
-                                    ),
-                                    value: supplierChoiced,
-                                    onChanged: (val) => setState(() {
-                                      supplierChoiced = val;
-                                      dataBundleNotifier.filterStorageProductList(val);
-                                    }),
-                                    choiceItems: C2Choice.listFrom<String, String>(
-                                      source: suppliersList,
-                                      value: (i, v) => v,
-                                      label: (i, v) => v,
-                                      tooltip: (i, v) => v,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                              height: getProportionateScreenHeight(40),
+                              width: getProportionateScreenWidth(500),
+                              child: CupertinoTextField(
+                                textInputAction: TextInputAction.next,
+                                restorationId: 'Ricerca per nome o fornitore',
+                                keyboardType: TextInputType.text,
+                                clearButtonMode: OverlayVisibilityMode.editing,
+                                placeholder: 'Ricerca per nome o fornitore',
+                                onChanged: (currentText) {
+                                  dataBundleNotifier.filterStorageProductList(currentText);
+                                },
+                              ),
                             ),
                           ),
                           buildCurrentListProductTable(dataBundleNotifier, context),
@@ -468,66 +413,53 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
-      child: ListView(
-        controller: sc,
-        children: <Widget>[
-          const SizedBox(
-            height: 8.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 35,
-                height: 5,
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.all(const Radius.circular(12.0))),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 8.0,
-          ),
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    "Aggiungi Prodotti",
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: getProportionateScreenHeight(12),
-                    ),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: CupertinoSlidingSegmentedControl<int>(
-                  children: ivaListCupertino,
-                  onValueChanged: (index) {
-                    setState(() {
-                      segmentControlCreateOrAddFromCatalogue.value = index;
-                      if(creationProductAndAdd){
-                        creationProductAndAdd = false;
-                      }else{
-                        creationProductAndAdd = true;
-                      }
-                    });
-                  },
-                  groupValue: segmentControlCreateOrAddFromCatalogue.value,
-                ),
-              ),
-            ],
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          buildWidgetRowForProduct(dataBundleNotifier),
+      child: Container(
+        child: ListView(
+          controller: sc,
+          children: <Widget>[
+            const SizedBox(
+              height: 8.0,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  width: 35,
+                  height: 5,
 
-        ],
+                  decoration: BoxDecoration(
+
+                      color: customGreenAccent,
+                      borderRadius: BorderRadius.all(const Radius.circular(12.0))),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 8.0,
+            ),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Aggiungi Prodotti",
+                      style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: getProportionateScreenHeight(12),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            buildWidgetRowForProduct(dataBundleNotifier),
+
+          ],
+        ),
       ),
     );
   }
@@ -729,13 +661,6 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
     dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
   }
 
-  retrieveListSuppliers(List<ResponseAnagraficaFornitori> currentListSuppliers) {
-    List<String> currentListNameSuppliers = ['Tutti i fornitori'];
-    currentListSuppliers.forEach((element) {
-      currentListNameSuppliers.add(element.nome);
-    });
-    return currentListNameSuppliers;
-  }
   retrieveListSuppliersBis(List<ResponseAnagraficaFornitori> currentListSuppliers) {
     List<String> currentListNameSuppliers = [];
     currentListSuppliers.forEach((element) {
@@ -746,10 +671,14 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
 
   buildWidgetRowForProduct(DataBundleNotifier dataBundleNotifier) {
 
-    List<Widget> listWidget = [];
-    if(creationProductAndAdd){
-      listWidget.add(
-        Column(
+    List<Widget> listWidget = [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
+      )
+    ];
+
+    listWidget.add(Column(
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -928,7 +857,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                 ),
               ),
             ),
-            SizedBox(height: 50,),
+            SizedBox(height: 20,),
             SizedBox(
               width: MediaQuery.of(context).size.width - 40,
               child: CupertinoButton(
@@ -972,7 +901,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
                             type: ActionType.PRODUCT_CREATION
                         )
                     );
-                    sleep(const Duration(seconds: 1));
+                    sleep(const Duration(milliseconds: 600));
 
 
                     if(performSaveProduct != null && performSaveProduct.statusCode == 200){
@@ -1014,14 +943,11 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
             const SizedBox(height: 30,),
           ],
         ),
-      );
-    }else{
-      listWidget.add(
-        buildListProductDividedBySupplier(dataBundleNotifier),
-      );
-    }
+    );
+    listWidget.add(buildListProductDividedBySupplier(dataBundleNotifier));
 
-    listWidget.add(const SizedBox(height: 300,));
+
+    listWidget.add(const Divider(color: Colors.grey, endIndent: 40, indent: 40, height: 60,));
     return Column(children: listWidget,);
   }
 
@@ -1055,29 +981,11 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
   Widget buildListProductDividedBySupplier(DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> listWidget = [
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text('  --  Oppure selezionali dal catalogo dei fornitori  --  ', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
+      )
     ];
-    listWidget.add(
-      Content(
-        child: ChipsChoice<String>.single(
-          choiceActiveStyle: C2ChoiceStyle(
-            color: Colors.blueAccent.shade700.withOpacity(0.8),
-            elevation: 2,
-            showCheckmark: false,
-          ),
-          value: supplierChoiced,
-          onChanged: (val) => setState(() {
-            supplierChoiced = val;
-            //TODO filter list product to add to current storage
-          }),
-          choiceItems: C2Choice.listFrom<String, String>(
-            source: suppliersList,
-            value: (i, v) => v,
-            label: (i, v) => v,
-            tooltip: (i, v) => v,
-          ),
-        ),
-      ),
-    );
 
     if(dataBundleNotifier.productToAddToStorage.isNotEmpty){
       Map<String, List<ProductModel>> mapSupplierListProduct = {};
@@ -1090,7 +998,7 @@ class _StorageScreenState extends State<StorageScreen> with RestorationMixin{
         }
       });
       mapSupplierListProduct.forEach((key, value) {
-        print('Build list for current supplier : ' + key.toString());
+        //print('Build list for current supplier : ' + key.toString());
         listWidget.add(
             Padding(
               padding: const EdgeInsets.fromLTRB(13, 5, 13, 2),

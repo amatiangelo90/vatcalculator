@@ -67,7 +67,6 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
             body: Padding(
               padding: const EdgeInsets.all(20.0),
               child: Form(
-                autovalidate: false,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Column(
