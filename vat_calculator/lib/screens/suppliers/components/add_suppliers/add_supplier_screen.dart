@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
@@ -226,7 +225,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
   Future<void> saveProviderData(DataBundleNotifier dataBundleNotifier, context) async {
 
     if(true){
-      ResponseAnagraficaFornitori supplier = ResponseAnagraficaFornitori(
+      SupplierModel supplier = SupplierModel(
         pkSupplierId: 0,
         cf: '',
         extra: getUniqueCustomId(),
@@ -260,7 +259,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
           )
       );
 
-      List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+      List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
       dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
       dataBundleNotifier.clearAndUpdateMapBundle();

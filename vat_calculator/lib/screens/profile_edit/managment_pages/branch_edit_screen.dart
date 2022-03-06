@@ -23,7 +23,7 @@ class EditBranchScreen extends StatefulWidget {
 
   final BranchModel currentBranch;
   final List<UserModel> listUserModel;
-  final List<ResponseAnagraficaFornitori> listSuppliersModel;
+  final List<SupplierModel> listSuppliersModel;
   final List<StorageModel> listStorageModel;
   final Function callBackFuntion;
   @override
@@ -583,7 +583,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                     }
 
                                     if(dataBundleNotifier.currentBranch != null){
-                                      List<ResponseAnagraficaFornitori> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                                      List<SupplierModel> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                       dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
                                     }
                                     if(dataBundleNotifier.currentBranch != null){

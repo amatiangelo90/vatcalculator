@@ -9,8 +9,7 @@ import 'package:vat_calculator/components/chart_widget.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
-import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_card.dart';
-import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_screen.dart';
+import 'package:vat_calculator/screens/recessed_manager/components/recessed_reg_card.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
@@ -221,9 +220,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                       ),
                       buildHeaderDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
                       buildDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
-                      LineChartWidget(currentDateTimeRange: dataBundleNotifier
-                          .currentDateTimeRange),
-
+                      LineChartWidget(),
                     ],
                   ),
                   buildDateRecessedRegistrationWidget(dataBundleNotifier),
@@ -297,7 +294,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
               ),
             ],
           ),
-          Text(recessedModel.amount.toStringAsFixed(2), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+          Text(recessedModel.amountF.toStringAsFixed(2), style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
           Text('IVA ' + recessedModel.vat.toStringAsFixed(2) + '%', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold,fontSize: 5),),
           Text(normalizeCalendarValue(currentDateTime.day)
               + '/' + normalizeCalendarValue(currentDateTime.month)
@@ -319,17 +316,6 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                   SizedBox(width: getProportionateScreenWidth(10),),
                   Text('Ultimi 5 incassi registrati', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
                 ],
-              ),
-              CupertinoButton(
-                onPressed: (){
-                  Navigator.pushNamed(context, RecessedManagerScreen.routeName);
-                },
-                child: Row(
-                  children: [
-                    Text('Dettaglio Incassi', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12), color: Colors.grey),),
-                    Icon(Icons.arrow_forward_ios, size: getProportionateScreenWidth(15), color: Colors.grey),
-                  ],
-                ),
               ),
             ],
           ),
@@ -360,7 +346,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
       } else {
         recessedListByRangeDate.forEach((element) {
           print(element.toMap().toString());
-          totalIva = totalIva + (element.amount * (element.vat / 100));
+          totalIva = totalIva + (element.amountF * (element.vat / 100));
         });
         return totalIva;
       }
@@ -380,7 +366,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
     dataBundleNotifier.currentListRecessed.forEach((recessedElement) {
       if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(dataBundleNotifier.currentDateTimeRange.end)
           && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(dataBundleNotifier.currentDateTimeRange.start)){
-        currentRecessedVat = currentRecessedVat + ((recessedElement.amount / 100) * recessedElement.vat);
+        currentRecessedVat = currentRecessedVat + ((recessedElement.amountF / 100) * recessedElement.vat);
       }
     });
 

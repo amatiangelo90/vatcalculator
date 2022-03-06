@@ -433,7 +433,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                             }
 
                                             if(dataBundleNotifier.currentBranch != null){
-                                              List<ResponseAnagraficaFornitori> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                                              List<SupplierModel> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                               dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
                                             }
                                             if(dataBundleNotifier.currentBranch != null){

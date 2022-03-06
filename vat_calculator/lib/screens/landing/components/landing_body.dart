@@ -41,8 +41,9 @@ class LandingBody extends StatelessWidget {
                   padding: const EdgeInsets.all(25.0),
                   child: Center(
                     child: Image.asset(
-                      "assets/logo/20-3.png",
+                      "assets/logo/logo_home_white.png",
                       height: SizeConfig.screenHeight * 0.2,
+                      width: 130,
                     ),
                   ),
                 ),
@@ -54,7 +55,7 @@ class LandingBody extends StatelessWidget {
                       style: TextStyle(
                         fontSize: getProportionateScreenWidth(16),
                         fontWeight: FontWeight.bold,
-                        color: kCustomYellow800,
+                        color: Colors.white,
                       ),
                     ),
                     Text(
@@ -63,7 +64,7 @@ class LandingBody extends StatelessWidget {
                       style: TextStyle(
                         fontSize: getProportionateScreenWidth(18),
                         fontWeight: FontWeight.bold,
-                        color: kCustomYellow800,
+                        color: Colors.white,
                       ),
                     ),
                   ],
@@ -74,8 +75,8 @@ class LandingBody extends StatelessWidget {
                   child: SizedBox(
                     width: getProportionateScreenWidth(500),
                     child: CupertinoButton(
-                      child: Text('Avanti', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),),
-                      color: kCustomYellow800,
+                      child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                      color: kCustomGreen,
                       onPressed: () async {
                         context.loaderOverlay.show();
                         ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
@@ -100,7 +101,6 @@ class LandingBody extends StatelessWidget {
                             userModelRetrieved.privilege,
                             []);
 
-
                         List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
                         dataBundleNotifier.addDataBundle(dataBundle);
                         dataBundleNotifier.addBranches(_branchList);
@@ -119,17 +119,8 @@ class LandingBody extends StatelessWidget {
                           dataBundleNotifier.addCurrentExpencesList(_expenceModelList);
                         }
 
-
-                        // TODO sistemare la questione addizionare amount se esiste già una data contenente un incasso
-                        dataBundleNotifier.recessedListCharData.clear();
-                        _recessedModelList.forEach((recessedElement) {
-                          dataBundleNotifier.recessedListCharData.add(
-                              CharData(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed), recessedElement.amount)
-                          );
-                        });
-
                         if(dataBundleNotifier.currentBranch != null){
-                          List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                          List<SupplierModel> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                           dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
                         }
                         if(dataBundleNotifier.currentBranch != null){

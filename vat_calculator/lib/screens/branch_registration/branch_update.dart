@@ -10,22 +10,15 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 
-class CreationBranchScreen extends StatefulWidget {
+class UpdateBranchScreen extends StatefulWidget {
 
-  static String routeName = 'branch_creation';
+  static String routeName = 'branch_update';
 
   @override
-  State<CreationBranchScreen> createState() => _CreationBranchScreenState();
+  State<UpdateBranchScreen> createState() => _UpdateBranchScreenState();
 }
 
-class _CreationBranchScreenState extends State<CreationBranchScreen> {
-  TextEditingController controllerPIva;
-  TextEditingController controllerCompanyName;
-  TextEditingController controllerEmail;
-  TextEditingController controllerAddress;
-  TextEditingController controllerCity;
-  TextEditingController controllerCap;
-  TextEditingController controllerMobileNo;
+class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +27,20 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
 
+        TextEditingController controllerPIva2 = TextEditingController(text: dataBundleNotifier.currentBranch.vatNumber.toString());
+        TextEditingController controllerCompanyName2 = TextEditingController(text: dataBundleNotifier.currentBranch.companyName);
+        TextEditingController controllerAddress2 = TextEditingController(text: dataBundleNotifier.currentBranch.address);
+        TextEditingController controllerCity2 = TextEditingController(text: dataBundleNotifier.currentBranch.city);
+        TextEditingController controllerCap2 = TextEditingController(text: dataBundleNotifier.currentBranch.cap.toString());
+        TextEditingController controllerMobileNo2 = TextEditingController(text: dataBundleNotifier.currentBranch.phoneNumber);
+        TextEditingController controllerEmail2;
+
         if(dataBundleNotifier.userDetailsList.isEmpty){
-          controllerEmail = TextEditingController();
+          controllerEmail2 = TextEditingController();
         }else{
-          controllerEmail = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
+          controllerEmail2 = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
         }
+
         void buildShowErrorDialog(String text) {
           Widget cancelButton = TextButton(
             child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
@@ -130,50 +132,45 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoButton(
                           color: kCustomYellow800,
-                          child: const Text('CREA'),
+                          child: const Text('AGGIORNA'),
                           onPressed: () async {
-                            if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
+                            if(controllerCompanyName2.text == null || controllerCompanyName2.text == ''){
                               print('Il nome dell\' azienda è obbligatorio');
                               buildShowErrorDialog('Il nome dell\' azienda è obbligatorio');
-                            }else if(controllerEmail.text == null || controllerEmail.text == ''){
+
+                            }else if(controllerEmail2.text == null || controllerEmail2.text == ''){
                               print('L\'indirizzo email è obbligatorio');
                               buildShowErrorDialog('L\'indirizzo email è obbligatorio');
-                            }else if(controllerAddress.text == null || controllerAddress.text == ''){
+                            }else if(controllerAddress2.text == null || controllerAddress2.text == ''){
                               print('Inserire indirizzo');
                               buildShowErrorDialog('Inserire indirizzo');
-                            }else if(int.tryParse(controllerCap.text) == null){
+                            }else if(int.tryParse(controllerCap2.text) == null){
                               print('Il cap è errato. Inserire un numero corretto!');
                               buildShowErrorDialog('Il cap è errato. Inserire un numero corretto');
-                            }else if(controllerCap.text.characters.length != 5){
+                            }else if(controllerCap2.text.characters.length != 5){
                               print('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
                               buildShowErrorDialog('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
                             }else{
                               BranchModel company = BranchModel(
-                                  eMail: controllerEmail.text,
-                                  phoneNumber: controllerMobileNo.text,
-                                  address: controllerAddress.text,
+                                  eMail: controllerEmail2.text,
+                                  phoneNumber: controllerMobileNo2.text,
+                                  address: controllerAddress2.text,
                                   apiKeyOrUser: '',
                                   apiUidOrPassword: '',
-                                  companyName: controllerCompanyName.text,
-                                  cap: int.parse(controllerCap.text),
-                                  city: controllerCity.text,
+                                  companyName: controllerCompanyName2.text,
+                                  cap: int.parse(controllerCap2.text),
+                                  city: controllerCity2.text,
                                   providerFatture: '',
-                                  vatNumber: controllerPIva.text,
+                                  vatNumber: controllerPIva2.text,
                                   pkBranchId: 0,
                                   accessPrivilege: Privileges.OWNER
                               );
 
-                              ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-
-
                               ActionModel actionModel = ActionModel(user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  description: 'Ha creato l\'attività ${controllerCompanyName.text}',
+                                  description: 'Ha aggiornato l\'attività ${controllerCompanyName2.text}',
                                   date: DateTime.now().millisecondsSinceEpoch,
                                   fkBranchId: 0);
-                              await clientService.performSaveBranch(company, actionModel);
-
-                              List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
-                              dataBundleNotifier.addBranches(_branchList);
+                              int rowsUpdated = await dataBundleNotifier.getclientServiceInstance().performUpdateBranch(company, actionModel);
 
                               Navigator.pushNamed(context, HomeScreen.routeName);
                             }
@@ -194,7 +191,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
               ),
             ),
             centerTitle: true,
-            title: Text('Crea nuova attività',
+            title: Text('Aggiorna dettagli attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
                 color: kCustomYellow800,
@@ -220,7 +217,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Email',
                         keyboardType: TextInputType.emailAddress,
-                        controller: controllerEmail,
+                        controller: controllerEmail2,
                         clearButtonMode: OverlayVisibilityMode.never,
                         autocorrect: false,
                         placeholder: 'Email',
@@ -234,13 +231,13 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Nome Attività',
                         keyboardType: TextInputType.emailAddress,
-                        controller: controllerCompanyName,
+                        controller: controllerCompanyName2,
                         clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
+                        onChanged: (text) {},
                         placeholder: 'Nome Attività',
                       ),
                       Row(
-                        children: [
+                        children: const [
                           Text('Cellulare*', style: TextStyle(color: kCustomWhite),),
                         ],
                       ),
@@ -248,9 +245,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Cellulare',
                         keyboardType: TextInputType.number,
-                        controller: controllerMobileNo,
+                        controller: controllerMobileNo2,
                         clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
+                        onChanged: (text) {},
                         placeholder: 'Cellulare',
                       ),
                       Row(
@@ -262,9 +259,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Partita Iva',
                         keyboardType: TextInputType.number,
-                        controller: controllerPIva,
+                        controller: controllerPIva2,
                         clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
+                        onChanged: (text) {},
                         placeholder: 'Partita Iva',
                       ),
                       Row(
@@ -276,9 +273,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Indirizzo',
                         keyboardType: TextInputType.emailAddress,
-                        controller: controllerAddress,
+                        controller: controllerAddress2,
                         clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
+                        onChanged: (text) {},
                         placeholder: 'Indirizzo',
                       ),
                       Row(
@@ -290,9 +287,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Città',
                         keyboardType: TextInputType.name,
-                        controller: controllerCity,
+                        controller: controllerCity2,
                         clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
+                        onChanged: (text) {},
                         placeholder: 'Città',
                       ),
                       Row(
@@ -304,8 +301,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                         textInputAction: TextInputAction.next,
                         restorationId: 'Cap',
                         keyboardType: TextInputType.number,
-                        controller: controllerCap,
+                        controller: controllerCap2,
                         clearButtonMode: OverlayVisibilityMode.editing,
+                        onChanged: (text) {},
                         placeholder: 'Cap',
                       ),
                       const Padding(
@@ -322,17 +320,5 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
         );
       },
     );
-
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    controllerPIva = TextEditingController();
-    controllerCompanyName = TextEditingController();
-    controllerAddress = TextEditingController();
-    controllerCity = TextEditingController();
-    controllerCap = TextEditingController();
-    controllerMobileNo = TextEditingController();
   }
 }

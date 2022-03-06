@@ -38,10 +38,10 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ExpenceModel> currentListExpences = [
   ];
 
-  List<ResponseAnagraficaFornitori> currentListSuppliers = [
+  List<SupplierModel> currentListSuppliers = [
   ];
 
-  List<ResponseAnagraficaFornitori> currentListSuppliersDuplicated = [
+  List<SupplierModel> currentListSuppliersDuplicated = [
   ];
 
   List<StorageModel> currentStorageList = [
@@ -86,7 +86,6 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ProductModel> productListForChoicedSupplierToPerformOrder = [];
   List<CharData> charDataCreditIva = [];
   List<CharData> charDataDebitIva = [];
-  List<CharData> recessedListCharData = [];
 
   List<EventModel> eventModelList = [];
 
@@ -117,6 +116,7 @@ class DataBundleNotifier extends ChangeNotifier {
   double totalIvaFatture = 0.0;
   double totalIvaNdcReceived = 0.0;
   double totalIvaNdcSent = 0.0;
+
   List<ResponseAcquistiApi> extractedAcquistiFatture = [];
   List<ResponseAcquistiApi> extractedNdc = [];
   Map<String, double> resultCreditIvaMap = {};
@@ -457,16 +457,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     calculateFiscalNotFiscalAmount();
 
-    recessedListCharData.clear();
-    _recessedModelList.forEach((recessedElement) {
-      recessedListCharData.add(CharData(
-        DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed),
-        recessedElement.amount
-      ));
-    });
-
-
-    List<ResponseAnagraficaFornitori> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
+    List<SupplierModel> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
     currentListSuppliersDuplicated.clear();
 
@@ -613,9 +604,7 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentListExpences.isNotEmpty){
       currentListExpences.clear();
     }
-    if(recessedListCharData.isNotEmpty){
-      recessedListCharData.clear();
-    }
+
     if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
       currentDraftOrdersList.clear();
@@ -710,7 +699,7 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCurrentSuppliersList(List<ResponseAnagraficaFornitori> suppliersModelList) {
+  void addCurrentSuppliersList(List<SupplierModel> suppliersModelList) {
     currentListSuppliers.clear();
     currentListSuppliersDuplicated.clear();
     currentListSuppliers.addAll(suppliersModelList);
@@ -1000,7 +989,7 @@ class DataBundleNotifier extends ChangeNotifier {
       currentListSuppliersDuplicated.addAll(currentListSuppliers);
     }else {
 
-      List<ResponseAnagraficaFornitori> listTemp = [];
+      List<SupplierModel> listTemp = [];
       currentListSuppliers.forEach((element) {
         if(element.nome.toLowerCase().contains(currentText.toLowerCase())
             || element.extra.toLowerCase().contains(currentText.toLowerCase())){
@@ -1085,7 +1074,7 @@ class DataBundleNotifier extends ChangeNotifier {
           pkBranchId: currentBranch.pkBranchId
       ));
 
-      List<ResponseAnagraficaFornitori> listSuppliers = await getclientServiceInstance().retrieveSuppliersListByBranch(BranchModel(
+      List<SupplierModel> listSuppliers = await getclientServiceInstance().retrieveSuppliersListByBranch(BranchModel(
           pkBranchId: currentBranch.pkBranchId
       ));
 
@@ -1163,6 +1152,7 @@ class DataBundleNotifier extends ChangeNotifier {
     totalIvaFatture = 0.0;
     totalIvaNdcReceived = 0.0;
     totalIvaNdcSent = 0.0;
+
     extractedAcquistiFatture.clear();
     extractedNdc.clear();
     resultDebitIvaMap.clear();
@@ -1264,6 +1254,8 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     });
 
+
+    print('DIO CARO');
     print(resultCreditIvaMap.toString());
     print(resultDebitIvaMap.toString());
 
@@ -1285,16 +1277,6 @@ class DataBundleNotifier extends ChangeNotifier {
           calculateValue(resultDebitIvaMap, currentDateTimeRange, daysRangeDate-i, daysRangeDate, true)));
       i++;
     }while(i <= daysRangeDate);
-
-    print('Char data credit iva');
-    charDataCreditIva.forEach((element) {
-      print(element.date.toString() + ' - ' + element.value.toString());
-    });
-    print('Char data debit iva');
-    charDataDebitIva.forEach((element) {
-      print(element.date.toString() + ' - ' + element.value.toString());
-    });
-    print('finish');
 
     notifyListeners();
   }
@@ -1318,7 +1300,7 @@ class DataBundleNotifier extends ChangeNotifier {
         if(timeRange.end.subtract(Duration(days: dayToSubtract)).day == DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).day &&
             timeRange.end.subtract(Duration(days: dayToSubtract)).month == DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).month &&
             timeRange.end.subtract(Duration(days: dayToSubtract)).year == DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).year){
-          valueToReturn = valueToReturn + ((recessed.amount/100) * recessed.vat);
+          valueToReturn = valueToReturn + ((recessed.amountF/100) * recessed.vat);
         }
       });
     }
@@ -1510,8 +1492,8 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  ResponseAnagraficaFornitori retrieveSupplierFromSupplierListByIdName(String selectedSupplier) {
-    ResponseAnagraficaFornitori supplierToReturn;
+  SupplierModel retrieveSupplierFromSupplierListByIdName(String selectedSupplier) {
+    SupplierModel supplierToReturn;
     currentListSuppliers.forEach((supplier) {
       if(selectedSupplier.contains(supplier.nome) &&
           selectedSupplier.contains(supplier.pkSupplierId.toString())){
@@ -1521,8 +1503,8 @@ class DataBundleNotifier extends ChangeNotifier {
     return supplierToReturn;
   }
 
-  ResponseAnagraficaFornitori retrieveSupplierFromSupplierListById(int fk_supplier_id) {
-    ResponseAnagraficaFornitori supplierToReturn;
+  SupplierModel retrieveSupplierFromSupplierListById(int fk_supplier_id) {
+    SupplierModel supplierToReturn;
     currentListSuppliers.forEach((supplier) {
       if(supplier.pkSupplierId == fk_supplier_id){
         supplierToReturn = supplier;
@@ -1638,6 +1620,22 @@ class DataBundleNotifier extends ChangeNotifier {
       element.selected = false;
     });
     notifyListeners();
+  }
+
+  BranchModel retrieveBranchById(int key) {
+    BranchModel branchToReturn;
+
+    userDetailsList[0].companyList.forEach((branch) {
+      if(branch.pkBranchId == key){
+        branchToReturn = branch;
+      }
+    });
+    return branchToReturn;
+  }
+
+  buildDateKey(int dateTimeRecessed) {
+    DateTime date = DateTime.fromMillisecondsSinceEpoch(dateTimeRecessed);
+    return normalizeDayValue(date.day).toString()+'/'+normalizeMonth(date.month).toString()+'/'+date.year.toString();
   }
 
 }

@@ -9,7 +9,7 @@ class ProductDataSourceStorage extends DataTableSource {
 
   final List<StorageProductModel> _products;
   ProductDataSourceStorage(this._products, this._listSuppliers );
-  final List<ResponseAnagraficaFornitori> _listSuppliers;
+  final List<SupplierModel> _listSuppliers;
 
 
   @override
@@ -53,7 +53,7 @@ class ProductDataSourceStorage extends DataTableSource {
   @override
   int get selectedRowCount => _selectedCount;
 
-  String getSupplierFromListById(List<ResponseAnagraficaFornitori> listSuppliers, int supplierId) {
+  String getSupplierFromListById(List<SupplierModel> listSuppliers, int supplierId) {
 
      String currentSupplierName = 'Fornitore Sconosciuto';
 

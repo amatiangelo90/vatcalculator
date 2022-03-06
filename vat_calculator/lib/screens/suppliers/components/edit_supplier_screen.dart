@@ -21,7 +21,7 @@ import 'edit_product.dart';
 class EditSuppliersScreen extends StatefulWidget {
   const EditSuppliersScreen({Key key, this.currentSupplier}) : super(key: key);
 
-  final ResponseAnagraficaFornitori currentSupplier;
+  final SupplierModel currentSupplier;
   static String routeName = 'editsupplier';
 
   @override
@@ -168,7 +168,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           }else{
                             KeyboardUtil.hideKeyboard(context);
                             try{
-                              ResponseAnagraficaFornitori supplier = ResponseAnagraficaFornitori(
+                              SupplierModel supplier = SupplierModel(
                                 pkSupplierId: widget.currentSupplier.pkSupplierId,
                                 cf: '',
                                 extra: widget.currentSupplier.extra,
@@ -199,7 +199,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                       type: ActionType.SUPPLIER_EDIT
                                   )
                               );
-                              List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                              List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
                               dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
                               dataBundleNotifier.clearAndUpdateMapBundle();
@@ -416,7 +416,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         Widget continueButton = TextButton(
                           child: const Text("Elimina", style: TextStyle(color: kPinaColor)),
                           onPressed:  () async {
-                            ResponseAnagraficaFornitori requestRemoveSupplierFromBranch = widget.currentSupplier;
+                            SupplierModel requestRemoveSupplierFromBranch = widget.currentSupplier;
                             requestRemoveSupplierFromBranch.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
                             await dataBundleNotifier.getclientServiceInstance().removeSupplierFromCurrentBranch(
                                 requestRemoveSupplierFromBranch: requestRemoveSupplierFromBranch,
@@ -428,7 +428,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                   type: ActionType.SUPPLIER_DELETE
                                 )
                             );
-                            List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
+                            List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                                 .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                             dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
                             dataBundleNotifier.clearAndUpdateMapBundle();

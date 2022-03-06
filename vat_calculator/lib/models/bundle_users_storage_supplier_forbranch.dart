@@ -9,14 +9,14 @@ class BundleUserStorageSupplier{
   int _pkBranchId;
   List<StorageModel> _storageModelList;
   List<UserModel> _userModelList;
-  List<ResponseAnagraficaFornitori> _supplierModelList;
+  List<SupplierModel> _supplierModelList;
 
   BundleUserStorageSupplier(this._pkBranchId, this._storageModelList,
       this._userModelList, this._supplierModelList);
 
-  List<ResponseAnagraficaFornitori> get supplierModelList => _supplierModelList;
+  List<SupplierModel> get supplierModelList => _supplierModelList;
 
-  set supplierModelList(List<ResponseAnagraficaFornitori> value) {
+  set supplierModelList(List<SupplierModel> value) {
     _supplierModelList = value;
   }
 

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import '../../../../constants.dart';
@@ -123,7 +122,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               onCompleted: (code) async {
                 formKey.currentState.validate();
                 print('Retrieve Supplier model by code : ' + code);
-                List<ResponseAnagraficaFornitori> retrieveSuppliersListByCode = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByCode(
+                List<SupplierModel> retrieveSuppliersListByCode = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByCode(
                     code: code
                 );
                 bool alreadyPresent = false;
@@ -236,7 +235,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                           print('Adding retrieved supplier ' + retrieveSuppliersListByCode[0].nome + ' to branch ' +
                               dataBundleNotifier.currentBranch.companyName + ' with id ' + dataBundleNotifier.currentBranch.pkBranchId.toString());
 
-                          ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier = retrieveSuppliersListByCode[0];
+                          SupplierModel supplierRetrievedByCodeToUpdateRelationTableBranchSupplier = retrieveSuppliersListByCode[0];
 
                           supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
                           await dataBundleNotifier.getclientServiceInstance().addSupplierToCurrentBranch(
@@ -250,8 +249,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                               )
                           );
 
-
-                          List<ResponseAnagraficaFornitori> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
+                          List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                               .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                           dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
                           dataBundleNotifier.clearAndUpdateMapBundle();

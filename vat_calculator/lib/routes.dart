@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
+import 'package:vat_calculator/screens/branch_registration/branch_update.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
@@ -28,6 +29,7 @@ import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
+import 'package:vat_calculator/screens/suppliers/components/add_suppliers/join_other_suppliers.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/join_supplier.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_product.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_supplier_screen.dart';
@@ -35,7 +37,6 @@ import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_su
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/recessed_manager/recessed_screen.dart';
 import 'screens/sign_up/sign_up_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -72,10 +73,11 @@ final Map<String, WidgetBuilder> routes = {
   JoinSupplierScreen.routeName: (context) => JoinSupplierScreen(),
   ChoiceOrderProductScreen.routeName: (context) => ChoiceOrderProductScreen(),
   OrderConfirmationScreen.routeName: (context) => OrderConfirmationScreen(),
-  RecessedManagerScreen.routeName: (context) => RecessedManagerScreen(),
   SplashScreen.routeName: (context) => SplashScreen(),
   ExpenceScreen.routeName: (context) => ExpenceScreen(),
   EventHomeScreen.routeName: (context) => EventHomeScreen(),
   EventCreateScreen.routeName: (context) => EventCreateScreen(),
   AmountHundredScreen.routeName: (context) => AmountHundredScreen(),
+  UpdateBranchScreen.routeName: (context) => UpdateBranchScreen(),
+  JoinSupplierAlreadyRegisteredScreen.routeName: (context) => JoinSupplierAlreadyRegisteredScreen(),
 };

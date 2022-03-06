@@ -1,4 +1,4 @@
-class ResponseAnagraficaFornitori {
+class SupplierModel {
   int pkSupplierId;
   String id;
   String nome;
@@ -24,7 +24,7 @@ class ResponseAnagraficaFornitori {
   String PA_codice;
   int fkBranchId;
 
-  ResponseAnagraficaFornitori(
+  SupplierModel(
       {this.pkSupplierId,
       this.id,
       this.nome,
@@ -44,8 +44,8 @@ class ResponseAnagraficaFornitori {
       this.extra,
       this.fkBranchId});
 
-  factory ResponseAnagraficaFornitori.fromMap(Map cartMap) {
-    return ResponseAnagraficaFornitori(
+  factory SupplierModel.fromMap(Map cartMap) {
+    return SupplierModel(
         pkSupplierId: 0,
         id: cartMap['id'].toString(),
         nome: cartMap['name'].toString(),
@@ -92,7 +92,7 @@ class ResponseAnagraficaFornitori {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ResponseAnagraficaFornitori &&
+      other is SupplierModel &&
           runtimeType == other.runtimeType &&
           nome == other.nome;
 

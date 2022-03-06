@@ -78,13 +78,16 @@ class ClientVatService implements VatServiceInterface{
     return post;
   }
   @override
-  Future<Response> performSaveRecessed(double amount, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
+  Future<Response> performSaveRecessed(double amountF, double amountNF, double amountCash, double amountPos, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
 
     var dio = Dio();
 
     String body = json.encode(
         RecessedModel(
-            amount: amount,
+            amountF: amountF,
+            amountNF: amountNF,
+            amountCash: amountCash,
+            amountPos: amountPos,
             vat: iva,
             dateTimeRecessed: dateTimeRecessed,
             description: description,
@@ -283,7 +286,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performSaveSupplier({ResponseAnagraficaFornitori anagraficaFornitore, ActionModel actionModel}) async{
+  Future<Response> performSaveSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel}) async{
 
     var dio = Dio();
 
@@ -876,7 +879,10 @@ class ClientVatService implements VatServiceInterface{
                 vat: recessedElement['vat'],
                 dateTimeRecessed: recessedElement['dateTimeRecessed'],
                 dateTimeRecessedInsert: recessedElement['dateTimeRecessedInsert'],
-                amount: recessedElement['amount'],
+                amountF: recessedElement['amountF'],
+                amountNF: recessedElement['amountNF'],
+                amountPos: recessedElement['amountPos'],
+                amountCash: recessedElement['amountCash'],
                 pkRecessedId: recessedElement['pkRecessedId']
             ));
       });
@@ -980,10 +986,10 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByBranch(BranchModel currentBranch) async {
+  Future<List<SupplierModel>> retrieveSuppliersListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
 
-    List<ResponseAnagraficaFornitori> suppliersList = [];
+    List<SupplierModel> suppliersList = [];
 
     String body = json.encode(
         currentBranch.toMap());
@@ -1004,7 +1010,7 @@ class ClientVatService implements VatServiceInterface{
       valueList.forEach((supplierElement) {
 
         suppliersList.add(
-            ResponseAnagraficaFornitori(
+            SupplierModel(
               pkSupplierId: supplierElement['pk_supplier_id'],
               cf: supplierElement['cf'],
               extra: supplierElement['extra'],
@@ -1032,7 +1038,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<List<ProductModel>> retrieveProductsBySupplier(ResponseAnagraficaFornitori currentSupplier) async {
+  Future<List<ProductModel>> retrieveProductsBySupplier(SupplierModel currentSupplier) async {
     var dio = Dio();
     List<ProductModel> productsList = [];
 
@@ -1403,13 +1409,13 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<List<ResponseAnagraficaFornitori>> retrieveSuppliersListByCode({String code}) async {
+  Future<List<SupplierModel>> retrieveSuppliersListByCode({String code}) async {
     var dio = Dio();
 
-    List<ResponseAnagraficaFornitori> suppliersList = [];
+    List<SupplierModel> suppliersList = [];
 
     String body = json.encode(
-        ResponseAnagraficaFornitori(
+        SupplierModel(
           pkSupplierId: 0,
           cf: '',
           extra: code,
@@ -1445,7 +1451,7 @@ class ClientVatService implements VatServiceInterface{
 
       valueList.forEach((supplierElement) {
 
-        suppliersList.add(ResponseAnagraficaFornitori(
+        suppliersList.add(SupplierModel(
           pkSupplierId: supplierElement['pk_supplier_id'],
           cf: supplierElement['cf'],
           extra: supplierElement['extra'],
@@ -1473,10 +1479,10 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<int> addSupplierToCurrentBranch({ResponseAnagraficaFornitori supplierRetrievedByCodeToUpdateRelationTableBranchSupplier, ActionModel actionModel}) async {
+  Future<int> addSupplierToCurrentBranch({SupplierModel supplierRetrievedByCodeToUpdateRelationTableBranchSupplier, ActionModel actionModel}) async {
     var dio = Dio();
 
-    List<ResponseAnagraficaFornitori> suppliersList = [];
+    List<SupplierModel> suppliersList = [];
 
     String body = json.encode(
         supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.toMap());
@@ -1511,7 +1517,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<void> removeSupplierFromCurrentBranch({ResponseAnagraficaFornitori requestRemoveSupplierFromBranch, ActionModel actionModel}) async {
+  Future<void> removeSupplierFromCurrentBranch({SupplierModel requestRemoveSupplierFromBranch, ActionModel actionModel}) async {
     var dio = Dio();
     String body = json.encode(
         requestRemoveSupplierFromBranch.toMap());
@@ -1732,7 +1738,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performEditSupplier({ResponseAnagraficaFornitori anagraficaFornitore, ActionModel actionModel}) async {
+  Future<Response> performEditSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel}) async {
     var dio = Dio();
 
     String body = json.encode(
@@ -2245,6 +2251,43 @@ class ClientVatService implements VatServiceInterface{
     }catch(e){
       print('Errore retrieving storage model : ');
       print(e);
+      rethrow;
+    }
+  }
+
+  performUpdateBranch(BranchModel company, ActionModel actionModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        company.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_SAVE_BRANCH + '...');
+    print('Body Request Update branch: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_BRANCH,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH + '): ' + post.data.toString());
+        try{
+          actionModel.fkBranchId = post.data;
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+      return post;
+    }catch(e){
       rethrow;
     }
   }

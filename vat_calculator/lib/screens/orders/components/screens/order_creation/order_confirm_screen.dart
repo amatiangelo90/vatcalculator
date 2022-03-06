@@ -28,7 +28,7 @@ class OrderConfirmationScreen extends StatefulWidget {
 
   static String routeName = 'orderconfirmationscreen';
 
-  final ResponseAnagraficaFornitori currentSupplier;
+  final SupplierModel currentSupplier;
 
   @override
   State<OrderConfirmationScreen> createState() => _OrderConfirmationScreenState();
@@ -362,7 +362,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     );
   }
 
-  Future buildProductPage(DataBundleNotifier dataBundleNotifier, ResponseAnagraficaFornitori supplier) async {
+  Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
     List<Widget> list = [
       Center(
         child: Padding(

@@ -24,7 +24,7 @@ class DraftOrderConfirmationScreen extends StatefulWidget {
 
   static String routeName = 'draftordersendscreen';
 
-  final ResponseAnagraficaFornitori currentSupplier;
+  final SupplierModel currentSupplier;
   final OrderModel draftOrder;
 
   @override
@@ -317,7 +317,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
     );
   }
 
-  Future buildProductPage(DataBundleNotifier dataBundleNotifier, ResponseAnagraficaFornitori supplier) async {
+  Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
     List<Widget> list = [
       Center(
         child: Padding(

@@ -18,7 +18,7 @@ class EditProductScreen extends StatefulWidget {
   const EditProductScreen({Key key, this.product, this.supplier, }) : super(key: key);
 
   final ProductModel product;
-  final ResponseAnagraficaFornitori supplier;
+  final SupplierModel supplier;
 
   @override
   _EditProductScreenState createState() => _EditProductScreenState();

@@ -11,7 +11,6 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
 import 'package:vat_calculator/components/item_menu.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
@@ -719,7 +718,7 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
       }else{
         recessedListByRangeDate.forEach((element) {
           print(element.toMap().toString());
-          totalIva = totalIva + (element.amount * (element.vat/100));
+          totalIva = totalIva + (element.amountF * (element.vat/100));
         });
         return totalIva;
       }

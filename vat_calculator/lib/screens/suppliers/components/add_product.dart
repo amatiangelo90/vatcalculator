@@ -18,7 +18,7 @@ class AddProductScreen extends StatefulWidget {
   static String routeName = 'addproduct';
   const AddProductScreen({Key key, this.supplier}) : super(key: key);
 
-  final ResponseAnagraficaFornitori supplier;
+  final SupplierModel supplier;
 
 
   @override

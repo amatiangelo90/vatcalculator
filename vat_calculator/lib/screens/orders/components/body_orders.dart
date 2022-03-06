@@ -71,7 +71,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
 
                                 ClientVatService clientService = ClientVatService();
                                 FattureInCloudClient fattureInCloudClient = FattureInCloudClient();
-                                List<ResponseAnagraficaFornitori> listRichiestaFornitori
+                                List<SupplierModel> listRichiestaFornitori
                                 = await fattureInCloudClient.performRichiestaFornitori(
                                     dataBundleNotifier.currentBranch.apiUidOrPassword, dataBundleNotifier.currentBranch.apiKeyOrUser);
                                 print(listRichiestaFornitori.length);
@@ -84,9 +84,9 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                                 });
 
                                 if(dataBundleNotifier.currentBranch != null){
-                                  List<ResponseAnagraficaFornitori> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                                  List<SupplierModel> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
-                                  List<ResponseAnagraficaFornitori> _suppliersModelList2 = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
+                                  List<SupplierModel> _suppliersModelList2 = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                   dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList2);
                                 }
                               },
@@ -125,7 +125,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
         );
   }
 
-  buildListFornitori(List<ResponseAnagraficaFornitori> currentListSuppliers) {
+  buildListFornitori(List<SupplierModel> currentListSuppliers) {
 
     List<Widget> list = [];
     currentListSuppliers.forEach((element) {

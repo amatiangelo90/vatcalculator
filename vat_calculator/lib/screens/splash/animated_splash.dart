@@ -46,8 +46,7 @@ class _SecondClassState extends State<SecondClass>
             ),
           );
           Timer(
-            const Duration(milliseconds: 300),
-                () {
+            const Duration(milliseconds: 300), () {
               scaleController.reset();
             },
           );
@@ -73,7 +72,6 @@ class _SecondClassState extends State<SecondClass>
 
   @override
   void dispose() {
-    // TODO: implement dispose
     scaleController.dispose();
     super.dispose();
   }
@@ -104,16 +102,17 @@ class _SecondClassState extends State<SecondClass>
                       spreadRadius: 10,
                     ),
                   ],
-                  color: kCustomYellow800,
+                  color: kCustomGreen,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Stack(
-                  children :[ Center(
+                  children :[
+                    Center(
                     child: Container(
-                      width: 450,
+                      width: 650,
                       height: 450,
                       decoration: BoxDecoration(
-                          color: kCustomYellow800, shape: BoxShape.circle),
+                          color: kCustomGreen, shape: BoxShape.circle),
                       child: AnimatedBuilder(
                         animation: scaleAnimation,
                         builder: (c, child) => Transform.scale(
@@ -121,7 +120,7 @@ class _SecondClassState extends State<SecondClass>
                           child: Container(
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: kCustomYellow800,
+                              color: kCustomGreen,
                             ),
                           ),
                         ),
@@ -129,8 +128,8 @@ class _SecondClassState extends State<SecondClass>
                     ),
                   ),
                     Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Image.asset('assets/logo/logo_home_nero.png',width: getProportionateScreenWidth(2000),),
+                      padding: const EdgeInsets.fromLTRB(40, 60, 40, 40),
+                      child: Image.asset('assets/logo/logo_home_white.png',width: getProportionateScreenWidth(1500),),
                     ),
                   ],
                 ),

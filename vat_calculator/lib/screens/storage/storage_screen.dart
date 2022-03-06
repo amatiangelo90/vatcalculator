@@ -661,7 +661,7 @@ class _StorageScreenState extends State<StorageScreen> {
     dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
   }
 
-  retrieveListSuppliersBis(List<ResponseAnagraficaFornitori> currentListSuppliers) {
+  retrieveListSuppliersBis(List<SupplierModel> currentListSuppliers) {
     List<String> currentListNameSuppliers = [];
     currentListSuppliers.forEach((element) {
       currentListNameSuppliers.add(element.nome);
@@ -687,7 +687,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   title: 'Seleziona Fornitore',
                   placeHolder: 'Ricerca Fornitore',
                   disabled: false,
-                  items: dataBundleNotifier.currentListSuppliers.map((ResponseAnagraficaFornitori supplier) {
+                  items: dataBundleNotifier.currentListSuppliers.map((SupplierModel supplier) {
                     return supplier.pkSupplierId.toString() + ' - ' + supplier.nome;
                   }).toList(),
                   selected: _selectedSupplier,
@@ -877,7 +877,7 @@ class _StorageScreenState extends State<StorageScreen> {
                     buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: kPinaColor);
                   } else{
 
-                    ResponseAnagraficaFornitori currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier);
+                    SupplierModel currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier);
                     ProductModel productModel = ProductModel(
                         nome: _nameController.text,
                         categoria: '',

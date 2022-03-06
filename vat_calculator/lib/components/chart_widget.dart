@@ -6,17 +6,12 @@ import 'package:vat_calculator/components/vat_data.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
 class LineChartWidget extends StatefulWidget {
-  LineChartWidget({Key key, this.currentDateTimeRange}) : super(key: key);
-
-  final DateTimeRange currentDateTimeRange;
 
   @override
   _LineChartWidgetState createState() => _LineChartWidgetState();
 }
 
 class _LineChartWidgetState extends State<LineChartWidget> {
-
-  List<CharData> fattureInCloudData = [];
 
   Widget build(BuildContext context) {
     return Container(
@@ -36,6 +31,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                             dataSource: dataBundleNotifier.charDataCreditIva,
                             xValueMapper: (CharData sales, _) => sales.date,
                             yValueMapper: (CharData sales, _) => sales.value),
+
                         LineSeries<CharData, DateTime>(
                           width: 4,
                           color: Colors.redAccent.shade700.withOpacity(0.6),
@@ -44,29 +40,7 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                             yValueMapper: (CharData sales, _) => sales.value),
                       ]
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            color: Colors.green.shade700.withOpacity(0.6),
-                          ),
-                          Text('Iva Credito'),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.circle,
-                            color: Colors.redAccent.shade700.withOpacity(0.6),
-                          ),
-                          Text('Iva Debito'),
-                        ],
-                      ),
-                    ],
-                  ),
+
                 ],
               ));
         },

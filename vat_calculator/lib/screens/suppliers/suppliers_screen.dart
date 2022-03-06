@@ -25,7 +25,7 @@ class SuppliersScreen extends StatelessWidget {
         bottomSheet:
             dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) :
             dataBundleNotifier.currentListSuppliers.isNotEmpty ? Container(
-              color: kPrimaryColor,
+              color: Colors.transparent,
               child: Padding(
                 padding: const EdgeInsets.all(13.0),
                 child: Row(
@@ -34,7 +34,7 @@ class SuppliersScreen extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 39,
                       child: CupertinoButton(
-                        color: kCustomYellow800,
+                        color: Colors.green.withOpacity(0.9),
                           child: const Text('Aggiungi Nuovo'), onPressed: () {
                         Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                       }),
@@ -60,6 +60,7 @@ class SuppliersScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
                   color: kCustomYellow800,
+                  fontWeight: FontWeight.bold
                 ),
               ),
               Text(
@@ -161,7 +162,7 @@ class SuppliersScreen extends StatelessWidget {
               children: const [
                 Icon(
                   Icons.circle,
-                  color: Colors.lightBlueAccent,
+                  color: Colors.blueAccent,
                 ),
                 Text(' Importati', style: TextStyle(color: kPrimaryColor),),
               ],
@@ -170,7 +171,7 @@ class SuppliersScreen extends StatelessWidget {
               children: [
                 Icon(
                   Icons.circle,
-                  color: kBeigeColor,
+                  color: Colors.green,
                 ),
                 const Text(' Creati dall\'utente', style: TextStyle(color: kPrimaryColor),),
               ],
@@ -207,8 +208,8 @@ class SuppliersScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 color: dataBundleNotifier.userDetailsList[0].id.toString() ==
                         supplier.id
-                    ? kBeigeColor
-                    :  Colors.lightBlueAccent,
+                    ? Colors.green
+                    :  Colors.blueAccent,
               ),
               child: Container(
                 decoration: const BoxDecoration(
@@ -227,7 +228,10 @@ class SuppliersScreen extends StatelessWidget {
                           SizedBox(width: getProportionateScreenWidth(5)),
                           SvgPicture.asset(
                             'assets/icons/supplier.svg',
-                            color: kPrimaryColor,
+                            color: dataBundleNotifier.userDetailsList[0].id.toString() ==
+                                supplier.id
+                                ? Colors.green
+                                :  Colors.blueAccent,
                             width: getProportionateScreenWidth(30),
                           ),
                           SizedBox(width: getProportionateScreenWidth(20)),
@@ -238,6 +242,7 @@ class SuppliersScreen extends StatelessWidget {
                               Text(
                                 supplier.nome,
                                 style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                     color: kPrimaryColor,
                                     fontSize: getProportionateScreenWidth(15)),
                               ),

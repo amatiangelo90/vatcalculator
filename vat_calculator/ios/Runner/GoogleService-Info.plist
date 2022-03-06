@@ -3,9 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>897416784718-arn1h26tf8j9ae023tonlrb09bv76gb2.apps.googleusercontent.com</string>
+	<string>897416784718-un2qs62c72an7ksbomnafluvht2rm5u6.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.897416784718-arn1h26tf8j9ae023tonlrb09bv76gb2</string>
+	<string>com.googleusercontent.apps.897416784718-un2qs62c72an7ksbomnafluvht2rm5u6</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>897416784718-och8qe72lo5bg9i6gehv6hp4olkvmu4i.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyBxIzVigGM4L2b2v3vDDv_7RfgZszh91f8</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.acorp.vatCalculator</string>
+	<string>com.acorp.businessmanager</string>
 	<key>PROJECT_ID</key>
 	<string>vatcalculator-177f7</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:897416784718:ios:490f9b4a61f922f84d8c1f</string>
+	<string>1:897416784718:ios:3bf9976d09c607014d8c1f</string>
 </dict>
 </plist>

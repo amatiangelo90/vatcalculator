@@ -4,7 +4,10 @@ class RecessedModel{
 
   int pkRecessedId;
   String description;
-  double amount;
+  double amountF;
+  double amountNF;
+  double amountCash;
+  double amountPos;
   int vat;
   int dateTimeRecessed;
   int dateTimeRecessedInsert;
@@ -13,7 +16,10 @@ class RecessedModel{
   RecessedModel({
     @required this.pkRecessedId,
     @required this.description,
-    @required this.amount,
+    @required this.amountF,
+    @required this.amountNF,
+    @required this.amountCash,
+    @required this.amountPos,
     @required this.vat,
     @required this.dateTimeRecessed,
     @required this.dateTimeRecessedInsert,
@@ -23,7 +29,10 @@ class RecessedModel{
     return {
       'pkRecessedId' : pkRecessedId,
       'description': description,
-      'amount': amount,
+      'amountF': amountF,
+      'amountNF': amountNF,
+      'amountCash': amountCash,
+      'amountPos': amountPos,
       'vat': vat,
       'dateTimeRecessed' : dateTimeRecessed.toString(),
       'dateTimeRecessedInsert' : dateTimeRecessedInsert.toString(),

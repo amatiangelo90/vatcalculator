@@ -12,18 +12,18 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../expence_home.dart';
 
 class ExpenceCard extends StatefulWidget {
-  const ExpenceCard({Key key}) : super(key: key);
+  const ExpenceCard({Key key, this.showTopNavigatorRow}) : super(key: key);
 
+  final bool showTopNavigatorRow;
   @override
   _ExpenceCardState createState() => _ExpenceCardState();
 }
 
 class _ExpenceCardState extends State<ExpenceCard> {
 
-  final List<String> errors = [];
-  String importExpences;
   TextEditingController expenceController = TextEditingController();
   TextEditingController casualeExpenceController = TextEditingController();
 
@@ -34,8 +34,47 @@ class _ExpenceCardState extends State<ExpenceCard> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Container(
+          width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
+              widget.showTopNavigatorRow ? Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: getProportionateScreenWidth(10),
+                      ),
+                      Text(
+                        'Registra spese',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: getProportionateScreenWidth(12)),
+                      ),
+                    ],
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                          context, ExpenceScreen.routeName);
+                    },
+                    child: Row(
+                      children: [
+                        Text(
+                          'Dettaglio Spese',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: getProportionateScreenWidth(12),
+                              color: Colors.grey),
+                        ),
+                        Icon(Icons.arrow_forward_ios,
+                            size: getProportionateScreenWidth(15),
+                            color: Colors.grey),
+                      ],
+                    ),
+                  ),
+                ],
+              ) : SizedBox(width: 0),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -107,10 +146,6 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                   textAlign: TextAlign.center,
                                   autocorrect: false,
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                                child: FormError(errors: errors),
                               ),
                             ],
                           ),
@@ -475,6 +510,13 @@ class _ExpenceCardState extends State<ExpenceCard> {
                   ),
                 ),
               ),
+              widget.showTopNavigatorRow ? Center(child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Spese', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomYellow800)),
+                  Text(' / Incassi', style: TextStyle(color: Colors.grey),),
+                ],
+              )): SizedBox(width: 0),
             ],
           ),
         );

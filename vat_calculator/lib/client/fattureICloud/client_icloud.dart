@@ -42,7 +42,7 @@ class FattureInCloudClient {
     return post;
   }
 
-  Future<List<ResponseAnagraficaFornitori>> performRichiestaFornitori(
+  Future<List<SupplierModel>> performRichiestaFornitori(
       String apiUid,
       String apiKey) async {
     var dio = Dio();
@@ -280,8 +280,8 @@ class FattureInCloudClient {
     return listOut;
   }
 
-  List<ResponseAnagraficaFornitori> convertDataResponseIntoFornitoriList(Response post) {
-    List<ResponseAnagraficaFornitori> listOut = [];
+  List<SupplierModel> convertDataResponseIntoFornitoriList(Response post) {
+    List<SupplierModel> listOut = [];
 
     String encode = json.encode(post.data);
 
@@ -294,7 +294,7 @@ class FattureInCloudClient {
           print('pina');
           print(listDocuments.length);
           listDocuments.forEach((currentFornitore) {
-            listOut.add(ResponseAnagraficaFornitori.fromMap(currentFornitore));
+            listOut.add(SupplierModel.fromMap(currentFornitore));
           });
         }
 

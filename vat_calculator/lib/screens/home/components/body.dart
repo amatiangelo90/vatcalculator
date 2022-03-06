@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,6 +28,8 @@ import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.da
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../branch_registration/branch_update.dart';
+import '../../recessed_manager/components/recessed_reg_card.dart';
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({Key key}) : super(key: key);
@@ -459,76 +462,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ),
                     ),
                   ),
-
-                  dataBundleNotifier.currentBranch.providerFatture == ''
-                      ? const Text('')
-                      : Column(
-                          children: [
-                            Divider(),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: getProportionateScreenWidth(10),
-                                    ),
-                                    Text(
-                                      'Andamento Iva',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize:
-                                              getProportionateScreenWidth(12)),
-                                    ),
-                                  ],
-                                ),
-                                CupertinoButton(
-                                  onPressed: () {
-                                    dataBundleNotifier
-                                        .setShowIvaButtonToFalse();
-                                    switch (dataBundleNotifier
-                                        .currentBranch.providerFatture) {
-                                      case 'fatture_in_cloud':
-                                        Navigator.pushNamed(
-                                            context,
-                                            FattureInCloudCalculatorScreen
-                                                .routeName);
-                                        break;
-                                      case 'aruba':
-                                        Navigator.pushNamed(context,
-                                            ArubaCalculatorScreen.routeName);
-                                        break;
-                                      case '':
-                                        Navigator.pushNamed(
-                                            context,
-                                            RegisterFattureProviderScreen
-                                                .routeName);
-                                        break;
-                                    }
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        'Dettaglio Andamendo Iva',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize:
-                                                getProportionateScreenWidth(12),
-                                            color: Colors.grey),
-                                      ),
-                                      Icon(Icons.arrow_forward_ios,
-                                          size: getProportionateScreenWidth(15),
-                                          color: Colors.grey),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            LineChartWidget(
-                                currentDateTimeRange:
-                                    dataBundleNotifier.currentDateTimeRange),
-                          ],
-                        ),
                   Divider(
                     height: getProportionateScreenHeight(30),
                   ),
@@ -642,64 +575,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: IconButton(
                         icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                         onPressed: (){
-                          TextEditingController textController = TextEditingController(text: dataBundleNotifier.currentBranch.companyName);
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                content: SizedBox(
-                                  height: getProportionateScreenHeight(200),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Text('Configura Nome Attività'),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            ConstrainedBox(
-                                              constraints: BoxConstraints.loose(Size(
-                                                  getProportionateScreenWidth(150),
-                                                  getProportionateScreenWidth(60))),
-                                              child: CupertinoTextField(
-                                                controller: textController,
-                                                textInputAction: TextInputAction.next,
-                                                keyboardType: TextInputType.name,
-                                                clearButtonMode: OverlayVisibilityMode.never,
-                                                textAlign: TextAlign.center,
-                                                autocorrect: false,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: CupertinoButton(child: const Text('Salva'), color: Colors.green, onPressed: (){
+                          Navigator.pushNamed(context, UpdateBranchScreen.routeName);
 
-                                                if (textController.value != null && textController.value != '') {
-
-                                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                                    backgroundColor: Colors.green.withOpacity(0.9),
-                                                    duration: const Duration(milliseconds: 3000),
-                                                    content: Text(
-                                                        'Dettagli attività modificati'),
-                                                  ));
-                                                } else {
-                                                  Scaffold.of(context).showSnackBar(const SnackBar(
-                                                    backgroundColor: kPinaColor,
-                                                    duration: Duration(milliseconds: 600),
-                                                    content: Text(
-                                                        'Il nome dell\'attività non può essere vuoto'),
-                                                  ));
-                                                }
-                                                Navigator.of(context).pop();
-                                              }),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                          );
                         },
                     )
                   ),
@@ -728,8 +605,8 @@ class _HomePageBodyState extends State<HomePageBody> {
         GestureDetector(
           child: Container(
             decoration: BoxDecoration(
-              color: dataBundleNotifier.currentBranch.companyName ==
-                      currentBranch.companyName
+              color: dataBundleNotifier.currentBranch.pkBranchId ==
+                      currentBranch.pkBranchId
                   ? Colors.black.withOpacity(0.8)
                   : Colors.white,
               border: const Border(
@@ -747,8 +624,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                     children: [
                       Icon(
                         Icons.format_align_right_rounded,
-                        color: dataBundleNotifier.currentBranch.companyName ==
-                                currentBranch.companyName
+                        color: dataBundleNotifier.currentBranch.pkBranchId ==
+                                currentBranch.pkBranchId
                             ? Colors.yellow.shade700.withOpacity(0.8)
                             : kPrimaryColor,
                       ),
@@ -756,8 +633,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                         currentBranch.accessPrivilege == Privileges.EMPLOYEE
                             ? Icons.person
                             : Icons.vpn_key_outlined,
-                        color: dataBundleNotifier.currentBranch.companyName ==
-                                currentBranch.companyName
+                        color: dataBundleNotifier.currentBranch.pkBranchId ==
+                                currentBranch.pkBranchId
                             ? Colors.yellow.shade700.withOpacity(0.8)
                             : kPrimaryColor,
                       ),
@@ -765,20 +642,20 @@ class _HomePageBodyState extends State<HomePageBody> {
                         '   ' + currentBranch.companyName,
                         style: TextStyle(
                           fontSize:
-                              dataBundleNotifier.currentBranch.companyName ==
-                                      currentBranch.companyName
+                              dataBundleNotifier.currentBranch.pkBranchId ==
+                                      currentBranch.pkBranchId
                                   ? getProportionateScreenWidth(16)
                                   : getProportionateScreenWidth(13),
-                          color: dataBundleNotifier.currentBranch.companyName ==
-                                  currentBranch.companyName
+                          color: dataBundleNotifier.currentBranch.pkBranchId ==
+                                  currentBranch.pkBranchId
                               ? Colors.yellow.shade700.withOpacity(0.8)
                               : Colors.black,
                         ),
                       ),
                     ],
                   ),
-                  dataBundleNotifier.currentBranch.companyName ==
-                          currentBranch.companyName
+                  dataBundleNotifier.currentBranch.pkBranchId ==
+                          currentBranch.pkBranchId
                       ? Padding(
                           padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
                           child: SvgPicture.asset(
@@ -1022,47 +899,12 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
-    return Column(
+    return ExpandablePageView(
+      scrollDirection: Axis.horizontal,
+      animateFirstPage: true,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(10),
-                ),
-                Text(
-                  'Registra spese',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: getProportionateScreenWidth(12)),
-                ),
-              ],
-            ),
-            CupertinoButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                    context, ExpenceScreen.routeName);
-              },
-              child: Row(
-                children: [
-                  Text(
-                    'Dettaglio Spese',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: getProportionateScreenWidth(12),
-                        color: Colors.grey),
-                  ),
-                  Icon(Icons.arrow_forward_ios,
-                      size: getProportionateScreenWidth(15),
-                      color: Colors.grey),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const ExpenceCard(),
+        ExpenceCard(showTopNavigatorRow: true),
+        RecessedCard(),
       ],
     );
   }

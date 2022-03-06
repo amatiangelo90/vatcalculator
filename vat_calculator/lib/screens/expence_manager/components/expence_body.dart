@@ -35,7 +35,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                const ExpenceCard(),
+                const ExpenceCard(showTopNavigatorRow: false),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

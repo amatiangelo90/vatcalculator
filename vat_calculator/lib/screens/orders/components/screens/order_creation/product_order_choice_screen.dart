@@ -15,7 +15,7 @@ class ChoiceOrderProductScreen extends StatefulWidget {
 
   static String routeName = 'addproductorder';
 
-  final ResponseAnagraficaFornitori currentSupplier;
+  final SupplierModel currentSupplier;
 
   @override
   State<ChoiceOrderProductScreen> createState() => _ChoiceOrderProductScreenState();
@@ -130,7 +130,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
     );
   }
 
-  Future buildProductPage(DataBundleNotifier dataBundleNotifier, ResponseAnagraficaFornitori supplier) async {
+  Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
     List<Widget> list = [];
 
     if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){
