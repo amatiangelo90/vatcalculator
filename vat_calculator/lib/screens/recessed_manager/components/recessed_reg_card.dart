@@ -16,7 +16,9 @@ import '../../../size_config.dart';
 import '../../expence_manager/expence_home.dart';
 
 class RecessedCard extends StatefulWidget {
-  const RecessedCard({Key key}) : super(key: key);
+  const RecessedCard({Key key, this.showIndex}) : super(key: key);
+
+  final bool showIndex;
 
   @override
   _RecessedCardState createState() => _RecessedCardState();
@@ -361,13 +363,13 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                   ),
                 ),
               ),
-              Center(child: Row(
+              widget.showIndex ? Center(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: const [
                   Text('Spese / ', style: TextStyle(color: Colors.grey)),
                   Text('Incassi', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
                 ],
-              )),
+              )) : Text('')
             ],
           ),
         );

@@ -1,104 +1,91 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/models/databundlenotifier.dart';
 
 import '../../size_config.dart';
 
 class FattureAcquistiDetailsPage extends StatefulWidget {
-  List<ResponseAcquistiApi> listResponseAcquisti = [];
 
-  FattureAcquistiDetailsPage({@required this.listResponseAcquisti, Key key})
-      : super(key: key);
+
+  static String routeName = 'fatture_details_page';
 
   @override
   State<FattureAcquistiDetailsPage> createState() =>
       _FattureAcquistiDetailsPageState();
+
+  const FattureAcquistiDetailsPage({Key key}) : super(key: key);
 }
 
 class _FattureAcquistiDetailsPageState
     extends State<FattureAcquistiDetailsPage> {
+
   TextEditingController editingController = TextEditingController();
-  List<ResponseAcquistiApi> currentFattureAcquistiList;
-  List<ResponseAcquistiApi> appoggio;
 
   @override
   void initState() {
     super.initState();
-    currentFattureAcquistiList = widget.listResponseAcquisti;
-    appoggio = widget.listResponseAcquisti;
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: kPrimaryColor,
-        centerTitle: true,
-        title: const Text('  Dettaglio Fatture Acquisti'),
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: const Icon(
-            Icons.arrow_back_ios,
-            color: Colors.white,
-          ),
-        ),
-      ),
-      body: currentFattureAcquistiList.isNotEmpty ? SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: buildListFattureAcquistiDetails(
-              currentFattureAcquistiList, height),
-        ),
-      ) : Center(child: const Text('Non sono presenti fatture per il periodo indicato')),
+    return Consumer<DataBundleNotifier>(
+      builder: (child, dataBundleNotifier, _){
+        return Scaffold(
+            appBar: AppBar(
+              backgroundColor: kPrimaryColor,
+              centerTitle: true,
+              title: const Text('  Dettaglio Fatture Acquisti'),
+              leading: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Icon(
+                  Icons.arrow_back_ios,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: SizedBox(
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(500),
+                      child: CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Ricerca per nome fornitore',
+                        keyboardType: TextInputType.text,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Ricerca per nome fornitore',
+                        onChanged: (currentText) {
+                          dataBundleNotifier.filterextractedAcquistiFattureByText(currentText);
+                        },
+                      ),
+                    ),
+                  ),
+                  dataBundleNotifier.extractedAcquistiFatture.isNotEmpty ? Column(
+                    children: buildListFattureAcquistiDetails(
+                        dataBundleNotifier.extractedAcquistiFatture, height),
+                  ) : Center(child: const Text('Non sono presenti fatture per il periodo indicato')),
+                ],
+              ),
+            )
+        );
+      },
     );
   }
 
   buildListFattureAcquistiDetails(
       List<ResponseAcquistiApi> listResponseAcquisti, double height) {
     List<Widget> outList = [];
-    outList.add(
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: height * 1 / 10,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              child: TextField(
-                onChanged: (value) {
-                  filterSearchResults(value);
-                },
-                controller: editingController,
-                decoration: const InputDecoration(
-                    labelText:
-                        "Ricerca per Fornitore, Id Fornitore o importo iva",
-                    hintText: "Search",
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0)))),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    Map<String, List<ResponseAcquistiApi>> map = {};
-
-    listResponseAcquisti.forEach((currentElement) {
-      if (map.containsKey(currentElement.id_fornitore)) {
-        map[currentElement.id_fornitore].add(currentElement);
-      } else {
-        List<ResponseAcquistiApi> list = [];
-        list.add(currentElement);
-        map[currentElement.id_fornitore] = list;
-      }
-    });
 
     listResponseAcquisti.forEach((currentFatturaAcquisto) {
       outList.add(
@@ -240,37 +227,6 @@ class _FattureAcquistiDetailsPageState
       );
     });
     return outList;
-  }
-
-  refreshList(List<ResponseAcquistiApi> incomingList) {
-    print(incomingList.length);
-    print(incomingList[0].nome.toString());
-    setState(() {
-      currentFattureAcquistiList.clear();
-      currentFattureAcquistiList.addAll(incomingList);
-    });
-  }
-
-  void filterSearchResults(String query) {
-    List<ResponseAcquistiApi> fattureAcquistiList = <ResponseAcquistiApi>[];
-    fattureAcquistiList.addAll(appoggio);
-
-    if (query.isNotEmpty) {
-      List<ResponseAcquistiApi> dummyListData = <ResponseAcquistiApi>[];
-
-      fattureAcquistiList.forEach((item) {
-        if (item.nome.toLowerCase().contains(query.toLowerCase()) ||
-            item.id_fornitore.toLowerCase().contains(query.toLowerCase())) {
-          dummyListData.add(item);
-        }
-      });
-      refreshList(dummyListData);
-      return;
-    } else {
-      print('empty');
-      refreshList(appoggio);
-      return;
-    }
   }
 
   buildRowDetails(String description, String data) {

@@ -14,6 +14,7 @@ import '../../../size_config.dart';
 
 class FattureInCloudCalculatorScreen extends StatelessWidget {
 
+  DateTimeRange _currentDateTimeRange;
   static String routeName = "/fattureincloud";
 
   @override
@@ -31,6 +32,16 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     buildmethod(context, dataBundleNotifier);
+
+                  }),
+              IconButton(
+                  icon: SvgPicture.asset(
+                    "assets/icons/calendar.svg",
+                    color: Colors.white,
+                    width: getProportionateScreenWidth(25),
+                  ),
+                  onPressed: () {
+                    _selectDateTimeRange(context, dataBundleNotifier);
 
                   }),
             ],
@@ -295,5 +306,28 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
             },
           ),
         ));
+  }
+
+  Future<void> _selectDateTimeRange(BuildContext context, DataBundleNotifier dataBundleNotifier) async {
+      DateTimeRange dateTimeRange = await showDateRangePicker(
+        context: context,
+        initialDateRange: _currentDateTimeRange,
+        firstDate: DateTime(2015),
+        lastDate: DateTime(2050),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.dark().copyWith(
+              colorScheme: const ColorScheme.dark(
+                primary: kCustomGreen,
+              ),
+            ),
+            child: child,
+          );
+        },
+      );
+
+      if (dateTimeRange != null && dateTimeRange != _currentDateTimeRange){
+        dataBundleNotifier.setCurrentDateTimeRange(dateTimeRange);
+      }
   }
 }

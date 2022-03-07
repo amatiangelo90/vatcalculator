@@ -33,8 +33,8 @@ class _LineChartWidgetState extends State<LineChartWidget> {
                             yValueMapper: (CharData sales, _) => sales.value),
 
                         LineSeries<CharData, DateTime>(
-                          width: 4,
-                          color: Colors.redAccent.shade700.withOpacity(0.6),
+                            width: 4,
+                            color: Colors.redAccent.shade700.withOpacity(0.6),
                             dataSource: dataBundleNotifier.charDataDebitIva,
                             xValueMapper: (CharData sales, _) => sales.date,
                             yValueMapper: (CharData sales, _) => sales.value),

@@ -466,8 +466,6 @@ class _VatArubaCalculatorBodyState extends State<VatArubaCalculatorBody> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                        FattureAcquistiDetailsPage(listResponseAcquisti: extractedAcquistiFatture,),),);
                   },
                   child: Container(
                     height: _width / 2.3,

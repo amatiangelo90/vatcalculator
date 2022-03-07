@@ -110,7 +110,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                   controllerApiUidOrPassword.clear();
 
                                   context.loaderOverlay.hide();
-                                  dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                                  dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
                                   switch(dataBundleNotifier.currentBranch.providerFatture){
                                     case 'fatture_in_cloud':

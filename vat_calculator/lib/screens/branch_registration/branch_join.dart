@@ -447,7 +447,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
 
                                             }
 
-                                            dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                                            dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
                                             Navigator.pushNamed(context, HomeScreen.routeName);
                                           }

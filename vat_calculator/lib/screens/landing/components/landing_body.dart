@@ -138,7 +138,7 @@ class LandingBody extends StatelessWidget {
                           dataBundleNotifier.addCurrentEventsList(_eventModelList);
                         }
 
-                        dataBundleNotifier.initializeCurrentDateTimeRangeWeekly();
+                        dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
                         context.loaderOverlay.hide();
 
