@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -10,7 +12,7 @@ import '../../size_config.dart';
 class FattureAcquistiDetailsPage extends StatefulWidget {
 
 
-  static String routeName = 'fatture_details_page';
+  static String routeName = 'fatture_acquisti_details_page';
 
   @override
   State<FattureAcquistiDetailsPage> createState() =>
@@ -35,49 +37,72 @@ class _FattureAcquistiDetailsPageState
 
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-        return Scaffold(
-            appBar: AppBar(
-              backgroundColor: kPrimaryColor,
-              centerTitle: true,
-              title: const Text('  Dettaglio Fatture Acquisti'),
-              leading: GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(
-                  Icons.arrow_back_ios,
-                  color: Colors.white,
+        return DefaultTabController(
+          length: 2,
+
+          child: Scaffold(
+              appBar: AppBar(
+                bottom: TabBar(
+                  indicatorColor: kCustomYellow800,
+                  indicatorWeight: 4,
+                  tabs: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('DETTAGLI', style: TextStyle(color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/icons/chart.svg', height: getProportionateScreenHeight(25),)
+                    ),
+                  ],
+                ),
+                backgroundColor: kPrimaryColor,
+                centerTitle: true,
+                title: const Text('  Dettaglio Fatture Acquisti'),
+                leading: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            body: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
+              body: TabBarView(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: SizedBox(
-                      height: getProportionateScreenHeight(40),
-                      width: getProportionateScreenWidth(500),
-                      child: CupertinoTextField(
-                        textInputAction: TextInputAction.next,
-                        restorationId: 'Ricerca per nome fornitore',
-                        keyboardType: TextInputType.text,
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        placeholder: 'Ricerca per nome fornitore',
-                        onChanged: (currentText) {
-                          dataBundleNotifier.filterextractedAcquistiFattureByText(currentText);
-                        },
+                  SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: SizedBox(
+                          height: getProportionateScreenHeight(40),
+                          width: getProportionateScreenWidth(500),
+                          child: CupertinoTextField(
+                            textInputAction: TextInputAction.next,
+                            restorationId: 'Ricerca per nome fornitore',
+                            keyboardType: TextInputType.text,
+                            clearButtonMode: OverlayVisibilityMode.editing,
+                            placeholder: 'Ricerca per nome fornitore',
+                            onChanged: (currentText) {
+                              dataBundleNotifier.filterextractedAcquistiFattureByText(currentText);
+                            },
+                          ),
+                        ),
                       ),
-                    ),
+                      dataBundleNotifier.extractedAcquistiFatture.isNotEmpty ? Column(
+                        children: buildListFattureAcquistiDetails(
+                            dataBundleNotifier.extractedAcquistiFatture, height),
+                      ) : const Center(child: Text('Non sono presenti fatture per il periodo indicato')),
+                    ],
                   ),
-                  dataBundleNotifier.extractedAcquistiFatture.isNotEmpty ? Column(
-                    children: buildListFattureAcquistiDetails(
-                        dataBundleNotifier.extractedAcquistiFatture, height),
-                  ) : Center(child: const Text('Non sono presenti fatture per il periodo indicato')),
+                  ),
+                buildGraficoWidget(dataBundleNotifier.extractedAcquistiFatture),
                 ],
-              ),
-            )
+              )
+          ),
         );
       },
     );
@@ -242,4 +267,56 @@ class _FattureAcquistiDetailsPageState
       ],
     );
   }
+
+  buildGraficoWidget(List<ResponseAcquistiApi> extractedAcquistiFatture) {
+
+    Map<String, double> resultMap = {};
+    extractedAcquistiFatture.forEach((element) {
+      if(resultMap.containsKey(element.nome)){
+        resultMap[element.nome] = resultMap[element.nome] + double.parse(element.importo_totale);
+      }else{
+        resultMap[element.nome] = double.parse(element.importo_totale);
+      }
+    });
+
+    print('@@@@@@@@@@@@@@@');
+    print(resultMap.length.toString());
+    print('@@@@@@@@@@@@@@@');
+    List<ChartData> chartData = [];
+    resultMap.forEach((key, value) {
+      chartData.add(ChartData(key, double.parse(value.toStringAsFixed(2))));
+    });
+
+    return Center(
+        child: Container(
+            height: getProportionateScreenHeight(500),
+            child: SfCircularChart(
+
+                legend: Legend(
+                    isVisible: true,
+                    orientation: LegendItemOrientation.vertical,
+                    overflowMode: LegendItemOverflowMode.wrap,
+
+                ),
+                tooltipBehavior: TooltipBehavior(enable: true),
+                series: <CircularSeries>[
+              PieSeries<ChartData, String>(
+                  enableTooltip: true,
+                  dataSource: chartData,
+                  xValueMapper: (ChartData data, _) => data.x,
+                  yValueMapper: (ChartData data, _) => data.y,
+                dataLabelSettings:DataLabelSettings(isVisible : true)
+              )
+            ])
+        )
+    );
+
+  }
+}
+
+class ChartData {
+  ChartData(this.x, this.y, [this.color]);
+  final String x;
+  final double y;
+  final Color color;
 }

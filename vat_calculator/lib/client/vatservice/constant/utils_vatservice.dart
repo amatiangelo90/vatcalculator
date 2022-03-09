@@ -35,6 +35,7 @@ const String VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE = 'http://$host:
 const String VAT_SERVICE_URL_UPDATE_PRODUCT_AMOUNT_INTO_ORDER = 'http://$host:8080/vatservices/api/v1/update/amountproductinorder';
 const String VAT_SERVICE_URL_UPDATE_SUPPLIER = 'http://$host:8080/vatservices/api/v1/update/supplier';
 const String VAT_SERVICE_URL_UPDATE_EXPENCE = 'http://$host:8080/vatservices/api/v1/update/expence';
+const String VAT_SERVICE_URL_UPDATE_RECESSED = 'http://$host:8080/vatservices/api/v1/update/recessed';
 const String VAT_SERVICE_URL_UPDATE_USER_DATA = 'http://$host:8080/vatservices/api/v1/update/user';
 const String VAT_SERVICE_URL_UPDATE_WORKSTATIONS_DETAILS = 'http://$host:8080/vatservices/api/v1/update/workstationdetails';
 const String VAT_SERVICE_URL_UPDATE_AMOUNT_HUNDRED = 'http://$host:8080/vatservices/api/v1/update/amounthundredonstorage';
@@ -48,6 +49,7 @@ const String VAT_SERVICE_URL_DELETE_ORDER = 'http://$host:8080/vatservices/api/v
 const String VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH = 'http://$host:8080/vatservices/api/v1/remove/relationbranchsupplier';
 const String VAT_SERVICE_URL_DELETE_EXPENCE = 'http://$host:8080/vatservices/api/v1/delete/expence';
 const String VAT_SERVICE_URL_DELETE_WORKSTATION = 'http://$host:8080/vatservices/api/v1/delete/workstation';
+const String VAT_SERVICE_URL_DELETE_RECESSED = 'http://$host:8080/vatservices/api/v1/delete/recessedbyid';
 
 //Retrieve Aggregated Tables
 const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE = 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';

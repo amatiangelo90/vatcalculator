@@ -871,7 +871,7 @@ class _StorageScreenState extends State<StorageScreen> {
                     buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
                   }else if(_priceController.text.isEmpty || _priceController.text == ''){
                     buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
-                  }else if(double.tryParse(_priceController.text) == null){
+                  }else if(double.tryParse(_priceController.text.replaceAll(",", ".")) == null){
                     buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
                   }else if(_selectedSupplier == 'Seleziona Fornitore'){
                     buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: kPinaColor);
@@ -884,7 +884,7 @@ class _StorageScreenState extends State<StorageScreen> {
                         codice: const Uuid().v1(),
                         descrizione: '',
                         iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
-                        prezzo_lordo: double.parse(_priceController.text),
+                        prezzo_lordo: double.parse(_priceController.text.replaceAll(",", ".")),
                         unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                         fkSupplierId: currentSupplierToSaveProduct.pkSupplierId
                     );

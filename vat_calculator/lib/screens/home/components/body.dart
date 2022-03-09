@@ -904,7 +904,7 @@ class _HomePageBodyState extends State<HomePageBody> {
       animateFirstPage: true,
       children: [
         ExpenceCard(showTopNavigatorRow: true),
-        RecessedCard(showIndex: true),
+        RecessedCard(showIndex: true, showHeader: true),
       ],
     );
   }

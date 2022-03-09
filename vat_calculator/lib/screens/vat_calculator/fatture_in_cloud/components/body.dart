@@ -1,21 +1,28 @@
 import 'dart:async';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fatture_api.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
 import 'package:vat_calculator/screens/recessed_manager/components/recessed_reg_card.dart';
+import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
+import '../../../details_screen/detailis_ndc_emesse.dart';
+import '../../../details_screen/details_fatture_vendite.dart';
+import '../../../details_screen/details_ndc_received.dart';
 
 class VatFattureInCloudCalculatorBody extends StatefulWidget {
   const VatFattureInCloudCalculatorBody({Key key}) : super(key: key);
 
-  static String routeName = 'fattureincloud_screen';
   @override
   _VatFattureInCloudCalculatorBodyState createState() => _VatFattureInCloudCalculatorBodyState();
 }
@@ -69,37 +76,53 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
               setState(() {});
               return Future.delayed(const Duration(milliseconds: 500));
             },
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  dataBundleNotifier.currentBranch.providerFatture == ''
-                      ? Column(
-                    children: const [
-                      Text(''),
-                    ],
-                  )
-                      : Column(
+            child: dataBundleNotifier.currentBranch.providerFatture == ''
+                ? Column(
+              children: const [
+                Text(''),
+              ],
+            )
+                : Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    dataBundleNotifier.currentDateTimeRangeVatService.start.day.toString() + ' ' +
+                        getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.start.month) +' ' +
+                        dataBundleNotifier.currentDateTimeRangeVatService.start.year.toString() + ' - ' +
+                        dataBundleNotifier.currentDateTimeRangeVatService.end.day.toString() +' ' +
+                        getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.end.month) +' ' +
+                        dataBundleNotifier.currentDateTimeRangeVatService.end.year.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(20)),
+                  ),
+                ),
+                Card(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          dataBundleNotifier.currentDateTimeRangeVatService.start.day.toString() + ' ' +
-                              getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.start.month) +' ' +
-                              dataBundleNotifier.currentDateTimeRangeVatService.start.year.toString() + ' - ' +
-                              dataBundleNotifier.currentDateTimeRangeVatService.end.day.toString() +' ' +
-                              getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.end.month) +' ' +
-                              dataBundleNotifier.currentDateTimeRangeVatService.end.year.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor),
-                        ),
-                      ),
-                      buildDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
-                      buildHeaderDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
+                      buildWidgetRowForDetailsVatCalc('Fatture Acquisti', Colors.green.shade700, dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureAcquistiDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/soldiin.svg'),
+                      const Divider(color: Colors.grey, height: 30,),
+                      buildWidgetRowForDetailsVatCalc('NDC(Emesse)', Colors.green.shade700, dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCEmesseDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/note.svg'),
+                      const Divider(color: Colors.grey, height: 30),
+                      buildWidgetRowForDetailsVatCalc('Fatture Vendite', Colors.redAccent.shade700, dataBundleNotifier.totalIvaFatture.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureVenditeDetailsPage.routeName);}, Colors.redAccent.shade700, 'assets/icons/soldiout.svg'),
+                      const Divider(color: Colors.grey, height: 30),
+                      buildWidgetRowForDetailsVatCalc('NDC(Ricevute)', Colors.redAccent.shade700, dataBundleNotifier.totalIvaNdcReceived.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCReceivedDetailsPage.routeName);}, Colors.redAccent.shade700, 'assets/icons/note.svg'),
+                      const Divider(color: Colors.grey, height: 30),
+                      buildWidgetRowForDetailsVatCalc('Incassi', Colors.redAccent.shade700, calculateVatFromListRecessed(dataBundleNotifier
+                          .getRecessedListByRangeDate(
+                          dataBundleNotifier.currentDateTimeRangeVatService.start,
+                          dataBundleNotifier.currentDateTimeRangeVatService.end))
+                          .toStringAsFixed(2),
+                              (){
+                            Navigator.pushNamed(context, RecessedScreen.routeName);
+                          }, Colors.redAccent.shade700, 'assets/icons/cashregister.svg'),
                     ],
                   ),
-                  buildDateRecessedRegistrationWidget(dataBundleNotifier),
-
-                ],
-              ),
+                ),
+                SizedBox(height: 10),
+                buildHeaderDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
+              ],
             ),
           );
         }
@@ -112,7 +135,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RecessedCard(showIndex: false),
+        const RecessedCard(showIndex: false, showHeader: true),
         buildLast5RecessedRegisteredWidget(dataBundleNotifier),
       ],
     );
@@ -219,7 +242,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
       } else {
         recessedListByRangeDate.forEach((element) {
           print(element.toMap().toString());
-          totalIva = totalIva + (element.amountF * (element.vat / 100));
+          totalIva = totalIva + ((element.amountF + element.amountPos) * (element.vat / 100));
         });
         return totalIva;
       }
@@ -230,23 +253,23 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
   }
 
   buildHeaderDetailsIvaWidget(DataBundleNotifier dataBundleNotifier, double width) {
-    List<Widget> listOut = <Widget>[];
     double vatCredit = dataBundleNotifier.totalIvaAcquisti + dataBundleNotifier.totalIvaNdcSent;
+
     double vatDebit = dataBundleNotifier.totalIvaFatture +
         dataBundleNotifier.totalIvaNdcReceived;
+
     double currentRecessedVat = 0.0;
 
     dataBundleNotifier.currentListRecessed.forEach((recessedElement) {
       if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(dataBundleNotifier.currentDateTimeRangeVatService.end)
           && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(dataBundleNotifier.currentDateTimeRangeVatService.start)){
-        currentRecessedVat = currentRecessedVat + ((recessedElement.amountF / 100) * recessedElement.vat);
+        currentRecessedVat = currentRecessedVat + ((recessedElement.amountF + recessedElement.amountPos) / 100 * recessedElement.vat);
       }
     });
 
     if (vatCredit >= (vatDebit + currentRecessedVat)) {
-      // iva a credito
-      listOut.add(Padding(
-        padding: const EdgeInsets.all(10.0),
+      return Padding(
+        padding: const EdgeInsets.all(5.0),
         child: Card(
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Colors.green.withOpacity(0.7), width: 1),
@@ -274,10 +297,10 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
           ),
           color: Colors.green.withOpacity(0.7),
         ),
-      ));
+      );
     } else {
-      listOut.add(Padding(
-        padding: const EdgeInsets.all(10.0),
+      return Padding(
+        padding: const EdgeInsets.all(5.0),
         child: Card(
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.white12, width: 1),
@@ -308,49 +331,50 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
           ),
           color: kPinaColor,
         ),
-      ));
+      );
     }
-
-    return Column(
-      children: listOut,
-    );
   }
-  buildDetailsIvaWidget(DataBundleNotifier dataBundleNotifier, double width) {
-    List<Widget> listOut = <Widget>[];
-    listOut.add(
-      Divider(),
-    );
-    listOut.add(
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            buildCustomCard(kPrimaryColor, Colors.green, 'Fatture Acquisti', dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2), () {
-              Navigator.pushNamed(context, FattureAcquistiDetailsPage.routeName);
-            }),
-            buildCustomCard(kPrimaryColor, Colors.green, 'NDC(Emesse)', dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2), () { }),
-            buildCustomCard(kPrimaryColor, Colors.redAccent, 'Fatture Vendite', dataBundleNotifier.totalIvaFatture.toStringAsFixed(2), () { }),
-            buildCustomCard(kPrimaryColor, Colors.redAccent, 'NDC(Ricevute)', dataBundleNotifier.totalIvaNdcReceived.toStringAsFixed(2), () { }),
-            buildCustomCard(kPrimaryColor, Colors.redAccent, 'Incassi', calculateVatFromListRecessed(dataBundleNotifier
-                .getRecessedListByRangeDate(
-                dataBundleNotifier.currentDateTimeRangeVatService.start,
-                dataBundleNotifier.currentDateTimeRangeVatService.end))
-                .toStringAsFixed(2), () { }),
 
-          ],
+  buildWidgetRowForDetailsVatCalc(String description, Color color, String amount, Function function, Color buttonColor, String icon){
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: function,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SvgPicture.asset(icon, height: getProportionateScreenHeight(30)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('IVA', style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold)),
+                        Text(description, style: TextStyle(fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('€ ' + amount, style: TextStyle(
+                    color: color, fontSize: getProportionateScreenWidth(25), fontWeight: FontWeight.bold),),
+              )
+            ],
+          ),
         ),
-      ),
-    );
-    listOut.add(
-      Divider(),
-    );
-    return Column(
-      children: listOut,
+      ],
     );
   }
-
-  Card buildCustomCard(Color primaryColor, Color shadowColor, String description, String value, Function function){
+  buildCustomCard(Color primaryColor, Color shadowColor, String description, String value, Function function){
     return Card(
       elevation: 8,
       color: primaryColor,
@@ -372,7 +396,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                   Text(
                     description,
                     style: TextStyle(
-                        color: Colors.white, fontSize: getProportionateScreenWidth(8), fontWeight: FontWeight.bold),
+                        color: Colors.white, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -381,8 +405,9 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
               ),
               Text('€ ' + value,
                 style: TextStyle(
-                    color: shadowColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(11)),
+                    color: shadowColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(30)),
               ),
+
             ],
           ),
         ),

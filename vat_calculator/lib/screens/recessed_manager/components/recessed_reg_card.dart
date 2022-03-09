@@ -14,11 +14,13 @@ import '../../../client/vatservice/model/recessed_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../expence_manager/expence_home.dart';
+import '../recessed_home.dart';
 
 class RecessedCard extends StatefulWidget {
-  const RecessedCard({Key key, this.showIndex}) : super(key: key);
+  const RecessedCard({Key key, this.showIndex, this.showHeader}) : super(key: key);
 
   final bool showIndex;
+  final bool showHeader;
 
   @override
   _RecessedCardState createState() => _RecessedCardState();
@@ -29,7 +31,6 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
   RestorableInt currentSegmentIva;
 
   TextEditingController recessedCashController = TextEditingController();
-  TextEditingController recessedNotFiscalController = TextEditingController();
   TextEditingController recessedFiscalController = TextEditingController();
   TextEditingController recessedPosController = TextEditingController();
 
@@ -58,7 +59,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
-              Row(
+              widget.showHeader ? Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
@@ -76,8 +77,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, ExpenceScreen.routeName);
+                      Navigator.pushNamed(context, RecessedScreen.routeName);
                     },
                     child: Row(
                       children: [
@@ -95,7 +95,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                     ),
                   ),
                 ],
-              ),
+              ) : SizedBox(width: 0),
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -108,6 +108,10 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      const Padding(
+                        padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
+                        child: Text(' Data', style: TextStyle(color: Colors.white)),
+                      ),
                       DatePicker(
                         DateTime.now().subtract(Duration(days: 4)),
                         initialSelectedDate: DateTime.now(),
@@ -115,9 +119,9 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                         selectedTextColor: Colors.white,
                         width: getProportionateScreenHeight(40),
                         daysCount: 9,
-                        dayTextStyle: TextStyle(fontSize: 5),
-                        dateTextStyle: TextStyle(fontSize: 15),
-                        monthTextStyle: TextStyle(fontSize: 10),
+                        dayTextStyle: const TextStyle(fontSize: 5),
+                        dateTextStyle: const TextStyle(fontSize: 15),
+                        monthTextStyle: const TextStyle(fontSize: 10),
                         onDateChange: (date) {
                           // New date selected
                           setState(() {
@@ -125,8 +129,9 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                           });
                         },
                       ),
+                      const Text(' Iva', style: TextStyle(color: Colors.white)),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(1, 8, 1, 8),
+                        padding: const EdgeInsets.fromLTRB(1, 2, 1, 2),
                         child: Column(
                           children: [
                             SizedBox(
@@ -175,27 +180,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                             children: [
                               Padding(
                                 padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
-                                child: Text(dataBundleNotifier.userDetailsList[0].firstName, style: TextStyle(color: Colors.white)),
-                              ),
-                              SizedBox(
-                                child: CupertinoTextField(
-                                  controller: recessedNotFiscalController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
-                                  clearButtonMode: OverlayVisibilityMode.never,
-                                  textAlign: TextAlign.center,
-                                  autocorrect: false,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
-                                child: Text('Socio', style: TextStyle(color: Colors.white)),
+                                child: Text('Incasso fiscale ' + dataBundleNotifier.currentBranch.companyName, style: TextStyle(color: Colors.white)),
                               ),
                               SizedBox(
                                 child: CupertinoTextField(
@@ -247,8 +232,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                               child: const Text('Salva Incasso'),
                               color: kCustomGreen,
                               onPressed: () async {
-                                try {
-                                  KeyboardUtil.hideKeyboard(context);
+
                                   if(isValueValid(recessedCashController)){
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
@@ -260,7 +244,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                               'Importo Cash vuoto o errato',
                                               style: TextStyle(color: Colors.white),
                                             )));
-                                  } else if(isValueValid(recessedNotFiscalController)){
+                                  } else if(isValueValid(recessedFiscalController)){
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             duration:
@@ -268,18 +252,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                             backgroundColor:
                                             Colors.redAccent.withOpacity(0.8),
                                             content: const Text(
-                                              'Importo Cash vuoto o errato',
-                                              style: TextStyle(color: Colors.white),
-                                            )));
-                                  }else if(isValueValid(recessedFiscalController)){
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                            duration:
-                                            const Duration(milliseconds: 2000),
-                                            backgroundColor:
-                                            Colors.redAccent.withOpacity(0.8),
-                                            content: const Text(
-                                              'Importo Cash vuoto o errato',
+                                              'Importo Incasso fiscale vuoto o errato',
                                               style: TextStyle(color: Colors.white),
                                             )));
                                   }else if(isValueValid(recessedPosController)){
@@ -293,18 +266,42 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                               'Importo Pos vuoto o errato',
                                               style: TextStyle(color: Colors.white),
                                             )));
+                                  } else if(recessedCashController.text == '0' && recessedPosController.text == '0' && recessedFiscalController.text == '0'){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration:
+                                            const Duration(milliseconds: 2000),
+                                            backgroundColor:
+                                            Colors.redAccent.withOpacity(0.9),
+                                            content: const Text(
+                                              'Nessun importo valorizzato',
+                                              style: TextStyle(color: Colors.white),
+                                            )));
+                                  } else if(double.parse(recessedFiscalController.text.replaceAll(",", "."))
+                                      > (double.parse(recessedCashController.text.replaceAll(",", ".")) + double.parse(recessedPosController.text.replaceAll(",", ".")))){
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                            duration:
+                                            const Duration(milliseconds: 2500),
+                                            backgroundColor:
+                                            Colors.redAccent.withOpacity(0.8),
+                                            content: const Text(
+                                              'L\'importo fiscale non può essere maggiore della somma dell\'importo cash + importo pos',
+                                              style: TextStyle(color: Colors.white),
+                                            )));
                                   } else {
                                     try {
+
                                       ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
 
                                       await clientService.performSaveRecessed(
-                                          double.parse(recessedFiscalController.text),
-                                          double.parse(recessedNotFiscalController.text),
-                                          double.parse(recessedCashController.text),
-                                          double.parse(recessedPosController.text),
+                                          double.parse(recessedFiscalController.text.replaceAll(",", ".")),
+                                          (double.parse(recessedCashController.text.replaceAll(",", ".")) + double.parse(recessedPosController.text.replaceAll(",", "."))) - double.parse(recessedFiscalController.text.replaceAll(",", ".")),
+                                          double.parse(recessedCashController.text.replaceAll(",", ".")),
+                                          double.parse(recessedPosController.text.replaceAll(",", ".")),
                                           '',
                                           dataBundleNotifier.getIvaList()[dataBundleNotifier.indexIvaList],
-                                          dataBundleNotifier.currentDateTime.millisecondsSinceEpoch,
+                                          _currentDate.millisecondsSinceEpoch + 3600000,
                                           dataBundleNotifier.currentBranch.pkBranchId,
                                           ActionModel(
                                               date: DateTime.now().millisecondsSinceEpoch,
@@ -317,18 +314,17 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
 
                                       List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
                                       dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                                      dataBundleNotifier.recalculateGraph();
 
                                       recessedFiscalController.clear();
-                                      recessedNotFiscalController.clear();
                                       recessedCashController.clear();
                                       recessedPosController.clear();
 
+                                      KeyboardUtil.hideKeyboard(context);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                           duration: Duration(milliseconds: 2000),
                                           backgroundColor: Colors.green.shade700.withOpacity(0.8),
-                                          content: Text('Incasso registrato', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                                          content: Text('Incasso registrato', style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                                     } catch (e) {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(
@@ -336,24 +332,13 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                                   milliseconds: 6000),
                                               backgroundColor: Colors.red,
                                               content: Text(
-                                                'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                                 style: const TextStyle(
                                                     fontFamily: 'LoraFont',
                                                     color: Colors.white),
                                               )));
                                     }
                                   }
-                                } catch (e) {
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                      duration: const Duration(milliseconds: 6000),
-                                      backgroundColor: Colors.red,
-                                      content: Text(
-                                        'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
-                                        style: const TextStyle(
-                                            fontFamily: 'LoraFont',
-                                            color: Colors.white),
-                                      )));
-                                }
                               },
                             ),
                           ),
@@ -380,7 +365,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
   bool isValueValid(TextEditingController controller) {
     if (controller.text == '') {
       return true;
-    } else if (double.tryParse(controller.text) == null) {
+    } else if (double.tryParse(controller.text.replaceAll(",", ".")) == null) {
       return true;
     }else{
       return false;

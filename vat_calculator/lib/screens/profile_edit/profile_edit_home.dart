@@ -208,7 +208,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                                 milliseconds: 6000),
                                                             backgroundColor: Colors.red,
                                                             content: Text(
-                                                              'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                              'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                                               style: const TextStyle(
                                                                   fontFamily: 'LoraFont',
                                                                   color: Colors.white),

@@ -117,14 +117,18 @@ class DataBundleNotifier extends ChangeNotifier {
   double totalIvaNdcReceived = 0.0;
   double totalIvaNdcSent = 0.0;
 
+
   List<ResponseAcquistiApi> extractedAcquistiFatture = [];
   List<ResponseAcquistiApi> extractedAcquistiFattureBis = [];
 
   List<ResponseAcquistiApi> extractedNdc = [];
-  Map<String, double> resultCreditIvaMap = {};
-  Map<String, double> resultDebitIvaMap = {};
+  List<ResponseAcquistiApi> extractedNdcBis = [];
+
   List<ResponseAcquistiApi> retrieveListaAcquisti = [];
+
   List<ResponseFattureApi> retrieveListaFatture = [];
+  List<ResponseFattureApi> retrieveListaFattureBis = [];
+
   List<ResponseNDCApi> retrieveListaNDC = [];
 
   List<ProductModel> storageTempListProduct = [];
@@ -322,7 +326,7 @@ class DataBundleNotifier extends ChangeNotifier {
       return listToReturn;
     }else{
       currentListRecessed.forEach((recessedElement) {
-        if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(end) && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(start)){
+        if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(end.add(Duration(days: 1))) && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(start.subtract(Duration(days: 1)))){
           listToReturn.add(recessedElement);
         }
       });
@@ -1140,133 +1144,55 @@ class DataBundleNotifier extends ChangeNotifier {
     extractedAcquistiFatture.clear();
     extractedAcquistiFattureBis.clear();
     extractedNdc.clear();
-    resultDebitIvaMap.clear();
-    resultCreditIvaMap.clear();
+    extractedNdcBis.clear();
     retrieveListaAcquisti.clear();
     retrieveListaFatture.clear();
+    retrieveListaFattureBis.clear();
+
     retrieveListaNDC.clear();
 
-    print('Inizia a calcolare iva con ' + currentDateTimeRange.start.toString());
-    print('Inizia a calcolare iva con ' + currentDateTimeRange.end.toString());
-    retrieveListaAcquisti =
-    await iCloudClient.retrieveListaAcquisti(
-        currentBranch.apiUidOrPassword,
-        currentBranch.apiKeyOrUser,
-        currentDateTimeRange.start,
-        currentDateTimeRange.end,
-        '',
-        '',
-        currentDateTimeRange.start.year);
 
-    retrieveListaFatture =
-    await iCloudClient.retrieveListaFatture(
-        currentBranch.apiUidOrPassword,
-        currentBranch.apiKeyOrUser,
-        currentDateTimeRange.start,
-        currentDateTimeRange.end,
-        '',
-        '',
-        currentDateTimeRange.start.year);
+    retrieveListaAcquisti = await iCloudClient.retrieveListaAcquisti(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
+    retrieveListaFatture = await iCloudClient.retrieveListaFatture(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
+    retrieveListaNDC = await iCloudClient.retrieveListaNdc( currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
 
-    retrieveListaNDC = await iCloudClient.retrieveListaNdc(
-        currentBranch.apiUidOrPassword,
-        currentBranch.apiKeyOrUser,
-        currentDateTimeRange.start,
-        currentDateTimeRange.end,
-        '',
-        '',
-        currentDateTimeRange.start.year);
+    retrieveListaFattureBis.addAll(retrieveListaFatture);
 
-
-    resultCreditIvaMap = initializeMap(currentDateTimeRange);
-    resultDebitIvaMap = initializeMap(currentDateTimeRange);
-
+    totalIvaAcquisti = 0.0;
+    totalIvaNdcReceived = 0.0;
 
     retrieveListaAcquisti.forEach((acquisto) {
       if (acquisto.tipo == 'spesa') {
-        if (resultCreditIvaMap.containsKey(acquisto.data)) {
-          resultCreditIvaMap[acquisto.data] =
-              resultCreditIvaMap[acquisto.data] +
-                  double.parse(acquisto.importo_iva);
-        } else {
-          resultCreditIvaMap[acquisto.data] =
-              double.parse(acquisto.importo_iva);
-        }
 
         extractedAcquistiFatture.add(acquisto);
         extractedAcquistiFattureBis.add(acquisto);
-
-        totalIvaAcquisti =
-            totalIvaAcquisti + double.parse(acquisto.importo_iva);
+        totalIvaAcquisti = totalIvaAcquisti + double.parse(acquisto.importo_iva);
       } else if (acquisto.tipo == 'ndc') {
         extractedNdc.add(acquisto);
-        totalIvaNdcReceived =
-            totalIvaNdcReceived + double.parse(acquisto.importo_iva);
-
-        if (resultDebitIvaMap.containsKey(acquisto.data)) {
-          resultDebitIvaMap[acquisto.data] = resultDebitIvaMap[acquisto.data] +
-              double.parse(acquisto.importo_iva);
-        } else {
-          resultDebitIvaMap[acquisto.data] = double.parse(acquisto.importo_iva);
-        }
+        extractedNdcBis.add(acquisto);
+        totalIvaNdcReceived = totalIvaNdcReceived + double.parse(acquisto.importo_iva);
       }
     });
 
+
+    print(retrieveListaFatture.length.toString());
+    totalIvaFatture = 0.0;
     retrieveListaFatture.forEach((fattura) {
-      totalIvaFatture = totalIvaFatture +
-          (double.parse(fattura.importo_totale) -
-              double.parse(fattura.importo_netto));
-      if (resultDebitIvaMap.containsKey(fattura.data)) {
-        resultDebitIvaMap[fattura.data] = resultDebitIvaMap[fattura.data] +
-            (double.parse(fattura.importo_totale) -
-                double.parse(fattura.importo_netto));
-      } else {
-        resultDebitIvaMap[fattura.data] =
-        (double.parse(fattura.importo_totale) -
-            double.parse(fattura.importo_netto));
-      }
+      print(fattura.importo_totale.toString());
+      print(fattura.importo_netto.toString());
+      totalIvaFatture = totalIvaFatture + (double.parse(fattura.importo_totale) - double.parse(fattura.importo_netto));
+      print(totalIvaFatture.toString());
     });
 
+    totalIvaNdcSent = 0.0;
     retrieveListaNDC.forEach((ndc) {
-      totalIvaNdcSent = totalIvaNdcSent +
-          (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
-
-      if (resultCreditIvaMap.containsKey(ndc.data)) {
-        resultCreditIvaMap[ndc.data] = resultCreditIvaMap[ndc.data] +
-            (double.parse(ndc.importo_totale) -
-                double.parse(ndc.importo_netto));
-      } else {
-        resultCreditIvaMap[ndc.data] = (double.parse(ndc.importo_totale) -
-            double.parse(ndc.importo_netto));
-      }
+      totalIvaNdcSent = totalIvaNdcSent + (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
     });
-
-    currentListRecessed.forEach((element) {
-      if (resultDebitIvaMap.containsKey(buildDateKey(element.dateTimeRecessed))) {
-        resultDebitIvaMap[buildDateKey(element.dateTimeRecessed)] =
-            resultDebitIvaMap[buildDateKey(element.dateTimeRecessed)] + (element.amountF/100*element.vat);
-      } else {
-        resultDebitIvaMap[buildDateKey(element.dateTimeRecessed)] = element.amountF/100*element.vat;
-      }
-    });
-
-    print('DIO CARO');
-    print(resultCreditIvaMap.toString());
-    print(resultDebitIvaMap.toString());
 
     notifyListeners();
   }
 
-  Map<String, double> initializeMap(DateTimeRange currentDateTimeRange) {
-    Map<String, double> mapToReturn = {};
-    int i = 0;
-    do{
-      mapToReturn[buildKeyFromTimeRange(daysRangeDate-i)] = 0;
-      i++;
-    }while(i <= daysRangeDate);
 
-    return mapToReturn;
-  }
 
   String normalizeDayValue(int day) {
     if(day < 10){
@@ -1483,5 +1409,36 @@ class DataBundleNotifier extends ChangeNotifier {
       });
     }
     notifyListeners();
+  }
+
+  void filterextractedextractedNdcByText(String filterText) {
+    if(filterText.isEmpty){
+      extractedNdc.clear();
+      extractedNdc.addAll(extractedNdcBis);
+    }else{
+      extractedNdc.clear();
+      extractedNdcBis.forEach((element) {
+        if(element.nome.toLowerCase().contains(filterText.toLowerCase())){
+          extractedNdc.add(element);
+        }
+      });
+    }
+    notifyListeners();
+  }
+
+  void filterListaFattureByText(String filterText) {
+    if(filterText.isEmpty){
+      retrieveListaFatture.clear();
+      retrieveListaFatture.addAll(retrieveListaFattureBis);
+    }else{
+      retrieveListaFatture.clear();
+      retrieveListaFattureBis.forEach((element) {
+        if(element.nome.toLowerCase().contains(filterText.toLowerCase())){
+          retrieveListaFatture.add(element);
+        }
+      });
+    }
+    notifyListeners();
+
   }
 }

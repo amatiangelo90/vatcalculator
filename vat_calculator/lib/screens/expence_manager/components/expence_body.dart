@@ -35,7 +35,6 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
-                const ExpenceCard(showTopNavigatorRow: false),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -216,7 +215,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Text(
-                'Daniele',
+                'Spese ' + dataBundleNotifier.userDetailsList[0].firstName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: getProportionateScreenWidth(8),
@@ -230,7 +229,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                     fontWeight: FontWeight.bold, color: kCustomYellow800),
               ),
               Text(
-                'Mattia',
+                '     Extra    ',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: getProportionateScreenWidth(8),
@@ -398,7 +397,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                                                   milliseconds: 6000),
                                               backgroundColor: Colors.red,
                                               content: Text(
-                                                'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                                 style: const TextStyle(
                                                     fontFamily: 'LoraFont',
                                                     color: Colors.white),
@@ -465,7 +464,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                                                   milliseconds: 6000),
                                               backgroundColor: Colors.red,
                                               content: Text(
-                                                'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                                 style: const TextStyle(
                                                     fontFamily: 'LoraFont',
                                                     color: Colors.white),

@@ -300,8 +300,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                 padding: const EdgeInsets.all(8.0),
                                 child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
 
-                                  if (double.tryParse(loadPaxController.text) != null) {
-                                    double currentValue = double.parse(loadPaxController.text);
+                                  if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
+                                    double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
                                     setState(() {
                                       workStationProdModelList.forEach((workstationProd) {
                                         workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
@@ -381,10 +381,10 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                       padding: const EdgeInsets.all(8.0),
                                       child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
 
-                                        if (double.tryParse(amountController.text) != null) {
+                                        if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
 
                                           try{
-                                            double currentValue = double.parse(amountController.text);
+                                            double currentValue = double.parse(amountController.text.replaceAll(",", "."));
                                             dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
                                             setState(() {
                                               element.amountHunderd = currentValue;

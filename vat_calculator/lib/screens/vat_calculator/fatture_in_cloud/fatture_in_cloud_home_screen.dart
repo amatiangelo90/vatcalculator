@@ -11,92 +11,112 @@ import 'package:vat_calculator/screens/registration_provider/fatture_provider_re
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import 'components/body_chart.dart';
 
 class FattureInCloudCalculatorScreen extends StatelessWidget {
 
   DateTimeRange _currentDateTimeRange;
   static String routeName = "/fattureincloud";
 
+  final kTab = <Tab>[
+    const Tab(child: Text('Dettagli'),),
+    Tab(child: SvgPicture.asset('assets/icons/linechart.svg', width: getProportionateScreenHeight(25),)),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
-        return Scaffold(
-          appBar: AppBar(
-            actions: [
-              IconButton(
-                  icon: SvgPicture.asset(
-                    "assets/icons/Settings.svg",
-                    color: Colors.white,
-                    width: getProportionateScreenWidth(25),
-                  ),
-                  onPressed: () {
-                    buildmethod(context, dataBundleNotifier);
+        return DefaultTabController(
+          length: kTab.length,
 
-                  }),
-              IconButton(
-                  icon: SvgPicture.asset(
-                    "assets/icons/calendar.svg",
-                    color: Colors.white,
-                    width: getProportionateScreenWidth(25),
-                  ),
-                  onPressed: () {
-                    _selectDateTimeRange(context, dataBundleNotifier);
-
-                  }),
-            ],
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pushNamed(context, HomeScreen.routeName);
-              },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: kCustomWhite,
-                size: getProportionateScreenHeight(20),
+          child: Scaffold(
+            appBar: AppBar(
+              bottom: TabBar(
+                tabs: kTab,
+                indicator: const UnderlineTabIndicator(borderSide: BorderSide(width: 2.0, color: Colors.white),
+                ),
               ),
-            ),
-            iconTheme: const IconThemeData(color: Colors.white),
-            backgroundColor: kPrimaryColor,
-            centerTitle: true,
-            title: GestureDetector(
-              onTap: () {
-                buildmethod(context, dataBundleNotifier);
-              },
-              child: SizedBox(
-                width: getProportionateScreenWidth(170),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Card(
-                    color: dataBundleNotifier
-                        .currentBranch.providerFatture ==
-                        'fatture_in_cloud'
-                        ? kPrimaryColor
-                        : Colors.orange,
-                    semanticContainer: true,
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Image.asset(
-                        dataBundleNotifier.currentBranch
-                            .providerFatture ==
-                            'fatture_in_cloud'
-                            ? 'assets/images/fattureincloud.png'
-                            : 'assets/images/aruba.png',
-                        fit: BoxFit.contain,
+              actions: [
+                IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/icons/Settings.svg",
+                      color: Colors.white,
+                      width: getProportionateScreenWidth(25),
+                    ),
+                    onPressed: () {
+                      buildmethod(context, dataBundleNotifier);
+
+                    }),
+                IconButton(
+                    icon: SvgPicture.asset(
+                      "assets/icons/calendar.svg",
+                      color: Colors.white,
+                      width: getProportionateScreenWidth(25),
+                    ),
+                    onPressed: () {
+                      _selectDateTimeRange(context, dataBundleNotifier);
+
+                    }),
+              ],
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, HomeScreen.routeName);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: kCustomWhite,
+                  size: getProportionateScreenHeight(20),
+                ),
+              ),
+              iconTheme: const IconThemeData(color: Colors.white),
+              backgroundColor: kPrimaryColor,
+              centerTitle: true,
+              title: GestureDetector(
+                onTap: () {
+                  buildmethod(context, dataBundleNotifier);
+                },
+                child: SizedBox(
+                  width: getProportionateScreenWidth(170),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Card(
+                      color: dataBundleNotifier
+                          .currentBranch.providerFatture ==
+                          'fatture_in_cloud'
+                          ? kPrimaryColor
+                          : Colors.orange,
+                      semanticContainer: true,
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Image.asset(
+                          dataBundleNotifier.currentBranch
+                              .providerFatture ==
+                              'fatture_in_cloud'
+                              ? 'assets/images/fattureincloud.png'
+                              : 'assets/images/aruba.png',
+                          fit: BoxFit.contain,
+                        ),
                       ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      elevation: 5,
+                      margin: const EdgeInsets.all(10),
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    elevation: 5,
-                    margin: const EdgeInsets.all(10),
                   ),
                 ),
               ),
+              elevation: 0,
             ),
-            elevation: 0,
+            body: TabBarView(
+              children: [
+                VatFattureInCloudCalculatorBody(),
+                VatFattureInCloudCalculatorBodyChart(),
+              ],
+            ),
           ),
-          body: const VatFattureInCloudCalculatorBody(),
         );
       },
     );
@@ -312,8 +332,8 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
       DateTimeRange dateTimeRange = await showDateRangePicker(
         context: context,
         initialDateRange: _currentDateTimeRange,
-        firstDate: DateTime(2015),
-        lastDate: DateTime(2050),
+        firstDate: DateTime(DateTime.now().year -1, DateTime.now().month, DateTime.now().day),
+        lastDate: DateTime(DateTime.now().year + 1),
         builder: (BuildContext context, Widget child) {
           return Theme(
             data: ThemeData.dark().copyWith(
@@ -330,4 +350,5 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
         dataBundleNotifier.setCurrentDateTimeRange(dateTimeRange);
       }
   }
+
 }

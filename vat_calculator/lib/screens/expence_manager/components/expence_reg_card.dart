@@ -6,7 +6,6 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/datepiker/date_picker_timeline.dart';
-import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
@@ -137,7 +136,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                 child: Text('Casuale', style: TextStyle(color: Colors.white)),
                               ),
                               SizedBox(
-                                width: getProportionateScreenWidth(240),
+                                width: getProportionateScreenWidth(widget.showTopNavigatorRow ? 240 : 120),
                                 child: CupertinoTextField(
                                   controller: casualeExpenceController,
                                   textInputAction: TextInputAction.next,
@@ -181,7 +180,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                               style: TextStyle(color: Colors.white),
                                             )));
                                   } else if (double.tryParse(
-                                      expenceController.text) ==
+                                      expenceController.text.replaceAll(",", ".")) ==
                                       null) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
@@ -207,7 +206,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                   } else {
                                     Widget fiscalButton = TextButton(
                                       child: Text(
-                                        "Daniele",
+                                        'Spese ' + dataBundleNotifier.userDetailsList[0].firstName,
                                         style: TextStyle(
                                             color: Colors.greenAccent.shade700,
                                             fontWeight: FontWeight.bold,
@@ -221,7 +220,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                               .getclientServiceInstance();
 
                                           await clientService.performSaveExpence(
-                                              double.parse(expenceController.text),
+                                              double.parse(expenceController.text.replaceAll(",", ".")),
                                               casualeExpenceController.text,
                                               0,
                                               _currentDate.add(Duration(hours: 1)).millisecondsSinceEpoch,
@@ -267,7 +266,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                       milliseconds: 6000),
                                                   backgroundColor: Colors.red,
                                                   content: Text(
-                                                    'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                    'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                                     style: const TextStyle(
                                                         fontFamily: 'LoraFont',
                                                         color: Colors.white),
@@ -279,7 +278,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                     );
                                     Widget notFiscalButton = TextButton(
                                       child: Text(
-                                        "Mattia",
+                                        "Extra",
                                         style: TextStyle(
                                             color: Colors.lightBlueAccent,
                                             fontWeight: FontWeight.bold,
@@ -291,7 +290,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                           ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
 
                                           await clientService.performSaveExpence(
-                                              double.parse(expenceController.text),
+                                              double.parse(expenceController.text.replaceAll(",", ".")),
                                               casualeExpenceController.text,
                                               0,
                                               _currentDate.add(Duration(hours: 1)).millisecondsSinceEpoch,
@@ -302,7 +301,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                   date: DateTime.now()
                                                       .millisecondsSinceEpoch,
                                                   description:
-                                                  'Ha registrato spesa per Mattia ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                                  'Ha registrato spesa extra ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
                                                   fkBranchId: dataBundleNotifier
                                                       .currentBranch.pkBranchId,
                                                   user: dataBundleNotifier
@@ -325,8 +324,8 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                   backgroundColor: Colors
                                                       .blue.shade700
                                                       .withOpacity(0.6),
-                                                  content: Text(
-                                                    'Spesa per Mattia registrata',
+                                                  content: const Text(
+                                                    'Spesa per extra registrata',
                                                     style: TextStyle(
                                                         fontFamily: 'LoraFont',
                                                         color: Colors.white),
@@ -338,7 +337,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                       milliseconds: 6000),
                                                   backgroundColor: Colors.red,
                                                   content: Text(
-                                                    'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                                    'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                                     style: const TextStyle(
                                                         fontFamily: 'LoraFont',
                                                         color: Colors.white),
@@ -469,7 +468,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                           Text(
                                                             '€ ' +
                                                                 expenceController
-                                                                    .text
+                                                                    .text.replaceAll(",", ".")
                                                                     .toString(),
                                                             style: TextStyle(
                                                                 fontSize:
@@ -495,7 +494,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                       duration: const Duration(milliseconds: 6000),
                                       backgroundColor: Colors.red,
                                       content: Text(
-                                        'Abbiamo riscontrato un errore durante l\'operzione. Riprova più tardi. Errore: $e',
+                                        'Abbiamo riscontrato un errore durante l\'operazione. Riprova più tardi. Errore: $e',
                                         style: const TextStyle(
                                             fontFamily: 'LoraFont',
                                             color: Colors.white),

@@ -4,7 +4,10 @@ import 'package:vat_calculator/screens/branch_registration/branch_creation.dart'
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_update.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
+import 'package:vat_calculator/screens/details_screen/detailis_ndc_emesse.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
+import 'package:vat_calculator/screens/details_screen/details_fatture_vendite.dart';
+import 'package:vat_calculator/screens/details_screen/details_ndc_received.dart';
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
@@ -19,6 +22,7 @@ import 'package:vat_calculator/screens/orders/components/screens/draft_order_pag
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
+import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
@@ -44,11 +48,15 @@ final Map<String, WidgetBuilder> routes = {
   SplashAnim.routeName: (context) => SplashAnim(),
   SignInScreen.routeName: (context) => SignInScreen(),
   ForgotPasswordScreen.routeName: (context) => ForgotPasswordScreen(),
+  RecessedScreen.routeName: (context) => RecessedScreen(),
   SignUpScreen.routeName: (context) => SignUpScreen(),
   CompleteProfileScreen.routeName: (context) => const CompleteProfileScreen(),
   FattureAcquistiDetailsPage.routeName: (context) => const FattureAcquistiDetailsPage(),
   HomeScreen.routeName: (context) => HomeScreen(),
   LandingScreen.routeName: (context) => LandingScreen(),
+  FattureVenditeDetailsPage.routeName: (context) => FattureVenditeDetailsPage(),
+  NDCReceivedDetailsPage.routeName: (context) => NDCReceivedDetailsPage(),
+  NDCEmesseDetailsPage.routeName: (context) => NDCEmesseDetailsPage(),
   OrdersScreen.routeName: (context) => OrdersScreen(),
   FattureInCloudCalculatorScreen.routeName: (context) => FattureInCloudCalculatorScreen(),
   CreateOrderScreen.routeName: (context) => CreateOrderScreen(),

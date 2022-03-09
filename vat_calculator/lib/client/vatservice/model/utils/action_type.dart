@@ -33,6 +33,7 @@ class ActionType{
   static const String ORDER_EDIT                      = 'MODIFICA ORDINE';
   static const String PRODUCT_EDIT                    = 'MODIFICA PRODOTTO';
   static const String EXPENCE_UPDATE                  = 'MODIFICA SPESA';
+  static const String RECESSED_UPDATE                 = 'MODIFICA INCASSO';
 
   // Delete Actions
   static const String BRANCH_DELETE                   = 'CANCELLAZIONE ATTIVITA';
@@ -44,6 +45,7 @@ class ActionType{
   static const String PRODUCT_DELETE                  = 'CANCELLAZIONE PRODOTTO';
   static const String EXPENCE_DELETE                  = 'CANCELLAZIONE SPESA';
   static const String REMOVE_PRODUCT_FROM_STORAGE     = 'RIMOZIONE PRODOTTO DA MAGAZZINO';
+  static const String RECESSED_DELETE                 = 'CANCELLAZIONE INCASSO';
 
   //LOAD/UNLOAD Storage
   static const String STORAGE_LOAD = 'CARICO PRODOTTO IN MAGAZZINO';

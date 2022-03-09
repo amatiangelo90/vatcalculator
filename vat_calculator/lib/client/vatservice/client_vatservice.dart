@@ -78,7 +78,10 @@ class ClientVatService implements VatServiceInterface{
     return post;
   }
   @override
-  Future<Response> performSaveRecessed(double amountF, double amountNF, double amountCash, double amountPos, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
+  Future<Response> performSaveRecessed(double amountF, double amountNF, double amountCash,
+      double amountPos, String description,
+      int iva,
+      int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
 
     var dio = Dio();
 
@@ -91,7 +94,7 @@ class ClientVatService implements VatServiceInterface{
             vat: iva,
             dateTimeRecessed: dateTimeRecessed,
             description: description,
-            dateTimeRecessedInsert: DateTime.now().millisecondsSinceEpoch,
+            dateTimeRecessedInsert: DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
             fkBranchId: pkBranchId,
             pkRecessedId: null).toMap());
 
@@ -2277,6 +2280,79 @@ class ClientVatService implements VatServiceInterface{
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH + '): ' + post.data.toString());
         try{
           actionModel.fkBranchId = post.data;
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  performUpdateRecessed(RecessedModel recessedModel, ActionModel actionModel) async {
+
+    var dio = Dio();
+
+    String body = json.encode(
+        recessedModel.toMap());
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_RECESSED + '...');
+    print('Body Request update recessed: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_RECESSED,
+        data: body,
+      );
+
+      print('post after update:  '  + post.data.toString());
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_RECESSED + '): ' + post.data.toString());
+        try{
+          actionModel.fkBranchId = post.data;
+          String actionBody = json.encode(actionModel.toMap());
+          await dio.post(
+            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+            data: actionBody,
+          );
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  performDeleteRecessed(RecessedModel recessed, ActionModel actionModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        recessed.toMap());
+    print('Calling ' + VAT_SERVICE_URL_DELETE_RECESSED + '...');
+    print('Body Request delete recessed: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_RECESSED,
+        data: body,
+      );
+
+      if(post != null){
+        print('Response From VatService removed recessed(' + VAT_SERVICE_URL_DELETE_RECESSED + '): ' + post.data.toString());
+        try{
           String actionBody = json.encode(actionModel.toMap());
           await dio.post(
             VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
