@@ -82,48 +82,60 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                 Text(''),
               ],
             )
-                : Column(
+                : Container(
+              color: kPrimaryColor,
+                  child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    dataBundleNotifier.currentDateTimeRangeVatService.start.day.toString() + ' ' +
-                        getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.start.month) +' ' +
-                        dataBundleNotifier.currentDateTimeRangeVatService.start.year.toString() + ' - ' +
-                        dataBundleNotifier.currentDateTimeRangeVatService.end.day.toString() +' ' +
-                        getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.end.month) +' ' +
-                        dataBundleNotifier.currentDateTimeRangeVatService.end.year.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(20)),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      dataBundleNotifier.currentDateTimeRangeVatService.start.day.toString() + ' ' +
+                          getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.start.month) +' ' +
+                          dataBundleNotifier.currentDateTimeRangeVatService.start.year.toString() + ' - ' +
+                          dataBundleNotifier.currentDateTimeRangeVatService.end.day.toString() +' ' +
+                          getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.end.month) +' ' +
+                          dataBundleNotifier.currentDateTimeRangeVatService.end.year.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(20)),
+                    ),
                   ),
-                ),
-                Card(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      buildWidgetRowForDetailsVatCalc('Fatture Acquisti', Colors.green.shade700, dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureAcquistiDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/soldiin.svg'),
-                      const Divider(color: Colors.grey, height: 30,),
-                      buildWidgetRowForDetailsVatCalc('NDC(Emesse)', Colors.green.shade700, dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCEmesseDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/note.svg'),
-                      const Divider(color: Colors.grey, height: 30),
-                      buildWidgetRowForDetailsVatCalc('Fatture Vendite', Colors.redAccent.shade700, dataBundleNotifier.totalIvaFatture.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureVenditeDetailsPage.routeName);}, Colors.redAccent.shade700, 'assets/icons/soldiout.svg'),
-                      const Divider(color: Colors.grey, height: 30),
-                      buildWidgetRowForDetailsVatCalc('NDC(Ricevute)', Colors.redAccent.shade700, dataBundleNotifier.totalIvaNdcReceived.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCReceivedDetailsPage.routeName);}, Colors.redAccent.shade700, 'assets/icons/note.svg'),
-                      const Divider(color: Colors.grey, height: 30),
-                      buildWidgetRowForDetailsVatCalc('Incassi', Colors.redAccent.shade700, calculateVatFromListRecessed(dataBundleNotifier
-                          .getRecessedListByRangeDate(
-                          dataBundleNotifier.currentDateTimeRangeVatService.start,
-                          dataBundleNotifier.currentDateTimeRangeVatService.end))
-                          .toStringAsFixed(2),
-                              (){
-                            Navigator.pushNamed(context, RecessedScreen.routeName);
-                          }, Colors.redAccent.shade700, 'assets/icons/cashregister.svg'),
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(3.0),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.blueAccent.withOpacity(0.7), width: 1),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Divider(color: Colors.white, height: 30,),
+                          buildWidgetRowForDetailsVatCalc('Fatture Acquisti', Colors.green.shade700, dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureAcquistiDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/soldiin.svg'),
+                          Divider(color: Colors.grey.shade300, indent: 50,  height: 30,),
+                          buildWidgetRowForDetailsVatCalc('NDC(Emesse)', Colors.green.shade700, dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCEmesseDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/note.svg'),
+                          Divider(color: Colors.grey.shade300, indent: 50,  height: 30,),
+                          buildWidgetRowForDetailsVatCalc('Fatture Vendite', Colors.redAccent.shade700, dataBundleNotifier.totalIvaFatture.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureVenditeDetailsPage.routeName);}, Colors.redAccent.shade700, 'assets/icons/soldiout.svg'),
+                          Divider(color: Colors.grey.shade300, indent: 50,  height: 30,),
+                          buildWidgetRowForDetailsVatCalc('NDC(Ricevute)', Colors.redAccent.shade700, dataBundleNotifier.totalIvaNdcReceived.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCReceivedDetailsPage.routeName);}, Colors.redAccent.shade700, 'assets/icons/note.svg'),
+                          Divider(color: Colors.grey.shade300, indent: 50,  height: 30,),
+                          buildWidgetRowForDetailsVatCalc('Incassi', Colors.redAccent.shade700, calculateVatFromListRecessed(dataBundleNotifier
+                              .getRecessedListByRangeDate(
+                              dataBundleNotifier.currentDateTimeRangeVatService.start,
+                              dataBundleNotifier.currentDateTimeRangeVatService.end))
+                              .toStringAsFixed(2),
+                                  (){
+                                Navigator.pushNamed(context, RecessedScreen.routeName);
+                              }, Colors.redAccent.shade700, 'assets/icons/cashregister.svg'),
+                          const Divider(color: Colors.white, height: 30,),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                buildHeaderDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
+                  const SizedBox(height: 10),
+                  buildHeaderDetailsIvaWidget(dataBundleNotifier, MediaQuery.of(context).size.width),
               ],
             ),
+                ),
           );
         }
       },

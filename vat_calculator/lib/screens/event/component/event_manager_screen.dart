@@ -92,6 +92,21 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       ),);
     });
 
+    listWgBar.add(
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: SizedBox(
+          width: getProportionateScreenWidth(400),
+          child: CupertinoButton(
+            color: Colors.green,
+            onPressed: () async {
+
+            },
+            child: Text('Aggiungi postazione BAR'),
+          ),
+        ),
+      ),
+    );
     List<Widget> listWgChamp = [];
     workstationModelList.where((element) => element.type == WORKSTATION_TYPE_CHAMP).forEach((wkStation) {
       listWgChamp.add(Padding(

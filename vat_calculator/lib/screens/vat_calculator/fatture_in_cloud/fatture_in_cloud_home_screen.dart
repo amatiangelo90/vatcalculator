@@ -19,7 +19,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
   static String routeName = "/fattureincloud";
 
   final kTab = <Tab>[
-    const Tab(child: Text('Dettagli'),),
+    Tab(child: Text('Dettagli', style: TextStyle(color: Colors.lightBlue, fontSize: getProportionateScreenHeight(18))),),
     Tab(child: SvgPicture.asset('assets/icons/linechart.svg', width: getProportionateScreenHeight(25),)),
   ];
 
@@ -34,7 +34,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
             appBar: AppBar(
               bottom: TabBar(
                 tabs: kTab,
-                indicator: const UnderlineTabIndicator(borderSide: BorderSide(width: 2.0, color: Colors.white),
+                indicator: const UnderlineTabIndicator(insets: EdgeInsets.symmetric(horizontal:25.0) ,borderSide: BorderSide(width: 2.0, color: Colors.lightBlue),
                 ),
               ),
               actions: [
@@ -80,30 +80,13 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
                   width: getProportionateScreenWidth(170),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: Card(
-                      color: dataBundleNotifier
-                          .currentBranch.providerFatture ==
+                    child: Image.asset(
+                      dataBundleNotifier.currentBranch
+                          .providerFatture ==
                           'fatture_in_cloud'
-                          ? kPrimaryColor
-                          : Colors.orange,
-                      semanticContainer: true,
-                      clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Padding(
-                        padding: const EdgeInsets.all(3.0),
-                        child: Image.asset(
-                          dataBundleNotifier.currentBranch
-                              .providerFatture ==
-                              'fatture_in_cloud'
-                              ? 'assets/images/fattureincloud.png'
-                              : 'assets/images/aruba.png',
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      elevation: 5,
-                      margin: const EdgeInsets.all(10),
+                          ? 'assets/images/fatture_no_bg_blue.png'
+                          : 'assets/images/aruba.png',
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),

@@ -323,33 +323,49 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
 
     List<String> xAxisValues = buildAxisValueList(dataBundleNotifier.currentDateTimeRangeVatService);
 
+    int index = getIndexToRemoveData(dataBundleNotifier.currentDateTimeRangeVatService);
+
+
     List<FlSpot> listCreditVat = [];
 
     double currentValue = 0.0;
     for(int i = 0; i < xAxisValues.length; i++){
 
-      currentValue = currentValue + getAmountForCurrentDateFromAcquistiList(dataBundleNotifier.retrieveListaAcquisti,
-          dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)), 'spesa');
+      if(i <= index){
+        currentValue = currentValue + getAmountForCurrentDateFromAcquistiList(dataBundleNotifier.retrieveListaAcquisti,
+            dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)), 'spesa');
 
-      currentValue = currentValue + getAmountForCurrentDateFromNDCList(dataBundleNotifier.retrieveListaNDC,
-          dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)));
-      listCreditVat.add(FlSpot(double.parse(i.toString()), double.parse(currentValue.toStringAsFixed(2))));
+        currentValue = currentValue + getAmountForCurrentDateFromNDCList(dataBundleNotifier.retrieveListaNDC,
+            dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)));
+
+        listCreditVat.add(FlSpot(double.parse(i.toString()), double.parse(currentValue.toStringAsFixed(2))));
+      }
+
     }
+
+
 
     List<FlSpot> listDebitVat = [];
 
     double currentDebitValue = 0.0;
     for(int i = 0; i < xAxisValues.length; i++){
+      if(i <= index){
+        currentDebitValue = currentDebitValue + getAmountForCurrentDateFromAcquistiList(dataBundleNotifier.retrieveListaAcquisti,
+            dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)), 'ndc');
 
-      currentDebitValue = currentDebitValue + getAmountForCurrentDateFromAcquistiList(dataBundleNotifier.retrieveListaAcquisti,
-          dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)), 'ndc');
+        currentDebitValue = currentDebitValue + getAmountForCurrentDateFromListaFatture(dataBundleNotifier.retrieveListaFatture,
+            dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)));
 
-      currentDebitValue = currentDebitValue + getAmountForCurrentDateFromListaFatture(dataBundleNotifier.retrieveListaFatture,
-          dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)));
+        currentDebitValue = currentDebitValue + getAmountForCurrentDateFromRecessedList(dataBundleNotifier.currentListRecessed, dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)));
 
-      currentDebitValue = currentDebitValue + getAmountForCurrentDateFromRecessedList(dataBundleNotifier.currentListRecessed, dataBundleNotifier.currentDateTimeRangeVatService.start.add(Duration(days: i)));
+        listDebitVat.add(FlSpot(double.parse(i.toString()), double.parse(currentDebitValue.toStringAsFixed(2))));
+      }
+    }
 
-      listDebitVat.add(FlSpot(double.parse(i.toString()), double.parse(currentDebitValue.toStringAsFixed(2))));
+    List<FlSpot> listFake = [];
+
+    for(int i = 0; i < xAxisValues.length; i++){
+      listFake.add(FlSpot(double.parse(i.toString()), currentDebitValue > currentValue ? currentDebitValue + (currentDebitValue * 0.25) : currentValue + (currentValue * 0.25)));
     }
 
     double weight = (days * 41.00);
@@ -364,7 +380,7 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
             height: getProportionateScreenHeight(400),
             width: getProportionateScreenWidth(weight),
             child: Container(
-              padding: const EdgeInsets.fromLTRB(3, 20, 40, 20),
+              padding: EdgeInsets.fromLTRB(3, 10, 40, 20),
               width: double.infinity,
               child: LineChart(
 
@@ -373,33 +389,34 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
                     borderData: FlBorderData(show: false),
                     titlesData: FlTitlesData(
                       leftTitles: SideTitles(
-                          getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),
                           showTitles: true,
                           getTitles: (value) {
-                            if(value.toInt() % 1000 == 0){
-                              return '${value.toInt()/1000}'.replaceAll('.0', '') + 'K';
-                            }else{
-                              return '';
+                            if(value.toInt() < 500){
+                              if(value.toInt() % 50 == 0){
+                                return '${value.toInt()}'.replaceAll('.0', '');
+                              }else{
+                                return '';
+                              }
+                            } else if(value.toInt() < 1000){
+                              if(value.toInt() % 100 == 0){
+                                return '${value.toInt()/100}'.replaceAll('.0', '');
+                              }else{
+                                return '';
+                              }
+                            } else{
+                              if(value.toInt() % 1000 == 0){
+                                return '${value.toInt()/1000}'.replaceAll('.0', '') + 'K';
+                              }else{
+                                return '';
+                              }
                             }
                           }
-
                       ),
 
-                      rightTitles: SideTitles(
-                          getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                          showTitles: true,
-                          getTitles: (value) {
-                            if(value.toInt() % 1000 == 0){
-                              return '${value.toInt()/1000}'.replaceAll('.0', '') + 'K';
-                            }else{
-                              return '';
-                            }
-                          }
-
-                      ),
                       topTitles: SideTitles(showTitles: false),
                       bottomTitles: SideTitles(
-                          getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(12) ),
                           showTitles: true,
                           getTitles: (index) {
                             return xAxisValues[index.toInt()];
@@ -407,13 +424,19 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
                     ),
                     lineBarsData: [
                       LineChartBarData(
+                          show: false,
+                          colors: [kPrimaryColor],
+                          spots: listFake
+                      ),
+                      LineChartBarData(
                           colors: [kCustomGreen, kCustomGreen, kCustomGreen],
                           spots: listCreditVat
                       ),
                       LineChartBarData(
-                          colors: [kPinaColor, Colors.red.shade400, Colors.redAccent],
+                          colors: [Colors.red.shade800.withOpacity(0.9), Colors.red.shade400.withOpacity(0.9), Colors.redAccent.withOpacity(0.9)],
                           spots: listDebitVat
                       ),
+
                     ]
                 ),
               ),
@@ -434,6 +457,19 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
       axisValue.add(normalizeCalendarValue(currentDateTimeRangeVatService.start.add(Duration(days: i)).day).toString() + '/' + currentDateTimeRangeVatService.start.add(Duration(days: i)).month.toString());
     }
     return axisValue;
+
+  }
+
+  int getIndexToRemoveData(DateTimeRange currentDateTimeRangeVatService) {
+
+    int index = 10000;
+    int daysNumber = currentDateTimeRangeVatService.end.difference(currentDateTimeRangeVatService.start).inDays;
+    for(int i = 0; i <= daysNumber; i++){
+      if(isToday(currentDateTimeRangeVatService.start.add(Duration(days: i)).millisecondsSinceEpoch)){
+        index = i;
+      }
+    }
+    return index;
 
   }
 
