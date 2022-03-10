@@ -1187,11 +1187,7 @@ class DataBundleNotifier extends ChangeNotifier {
       retrieveListaNDC.forEach((ndc) {
         totalIvaNdcSent = totalIvaNdcSent + (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
       });
-
     }
-
-
-
     notifyListeners();
   }
 

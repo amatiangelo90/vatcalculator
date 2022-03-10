@@ -13,6 +13,7 @@ import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
@@ -353,6 +354,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                               actionModel: ActionModel(
                                                   date: DateTime.now().millisecondsSinceEpoch,
                                                   description: 'Si è collegato all\'attività ${retrieveBranchByBranchId[0].companyName} tramite il codice $currentPassword.',
+                                                  type: ActionType.BRANCH_JOIN,
                                                   fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
                                                   user: dataBundleNotifier.retrieveNameLastNameCurrentUser()
                                               )

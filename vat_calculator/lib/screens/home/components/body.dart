@@ -138,7 +138,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14.0,
-                                        color: kCustomYellow800),
+                                        color: kCustomGreen),
                                   ),
                                 ),
                               ),
@@ -213,7 +213,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                             Text(
                                               'Effettua Ordine',
                                               style: TextStyle(
-                                                  color: kCustomYellow800,
+                                                  color: kCustomGreen,
                                                   fontSize:
                                                       getProportionateScreenWidth(
                                                           17)),
@@ -232,7 +232,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                   top: 26.0,
                                                   right: 9.0,
                                                   child: Stack(
-                                                    children: <Widget>[
+                                                    children: const <Widget>[
                                                       Icon(
                                                         Icons.brightness_1,
                                                         size: 18,
@@ -247,7 +247,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                                 .add_circle_outline,
                                                             size: 13,
                                                             color:
-                                                                kCustomYellow800,
+                                                                kCustomGreen,
                                                           ),
                                                         ),
                                                       ),
@@ -328,7 +328,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14.0,
-                                        color: kCustomYellow800),
+                                        color: kCustomGreen),
                                   ),
                                 ),
                               ),
@@ -376,7 +376,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             Text(
                               'Crea Evento',
                               style: TextStyle(
-                                  color: kCustomYellow800,
+                                  color: kCustomGreen,
                                   fontSize:
                                   getProportionateScreenWidth(
                                       17)),
@@ -410,7 +410,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                 .add_circle_outline,
                                             size: 13,
                                             color:
-                                            kCustomYellow800,
+                                            kCustomGreen,
                                           ),
                                         ),
                                       ),
@@ -442,7 +442,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                           ),
                     ),
                   ),
-
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: SingleChildScrollView(
@@ -457,17 +456,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ),
                     ),
                   ),
-                  Divider(
-                    height: getProportionateScreenHeight(30),
-                  ),
-                  buildActionsList(dataBundleNotifier.currentBranchActionsList),
-                  dataBundleNotifier.currentBranchActionsList.isEmpty
-                      ? const SizedBox(
-                          height: 500,
-                        )
-                      : const SizedBox(
-                          height: 0,
-                        ),
+                  // buildActionsList(dataBundleNotifier.currentBranchActionsList),
                 ],
               ),
             ),
@@ -558,7 +547,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 child: Text(
                   '' + dataBundleNotifier.currentBranch.companyName,
                   style: TextStyle(
-                      color: kCustomYellow800,
+                      color: kCustomGreen,
                       fontSize: getProportionateScreenWidth(15),
                       fontWeight: FontWeight.bold),
                 ),
@@ -579,7 +568,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: kCustomYellow800,
+                      color: kCustomGreen,
                       size: getProportionateScreenWidth(30),
                     ),
                   ),
@@ -621,7 +610,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                         Icons.format_align_right_rounded,
                         color: dataBundleNotifier.currentBranch.pkBranchId ==
                                 currentBranch.pkBranchId
-                            ? Colors.yellow.shade700.withOpacity(0.8)
+                            ? kCustomGreen
                             : kPrimaryColor,
                       ),
                       Icon(
@@ -630,7 +619,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             : Icons.vpn_key_outlined,
                         color: dataBundleNotifier.currentBranch.pkBranchId ==
                                 currentBranch.pkBranchId
-                            ? Colors.yellow.shade700.withOpacity(0.8)
+                            ? kCustomGreen
                             : kPrimaryColor,
                       ),
                       Text(
@@ -643,7 +632,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                   : getProportionateScreenWidth(13),
                           color: dataBundleNotifier.currentBranch.pkBranchId ==
                                   currentBranch.pkBranchId
-                              ? Colors.yellow.shade700.withOpacity(0.8)
+                              ? kCustomGreen
                               : Colors.black,
                         ),
                       ),
@@ -655,7 +644,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
                           child: SvgPicture.asset(
                             'assets/icons/success-green.svg',
-                            color: Colors.yellow.shade700.withOpacity(0.8),
+                            color: kCustomGreen,
                             width: 22,
                           ),
                         )

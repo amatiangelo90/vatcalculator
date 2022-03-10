@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
@@ -168,6 +169,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
 
                               ActionModel actionModel = ActionModel(user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                   description: 'Ha aggiornato l\'attività ${controllerCompanyName2.text}',
+                                  type: ActionType.BRANCH_EDIT,
                                   date: DateTime.now().millisecondsSinceEpoch,
                                   fkBranchId: 0);
                               int rowsUpdated = await dataBundleNotifier.getclientServiceInstance().performUpdateBranch(company, actionModel);

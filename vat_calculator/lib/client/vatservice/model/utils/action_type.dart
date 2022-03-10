@@ -10,6 +10,7 @@ import '../../../../size_config.dart';
 class ActionType{
   // Creation actions
   static const String BRANCH_CREATION = 'CREAZIONE ATTIVITA';
+  static const String BRANCH_JOIN = 'ATTIVITA COLLEGATA';
   static const String SUPPLIER_CREATION = 'CREAZIONE FORNITORE';
   static const String SUPPLIER_ASSOCIATION = 'ASSOCIAZIONE FORNITORE';
   static const String STORAGE_CREATION = 'CREAZIONE MAGAZZINO';
@@ -62,6 +63,8 @@ class ActionType{
 
     switch(type){
         case BRANCH_CREATION:
+        break;
+        case BRANCH_JOIN:
         break;
         case SUPPLIER_CREATION:
           return CustomIcon.buildIconWidget(
