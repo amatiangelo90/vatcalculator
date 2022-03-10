@@ -62,7 +62,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                   child: Column(
                     children: [
                       Container(
-                        color: kPrimaryColor,
+                        color: Colors.black.withOpacity(0.8),
                         child: Column(
                           children: [
                             Row(
@@ -119,7 +119,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Row(
                               children: [
                                 const SizedBox(width: 20,),
-                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomWhite)) : const SizedBox(width: 0,),
+                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomGreen)) : const SizedBox(width: 0,),
                               ],
                             ),
                             const SizedBox(height: 10,),
@@ -172,7 +172,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Colors.black54.withOpacity(0.1),
                             kCustomWhite),
                       ),
-                      buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
                         if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                           showDialog(
                               context: context,
@@ -210,7 +210,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
-                      buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
                         if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
                           showDialog(
                               context: context,
@@ -364,7 +364,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           ),
                         ),
                       ),
-                      Padding(
+                      dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
                           style: TextButton.styleFrom(
@@ -404,7 +404,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       ),
 
 
-                      Padding(
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
                           style: TextButton.styleFrom(
@@ -469,7 +469,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             kCustomWhite),
                       ) : SizedBox(width: 0,),
                       showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
-                      Padding(
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) :Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
                           style: TextButton.styleFrom(

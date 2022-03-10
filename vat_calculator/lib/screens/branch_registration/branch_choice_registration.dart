@@ -32,7 +32,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
         title: Text('Registra la tua attività',
           style: TextStyle(
             fontSize: getProportionateScreenWidth(19),
-            color: kCustomYellow800,
+            color: kCustomGreen,
           ),
         ),
         backgroundColor: kPrimaryColor,
@@ -50,13 +50,9 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                 Column(
                   children: [
                     SizedBox(height: 20,),
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Text('Gestisci la tua attività dal tuo smartphone. '
-                          'Dal Magazzino ai Fornitori. '
-                          'Registra Spese ed Incassi. Perchè dovresti? '
-                          'Perchè cosi puoi calcolare, in totale automonia e in modo istantaneo la tua situazione Iva. '
-                          'Scopri se hai maturato iva a credito o debito, con un solo click.', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite),),
+                    const Padding(
+                      padding: EdgeInsets.all(18.0),
+                      child: Text('Gestisci la tua attività dal tuo smartphone.', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite),),
                     ),
 
                     Padding(
@@ -69,8 +65,8 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.home_work, color: kPinaColor,),
-                                SizedBox(width: 5,),
+                                const Icon(Icons.home_work, color: kCustomGreen,),
+                                const SizedBox(width: 5,),
                                 Text('Crea una nuova attività', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: getProportionateScreenWidth(20),
                                       fontWeight: FontWeight.bold, color: kPrimaryColor),),
@@ -86,11 +82,11 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                     ),
                   ],
                 ),
-                Divider(),
+                const Divider(),
                 Column(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
+                    const Padding(
+                      padding: EdgeInsets.all(18.0),
                       child: Text('Sei un socio oppure un dipendente?'
                           ' Associa il tuo account con una attività già esistente. Scopri come..', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite),),
                     ),
@@ -104,8 +100,8 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.people, color: kPinaColor,),
-                                SizedBox(width: 5,),
+                                const Icon(Icons.people, color: kCustomGreen),
+                                const SizedBox(width: 5,),
                                 Text('Unisciti ad una esistente', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: getProportionateScreenWidth(20),
                                     fontWeight: FontWeight.bold, color: kPrimaryColor),),

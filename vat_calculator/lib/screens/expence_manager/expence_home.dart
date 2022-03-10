@@ -59,7 +59,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
                         ),
                       ),
                       Text(
-                        dataBundleNotifier.currentBranch.companyName,
+                        dataBundleNotifier.currentBranch == null ? '' : dataBundleNotifier.currentBranch.companyName,
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(11),
                           color: kCustomWhite,

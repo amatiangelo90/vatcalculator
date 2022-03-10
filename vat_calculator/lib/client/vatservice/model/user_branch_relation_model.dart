@@ -5,12 +5,14 @@ class UserBranchRelationModel{
   int fkUserId;
   int fkBranchId;
   String accessPrivilege;
+  String configuration;
 
   UserBranchRelationModel({
     @required this.pkUserBranchId,
     @required this.fkBranchId,
     @required this.fkUserId,
-    @required this.accessPrivilege
+    @required this.accessPrivilege,
+    @required this.configuration
 });
 
   toMap(){
@@ -18,7 +20,8 @@ class UserBranchRelationModel{
       'pkUserBranchId' : pkUserBranchId,
       'fkBranchId': fkBranchId,
       'fkUserId' : fkUserId,
-      'accessPrivilege' : accessPrivilege
+      'accessPrivilege' : accessPrivilege,
+      'configuration' : configuration,
     };
   }
 

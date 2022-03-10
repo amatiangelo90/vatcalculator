@@ -552,7 +552,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     clearAndUpdateMapBundle();
 
-    retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
+    //retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
     notifyListeners();
   }
 
@@ -1151,43 +1151,46 @@ class DataBundleNotifier extends ChangeNotifier {
 
     retrieveListaNDC.clear();
 
+    if(currentBranch.providerFatture != null && currentBranch.providerFatture != ''){
+      retrieveListaAcquisti = await iCloudClient.retrieveListaAcquisti(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
+      retrieveListaFatture = await iCloudClient.retrieveListaFatture(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
+      retrieveListaNDC = await iCloudClient.retrieveListaNdc( currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
 
-    retrieveListaAcquisti = await iCloudClient.retrieveListaAcquisti(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
-    retrieveListaFatture = await iCloudClient.retrieveListaFatture(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
-    retrieveListaNDC = await iCloudClient.retrieveListaNdc( currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
+      retrieveListaFattureBis.addAll(retrieveListaFatture);
 
-    retrieveListaFattureBis.addAll(retrieveListaFatture);
+      totalIvaAcquisti = 0.0;
+      totalIvaNdcReceived = 0.0;
 
-    totalIvaAcquisti = 0.0;
-    totalIvaNdcReceived = 0.0;
-
-    retrieveListaAcquisti.forEach((acquisto) {
-      if (acquisto.tipo == 'spesa') {
-
-        extractedAcquistiFatture.add(acquisto);
-        extractedAcquistiFattureBis.add(acquisto);
-        totalIvaAcquisti = totalIvaAcquisti + double.parse(acquisto.importo_iva);
-      } else if (acquisto.tipo == 'ndc') {
-        extractedNdc.add(acquisto);
-        extractedNdcBis.add(acquisto);
-        totalIvaNdcReceived = totalIvaNdcReceived + double.parse(acquisto.importo_iva);
-      }
-    });
+      retrieveListaAcquisti.forEach((acquisto) {
+        if (acquisto.tipo == 'spesa') {
+          extractedAcquistiFatture.add(acquisto);
+          extractedAcquistiFattureBis.add(acquisto);
+          totalIvaAcquisti = totalIvaAcquisti + double.parse(acquisto.importo_iva);
+        } else if (acquisto.tipo == 'ndc') {
+          extractedNdc.add(acquisto);
+          extractedNdcBis.add(acquisto);
+          totalIvaNdcReceived = totalIvaNdcReceived + double.parse(acquisto.importo_iva);
+        }
+      });
 
 
-    print(retrieveListaFatture.length.toString());
-    totalIvaFatture = 0.0;
-    retrieveListaFatture.forEach((fattura) {
-      print(fattura.importo_totale.toString());
-      print(fattura.importo_netto.toString());
-      totalIvaFatture = totalIvaFatture + (double.parse(fattura.importo_totale) - double.parse(fattura.importo_netto));
-      print(totalIvaFatture.toString());
-    });
+      print(retrieveListaFatture.length.toString());
+      totalIvaFatture = 0.0;
+      retrieveListaFatture.forEach((fattura) {
+        print(fattura.importo_totale.toString());
+        print(fattura.importo_netto.toString());
+        totalIvaFatture = totalIvaFatture + (double.parse(fattura.importo_totale) - double.parse(fattura.importo_netto));
+        print(totalIvaFatture.toString());
+      });
 
-    totalIvaNdcSent = 0.0;
-    retrieveListaNDC.forEach((ndc) {
-      totalIvaNdcSent = totalIvaNdcSent + (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
-    });
+      totalIvaNdcSent = 0.0;
+      retrieveListaNDC.forEach((ndc) {
+        totalIvaNdcSent = totalIvaNdcSent + (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
+      });
+
+    }
+
+
 
     notifyListeners();
   }

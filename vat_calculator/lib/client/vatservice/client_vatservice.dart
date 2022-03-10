@@ -344,7 +344,7 @@ class ClientVatService implements VatServiceInterface{
       );
 
       if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
+        print('Response From VatService create branch (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
         try{
           actionModel.fkBranchId = post.data;
           String actionBody = json.encode(actionModel.toMap());
@@ -649,7 +649,7 @@ class ClientVatService implements VatServiceInterface{
     List<BranchModel> branchList = [];
 
     print('Retrieve branches list for the user with id ' + id.toString());
-    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL);
+    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USER_ID);
     String body = json.encode(
         UserModel(
             id: id,
@@ -663,11 +663,11 @@ class ClientVatService implements VatServiceInterface{
     Response post;
     try{
       post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL,
+        VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USER_ID,
         data: body,
       );
 
-      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USEREMAIL + '): ' + post.data.toString());
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_USER_ID + '): ' + post.data.toString());
       String encode = json.encode(post.data);
 
       List<dynamic> valueList = jsonDecode(encode);
@@ -687,7 +687,8 @@ class ClientVatService implements VatServiceInterface{
                 providerFatture: branchElement['provider'],
                 apiKeyOrUser: branchElement['idKeyUser'],
                 apiUidOrPassword: branchElement['idUidPassword'],
-                accessPrivilege: branchElement['accessPrivilege']
+                accessPrivilege: branchElement['accessPrivilege'],
+                configuration: branchElement['configuration'],
             ));
       });
       return branchList;

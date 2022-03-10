@@ -130,7 +130,7 @@ class _StorageScreenState extends State<StorageScreen> {
             ],
             backgroundColor: kPrimaryColor,
             centerTitle: true,
-            title: Text(dataBundleNotifier.currentStorage.name, style: TextStyle(
+            title: Text(dataBundleNotifier.currentBranch == null ? 'Area Magazzini' : dataBundleNotifier.currentStorage == null ?  'Area Magazzini': dataBundleNotifier.currentStorage.name, style: TextStyle(
                 fontSize: getProportionateScreenWidth(13),
             color: kCustomWhite,
           ),),

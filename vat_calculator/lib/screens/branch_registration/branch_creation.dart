@@ -27,6 +27,8 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
   TextEditingController controllerCap;
   TextEditingController controllerMobileNo;
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
 
@@ -39,83 +41,17 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
         }else{
           controllerEmail = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
         }
+
         void buildShowErrorDialog(String text) {
-          Widget cancelButton = TextButton(
-            child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
-            onPressed:  () {
-              Navigator.of(context).pop();
-            },
-          );
-
-          showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                actions: [
-                  cancelButton
-                ],
-                contentPadding: EdgeInsets.zero,
-                shape: const RoundedRectangleBorder(
-                    borderRadius:
-                    BorderRadius.all(
-                        Radius.circular(10.0))),
-                content: Builder(
-                  builder: (context) {
-                    var height = MediaQuery.of(context).size.height;
-                    var width = MediaQuery.of(context).size.width;
-                    return SizedBox(
-                      height: getProportionateScreenHeight(150),
-                      width: width - 90,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(10.0),
-                                    topLeft: Radius.circular(10.0) ),
-                                color: kPinaColor,
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('  Errore ',style: TextStyle(
-                                        fontSize: getProportionateScreenWidth(14),
-                                        fontWeight: FontWeight.bold,
-                                        color: kCustomWhite,
-                                      ),),
-                                      IconButton(icon: const Icon(
-                                        Icons.clear,
-                                        color: kCustomWhite,
-                                      ), onPressed: () { Navigator.pop(context); },),
-
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(18.0),
-                                child: Text(text,
-                                  style: const TextStyle(fontSize: 14),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              )
-          );
+          _scaffoldKey.currentState.showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            backgroundColor: Colors.redAccent.withOpacity(0.9),
+            content: Text(text),
+          ));
         }
 
         return Scaffold(
+          key: _scaffoldKey,
           backgroundColor: Colors.grey.shade900.withOpacity(0.9),
           bottomSheet: Container(
             color: Colors.black54.withOpacity(0.9),
@@ -129,7 +65,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoButton(
-                          color: kCustomYellow800,
+                          color: kCustomGreen,
                           child: const Text('CREA'),
                           onPressed: () async {
                             if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
@@ -197,7 +133,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
             title: Text('Crea nuova attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomYellow800,
+                color: kCustomGreen,
               ),
             ),
             backgroundColor: Colors.grey.shade900.withOpacity(0.9),

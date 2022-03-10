@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
               iconTheme: const IconThemeData(color: kPrimaryColor),
               backgroundColor: Colors.white,
               actions: [
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
+                dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
                   children: [
                     dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') :
                     IconButton(
@@ -182,7 +182,7 @@ class HomeScreen extends StatelessWidget {
 
   Color getProviderColor(DataBundleNotifier dataBundleNotifier) {
     if(dataBundleNotifier.currentBranch == null || dataBundleNotifier.currentBranch.providerFatture == '' &&  dataBundleNotifier.currentBranch.providerFatture == null){
-      return Colors.white;
+      return kPrimaryColor;
     }else{
       switch(dataBundleNotifier.currentBranch.providerFatture){
         case 'fatture_in_cloud':

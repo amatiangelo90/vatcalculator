@@ -391,27 +391,7 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
                       leftTitles: SideTitles(
                           getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),
                           showTitles: true,
-                          getTitles: (value) {
-                            if(value.toInt() < 500){
-                              if(value.toInt() % 50 == 0){
-                                return '${value.toInt()}'.replaceAll('.0', '');
-                              }else{
-                                return '';
-                              }
-                            } else if(value.toInt() < 1000){
-                              if(value.toInt() % 100 == 0){
-                                return '${value.toInt()/100}'.replaceAll('.0', '');
-                              }else{
-                                return '';
-                              }
-                            } else{
-                              if(value.toInt() % 1000 == 0){
-                                return '${value.toInt()/1000}'.replaceAll('.0', '') + 'K';
-                              }else{
-                                return '';
-                              }
-                            }
-                          }
+
                       ),
 
                       topTitles: SideTitles(showTitles: false),
