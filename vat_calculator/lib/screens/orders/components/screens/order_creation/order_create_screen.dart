@@ -43,7 +43,7 @@ class CreateOrderScreen extends StatelessWidget {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(19),
-                          color: kCustomYellow800,
+                          color: kCustomGreen,
                         ),
                       ),
                       Text(

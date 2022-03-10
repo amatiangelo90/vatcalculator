@@ -1,13 +1,10 @@
 import 'dart:io';
-
-import 'package:chips_choice/chips_choice.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
@@ -28,6 +25,7 @@ import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.da
 import '../../constants.dart';
 import '../../enums.dart';
 import '../../size_config.dart';
+import '../suppliers/components/add_suppliers/add_supplier_choice.dart';
 import 'components/add_storage_screen.dart';
 import 'components/product_datasource_storage.dart';
 
@@ -107,17 +105,17 @@ class _StorageScreenState extends State<StorageScreen> {
                       top: 26.0,
                       right: 4.0,
                       child: Stack(
-                        children: <Widget>[
+                        children: const <Widget>[
                           Icon(
                             Icons.brightness_1,
                             size: 20,
-                            color: Colors.amber,
+                            color: kCustomGreen,
                           ),
                           Positioned(
                             right: 3.5,
                             top: 3.5,
                             child: Center(
-                              child: Icon(Icons.compare_arrows_outlined, size: 13, color: customGreenAccent,),
+                              child: Icon(Icons.list, size: 13, color: Colors.white,),
                             ),
                           ),
                         ],
@@ -426,11 +424,9 @@ class _StorageScreenState extends State<StorageScreen> {
                 Container(
                   width: 35,
                   height: 5,
-
-                  decoration: BoxDecoration(
-
-                      color: customGreenAccent,
-                      borderRadius: BorderRadius.all(const Radius.circular(12.0))),
+                  decoration: const BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(12.0))),
                 ),
               ],
             ),
@@ -456,6 +452,25 @@ class _StorageScreenState extends State<StorageScreen> {
             SizedBox(
               height: 24,
             ),
+            dataBundleNotifier.currentListSuppliers.isEmpty ? Padding(
+              padding: const EdgeInsets.all(18.0),
+              child: Column(
+                children: [
+                  SizedBox(height: 30),
+                  Text('Non hai ancora configurato nessun fornitore'),
+                  SizedBox(height: 50),
+                  SizedBox(
+                    width: SizeConfig.screenWidth * 0.6,
+                    child: DefaultButton(
+                      text: "Crea Fornitore",
+                      press: () async {
+                        Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ) :
             buildWidgetRowForProduct(dataBundleNotifier),
 
           ],

@@ -33,8 +33,8 @@ class HomeScreen extends StatelessWidget {
           child: Scaffold(
             drawer: const CommonDrawer(),
             appBar: AppBar(
-              iconTheme: const IconThemeData(color: kPrimaryColor),
-              backgroundColor: Colors.white,
+              iconTheme: const IconThemeData(color: Colors.white),
+              backgroundColor: kPrimaryColor,
               actions: [
                 dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
                   children: [
@@ -65,7 +65,7 @@ class HomeScreen extends StatelessWidget {
                   children: [ IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/receipt.svg',
-                      color: kPrimaryColor,
+                      color: Colors.white,
                       width: 25,
                     ),
                     onPressed: () {
@@ -76,11 +76,11 @@ class HomeScreen extends StatelessWidget {
                       top: 26.0,
                       right: 9.0,
                       child: Stack(
-                        children: <Widget>[
-                          const Icon(
+                        children: const <Widget>[
+                          Icon(
                             Icons.brightness_1,
                             size: 18,
-                            color: Colors.black,
+                            color: kPrimaryColor,
                           ),
                           Positioned(
                             right: 2.5,
@@ -99,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                     IconButton(
                       icon: SvgPicture.asset(
                         'assets/icons/party.svg',
-                        color: kPrimaryColor,
+                        color: Colors.white,
                         width: 50,
                       ),
                       onPressed: () {
@@ -144,14 +144,14 @@ class HomeScreen extends StatelessWidget {
                     "Ciao ${dataBundleNotifier.userDetailsList.isNotEmpty ? dataBundleNotifier.userDetailsList[0].firstName : ''}",
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(17),
-                      color: kPrimaryColor,
+                      color: Colors.white,
                     ),
                   ),
                   Text(
                     dataBundleNotifier.userDetailsList.isNotEmpty ? dataBundleNotifier.userDetailsList[0].email : '',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(7),
-                      color: kPrimaryColor,
+                      color: Colors.white,
                     ),
                   ),
                   Text(
@@ -159,7 +159,7 @@ class HomeScreen extends StatelessWidget {
                     dataBundleNotifier.currentBranch.accessPrivilege + ' per ' + dataBundleNotifier.currentBranch.companyName : '',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(5),
-                      color: kPrimaryColor,
+                      color: kCustomGreen,
                     ),
                   ),
 

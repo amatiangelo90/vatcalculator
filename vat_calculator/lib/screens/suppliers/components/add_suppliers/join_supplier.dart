@@ -50,31 +50,29 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: Colors.black,
               centerTitle: true,
-              title: Column(
-                children: [
-                  Text(
-                    'Associa Fornitore',
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(17),
-                      color: kCustomWhite,
-                    ),
-                  ),
-                ],
+              title: Text(
+                'Associa Fornitore',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(17),
+                  color: kCustomGreen,
+                ),
               ),
               elevation: 2,
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Form(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: <Widget>[
-                      const Text('Immetti qui il codice che ti ha fornitore il fornitore', textAlign: TextAlign.center,),
-                      SizedBox(height: getProportionateScreenHeight(10),),
-                      _buildInputPasswordForEventWidget(dataBundleNotifier),
-                      SizedBox(height: getProportionateScreenHeight(50),),
-                    ],
+            body: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Form(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: <Widget>[
+                        const Text('Immetti qui il codice che ti ha fornitore il fornitore', textAlign: TextAlign.center,),
+                        SizedBox(height: getProportionateScreenHeight(10),),
+                        _buildInputPasswordForEventWidget(dataBundleNotifier),
+                        SizedBox(height: getProportionateScreenHeight(50),),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -368,7 +366,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               Flexible(
                 child: CupertinoButton(
                   color: Colors.black54.withOpacity(0.5),
-                  child: Text("Clear", style: TextStyle(color: Colors.blueAccent.withOpacity(0.7), fontSize: getProportionateScreenHeight(18)),),
+                  child: Text("Clear", style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenHeight(18)),),
                   onPressed: () {
                     supplierCodeControllerSearch.clear();
                   },

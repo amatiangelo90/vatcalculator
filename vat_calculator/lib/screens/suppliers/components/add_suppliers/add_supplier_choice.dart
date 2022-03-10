@@ -1,12 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
-
 import '../../../../client/fattureICloud/model/response_fornitori.dart';
 import '../../../../constants.dart';
 import '../../../../models/databundlenotifier.dart';
@@ -43,7 +38,7 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
             title: Text('Registra Fornitore',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: Colors.white,
+                color: kCustomGreen,
               ),
             ),
             backgroundColor: kPrimaryColor,

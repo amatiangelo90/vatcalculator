@@ -59,7 +59,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
-                  color: kCustomYellow800,
+                  color: kCustomGreen,
                   fontWeight: FontWeight.bold
                 ),
               ),
@@ -118,9 +118,10 @@ class SuppliersScreen extends StatelessWidget {
                             height: 30,
                           ),
                           SizedBox(
-                            width: SizeConfig.screenWidth * 0.6,
+                            height: 100,
+                            width: SizeConfig.screenWidth * 0.9,
                             child: DefaultButton(
-                              color: kCustomYellow800,
+                              color: kCustomGreen,
                               text: "Crea Fornitore",
                               press: () async {
                                 Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
