@@ -57,7 +57,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
             'Gestione',
             style: TextStyle(
               fontSize: getProportionateScreenWidth(19),
-              color: kCustomYellow800,
+              color: kCustomGreen,
             ),
           ),
           backgroundColor: kPrimaryColor,
@@ -83,7 +83,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                           child: Text(
                         'Gestione Profilo',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: kCustomYellow800),
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       )),
                     ),
                   ),
@@ -440,7 +440,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                           child: Text(
                         'Gestione Attività',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: kCustomYellow800),
+                            fontWeight: FontWeight.bold, color: Colors.white),
                       )),
                     ),
                   ),
@@ -629,7 +629,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                             ' per ' +
                                             companyList[index].companyName,
                                         style: TextStyle(
-                                            color: Colors.green,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.w200,
                                             fontSize:
                                                 getProportionateScreenHeight(
@@ -725,7 +725,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                 width: getProportionateScreenWidth(400),
                                 height: getProportionateScreenHeight(50),
                                 child: CupertinoButton(
-                                  color: kCustomYellow800,
+                                  color: kCustomGreen,
                                   onPressed: () {
                                     Navigator.push(
                                       context,

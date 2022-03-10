@@ -36,7 +36,7 @@ class HomeScreen extends StatelessWidget {
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,
               actions: [
-                dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
+                dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
                   children: [
                     dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') :
                     IconButton(
@@ -182,7 +182,7 @@ class HomeScreen extends StatelessWidget {
 
   Color getProviderColor(DataBundleNotifier dataBundleNotifier) {
     if(dataBundleNotifier.currentBranch == null || dataBundleNotifier.currentBranch.providerFatture == '' &&  dataBundleNotifier.currentBranch.providerFatture == null){
-      return kPrimaryColor;
+      return Colors.white;
     }else{
       switch(dataBundleNotifier.currentBranch.providerFatture){
         case 'fatture_in_cloud':
@@ -190,7 +190,7 @@ class HomeScreen extends StatelessWidget {
         case 'aruba':
           return Colors.orange;
         default:
-          return kPrimaryColor;
+          return Colors.white;
       }
     }
 

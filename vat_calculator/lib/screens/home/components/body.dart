@@ -97,13 +97,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           context, dataBundleNotifier),
                     ),
                   ),
-                  const Divider(
-                    height: 2,
-                  ),
                   buildDateRecessedRegistrationWidget(dataBundleNotifier),
-                  const Divider(
-                    height: 2,
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: Row(

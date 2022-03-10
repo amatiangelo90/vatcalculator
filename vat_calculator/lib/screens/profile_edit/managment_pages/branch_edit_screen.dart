@@ -48,14 +48,14 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
               },
               icon: Icon(
                 Icons.arrow_back_ios,
-                color: kCustomYellow800,
+                color: Colors.white,
               ),
             ),
             centerTitle: true,
             title: Text(widget.currentBranch.companyName,
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomYellow800,
+                color: kCustomGreen,
                 fontWeight: FontWeight.bold
               ),
             ),
@@ -176,7 +176,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(listUserModel[index].privilege, style: TextStyle(color: Colors.deepOrangeAccent, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
+                              Text(listUserModel[index].privilege, style: TextStyle(color: kCustomGreen, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20)),),
                               listUserModel[index].id == dataBundleNotifier.userDetailsList[0].id ? SizedBox(height: 0,) :
                               listUserModel[index].privilege == Privileges.OWNER ? SizedBox(width: 0,) : Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -469,7 +469,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                               bottom: getProportionateScreenHeight(60)),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
-                            color: kPinaColor,
+                            color: kCustomGreen,
                           ),
                           child: Container(
                             decoration: const BoxDecoration(
@@ -499,7 +499,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
                                           Text('Codice: ', style: TextStyle(color: kCustomWhite,  fontSize: getProportionateScreenWidth(18))),
-                                          Text(listStorageModel[index].pkStorageId.toString(), style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].pkStorageId.toString(), style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(18))),
                                         ],
                                       ),
                                       Row(
@@ -511,28 +511,28 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                               listStorageModel[index].creationDate.month.toString() + '/' +
                                               listStorageModel[index].creationDate.year.toString()
 
-                                              ,style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                              ,style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(18))),
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
                                           Text('Indirizzo: ', style: TextStyle(color: kCustomWhite,  fontSize: getProportionateScreenWidth(18))),
-                                          Text(listStorageModel[index].address, style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].address, style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(18))),
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
                                           Text('Città: ', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18) )),
-                                          Text(listStorageModel[index].city, style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].city, style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(18))),
                                         ],
                                       ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                         children: [
                                           Text('Cap: ', style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(18))),
-                                          Text(listStorageModel[index].cap, style: TextStyle(color: Colors.orangeAccent, fontSize: getProportionateScreenWidth(18))),
+                                          Text(listStorageModel[index].cap, style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(18))),
                                         ],
                                       ),
                                     ],
@@ -720,7 +720,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
       height: 10,
       width: currentUserPage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentUserPage == index ? Colors.deepOrangeAccent : kBeigeColor,
+        color: currentUserPage == index ? kCustomGreen : kBeigeColor,
         borderRadius: BorderRadius.circular(15),
       ),
     );
@@ -733,7 +733,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
       height: 10,
       width: currentStoragePage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentStoragePage == index ? kPinaColor : kBeigeColor,
+        color: currentStoragePage == index ? kCustomGreen : kBeigeColor,
         borderRadius: BorderRadius.circular(15),
       ),
     );
