@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
@@ -429,9 +430,21 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                             List<BranchModel> _branchList = await dataBundleNotifier.getclientServiceInstance().retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                                             dataBundleNotifier.addBranches(_branchList);
 
+                                            List<CashRegisterModel> currentListCashRegister = [];
+                                            List<RecessedModel> _recessedModelList = [];
+
                                             if(dataBundleNotifier.currentBranch != null){
-                                              List<RecessedModel> _recessedModelList = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                                              currentListCashRegister = await dataBundleNotifier.getclientServiceInstance().retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+
+                                              if(currentListCashRegister.isNotEmpty){
+                                                await Future.forEach(currentListCashRegister,
+                                                        (CashRegisterModel cashRegisterModel) async {
+                                                      List<RecessedModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByCashRegister(cashRegisterModel);
+                                                      _recessedModelList.addAll(list);
+                                                    });
+                                              }
                                               dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                                              dataBundleNotifier.setCashRegisterList(currentListCashRegister);
                                             }
 
                                             if(dataBundleNotifier.currentBranch != null){

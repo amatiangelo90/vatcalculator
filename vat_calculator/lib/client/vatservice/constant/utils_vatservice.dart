@@ -80,3 +80,10 @@ const String VAT_SERVICE_URL_CREATE_WORKSTATIONS_PRODUCTSTORAGE_RELATION = 'http
 const String VAT_SERVICE_URL_RETRIEVE_WORKSTATIONS_BY_EVENT_ID = 'http://$host:8080/vatservices/api/v1/retrieve/workstationlistbyeventid';
 const String VAT_SERVICE_URL_RETRIEVE_WORKSTATION_PRODUCT_LIST_BY_WORKSTATION_ID = 'http://$host:8080/vatservices/api/v1/retrieve/productsbyworkstationid';
 const String VAT_SERVICE_URL_UPDATE_WORKSTATIONS_PRODUCTS = 'http://$host:8080/vatservices/api/v1/update/workstationproducts';
+
+// Cash registers api
+
+const String VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/cashregisterbybranchid';
+const String VAT_SERVICE_URL_UPDATE_CASH_REGISTER = 'http://$host:8080/vatservices/api/v1/update/cashregister';
+const String VAT_SERVICE_URL_CREATAE_CASH_REGISTER = 'http://$host:8080/vatservices/api/v1/create/cashregister';
+const String VAT_SERVICE_URL_DELETE_CASH_REGISTER = 'http://$host:8080/vatservices/api/v1/delete/cashregister';

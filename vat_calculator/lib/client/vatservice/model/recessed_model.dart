@@ -11,7 +11,7 @@ class RecessedModel{
   int vat;
   int dateTimeRecessed;
   int dateTimeRecessedInsert;
-  int fkBranchId;
+  int fkCashRegisterId;
 
   RecessedModel({
     @required this.pkRecessedId,
@@ -23,7 +23,7 @@ class RecessedModel{
     @required this.vat,
     @required this.dateTimeRecessed,
     @required this.dateTimeRecessedInsert,
-    @required this.fkBranchId,});
+    @required this.fkCashRegisterId,});
 
   toMap(){
     return {
@@ -36,7 +36,7 @@ class RecessedModel{
       'vat': vat,
       'dateTimeRecessed' : dateTimeRecessed.toString(),
       'dateTimeRecessedInsert' : dateTimeRecessedInsert.toString(),
-      'fkBranchId' : fkBranchId
+      'fkCashRegisterId' : fkCashRegisterId
     };
   }
 }

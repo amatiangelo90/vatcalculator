@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:897416784718:android:28e5e1a1fa59e13a4d8c1f",
+        "mobilesdk_app_id": "1:897416784718:android:58cdbb56a74f6c7c4d8c1f",
         "android_client_info": {
-          "package_name": "com.acorp.vat_calculator"
+          "package_name": "com.acorp.businessmanager"
         }
       },
       "oauth_client": [

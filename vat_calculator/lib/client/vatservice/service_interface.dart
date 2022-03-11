@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'model/action_model.dart';
 import 'model/branch_model.dart';
@@ -39,7 +40,7 @@ abstract class VatServiceInterface{
   Future<List<ActionModel>> retrieveActionsByBranchId(int branchId);
   Future<List<ActionModel>> retrieveLastWeekActionsByBranchId(int branchId);
   Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(int pkStorageId);
-  Future<List<RecessedModel>> retrieveRecessedListByBranch(BranchModel currentBranch);
+  Future<List<RecessedModel>> retrieveRecessedListByCashRegister(CashRegisterModel currentBranch);
   Future<List<ExpenceModel>> retrieveExpencesListByBranch(BranchModel currentBranch);
   Future<List<OrderModel>> retrieveOrdersByBranch(BranchModel currentBranch);
   Future<List<SupplierModel>> retrieveSuppliersListByBranch(BranchModel currentBranch);
@@ -68,4 +69,9 @@ abstract class VatServiceInterface{
   Future<List<WorkstationProductModel>> retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation);
   Future<List<EventModel>> retrieveEventsListByBranchId(BranchModel currentBranch);
   Future updateWorkstationProductModel(List<WorkstationProductModel> workStationProdModelList, ActionModel actionModel);
+
+  Future<Response> createCashRegister(CashRegisterModel cashRegisterModel);
+  Future<Response> updateCashRegister(CashRegisterModel cashRegisterModel);
+  Future<Response> deleteCashRegister(CashRegisterModel cashRegisterModel);
+  Future<List<CashRegisterModel>> retrieveCashRegistersByBranchId(BranchModel branchModel);
 }

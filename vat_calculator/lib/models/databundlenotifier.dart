@@ -10,6 +10,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart'
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -30,6 +31,9 @@ import 'databundle.dart';
 class DataBundleNotifier extends ChangeNotifier {
 
   List<UserDetailsModel> userDetailsList = [
+  ];
+
+  List<CashRegisterModel> currentListCashRegister = [
   ];
 
   List<RecessedModel> currentListRecessed = [
@@ -99,6 +103,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   BranchModel currentBranch;
   StorageModel currentStorage;
+  CashRegisterModel currentCashRegisterModel;
 
   DateTime currentDateTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0, 0, 0);
   DateTimeRange currentDateTimeRangeVatService;
@@ -426,9 +431,21 @@ class DataBundleNotifier extends ChangeNotifier {
     initializeCurrentDateTimeRange3Months();
     setCurrentPrivilegeType(currentBranch.accessPrivilege);
 
-    List<RecessedModel> _recessedModelList = await clientService.retrieveRecessedListByBranch(currentBranch);
+    currentListCashRegister.clear();
     currentListRecessed.clear();
-    currentListRecessed.addAll(_recessedModelList);
+
+    List<RecessedModel> _recessedModelList = [];
+    currentListCashRegister = await clientService.retrieveCashRegistersByBranchId(currentBranch);
+
+    if(currentListCashRegister.isNotEmpty){
+      await Future.forEach(currentListCashRegister,
+              (CashRegisterModel cashRegisterModel) async {
+        List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
+        _recessedModelList.addAll(list);
+      });
+      currentCashRegisterModel = currentListCashRegister.first;
+      currentListRecessed.addAll(_recessedModelList);
+    }
 
     List<ExpenceModel> _expenceModelList = await clientService.retrieveExpencesListByBranch(currentBranch);
     currentListExpences.clear();
@@ -588,6 +605,12 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentListRecessed.isNotEmpty){
       currentListRecessed.clear();
     }
+
+    if(currentListCashRegister.isNotEmpty){
+      currentListCashRegister.clear();
+    }
+
+    currentCashRegisterModel = null;
 
     if(currentListExpences.isNotEmpty){
       currentListExpences.clear();
@@ -1439,5 +1462,59 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     notifyListeners();
 
+  }
+
+  void setCashRegisterList(List<CashRegisterModel> cashRegisterModelList) {
+    if(cashRegisterModelList.isNotEmpty){
+      currentListCashRegister.clear();
+      currentListCashRegister.addAll(cashRegisterModelList);
+      currentCashRegisterModel = currentListCashRegister.first;
+      notifyListeners();
+    }
+  }
+
+  void switchCurrentCashRegisterBack() {
+    int currentIndex = 0;
+    if(currentListCashRegister.length != 1){
+      for(int i = 0; i < currentListCashRegister.length; i++){
+        if(currentCashRegisterModel.pkCashRegisterId == currentListCashRegister.elementAt(i).pkCashRegisterId){
+          currentIndex = i;
+        }
+      }
+      if(currentIndex == 0){
+        currentCashRegisterModel = currentListCashRegister.last;
+      }else{
+        currentCashRegisterModel = currentListCashRegister.elementAt(currentIndex - 1);
+      }
+    }
+    notifyListeners();
+  }
+
+  void switchCurrentCashRegisterForward() {
+
+    int currentIndex = 0;
+    if(currentListCashRegister.length != 1){
+      for(int i = 0; i < currentListCashRegister.length; i++){
+        if(currentCashRegisterModel.pkCashRegisterId == currentListCashRegister.elementAt(i).pkCashRegisterId){
+          currentIndex = i;
+        }
+      }
+      if(currentIndex != currentListCashRegister.length - 1){
+        currentCashRegisterModel = currentListCashRegister.elementAt(currentIndex + 1);
+      }else{
+        currentCashRegisterModel = currentListCashRegister.first;
+      }
+    }
+    notifyListeners();
+  }
+
+  bool isCurrentCashAlreadyUsed(String text) {
+    bool result = false;
+    currentListCashRegister.forEach((element) {
+      if(element.name.toLowerCase() == text.toLowerCase()){
+        result = true;
+      }
+    });
+    return result;
   }
 }

@@ -15,6 +15,7 @@ import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import '../../../client/vatservice/model/cash_register_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -577,15 +578,32 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                     );
 
                                     listStorageModel.removeAt(index);
-                                    if(dataBundleNotifier.currentBranch != null){
-                                      List<RecessedModel> _recessedModelList = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                                      dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+
+                                    List<CashRegisterModel> currentListCashRegister = [];
+                                    List<RecessedModel> _recessedModelList = [];
+
+                                    if(dataBundleNotifier.currentBranch != null) {
+
+                                      if(dataBundleNotifier.currentBranch != null){
+                                        currentListCashRegister = await dataBundleNotifier.getclientServiceInstance().retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+
+                                        if(currentListCashRegister.isNotEmpty){
+                                          await Future.forEach(currentListCashRegister,
+                                                  (CashRegisterModel cashRegisterModel) async {
+                                                List<RecessedModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByCashRegister(cashRegisterModel);
+                                                _recessedModelList.addAll(list);
+                                              });
+                                        }
+                                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                                        dataBundleNotifier.setCashRegisterList(currentListCashRegister);
+                                      }
                                     }
 
                                     if(dataBundleNotifier.currentBranch != null){
                                       List<SupplierModel> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
                                       dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
                                     }
+
                                     if(dataBundleNotifier.currentBranch != null){
                                       List<StorageModel> _storageModelList = await dataBundleNotifier.getclientServiceInstance().retrieveStorageListByBranch(dataBundleNotifier.currentBranch);
                                       dataBundleNotifier.addCurrentStorageList(_storageModelList);

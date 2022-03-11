@@ -284,7 +284,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             children: [
                               ConstrainedBox(
                                 constraints: BoxConstraints.loose(Size(
-                                    getProportionateScreenWidth(150),
+                                    getProportionateScreenWidth(180),
                                     getProportionateScreenWidth(60))),
                                 child: CupertinoTextField(
                                   controller: loadPaxController,

@@ -1,4 +1,4 @@
-package com.acorp.vat_calculator;
+package com.acorp.businessmanager;
 
 import android.Manifest;
 import android.content.Intent;

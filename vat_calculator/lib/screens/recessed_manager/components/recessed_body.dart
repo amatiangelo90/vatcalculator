@@ -4,10 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/recessed_manager/components/recessed_reg_card.dart';
-
-import '../../../client/vatservice/client_vatservice.dart';
 import '../../../client/vatservice/model/action_model.dart';
+import '../../../client/vatservice/model/cash_register_model.dart';
 import '../../../client/vatservice/model/utils/action_type.dart';
 import '../../../helper/keyboard.dart';
 import '../../../size_config.dart';
@@ -253,7 +251,7 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
                             vat: recessed.vat,
                             dateTimeRecessed: recessed.dateTimeRecessed,
                             dateTimeRecessedInsert: recessed.dateTimeRecessedInsert,
-                            fkBranchId: recessed.fkBranchId);
+                            fkCashRegisterId: recessed.fkCashRegisterId);
 
                         await dataBundleNotifier.getclientServiceInstance().performUpdateRecessed(
                             recessedModel,
@@ -270,8 +268,25 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
                             )
                         );
 
-                        List<RecessedModel> _recessedModelList = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                        List<CashRegisterModel> currentListCashRegister = [];
+                        List<RecessedModel> _recessedModelList = [];
+
+                        if(dataBundleNotifier.currentBranch != null) {
+
+                          if(dataBundleNotifier.currentBranch != null){
+                            currentListCashRegister = await dataBundleNotifier.getclientServiceInstance().retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+
+                            if(currentListCashRegister.isNotEmpty){
+                              await Future.forEach(currentListCashRegister,
+                                      (CashRegisterModel cashRegisterModel) async {
+                                    List<RecessedModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByCashRegister(cashRegisterModel);
+                                    _recessedModelList.addAll(list);
+                                  });
+                            }
+                            dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                            dataBundleNotifier.setCashRegisterList(currentListCashRegister);
+                          }
+                        }
 
                         recessedFiscalController.clear();
                         recessedCashController.clear();
@@ -323,9 +338,25 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
                           )
                       );
 
-                      List<RecessedModel> _recessedModelList = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
-                      dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                      List<CashRegisterModel> currentListCashRegister = [];
+                      List<RecessedModel> _recessedModelList = [];
 
+                      if(dataBundleNotifier.currentBranch != null) {
+
+                        if(dataBundleNotifier.currentBranch != null){
+                          currentListCashRegister = await dataBundleNotifier.getclientServiceInstance().retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+
+                          if(currentListCashRegister.isNotEmpty){
+                            await Future.forEach(currentListCashRegister,
+                                    (CashRegisterModel cashRegisterModel) async {
+                                  List<RecessedModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByCashRegister(cashRegisterModel);
+                                  _recessedModelList.addAll(list);
+                                });
+                          }
+                          dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
+                          dataBundleNotifier.setCashRegisterList(currentListCashRegister);
+                        }
+                      }
 
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

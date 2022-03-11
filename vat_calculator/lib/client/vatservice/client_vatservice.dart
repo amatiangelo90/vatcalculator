@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
@@ -78,10 +79,15 @@ class ClientVatService implements VatServiceInterface{
     return post;
   }
   @override
-  Future<Response> performSaveRecessed(double amountF, double amountNF, double amountCash,
-      double amountPos, String description,
+  Future<Response> performSaveRecessed(double amountF,
+      double amountNF,
+      double amountCash,
+      double amountPos,
+      String description,
       int iva,
-      int dateTimeRecessed, int pkBranchId, ActionModel actionModel) async{
+      int dateTimeRecessed,
+      int pkCashRegisterId,
+      ActionModel actionModel) async{
 
     var dio = Dio();
 
@@ -95,7 +101,7 @@ class ClientVatService implements VatServiceInterface{
             dateTimeRecessed: dateTimeRecessed,
             description: description,
             dateTimeRecessedInsert: DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
-            fkBranchId: pkBranchId,
+            fkCashRegisterId: pkCashRegisterId,
             pkRecessedId: null).toMap());
 
     Response post;
@@ -288,6 +294,7 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
+
   @override
   Future<Response> performSaveSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel}) async{
 
@@ -852,14 +859,14 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<List<RecessedModel>> retrieveRecessedListByBranch(BranchModel currentBranch) async {
+  Future<List<RecessedModel>> retrieveRecessedListByCashRegister(CashRegisterModel cashRegister) async {
     var dio = Dio();
 
     List<RecessedModel> recessedList = [];
 
 
     String body = json.encode(
-        currentBranch.toMap());
+        cashRegister.toMap());
 
     Response post;
     try{
@@ -868,7 +875,7 @@ class ClientVatService implements VatServiceInterface{
         data: body,
       );
 
-      print('Request body for Vat Service (Retrieve recessed list by branch): ' + body);
+      print('Request body for Vat Service (Retrieve recessed list by cashRegister model): ' + body);
       print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES + '): ' + post.data.toString());
       String encode = json.encode(post.data);
 
@@ -878,7 +885,8 @@ class ClientVatService implements VatServiceInterface{
 
         recessedList.add(
             RecessedModel(
-                fkBranchId: recessedElement['fkBranchId'],
+
+                fkCashRegisterId: recessedElement['fkCashRegisterId'],
                 description: recessedElement['description'],
                 vat: recessedElement['vat'],
                 dateTimeRecessed: recessedElement['dateTimeRecessed'],
@@ -2368,5 +2376,131 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
+
+  @override
+  Future<Response> createCashRegister(CashRegisterModel cashRegisterModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        cashRegisterModel.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_CREATAE_CASH_REGISTER + '...');
+    print('Body Request create cash register : ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_CREATAE_CASH_REGISTER,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService create branch (' + VAT_SERVICE_URL_CREATAE_CASH_REGISTER + '): ' + post.data.toString());
+      }
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> deleteCashRegister(CashRegisterModel cashRegisterModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        cashRegisterModel.toMap());
+    print('Calling ' + VAT_SERVICE_URL_DELETE_CASH_REGISTER + '...');
+    print('Body Request delete cash register: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_CASH_REGISTER,
+        data: body,
+      );
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> updateCashRegister(CashRegisterModel cashRegisterModel) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        cashRegisterModel.toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_CASH_REGISTER + '...');
+    print('Body Request update cassh register: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_CASH_REGISTER,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_CASH_REGISTER + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<CashRegisterModel>> retrieveCashRegistersByBranchId(BranchModel branchModel) async {
+
+    var dio = Dio();
+
+    List<CashRegisterModel> cashRegisterList = [];
+    String body = json.encode(
+        branchModel.toMap());
+
+    Response post;
+    print('Retrieve cash registers model by branch id: ' + branchModel.pkBranchId.toString());
+    print('Calling retrieve method to get cash registers model by branch id ' + VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID,
+        data: body,
+      );
+
+
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((productOrderElement) {
+
+        cashRegisterList.add(
+            CashRegisterModel(
+              fkBranchId: productOrderElement['fkBranchId'],
+              name: productOrderElement['name'],
+              pkCashRegisterId: productOrderElement['pkCashRegisterId'],
+            )
+        );
+      });
+      print('Response from api to retrieve cashregisters ($VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID): ');
+      if(cashRegisterList != null && cashRegisterList.isNotEmpty)
+      cashRegisterList.forEach((cashitem) {
+        print(cashitem.toMap().toString());
+      });
+      return cashRegisterList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+
 
 }

@@ -6,14 +6,13 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
+import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
-import 'package:vat_calculator/components/default_button.dart';
-import 'package:vat_calculator/components/vat_data.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
@@ -106,9 +105,20 @@ class LandingBody extends StatelessWidget {
                         dataBundleNotifier.addBranches(_branchList);
 
                         List<RecessedModel> _recessedModelList = [];
+                        List<CashRegisterModel> _cashRegisterModelList = [];
 
                         if(dataBundleNotifier.currentBranch != null){
-                          _recessedModelList = await clientService.retrieveRecessedListByBranch(dataBundleNotifier.currentBranch);
+                          _cashRegisterModelList = await clientService.retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+
+                          if(_cashRegisterModelList.isNotEmpty){
+                            await Future.forEach(_cashRegisterModelList,
+                                    (CashRegisterModel cashRegisterModel) async {
+                                  List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
+                                  _recessedModelList.addAll(list);
+                                });
+                          }
+
+                          dataBundleNotifier.setCashRegisterList(_cashRegisterModelList);
                           dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
                         }
 
