@@ -29,6 +29,7 @@ class _OrdersScreenState extends State<OrdersScreen>
         return Scaffold(
           drawer: const CommonDrawer(),
           appBar: AppBar(
+            elevation: 3,
             actions: [
               dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
                 children: [
@@ -135,7 +136,7 @@ class _OrdersScreenState extends State<OrdersScreen>
               'Ordini',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(20),
-                color: kCustomYellow800,
+                color: kCustomGreen,
               ),
             ),
             backgroundColor: kPrimaryColor,

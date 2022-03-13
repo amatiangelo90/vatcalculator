@@ -11,6 +11,8 @@ import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
+import '../datepiker/date_picker_widget.dart';
+
 class UnderWorkingOrderPage extends StatefulWidget {
   const UnderWorkingOrderPage({Key key}) : super(key: key);
 
@@ -89,24 +91,17 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
               final kLastDay = DateTime(kNow.year, kNow.month + 3, kNow.day);
 
               return Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(0.0),
                 child: Column(
                   children: [
-                    Container(
-                      height: 18,
-                      decoration: const BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-                      ),
-                    ),
                     Container(
                       color: kPrimaryColor,
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomYellow800),
+                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomGreen),
                           formatButtonDecoration: BoxDecoration(
-                            color: kCustomYellow800,
+                            color: kCustomGreen,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
@@ -140,16 +135,16 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
 
                           selectedDecoration: BoxDecoration(
-                            color: kCustomYellow800,
+                            color: kCustomGreen,
                             shape: BoxShape.circle,
                           ),
                           todayDecoration: BoxDecoration(
-                            color: Colors.yellow.shade800.withOpacity(0.4),
+                            color: kCustomGreen,
                             shape: BoxShape.circle,
                           ),
 
                           markerDecoration: BoxDecoration(
-                            color: kCustomYellow800,
+                            color: Colors.red,
                             borderRadius: BorderRadius.circular(3),
                           ),
                           outsideDaysVisible: false,
@@ -170,11 +165,8 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                       ),
                     ),
                     Container(
-                      height: 18,
-                      decoration: const BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-                      ),
+                      height: 10,
+                      color: kPrimaryColor,
                     ),
                     Expanded(
                       child: ValueListenableBuilder<List<OrderModel>>(

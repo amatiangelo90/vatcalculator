@@ -89,7 +89,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                       DatePicker(
                         DateTime.now().subtract(Duration(days: 4)),
                         initialSelectedDate: DateTime.now(),
-                        selectionColor: kCustomYellow800,
+                        selectionColor: kCustomGreen,
                         selectedTextColor: Colors.white,
                         width: getProportionateScreenHeight(40),
                         daysCount: 9,
@@ -164,7 +164,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                             child: CupertinoButton(
                               pressedOpacity: 0.5,
                               child: const Text('Salva Spesa'),
-                              color: kCustomYellow800,
+                              color: kCustomGreen,
                               onPressed: () async {
                                 try {
                                   KeyboardUtil.hideKeyboard(context);
@@ -512,7 +512,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
               widget.showTopNavigatorRow ? Center(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Spese', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomYellow800)),
+                  Text('Spese', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange)),
                   Text(' / Incassi', style: TextStyle(color: Colors.grey),),
                 ],
               )): SizedBox(width: 0),

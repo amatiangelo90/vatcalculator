@@ -46,7 +46,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           'Area Eventi',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(17),
-                            color: kCustomYellow800,
+                            color: kCustomOrange,
                           ),
                         ),
                         Text(

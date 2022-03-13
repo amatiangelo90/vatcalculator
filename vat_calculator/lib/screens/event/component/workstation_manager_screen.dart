@@ -46,20 +46,20 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             key: _scaffoldKey,
             appBar: AppBar(
               bottom: TabBar(
-                indicatorColor: kCustomYellow800,
+                indicatorColor: kCustomOrange,
                 indicatorWeight: 4,
                 tabs: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('CONSUMI', style: TextStyle(color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                    child: Text('CONSUMI', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('CARICO', style: TextStyle(color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                    child: Text('CARICO', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset('assets/icons/Settings.svg', color:kCustomYellow800, height: getProportionateScreenHeight(25),)
+                    child: SvgPicture.asset('assets/icons/Settings.svg', color:kCustomOrange, height: getProportionateScreenHeight(25),)
                   ),
                 ],
               ),
@@ -75,7 +75,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(widget.workstationModel.name,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomOrange, fontWeight: FontWeight.bold),),
                   Text(
                     'Tipo workstation: ' + widget.workstationModel.type,
                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -258,7 +258,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> rows = [
-      Divider(color: kCustomYellow800,),
+      Divider(color: kCustomOrange,),
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: DefaultButton(
@@ -334,7 +334,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 )
             );
           },
-          color: kCustomYellow800,
+          color: kCustomOrange,
         ),
       ),
     ];
@@ -432,7 +432,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       child: Text(
                         element.productName,
                         overflow: TextOverflow.clip,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16), color: kCustomYellow800),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16), color: kCustomOrange),
                       ),
                     ),
                     Row(
@@ -440,7 +440,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                         Text(
                           element.amountHunderd.toStringAsFixed(2),
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: customGreenAccent),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomGreen),
                         ),
                         Text(
                           ' ' + element.unitMeasure + ' x 100/pax' ,

@@ -27,7 +27,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
             backgroundColor: Colors.white,
             floatingActionButton: FloatingActionButton(
               child: const Icon(Icons.add),
-              backgroundColor: kCustomYellow800,
+              backgroundColor: kCustomOrange,
               elevation: 5,
               onPressed: (){
                 showDialog(context: context, builder: (_) => const AlertDialog(
@@ -55,7 +55,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
                         'Area Gestione Spese',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(17),
-                          color: kCustomYellow800,
+                          color: kCustomOrange,
                         ),
                       ),
                       Text(

@@ -95,7 +95,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           'Crea Evento',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(19),
-                            color: kCustomYellow800,
+                            color: kCustomOrange,
                           ),
                         ),
                         Text(
@@ -176,7 +176,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   width: getProportionateScreenHeight(400),
                                   child: CupertinoButton(
                                     child:
-                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomYellow800),),
+                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomOrange),),
                                     color: Colors.black.withOpacity(0.8),
                                     onPressed: () => _selectDate(context),
                                   ),
@@ -517,8 +517,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
               backgroundColor: Colors.black,
               dialogBackgroundColor: Colors.black,
               colorScheme: ColorScheme.dark(
-                onSurface: kCustomYellow800,
-                primary: kCustomYellow800,
+                onSurface: kCustomOrange,
+                primary: kCustomOrange,
                 secondary: Colors.black.withOpacity(0.9),
                 onSecondary: Colors.grey.withOpacity(0.9),
                 background: Colors.black.withOpacity(0.9),
@@ -526,7 +526,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomYellow800, // button// text color
+                  primary: kCustomOrange, // button// text color
                 ),
               ),
             ),

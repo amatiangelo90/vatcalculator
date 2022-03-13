@@ -137,7 +137,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                     style: TextStyle(
                         fontSize: getProportionateScreenWidth(18),
                         fontWeight: FontWeight.w100,
-                        color: kCustomYellow800),
+                        color: kCustomOrange),
                   ),
                 ),
                 Expanded(
@@ -226,7 +226,7 @@ class _ExpenceBodyWidgetState extends State<ExpenceBodyWidget> {
                 _buildDateKeyFromDate(dateTime),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold, color: kCustomYellow800),
+                    fontWeight: FontWeight.bold, color: kCustomOrange),
               ),
               Text(
                 '     Extra    ',

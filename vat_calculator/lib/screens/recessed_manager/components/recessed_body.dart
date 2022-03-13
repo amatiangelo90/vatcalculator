@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/constants.dart';
@@ -21,6 +22,8 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
   double width;
   double height;
 
+  DateTimeRange _currentDateTimeRange;
+
   @override
   Widget build(BuildContext context) {
     width = MediaQuery.of(context).size.width;
@@ -29,32 +32,67 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Container(
-          color: Colors.white,
+          color: kPrimaryColor,
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
                 Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 8, 10, 0),
+                  child: SizedBox(
+                    width: getProportionateScreenWidth(400),
+                    height: getProportionateScreenHeight(45),
+                    child: Card(
+                      color: kCustomGreen,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          dataBundleNotifier.currentListCashRegister.length > 1 ? IconButton(onPressed: (){
+                            dataBundleNotifier.switchCurrentCashRegisterBack();
+                          }, icon: const Icon(Icons.arrow_back_ios, color: Colors.white,)) : SizedBox(height: 0),
+                          Text(
+                            dataBundleNotifier.currentCashRegisterModel.name,
+                            style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),
+                          ),
+                          dataBundleNotifier.currentListCashRegister.length > 1 ? IconButton(onPressed: (){
+                            dataBundleNotifier.switchCurrentCashRegisterForward();
+                          }, icon: const Icon(Icons.arrow_forward_ios, color: Colors.white,)) : SizedBox(height: 0),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    dataBundleNotifier.currentDateTimeRangeVatService.start.day.toString() + ' ' +
-                        getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.start.month) +' ' +
-                        dataBundleNotifier.currentDateTimeRangeVatService.start.year.toString() + ' - ' +
-                        dataBundleNotifier.currentDateTimeRangeVatService.end.day.toString() +' ' +
-                        getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.end.month) +' ' +
-                        dataBundleNotifier.currentDateTimeRangeVatService.end.year.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        dataBundleNotifier.currentDateTimeRangeVatService.start.day.toString() + ' ' +
+                            getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.start.month) +' ' +
+                            dataBundleNotifier.currentDateTimeRangeVatService.start.year.toString() + ' - ' +
+                            dataBundleNotifier.currentDateTimeRangeVatService.end.day.toString() +' ' +
+                            getMonthFromMonthNumber(dataBundleNotifier.currentDateTimeRangeVatService.end.month) +' ' +
+                            dataBundleNotifier.currentDateTimeRangeVatService.end.year.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                      IconButton(
+                          icon: SvgPicture.asset(
+                            "assets/icons/calendar.svg",
+                            color: kCustomGreen,
+                            width: getProportionateScreenWidth(22),
+                          ),
+                          onPressed: () {
+                            _selectDateTimeRange(context, dataBundleNotifier);
+
+                          }
+                      ),
+                    ],
                   ),
                 ),
-                Card(
-                  color: kPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: buildRecessedTable(dataBundleNotifier
-                      .getRecessedListByRangeDate(
-                      dataBundleNotifier.currentDateTimeRangeVatService.start,
-                      dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier),
-                ),
+                buildRecessedTable(dataBundleNotifier
+                    .getRecessedListByRangeDate(
+                    dataBundleNotifier.currentDateTimeRangeVatService.start,
+                    dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier),
                 SizedBox(
                   height: 100,
                 )
@@ -68,8 +106,8 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
 
   buildRecessedTable(List<RecessedModel> currentListRecessed, DataBundleNotifier dataBundleNotifier) {
     List<TableRow> rows = [
-      TableRow( children: [
-        Text('DATA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
+      const TableRow( children: [
+        Text('DATA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
         Text('CASH', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
         Text('FISCALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
         Text('POS', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
@@ -78,71 +116,73 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
     ];
 
     currentListRecessed.forEach((recessed) {
-      rows.add(
-        TableRow(
-            children: [
-          GestureDetector(
-            onTap: (){
-              openDialog(recessed, dataBundleNotifier);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Text(normalizeCalendarValue(DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).day).toString()
-                      + '/' + normalizeCalendarValue(DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).month).toString() , textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white)),
-                  Text(DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).year.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.grey),),
-                ],
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: (){
-              openDialog(recessed, dataBundleNotifier);
-            },
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
-              child: Text(recessed.amountCash.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-          ),
-          GestureDetector(
-            onTap: (){
-              openDialog(recessed, dataBundleNotifier);
-            },
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
-              child: Text(recessed.amountF.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-          ),
-          GestureDetector(
-            onTap: (){
-              openDialog(recessed, dataBundleNotifier);
-            },
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
-              child: Text(recessed.amountPos.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-          ),
-          GestureDetector(
-            onTap: (){
-              openDialog(recessed, dataBundleNotifier);
-            },
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
-              child: Text(recessed.amountNF.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
-            ),
-          ),
-        ]),
-      );
+
+      if(dataBundleNotifier.currentCashRegisterModel.pkCashRegisterId == recessed.fkCashRegisterId){
+        rows.add(
+          TableRow(
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    openDialog(recessed, dataBundleNotifier);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(normalizeCalendarValue(DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).day).toString()
+                            + '/' + normalizeCalendarValue(DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).month).toString() , textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white)),
+                        Text(DateTime.fromMillisecondsSinceEpoch(recessed.dateTimeRecessed).year.toString(), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.grey),),
+                      ],
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    openDialog(recessed, dataBundleNotifier);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
+                    child: Text(recessed.amountCash.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    openDialog(recessed, dataBundleNotifier);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
+                    child: Text(recessed.amountF.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    openDialog(recessed, dataBundleNotifier);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
+                    child: Text(recessed.amountPos.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: (){
+                    openDialog(recessed, dataBundleNotifier);
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(15), 0, 0),
+                    child: Text(recessed.amountNF.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(15), color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+              ]),
+        );
+      }
+
     });
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+    return Container(
+      color: kPrimaryColor,
       child: Table(
         border: TableBorder.all(
             color: Colors.grey,
             width: 0.1
-
-
         ),
         children: rows,
       ),
@@ -357,7 +397,6 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
                           dataBundleNotifier.setCashRegisterList(currentListCashRegister);
                         }
                       }
-
                       ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               duration: Duration(
@@ -555,6 +594,29 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
       return true;
     }else{
       return false;
+    }
+  }
+
+  Future<void> _selectDateTimeRange(BuildContext context, DataBundleNotifier dataBundleNotifier) async {
+    DateTimeRange dateTimeRange = await showDateRangePicker(
+      context: context,
+      initialDateRange: _currentDateTimeRange,
+      firstDate: DateTime(DateTime.now().year -1, DateTime.now().month, DateTime.now().day),
+      lastDate: DateTime(DateTime.now().year + 1),
+      builder: (BuildContext context, Widget child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: kCustomGreen,
+            ),
+          ),
+          child: child,
+        );
+      },
+    );
+
+    if (dateTimeRange != null && dateTimeRange != _currentDateTimeRange){
+      dataBundleNotifier.setCurrentDateTimeRange(dateTimeRange);
     }
   }
 

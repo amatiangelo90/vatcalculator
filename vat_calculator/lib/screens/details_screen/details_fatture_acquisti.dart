@@ -43,12 +43,12 @@ class _FattureAcquistiDetailsPageState
           child: Scaffold(
               appBar: AppBar(
                 bottom: TabBar(
-                  indicatorColor: kCustomYellow800,
+                  indicatorColor: kCustomOrange,
                   indicatorWeight: 4,
                   tabs: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('DETTAGLI', style: TextStyle(color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                      child: Text('DETTAGLI', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
                     ),
                     Padding(
                         padding: const EdgeInsets.all(8.0),

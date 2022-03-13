@@ -615,7 +615,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(companyList[index].companyName,
                                         style: TextStyle(
-                                            color: kCustomYellow800,
+                                            color: kCustomOrange,
                                             fontWeight: FontWeight.w500,
                                             fontSize:
                                                 getProportionateScreenHeight(
@@ -649,7 +649,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           ? dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString()
                                           + ' x ' : '0 x ',
                                           style: TextStyle(
-                                              color: kCustomYellow800,
+                                              color: kCustomOrange,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
                                           width:
@@ -659,7 +659,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           child: SvgPicture.asset(
                                             'assets/icons/people-branch.svg',
                                             fit: BoxFit.contain,
-                                            color: kCustomYellow800,
+                                            color: kCustomOrange,
                                           )),
                                     ],
                                   ),
@@ -677,7 +677,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                   .length
                                                   .toString() + ' x' : '0 x',
                                           style: TextStyle(
-                                              color: kCustomYellow800,
+                                              color: kCustomOrange,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
                                           width:
@@ -687,7 +687,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           child: SvgPicture.asset(
                                             'assets/icons/supplier.svg',
                                             fit: BoxFit.contain,
-                                            color: kCustomYellow800,
+                                            color: kCustomOrange,
                                           )),
                                     ],
                                   ),
@@ -705,7 +705,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                   .length
                                                   .toString() + ' x ' : '0 x ',
                                           style: TextStyle(
-                                              color: kCustomYellow800,
+                                              color: kCustomOrange,
                                               fontWeight: FontWeight.bold)),
                                       SizedBox(
                                           width:
@@ -715,7 +715,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           child: SvgPicture.asset(
                                             'assets/icons/storage.svg',
                                             fit: BoxFit.contain,
-                                            color: kCustomYellow800,
+                                            color: kCustomOrange,
                                           )),
                                     ],
                                   )
@@ -776,7 +776,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                 companyList[index].pkBranchId),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                color: kCustomYellow800,
+                                                color: kCustomOrange,
                                                 fontSize:
                                                     getProportionateScreenHeight(
                                                         20))),
@@ -935,7 +935,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   IconButton(
                                     icon: Icon(
                                       Icons.share,
-                                      color: kCustomYellow800,
+                                      color: kCustomOrange,
                                     ),
                                     onPressed: () {
                                       launch('https://api.whatsapp.com/send/?text=Ciao,'
@@ -992,7 +992,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
       height: 10,
       width: currentPage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: currentPage == index ? kCustomGreyBlue : kCustomYellow800,
+        color: currentPage == index ? kCustomGreyBlue : kCustomOrange,
         borderRadius: BorderRadius.circular(15),
       ),
     );

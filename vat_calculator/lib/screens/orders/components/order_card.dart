@@ -9,6 +9,7 @@ import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.da
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 
+import '../../../client/pdf/pdf_service.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -51,7 +52,7 @@ class OrderCard extends StatelessWidget {
                               child: SvgPicture.asset(
                                 'assets/icons/receipt.svg',
                                 height: getProportionateScreenHeight(45),
-                                color: kCustomYellow800,
+                                color: kCustomGreen,
                               ),
                             ),
                           ),
@@ -60,7 +61,7 @@ class OrderCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGreen, fontWeight: FontWeight.bold),),
                               Text(
                                 '#' + order.code,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -71,7 +72,7 @@ class OrderCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     order.status,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: customGreenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ],
@@ -103,8 +104,12 @@ class OrderCard extends StatelessWidget {
                                 'assets/icons/pdf.svg',
                                 height: getProportionateScreenHeight(25),
                               ),
-                              onPressed: () => {
-                                //launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$message');
+                              onPressed: () {
+                                PdfService pdfService = PdfService();
+                                pdfService.generatePdfOrderAndOpenOnDevide(
+                                    order,
+                                    orderIdProductListMap[order.pk_order_id],
+                                dataBundleNotifier.currentBranch);
                               }
                           ),
 
@@ -113,7 +118,7 @@ class OrderCard extends StatelessWidget {
                     ],
                   ),
                   Divider(
-                    color: kCustomYellow800,
+                    color: kCustomOrange,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -123,7 +128,7 @@ class OrderCard extends StatelessWidget {
                           Text(
                             'Prodotti',
                             style: TextStyle(
-                              color: kCustomYellow800,
+                              color: kCustomOrange,
                               fontSize: getProportionateScreenHeight(13),),
                           ),
                           Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
@@ -139,7 +144,7 @@ class OrderCard extends StatelessWidget {
                           Text(
                             'Prezzo Stimato',
                             style: TextStyle(
-                                color: kCustomYellow800,
+                                color: kCustomOrange,
                                 fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -159,7 +164,7 @@ class OrderCard extends StatelessWidget {
                   ),
 
                   Divider(
-                    color: kCustomYellow800,
+                    color: kCustomOrange,
                   ),
                   showExpandedTile ? ExpansionTile(
                     textColor: kCustomWhite,
@@ -186,7 +191,7 @@ class OrderCard extends StatelessWidget {
                             children: [
                               Text(getUserDetailsById(order.fk_user_id, order.fk_branch_id,
                                   dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
-                                style: TextStyle(fontWeight: FontWeight.bold, color: kCustomYellow800),),
+                                style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange),),
                               SizedBox(width: getProportionateScreenWidth(10),),
                             ],
                           ),
@@ -204,7 +209,7 @@ class OrderCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(order.status,
-                                style: TextStyle(color: kCustomYellow800),),
+                                style: TextStyle(color: kCustomOrange),),
                               SizedBox(width: getProportionateScreenWidth(10),),
                             ],
                           ),
@@ -222,7 +227,7 @@ class OrderCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
-                                style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(14)),),
+                                style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
                               SizedBox(width: getProportionateScreenWidth(10),),
                             ],
                           ),
@@ -240,7 +245,7 @@ class OrderCard extends StatelessWidget {
                           Row(
                             children: [
                               Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
-                                style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(14)),),
+                                style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
                               SizedBox(width: getProportionateScreenWidth(10),),
                             ],
                           ),
@@ -255,7 +260,7 @@ class OrderCard extends StatelessWidget {
                   SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
-                      color: kCustomYellow800,
+                      color: kCustomGreen,
                       onPressed: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
                           productList: orderIdProductListMap[order.pk_order_id],),),);
@@ -324,7 +329,7 @@ class OrderCard extends StatelessWidget {
                     Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(8),color: kCustomWhite),),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomYellow800),
+                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
                     ),
                     Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8),color: kCustomWhite),),
                   ],

@@ -52,7 +52,7 @@ class DraftOrderCard extends StatelessWidget {
                                 child: SvgPicture.asset(
                                   'assets/icons/supplier.svg',
                                   height: getProportionateScreenHeight(39),
-                                  color: kCustomYellow800,
+                                  color: kCustomOrange,
                                 ),
                               ),
                               Column(
@@ -60,7 +60,7 @@ class DraftOrderCard extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomOrange, fontWeight: FontWeight.bold),),
                                   Text(
                                     '#' + order.code,
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -103,7 +103,7 @@ class DraftOrderCard extends StatelessWidget {
                         ],
                       ),
                       Divider(
-                        color: kCustomYellow800,
+                        color: kCustomOrange,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -113,7 +113,7 @@ class DraftOrderCard extends StatelessWidget {
                               Text(
                                 'Prodotti',
                                 style: TextStyle(
-                                  color: kCustomYellow800,
+                                  color: kCustomOrange,
                                   fontSize: getProportionateScreenHeight(13),),
                               ),
                               Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
@@ -129,7 +129,7 @@ class DraftOrderCard extends StatelessWidget {
                               Text(
                                 'Prezzo Stimato',
                                 style: TextStyle(
-                                    color: kCustomYellow800,
+                                    color: kCustomOrange,
                                     fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
                               ),
                               Text(
@@ -149,7 +149,7 @@ class DraftOrderCard extends StatelessWidget {
                       ),
                       
                       Divider(
-                        color: kCustomYellow800,
+                        color: kCustomOrange,
                       ),
                       showExpandedTile ? ExpansionTile(
                         textColor: kCustomWhite,
@@ -176,7 +176,7 @@ class DraftOrderCard extends StatelessWidget {
                                 children: [
                                   Text(getUserDetailsById(order.fk_user_id, order.fk_branch_id,
                                       dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
-                                    style: TextStyle(fontWeight: FontWeight.bold, color: kCustomYellow800),),
+                                    style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange),),
                                   SizedBox(width: getProportionateScreenWidth(10),),
                                 ],
                               ),
@@ -194,7 +194,7 @@ class DraftOrderCard extends StatelessWidget {
                               Row(
                                 children: [
                                   Text(order.status,
-                                    style: TextStyle(color: kCustomYellow800),),
+                                    style: TextStyle(color: kCustomOrange),),
                                   SizedBox(width: getProportionateScreenWidth(10),),
                                 ],
                               ),
@@ -212,7 +212,7 @@ class DraftOrderCard extends StatelessWidget {
                               Row(
                                 children: [
                                   Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
-                                    style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(14)),),
+                                    style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
                                   SizedBox(width: getProportionateScreenWidth(10),),
                                 ],
                               ),
@@ -230,7 +230,7 @@ class DraftOrderCard extends StatelessWidget {
                               Row(
                                 children: [
                                   Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
-                                    style: TextStyle(color: kCustomYellow800, fontSize: getProportionateScreenHeight(14)),),
+                                    style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
                                   SizedBox(width: getProportionateScreenWidth(10),),
                                 ],
                               ),
@@ -245,7 +245,7 @@ class DraftOrderCard extends StatelessWidget {
                       SizedBox(
                         width: getProportionateScreenWidth(400),
                         child: CupertinoButton(
-                          color: kCustomYellow800,
+                          color: kCustomOrange,
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
                               productList: orderIdProductListMap[order.pk_order_id],),),);
@@ -316,7 +316,7 @@ class DraftOrderCard extends StatelessWidget {
                     Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(8),color: kCustomWhite),),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomYellow800),
+                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
                     ),
                     Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8),color: kCustomWhite),),
                   ],

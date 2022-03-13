@@ -239,14 +239,14 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                 ),
               ],
               leading: IconButton(
-                icon: Icon(Icons.arrow_back_ios, color: kCustomYellow800),
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
                 onPressed: () => Navigator.of(context).pop(),
               ),
               backgroundColor: kPrimaryColor,
               centerTitle: true,
               automaticallyImplyLeading: true,
               title: Text(
-                'Dettaglio Ordine', style: TextStyle(color: kCustomYellow800),
+                'Dettaglio Ordine', style: TextStyle(color: kCustomGreen),
               ),
             ),
             body: SingleChildScrollView(
@@ -347,7 +347,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('Carrello', style: TextStyle(color: kPinaColor, fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.bold)),
+                        Text('Carrello', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.bold)),
                         Row(
                           children: [
                             Padding(
@@ -408,7 +408,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               children: [
                 const Icon(Icons.view_stream, color: kPrimaryColor,size: 5,),
                 Text( ' ' + currentProduct.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kPrimaryColor),),
-                Text(' (' + currentProduct.unita_misura + ')', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomYellow800),),
+                Text(' (' + currentProduct.unita_misura + ')', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
               ],
             ),
             Row(

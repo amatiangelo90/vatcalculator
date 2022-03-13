@@ -527,7 +527,7 @@ class _HomePageBodyState extends State<HomePageBody> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
-        color: Colors.black.withOpacity(0.8),
+        color: kPrimaryColor,
         elevation: 7,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),

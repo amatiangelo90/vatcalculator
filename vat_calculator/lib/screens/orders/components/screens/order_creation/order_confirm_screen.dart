@@ -470,7 +470,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           children: [
                             CupertinoButton(
                               child:
-                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomYellow800),),
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomOrange),),
                               color: Colors.black.withOpacity(0.8),
                               onPressed: () => _selectDate(context),
                             )
@@ -587,8 +587,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               backgroundColor: Colors.black,
               dialogBackgroundColor: Colors.black,
               colorScheme: ColorScheme.dark(
-                onSurface: kCustomYellow800,
-                primary: kCustomYellow800,
+                onSurface: kCustomOrange,
+                primary: kCustomOrange,
                 secondary: Colors.black.withOpacity(0.9),
                 onSecondary: Colors.grey.withOpacity(0.9),
                 background: Colors.black.withOpacity(0.9),
@@ -596,7 +596,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomYellow800, // button// text color
+                  primary: kCustomOrange, // button// text color
                 ),
               ),
             ),

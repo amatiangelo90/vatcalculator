@@ -1332,6 +1332,41 @@ class DataBundleNotifier extends ChangeNotifier {
     }
   }
 
+  int retrieveOrdersNumberForCurrentDate(DateTime date) {
+
+    int counter = 0;
+    if(currentUnderWorkingOrdersList.isEmpty){
+      return counter;
+    }else{
+      currentUnderWorkingOrdersList.forEach((orderItem) {
+        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == date.day &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == date.month &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == date.year){
+          counter = counter + 1;
+        }
+      });
+      return counter;
+    }
+  }
+
+  List<OrderModel> retrieveOrdersUnderWorkingForCurrentDate(DateTime date) {
+
+    List<OrderModel> orders = [];
+
+    if(currentUnderWorkingOrdersList.isEmpty){
+      return orders;
+    }else{
+      currentUnderWorkingOrdersList.forEach((order) {
+        if(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day == date.day &&
+            DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month == date.month &&
+            DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year == date.year){
+          orders.add(order);
+        }
+      });
+      return orders;
+    }
+  }
+
   List<EventModel> retrieveEventsForCurrentDate(DateTime date) {
 
     List<EventModel> events = [];

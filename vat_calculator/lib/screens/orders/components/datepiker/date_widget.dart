@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -55,7 +54,7 @@ class DateWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              dataBundlerNotifier.retrieveEventsNumberForCurrentDate(date) > 0 ? Positioned(
+              dataBundlerNotifier.retrieveOrdersNumberForCurrentDate(date) > 0 ? Positioned(
                 top: 0.0,
                 right: 2.0,
                 child: Stack(
@@ -66,11 +65,11 @@ class DateWidget extends StatelessWidget {
                       color: kPinaColor,
                     ),
                     Positioned(
-                      right: dataBundlerNotifier.retrieveEventsNumberForCurrentDate(date) > 9 ? 3.5 : 6.5,
+                      right: dataBundlerNotifier.retrieveOrdersNumberForCurrentDate(date) > 9 ? 3.5 : 6.5,
                       top: 2.0,
                       child: Center(
                         child: Text(
-                          '' + dataBundlerNotifier.retrieveEventsNumberForCurrentDate(date).toString(),
+                          '' + dataBundlerNotifier.retrieveOrdersNumberForCurrentDate(date).toString(),
                           style: const TextStyle(
                               fontSize: 10.0,
                               color: Colors.white,

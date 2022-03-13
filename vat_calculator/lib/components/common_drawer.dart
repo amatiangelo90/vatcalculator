@@ -18,6 +18,7 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
+import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
@@ -55,14 +56,14 @@ class _CommonDrawerState extends State<CommonDrawer> {
         child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Container(
-              color: Colors.black.withOpacity(0.9),
+              color: kPrimaryColor,
               child: SafeArea(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
                       Container(
-                        color: Colors.black.withOpacity(0.8),
+                        color: kPrimaryColor,
                         child: Column(
                           children: [
                             Row(
@@ -100,7 +101,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     Row(
                                       children: [
                                         const SizedBox(width: 20,),
-                                        dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].firstName, style:const TextStyle(color: Colors.white, fontSize: 20)) :
+                                        dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].firstName + ' ' +dataBundleNotifier.userDetailsList[0].lastName , style:const TextStyle(color: Colors.white, fontSize: 20)) :
                                         const SizedBox(width: 0,),
                                       ],
                                     ),
@@ -130,7 +131,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             ) : SizedBox(
                               height: getProportionateScreenHeight(40),
                               child: Container(
-                                color: kBeigeColor,
+                                color: Colors.redAccent,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -237,6 +238,33 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : buildDrawerRow('assets/icons/cashregister.svg','Gestione Incassi',(){
+                        if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog (
+                                contentPadding: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                content: SizedBox(
+                                    width: MediaQuery.of(context).size.width / 2,
+                                    height: MediaQuery.of(context).size.height / 5,
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Center(child: Text('Utente non abilitato per '
+                                          'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
+                                    )),
+                              )
+                          );
+                        } else{
+                          Navigator.pushNamed(
+                              context, RecessedScreen.routeName);
+                        }
+                      }, Colors.white,
+                          Colors.black54.withOpacity(0.1),
+                          kCustomWhite),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
@@ -273,7 +301,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: kCustomOrange,
+                                      color: kPinaColor,
                                       child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
@@ -594,7 +622,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
               Navigator.popAndPushNamed(context, HomeScreen.routeName);
             }, kPrimaryColor,
                 kPrimaryColor,
-                kCustomYellow800),
+                kPinaColor),
           ),
       );
     });

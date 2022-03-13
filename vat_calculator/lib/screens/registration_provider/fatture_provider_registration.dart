@@ -224,7 +224,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              ],
            ),
            appBar: AppBar(
-             iconTheme: IconThemeData(color: kCustomYellow800),
+             iconTheme: IconThemeData(color: kCustomOrange),
              backgroundColor: kPrimaryColor,
              leading: GestureDetector(
                child: const Icon(Icons.arrow_back_ios),
@@ -236,7 +236,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                GestureDetector(
                  child: SvgPicture.asset(
                    'assets/icons/question-mark.svg',
-                   color: kCustomYellow800,
+                   color: kCustomOrange,
                    width: 25,
                  ),
                  onTap: (){
@@ -333,7 +333,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                    'Fatturazione Elettronica',
                    style: TextStyle(
                      fontSize: getProportionateScreenWidth(16),
-                     color: kCustomYellow800,
+                     color: kCustomOrange,
                    ),
                  ),
                ],

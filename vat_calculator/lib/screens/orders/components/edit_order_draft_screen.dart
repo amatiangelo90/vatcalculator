@@ -132,7 +132,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     );
                   }
                 },
-                color: kCustomYellow800,
+                color: kCustomOrange,
               ),
             ),
           ),

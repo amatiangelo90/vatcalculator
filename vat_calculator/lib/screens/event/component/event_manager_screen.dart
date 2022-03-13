@@ -37,12 +37,12 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             appBar: AppBar(
 
               bottom: TabBar(
-                indicatorColor: kCustomYellow800,
+                indicatorColor: kCustomOrange,
                 indicatorWeight: 4,
                 tabs: [
-                  Tab(icon: SvgPicture.asset('assets/icons/party.svg', color: kCustomYellow800, width: getProportionateScreenHeight(34),)),
+                  Tab(icon: SvgPicture.asset('assets/icons/party.svg', color: kCustomOrange, width: getProportionateScreenHeight(34),)),
                   Tab(icon: SvgPicture.asset('assets/icons/chart.svg', width: getProportionateScreenHeight(27),)),
-                  Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomYellow800,)),
+                  Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomOrange,)),
                 ],
               ),
               leading: IconButton(
@@ -57,7 +57,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(widget.event.eventName,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomYellow800, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomOrange, fontWeight: FontWeight.bold),),
                   Text(
                     'Creato da: ' + widget.event.owner,
                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -91,22 +91,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
       ),);
     });
-
-    listWgBar.add(
-      Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: SizedBox(
-          width: getProportionateScreenWidth(400),
-          child: CupertinoButton(
-            color: Colors.green,
-            onPressed: () async {
-
-            },
-            child: Text('Aggiungi postazione BAR'),
-          ),
-        ),
-      ),
-    );
     List<Widget> listWgChamp = [];
     workstationModelList.where((element) => element.type == WORKSTATION_TYPE_CHAMP).forEach((wkStation) {
       listWgChamp.add(Padding(

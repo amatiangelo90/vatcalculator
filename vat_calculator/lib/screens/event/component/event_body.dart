@@ -41,7 +41,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
                   child: DatePickerEvents(
                     DateTime.now().subtract(Duration(days: 4)),
                     initialSelectedDate: DateTime.now(),
-                    selectionColor: kCustomYellow800,
+                    selectionColor: kCustomOrange,
                     selectedTextColor: Colors.white,
                     width: getProportionateScreenHeight(50),
                     daysCount: 13,

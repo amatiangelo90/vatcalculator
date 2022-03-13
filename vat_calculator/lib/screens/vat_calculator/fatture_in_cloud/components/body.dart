@@ -197,7 +197,7 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                 width: getProportionateScreenWidth(50),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(9, 12, 12, 12),
-                  child: SvgPicture.asset('assets/icons/euro.svg', color: kCustomYellow800,),
+                  child: SvgPicture.asset('assets/icons/euro.svg', color: kCustomOrange,),
                 ),
               ),
             ],

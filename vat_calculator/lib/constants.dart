@@ -2,21 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
 //const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
-const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
-Color customGreenAccent = const Color(0xFF0abb9c);
+const Color kPrimaryColor = Color(0XFF072227);
 
-Color kCustomYellow800 = Colors.yellow.shade700.withOpacity(0.8);
 
 
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
-const Color kPinaColor = Color(0XFFf94239);
+const Color kPinaColor = Color(0xFFFF2442);
 const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
-const Color kCustomBlue = Color(0xFF2750ff);
-const Color kCustomGreen = Color(0xFF0abb9c);
-const Color kCustomOrange = Color(0xFFf2a602);
+const Color kCustomBlue = Color(0xFF235789);
+const Color kCustomGreen = Colors.lightBlueAccent;
+Color kCustomOrange = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomPurple = Color(0xFF9924ff);
+const Color kGreenAccent = Color(0xFF0ABB9C);
 
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kTextColor = Color(0xFF757575);
@@ -34,7 +33,7 @@ const defaultDuration = Duration(milliseconds: 250);
 
 // Form Error
 final RegExp emailValidatorRegExp =
-    RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
+RegExp(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
 const String kEmailNullError = "Inserisci la mail";
 const String kInvalidEmailError = "Inserisci una mail valida";
 const String kPassNullError = "Inserisci la password";
@@ -50,7 +49,7 @@ const String kAddressNullError = "Inserisci il tuo indirizzo";
 
 final otpInputDecoration = InputDecoration(
   contentPadding:
-      EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
+  EdgeInsets.symmetric(vertical: getProportionateScreenWidth(15)),
   border: outlineInputBorder(),
   focusedBorder: outlineInputBorder(),
   enabledBorder: outlineInputBorder(),
@@ -211,4 +210,5 @@ String getNameDayFromWeekDay(int weekday) {
   }
 
 }
+
 

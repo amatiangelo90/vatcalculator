@@ -186,7 +186,7 @@ class HomeScreen extends StatelessWidget {
     }else{
       switch(dataBundleNotifier.currentBranch.providerFatture){
         case 'fatture_in_cloud':
-          return Colors.blueAccent;
+          return Colors.lightBlueAccent;
         case 'aruba':
           return Colors.orange;
         default:

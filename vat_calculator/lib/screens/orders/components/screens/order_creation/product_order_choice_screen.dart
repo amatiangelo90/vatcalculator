@@ -32,7 +32,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
             bottomSheet: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DefaultButton(
-                textColor: kCustomYellow800,
+                textColor: kCustomOrange,
                 text: 'Procedi',
                 press: () async {
 
