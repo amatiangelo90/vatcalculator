@@ -10,6 +10,7 @@ class WorkstationProductModel{
   double consumed;
   int fkWorkstationId;
   int fkStorProdId;
+  int fkProductId;
   double storeStock;
   double amountHunderd;
 
@@ -24,6 +25,7 @@ class WorkstationProductModel{
         @required this.consumed,
         @required this.fkWorkstationId,
         @required this.fkStorProdId,
+        @required this.fkProductId,
         @required this.storeStock,
         @required this.amountHunderd,
       });
@@ -38,6 +40,7 @@ class WorkstationProductModel{
       'consumed' : consumed,
       'fkWorkstationId' : fkWorkstationId,
       'fkStorProdId' : fkStorProdId,
+      'fkProductId' : fkProductId,
       'storeStock' : storeStock,
       'amountHunderd' : amountHunderd,
     };
@@ -53,6 +56,7 @@ class WorkstationProductModel{
       consumed: json['consumed'] as double,
       fkWorkstationId: json['fkWorkstationId'] as int,
       fkStorProdId: json['fkStorProdId'] as int,
+      fkProductId: json['fkProductId'] as int,
       storeStock: json['storeStock'] as double,
       amountHunderd: json['amountHunderd'] as double,
     );

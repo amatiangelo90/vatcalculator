@@ -57,12 +57,13 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(widget.event.eventName,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(22), color: kCustomOrange, fontWeight: FontWeight.bold),),
                   Text(
                     'Creato da: ' + widget.event.owner,
                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
                 ],
               ),
+              elevation: 5,
             ),
             backgroundColor: Colors.white,
             body: TabBarView(

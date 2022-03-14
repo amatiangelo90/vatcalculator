@@ -74,4 +74,5 @@ abstract class VatServiceInterface{
   Future<Response> updateCashRegister(CashRegisterModel cashRegisterModel);
   Future<Response> deleteCashRegister(CashRegisterModel cashRegisterModel);
   Future<List<CashRegisterModel>> retrieveCashRegistersByBranchId(BranchModel branchModel);
+  Future<Response> removeProductFromWorkstation(WorkstationProductModel prodModelWorkstation);
 }

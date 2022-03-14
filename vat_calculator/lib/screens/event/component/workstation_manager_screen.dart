@@ -5,13 +5,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 
+import '../../../client/vatservice/client_vatservice.dart';
+import '../../../client/vatservice/model/storage_product_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'event_manager_screen.dart';
@@ -32,6 +36,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   TextEditingController loadPaxController = TextEditingController(text: '0');
+  List<StorageProductModel> currentStorageProductModelList = [];
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
         return DefaultTabController(
           length: 3,
           child: Scaffold(
+            backgroundColor: kPrimaryColor,
             key: _scaffoldKey,
             appBar: AppBar(
               bottom: TabBar(
@@ -71,6 +78,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               iconTheme: const IconThemeData(color: Colors.white),
               centerTitle: true,
               backgroundColor: kPrimaryColor,
+              elevation: 5,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -110,15 +118,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 SizedBox(
                   width: getProportionateScreenWidth(200),
                   child: Text(
-                    element.productName,
+                    ' ' + element.productName,
                     overflow: TextOverflow.clip,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18), color: Colors.white),
                   ),
                 ),
                 Row(
                   children: [
                     Text(
-                      element.unitMeasure,
+                      '   ' + element.unitMeasure,
                       style:
                       TextStyle(fontSize: getProportionateScreenWidth(8)),
                     ),
@@ -148,7 +156,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     padding: EdgeInsets.all(8.0),
                     child: Icon(
                       FontAwesomeIcons.minus,
-                      color: kPinaColor,
+                      color: Colors.redAccent,
                     ),
                   ),
                 ),
@@ -188,7 +196,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(FontAwesomeIcons.plus,
-                        color: Colors.green.shade900),
+                        color: Colors.lightGreenAccent),
                   ),
                 ),
               ],
@@ -214,7 +222,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               children: [
                 SizedBox(width: 0,),
                 Container(
-                  color: Colors.white,
+                  color: kPrimaryColor,
                   child: DefaultButton(
                     text: 'Salva Consumo',
                     press: () async {
@@ -246,7 +254,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         ));
                       }
                     },
-                    color: Colors.green.shade900.withOpacity(0.8),
+                    color: kPinaColor,
                   ),
                 ),
               ],
@@ -258,15 +266,140 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> rows = [
+
       Divider(color: kCustomOrange,),
+      GestureDetector(
+        onTap: () async {
+          currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId));
+          currentStorageProductModelList.removeWhere((element) => getIdsProductListAlreadyPresent(workStationProdModelList).contains(element.fkProductId));
+
+          showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                contentPadding: EdgeInsets.zero,
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                content: Builder(
+                  builder: (context) {
+                    List<DataColumn> kTableColumns = <DataColumn>[
+                      const DataColumn(
+                        label: Text('Prodotto'),
+                      ),
+                      const DataColumn(
+                        label: Text('Giacenza'),
+                        numeric: true,
+                      ),
+                      const DataColumn(
+                        label: Text('Q/100'),
+                        numeric: true,
+                      ),
+                    ];
+                    return SizedBox(
+                      width: getProportionateScreenWidth(900),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    topLeft: Radius.circular(10.0)),
+                                color: kPrimaryColor,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '  Lista Prodotti',
+                                    style: TextStyle(
+                                      fontSize:
+                                      getProportionateScreenWidth(17),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            PaginatedDataTable(
+                              rowsPerPage: 5,
+                              availableRowsPerPage: const <int>[5],
+
+                              columns: kTableColumns,
+                              source: ProductDataSourceEvents(currentStorageProductModelList),
+                            ),
+                            SizedBox(
+                              height: getProportionateScreenHeight(10),
+                            ),
+                            SizedBox(
+                              width: getProportionateScreenWidth(310),
+                              child: CupertinoButton(
+                                onPressed: () async {
+
+                                  currentStorageProductModelList.forEach((element) {
+                                    print(element.selected.toString());
+                                  });
+
+                                  await dataBundleNotifier
+                                      .getclientServiceInstance()
+                                      .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
+
+                                  List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
+
+                                  setState(() {
+                                    widget.workStationProdModelList.clear();
+                                    widget.workStationProdModelList.addAll(workStationProdModelList);
+                                  });
+
+                                  Navigator.of(context).pop();
+
+                                },
+                                child: Text('Aggiungi'),
+                                color: kCustomBlueAccent,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ));
+        },
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+          child: Card(
+            color: kPrimaryColor,
+            elevation: 5,
+            child: Center(child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Text('Aggiungi prodotti', style: TextStyle(color: kCustomBlueAccent),),
+                Icon(Icons.add, color: kCustomBlueAccent),
+              ],
+            )),
+          ),
+        ),
+      ),
       Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
         child: DefaultButton(
 
 
 
-          text: loadPaxController.text == '' || loadPaxController.text == 0 ?
-          'Premi per configurare il numero di ospiti attesi':
+          text: loadPaxController.text == '' || loadPaxController.text == '0' ?
+          'Configurare numero clienti per carico':
           'Carico per ${loadPaxController.text} persone',
           press: () async {
             showDialog(
@@ -437,7 +570,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     ),
                     Row(
                       children: [
-
                         Text(
                           element.amountHunderd.toStringAsFixed(2),
                           style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomBlueAccent),
@@ -457,7 +589,17 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        if (element.refillStock <= 0) {
+                        if (element.refillStock <= 1) {
+                          print('Elimina');
+
+                          dataBundleNotifier.getclientServiceInstance().removeProductFromWorkstation(element);
+                          workStationProdModelList.remove(element);
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            backgroundColor: Colors.redAccent.withOpacity(0.9),
+                            duration: Duration(milliseconds: 1000),
+                            content: Text(
+                                'Prodotto ${element.productName} eliminato'),
+                          ));
                         } else {
                           element.refillStock--;
                         }
@@ -578,7 +720,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             children: <Widget>[
               Row(
                 children: const [
-                  Text('Nome Postazione*'),
+                  Text('Nome Postazione*',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ],
               ),
               CupertinoTextField(
@@ -592,7 +734,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               ),
               Row(
                 children: const [
-                  Text('Responsabile'),
+                  Text('Responsabile',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                 ],
               ),
               CupertinoTextField(
@@ -609,46 +751,43 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 100,
-                      child: CupertinoButton(
-                          color: Colors.green.shade700.withOpacity(0.8),
-                          child: const Text('Salva Impostazioni'),
-                          onPressed: () async {
-                            if(controllerWorkStationName.text == null || controllerWorkStationName.text == ''){
-                              print('Il nome della postazione è obbligatorio');
-                              _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                backgroundColor: kPinaColor,
-                                duration: Duration(milliseconds: 600),
-                                content: Text(
-                                    'Il nome della postazione è obbligatorio'),
-                              ));
-                            }else{
-                              KeyboardUtil.hideKeyboard(context);
-                              try{
-                                workstationModel.name = controllerWorkStationName.text;
-                                workstationModel.responsable = controllerResponsible.text;
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 60,
+                    child: CupertinoButton(
+                        color: kCustomBlueAccent,
+                        child: const Text('Salva Impostazioni'),
+                        onPressed: () async {
+                          if(controllerWorkStationName.text == null || controllerWorkStationName.text == ''){
+                            print('Il nome della postazione è obbligatorio');
+                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                              backgroundColor: kPinaColor,
+                              duration: Duration(milliseconds: 600),
+                              content: Text(
+                                  'Il nome della postazione è obbligatorio'),
+                            ));
+                          }else{
+                            KeyboardUtil.hideKeyboard(context);
+                            try{
+                              workstationModel.name = controllerWorkStationName.text;
+                              workstationModel.responsable = controllerResponsible.text;
 
-                                await dataBundleNotifier.getclientServiceInstance().updateWorkstationDetails(workstationModel);
-                                widget.callbackFuntion();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 5000),
-                                    backgroundColor: Colors.green.withOpacity(0.9),
-                                    content: const Text('Impostazioni aggiornate', style: TextStyle(color: Colors.white),)));
-                              }catch(e){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 5000),
-                                    backgroundColor: Colors.red,
-                                    content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
-                              }
+                              await dataBundleNotifier.getclientServiceInstance().updateWorkstationDetails(workstationModel);
+                              widget.callbackFuntion();
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 5000),
+                                  backgroundColor: Colors.green.withOpacity(0.9),
+                                  content: const Text('Impostazioni aggiornate', style: TextStyle(color: Colors.white),)));
+                            }catch(e){
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 5000),
+                                  backgroundColor: Colors.red,
+                                  content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
                             }
+                          }
 
-                          }),
-                    ),
+                        }),
                   ),
                 ],
               ),
@@ -702,5 +841,31 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
         ),
       ),
     );
+  }
+
+  Future<List<StorageProductModel>> retrieveProductListFromChoicedStorage(StorageModel currentStorageModel) async {
+    ClientVatService clientVatService = ClientVatService();
+    List<StorageProductModel> storageProductModelList = await clientVatService.retrieveRelationalModelProductsStorage(currentStorageModel.pkStorageId);
+    return storageProductModelList;
+  }
+
+  List<int> getIdsProductListAlreadyPresent(List<WorkstationProductModel> workStationProdModelList) {
+    List<int> idsList = [];
+    workStationProdModelList.forEach((element) {
+      idsList.add(element.fkProductId);
+    });
+
+    return idsList;
+  }
+
+  List<int> getIdsListFromCurrentStorageProductList(List<StorageProductModel> currentStorageProductModelList) {
+
+    List<int> ids = [];
+    currentStorageProductModelList.forEach((currentStorageProdutct) {
+      if(currentStorageProdutct.selected){
+        ids.add(currentStorageProdutct.pkStorageProductId);
+      }
+    });
+    return ids;
   }
 }

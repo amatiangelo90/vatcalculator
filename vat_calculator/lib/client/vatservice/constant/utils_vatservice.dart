@@ -50,6 +50,7 @@ const String VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH = 'http://$host:8080/va
 const String VAT_SERVICE_URL_DELETE_EXPENCE = 'http://$host:8080/vatservices/api/v1/delete/expence';
 const String VAT_SERVICE_URL_DELETE_WORKSTATION = 'http://$host:8080/vatservices/api/v1/delete/workstation';
 const String VAT_SERVICE_URL_DELETE_RECESSED = 'http://$host:8080/vatservices/api/v1/delete/recessedbyid';
+const String VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_WORKSTATION = 'http://$host:8080/vatservices/api/v1/delete/workstationproduct';
 
 //Retrieve Aggregated Tables
 const String VAT_SERVICE_URL_RETRIEVE_RELATIONAL_PRODUCTS_STORAGE = 'http://$host:8080/vatservices/api/v1/retrieve/relation/productstorage';

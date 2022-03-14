@@ -523,7 +523,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
             data: Theme.of(context).copyWith(
               backgroundColor: kPrimaryColor,
               dialogBackgroundColor: kPrimaryColor,
-              colorScheme: ColorScheme.dark(
+              colorScheme: const ColorScheme.dark(
                 onSurface: kCustomBlueAccent,
                 primary: kCustomBlueAccent,
                 secondary: kPrimaryColor,

@@ -2109,7 +2109,14 @@ class ClientVatService implements VatServiceInterface{
                 refillStock: workstationElement['refillStock'],
                 storeStock: workstationElement['storeStock'],
                 unitMeasure: workstationElement['unitMeasure'],
+                fkProductId: workstationElement['fkProductId'],
               )
+          );
+        });
+
+        workstationProductList.forEach((element) {
+          print(
+            element.toMap().toString()
           );
         });
         return workstationProductList;
@@ -2494,6 +2501,31 @@ class ClientVatService implements VatServiceInterface{
         print(cashitem.toMap().toString());
       });
       return cashRegisterList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> removeProductFromWorkstation(WorkstationProductModel prodModelWorkstation) async {
+    var dio = Dio();
+
+    List<CashRegisterModel> cashRegisterList = [];
+    String body = json.encode(
+        prodModelWorkstation.toMap());
+
+    Response post;
+    print('Delete product ${prodModelWorkstation.productName} from workstation with id ' + prodModelWorkstation.pkWorkstationStorageProductId.toString());
+    print('Calling retrieve method to get cash registers model by branch id ' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_WORKSTATION);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_WORKSTATION,
+        data: body,
+      );
+
+      return post;
 
     }catch(e){
       print(e);

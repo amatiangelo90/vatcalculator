@@ -1552,4 +1552,15 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     return result;
   }
+
+  StorageModel getStorageModelById(int fkStorageId) {
+    StorageModel storageModel;
+
+    currentStorageList.forEach((element) {
+      if(element.pkStorageId == fkStorageId){
+        storageModel = element;
+      }
+    });
+    return storageModel;
+  }
 }
