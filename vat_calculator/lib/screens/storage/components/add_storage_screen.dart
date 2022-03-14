@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,19 +36,11 @@ class AddStorageScreen extends StatelessWidget {
 
 
     void buildSnackBar({@required String text, @required Color color}) {
-      AwesomeDialog(
-        context: context,
-        animType: AnimType.RIGHSLIDE,
-        dialogType: DialogType.WARNING,
-        body: Center(child: Column(
-          children: [
-            Text(text, textAlign: TextAlign.center,),
-          ],
-        ),),
-        title: 'This is Ignored',
-        desc:   'This is also Ignored',
-        btnOkOnPress: () {},
-      ).show();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(
+          backgroundColor: color,
+          duration: Duration(milliseconds: 800),
+          content: Text(text)));
     }
 
     return Consumer<DataBundleNotifier>(

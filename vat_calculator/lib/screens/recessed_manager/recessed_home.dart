@@ -50,7 +50,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
                         'Gestione Incassi',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(16),
-                          color: kCustomGreen,
+                          color: kCustomBlueAccent,
                         ),
                       ),
                       Text(
@@ -129,14 +129,14 @@ class _RecessedScreenState extends State<RecessedScreen> {
                                             child: Container(
                                               padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                                               decoration: const BoxDecoration(
-                                                color: kCustomGreen,
+                                                color: kCustomBlueAccent,
                                                 borderRadius: BorderRadius.only(
                                                     bottomLeft: Radius.circular(25.0),
                                                     bottomRight: Radius.circular(25.0)),
                                               ),
                                               child: SizedBox(
                                                 width: getProportionateScreenWidth(300),
-                                                child: CupertinoButton(child: const Text('Crea'), color: kCustomGreen, onPressed: () async {
+                                                child: CupertinoButton(child: const Text('Crea'), color: kCustomBlueAccent, onPressed: () async {
 
                                                   if (cashRegisterNameController.text == null || cashRegisterNameController.text == '') {
                                                     _scaffoldKey.currentState.showSnackBar(const SnackBar(
@@ -207,7 +207,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
                             right: 2.5,
                             top: 2.5,
                             child: Center(
-                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomGreen,),
+                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomBlueAccent,),
                             ),
                           ),
                         ],
@@ -222,7 +222,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
                   child: FittedBox(
                     child: FloatingActionButton(
                       child: Icon(Icons.add, size: getProportionateScreenWidth(40)),
-                      backgroundColor: kCustomGreen,
+                      backgroundColor: kCustomBlueAccent,
                       elevation: 5,
                       onPressed: (){
                         showDialog(context: context, builder: (_) => AlertDialog(
@@ -268,27 +268,27 @@ class _RecessedScreenState extends State<RecessedScreen> {
                         child: Text(getTotalCashFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreen),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(10), 0, 122),
                         child: Text(getTotalAmountFFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreen),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(10), 0, 50),child: Text(getTotalAmountPosFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreen),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(10), 0, 50),
                         child: Text(getTotalAmountExtraFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreen),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
                       ),
                     ]),
                   ],

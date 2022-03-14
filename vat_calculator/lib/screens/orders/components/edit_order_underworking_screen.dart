@@ -246,7 +246,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               centerTitle: true,
               automaticallyImplyLeading: true,
               title: Text(
-                'Dettaglio Ordine', style: TextStyle(color: kCustomGreen),
+                'Dettaglio Ordine', style: TextStyle(color: kCustomBlueAccent),
               ),
             ),
             body: SingleChildScrollView(
@@ -408,7 +408,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               children: [
                 const Icon(Icons.view_stream, color: kPrimaryColor,size: 5,),
                 Text( ' ' + currentProduct.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kPrimaryColor),),
-                Text(' (' + currentProduct.unita_misura + ')', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
+                Text(' (' + currentProduct.unita_misura + ')', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
               ],
             ),
             Row(

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -51,18 +50,30 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width - 35,
                       child: CupertinoButton(
-                          color: kCustomGreen,
+                          color: kCustomBlueAccent,
                           child: const Text('Salva Fornitore'),
                           onPressed: () async {
                             if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
                               print('Il nome del fornitore è obbligatorio');
-                              buildShowErrorDialog('Il nome del fornitore è obbligatorio');
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                  duration: Duration(milliseconds: 800),
+                                  content: Text('Il nome del fornitore è obbligatorio')));
                             }else if(controllerEmail.text == null || controllerEmail.text == ''){
                               print('L\'indirizzo email è obbligatorio');
-                              buildShowErrorDialog('L\'indirizzo email è obbligatorio');
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                  duration: Duration(milliseconds: 800),
+                                  content: Text('L\'indirizzo email è obbligatorio')));
                             }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
                               print('Cellulare obbligatorio');
-                              buildShowErrorDialog('Inserire un numero di cellulare');
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                  duration: Duration(milliseconds: 800),
+                                  content: Text('Il numero di cellulare è obbligatorio')));
                             }else{
                               KeyboardUtil.hideKeyboard(context);
                               try{
@@ -98,7 +109,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     'Crea Nuovo Fornitore',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(17),
-                      color: kCustomGreen,
+                      color: kCustomBlueAccent,
                     ),
                   ),
                 ],
@@ -279,22 +290,6 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
   getUniqueCustomId() {
     String microSecondsSinceEpoch = DateTime.now().microsecondsSinceEpoch.toString();
     return microSecondsSinceEpoch.substring(microSecondsSinceEpoch.length -8, microSecondsSinceEpoch.length);
-  }
-
-  void buildShowErrorDialog(String text) {
-    AwesomeDialog(
-      context: context,
-      animType: AnimType.RIGHSLIDE,
-      dialogType: DialogType.ERROR,
-      body: Center(child: Column(
-        children: [
-          Text(text, textAlign: TextAlign.center,),
-        ],
-      ),),
-      title: 'This is Ignored',
-      desc:   'This is also Ignored',
-      btnOkOnPress: () {},
-    ).show();
   }
 
   void clearControllers() {

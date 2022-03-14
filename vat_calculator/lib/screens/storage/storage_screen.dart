@@ -109,7 +109,7 @@ class _StorageScreenState extends State<StorageScreen> {
                           Icon(
                             Icons.brightness_1,
                             size: 20,
-                            color: kCustomGreen,
+                            color: kCustomBlueAccent,
                           ),
                           Positioned(
                             right: 3.5,

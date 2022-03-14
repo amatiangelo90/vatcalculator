@@ -63,7 +63,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
               title: Text('Unisciti ad una attività',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(19),
-                  color: kCustomGreen,
+                  color: kCustomBlueAccent,
                 ),
               ),
               backgroundColor: kPrimaryColor,

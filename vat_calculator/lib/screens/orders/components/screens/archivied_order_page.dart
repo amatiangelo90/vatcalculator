@@ -65,12 +65,13 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
           _kOrders.addAll(getKOrders(dataBundleNotifier.currentArchiviedWorkingOrdersList));
           return Scaffold(
             appBar: AppBar(
-              backgroundColor: kCustomWhite,
+              elevation: 5,
+              backgroundColor: kPrimaryColor,
               title: const Text('Archivio Ordini'),
               centerTitle: true,
-              titleTextStyle: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(15)),
+              titleTextStyle: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenWidth(15)),
               leading: GestureDetector( 
-                child: const Icon(Icons.arrow_back_ios),
+                child: const Icon(Icons.arrow_back_ios, color: Colors.white),
                 onTap: (){
                   Navigator.of(context).pop();
                 },
@@ -80,7 +81,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
               initialData: <Widget>[
                 const Center(
                     child: CircularProgressIndicator(
-                      color: kPinaColor,
+                      color: kCustomBlueAccent,
                     )),
                 const SizedBox(),
                 Column(
@@ -106,29 +107,29 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                 return Column(
                   children: [
                     Container(
-                      color: kCustomWhite,
+                      color: kPrimaryColor,
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
+                          titleTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
                           formatButtonDecoration: BoxDecoration(
-                            color: kPrimaryColor,
+                            color: kCustomBlueAccent,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
                             Icons.arrow_back_ios,
-                            color: kPrimaryColor,
+                            color: kCustomBlueAccent,
                             size: getProportionateScreenHeight(16),
                           ),
                           rightChevronIcon: Icon(
                             Icons.arrow_forward_ios,
-                            color: kPrimaryColor,
+                            color: kCustomBlueAccent,
                             size: getProportionateScreenHeight(16),
                           ),
                         ),
                         daysOfWeekStyle: const DaysOfWeekStyle(
-                          weekdayStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
-                          weekendStyle:  TextStyle(fontSize: 14.0, color: kPrimaryColor),
+                          weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
+                          weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
 
                         ),
 
@@ -143,7 +144,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                         calendarStyle: CalendarStyle(
                           markerSize: 10,
                           selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kPrimaryColor),
+                          defaultTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.white),
                           weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
 
                           selectedDecoration: const BoxDecoration(
@@ -173,9 +174,9 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                       ),
                     ),
                     Container(
-                      height: 16,
+                      height: 15,
                       decoration: const BoxDecoration(
-                        color: kCustomWhite,
+                        color: kPrimaryColor,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
                       ),
                     ),

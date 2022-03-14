@@ -77,7 +77,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
       child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Scaffold(
-              backgroundColor: kCustomWhite,
+              backgroundColor: Colors.white,
               appBar: AppBar(
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
@@ -85,7 +85,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                       Navigator.pushNamed(context, HomeScreen.routeName),
                     }),
                 iconTheme: const IconThemeData(color: Colors.white),
-                backgroundColor: Colors.black.withOpacity(0.9),
+                backgroundColor: kPrimaryColor,
                 centerTitle: true,
                 title: Column(
                   children: [
@@ -95,7 +95,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           'Crea Evento',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(19),
-                            color: kCustomOrange,
+                            color: kCustomBlueAccent,
                           ),
                         ),
                         Text(
@@ -109,7 +109,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                     ),
                   ],
                 ),
-                elevation: 2,
+                elevation: 5,
               ),
               body: Container(
                 child: SingleChildScrollView(
@@ -120,7 +120,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                       Row(
                         children: [
                           const SizedBox(width: 11,),
-                          Text('  Nome Evento', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                          Text('  Nome Evento', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                         ],
                       ),
                       Padding(
@@ -138,7 +138,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                       Row(
                         children: [
                           const SizedBox(width: 11,),
-                          Text('  Location', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                          Text('  Location', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                         ],
                       ),
                       Padding(
@@ -166,7 +166,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   width: getProportionateScreenHeight(400),
                                   child: CupertinoButton(
                                     child: const Text('Seleziona data evento'),
-                                    color: Colors.black.withOpacity(0.8),
+                                    color: kPrimaryColor,
                                     onPressed: () => _selectDate(context),
                                   ),
                                 ),
@@ -176,8 +176,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   width: getProportionateScreenHeight(400),
                                   child: CupertinoButton(
                                     child:
-                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomOrange),),
-                                    color: Colors.black.withOpacity(0.8),
+                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomBlueAccent),),
+                                    color: kPrimaryColor,
                                     onPressed: () => _selectDate(context),
                                   ),
                                 ),
@@ -191,7 +191,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                       Row(
                         children: [
                           const SizedBox(width: 11,),
-                          Text('  Seleziona il magazzino di riferimento', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                          Text('  Seleziona il magazzino di riferimento', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                         ],
                       ),
                       Padding(
@@ -218,7 +218,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('  Postazioni Bar', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                            Text('  Postazioni Bar', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                             Row(
                               children: [
                                 GestureDetector(
@@ -293,7 +293,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('  Postazioni Champagnerie', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                            Text('  Postazioni Champagnerie', style: TextStyle(color: kPrimaryColor,fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                             Row(
                               children: [
                                 GestureDetector(
@@ -377,37 +377,44 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                     print('Performing creation event ...');
                     if(controllerEventName.text == ''){
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
                           content: Text('Inserire il nome evento')));
                     }else if(controllerLocation.text == ''){
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
                           content: Text('Inserire la location')));
                     }else if(currentDate == null) {
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
                           content: Text('Selezionare la data dell\'evento')));
                     }else if(_selectedStorage == 'Seleziona Magazzino'){
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
                           content: Text('Associare un magazzino all\'evento')));
                     }else if(_champagneriePositionCounter == 0 && _barPositionCounter == 0){
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 1000),
                           content: Text('Configurare almeno una fra Postazione Bar e Postazione Champagnerie')));
                     }else if(_barPositionCounter > 0 && getNumberElementsFromProductList(currentStorageProductModelListBar) == 0){
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 1000),
                           content: Text('Assegnare almeno un prodotto alle postazioni bar')));
                     }else if(_champagneriePositionCounter > 0 && getNumberElementsFromProductList(currentStorageProductModelListChampagnerie) == 0){
                       ScaffoldMessenger.of(context)
-                          .showSnackBar(const SnackBar(
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 1000),
                           content: Text('Assegnare almeno un prodotto alle postazioni champagnerie')));
                     }else{
@@ -501,7 +508,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         }
                       }
                     },
-                  color: Colors.green.shade900.withOpacity(0.8),
+                  color: kCustomBlueAccent,
                 ),
               ),
             );
@@ -514,19 +521,19 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              backgroundColor: Colors.black,
-              dialogBackgroundColor: Colors.black,
+              backgroundColor: kPrimaryColor,
+              dialogBackgroundColor: kPrimaryColor,
               colorScheme: ColorScheme.dark(
-                onSurface: kCustomOrange,
-                primary: kCustomOrange,
-                secondary: Colors.black.withOpacity(0.9),
-                onSecondary: Colors.grey.withOpacity(0.9),
-                background: Colors.black.withOpacity(0.9),
-                onBackground: Colors.black.withOpacity(0.9),
+                onSurface: kCustomBlueAccent,
+                primary: kCustomBlueAccent,
+                secondary: kPrimaryColor,
+                onSecondary: kPrimaryColor,
+                background: kPrimaryColor,
+                onBackground: kPrimaryColor,
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomOrange, // button// text color
+                  primary: kCustomBlueAccent, // button// text color
                 ),
               ),
             ),

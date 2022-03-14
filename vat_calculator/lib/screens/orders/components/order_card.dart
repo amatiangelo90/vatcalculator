@@ -52,7 +52,7 @@ class OrderCard extends StatelessWidget {
                               child: SvgPicture.asset(
                                 'assets/icons/receipt.svg',
                                 height: getProportionateScreenHeight(45),
-                                color: kCustomGreen,
+                                color: kCustomBlueAccent,
                               ),
                             ),
                           ),
@@ -61,7 +61,7 @@ class OrderCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGreen, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
                               Text(
                                 '#' + order.code,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -260,7 +260,7 @@ class OrderCard extends StatelessWidget {
                   SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
-                      color: kCustomGreen,
+                      color: kCustomBlueAccent,
                       onPressed: (){
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
                           productList: orderIdProductListMap[order.pk_order_id],),),);

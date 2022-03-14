@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -67,41 +66,23 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                     });
 
                     if(_selectedStorage == 'Seleziona Magazzino'){
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.SCALE,
-                        dialogType: DialogType.ERROR,
-                        body: const Center(child: Text(
-                          'Selezionare il magazzino',
-                        ),),
-                        title: 'This is Ignored',
-                        desc:   'This is also Ignored',
-                        btnOkOnPress: () {},
-                      ).show();
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Selezionare il magazzino')));
                     }else if(currentStorageModel == null){
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.SCALE,
-                        dialogType: DialogType.ERROR,
-                        body: const Center(child: Text(
-                          'Selezionare il magazzino',
-                        ),),
-                        title: 'This is Ignored',
-                        desc:   'This is also Ignored',
-                        btnOkOnPress: () {},
-                      ).show();
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Selezionare il magazzino')));
                     }else if(currentDate == null) {
-                      AwesomeDialog(
-                        context: context,
-                        animType: AnimType.RIGHSLIDE,
-                        dialogType: DialogType.ERROR,
-                        body: const Center(child: Text(
-                          'Selezionare la data di consegna',
-                        ),),
-                        title: 'This is Ignored',
-                        desc:   'This is also Ignored',
-                        btnOkOnPress: () {},
-                      ).show();
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Selezionare la data di consegna')));
                     }else{
 
                       Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailByKontumServiceApi(

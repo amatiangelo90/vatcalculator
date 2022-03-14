@@ -440,7 +440,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                         Text(
                           element.amountHunderd.toStringAsFixed(2),
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomGreen),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomBlueAccent),
                         ),
                         Text(
                           ' ' + element.unitMeasure + ' x 100/pax' ,

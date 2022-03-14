@@ -99,9 +99,9 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomGreen),
+                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
                           formatButtonDecoration: BoxDecoration(
-                            color: kCustomGreen,
+                            color: kCustomBlueAccent,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
@@ -135,11 +135,11 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
 
                           selectedDecoration: BoxDecoration(
-                            color: kCustomGreen,
+                            color: kCustomBlueAccent,
                             shape: BoxShape.circle,
                           ),
                           todayDecoration: BoxDecoration(
-                            color: kCustomGreen,
+                            color: kCustomBlueAccent,
                             shape: BoxShape.circle,
                           ),
 
@@ -165,8 +165,11 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                       ),
                     ),
                     Container(
-                      height: 10,
-                      color: kPrimaryColor,
+                      height: 15,
+                      decoration: const BoxDecoration(
+                        color: kPrimaryColor,
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
+                      ),
                     ),
                     Expanded(
                       child: ValueListenableBuilder<List<OrderModel>>(

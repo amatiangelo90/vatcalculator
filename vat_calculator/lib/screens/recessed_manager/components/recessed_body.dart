@@ -43,7 +43,7 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
                     width: getProportionateScreenWidth(400),
                     height: getProportionateScreenHeight(45),
                     child: Card(
-                      color: kCustomGreen,
+                      color: kCustomBlueAccent,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -78,7 +78,7 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
                       IconButton(
                           icon: SvgPicture.asset(
                             "assets/icons/calendar.svg",
-                            color: kCustomGreen,
+                            color: kCustomBlueAccent,
                             width: getProportionateScreenWidth(22),
                           ),
                           onPressed: () {
@@ -108,10 +108,10 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
     List<TableRow> rows = [
       const TableRow( children: [
         Text('DATA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),),
-        Text('CASH', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
-        Text('FISCALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
-        Text('POS', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
-        Text('EXTRA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen),),
+        Text('CASH', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+        Text('FISCALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+        Text('POS', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+        Text('EXTRA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
       ]),
     ];
 
@@ -607,7 +607,7 @@ class _RecessedBodyWidgetState extends State<RecessedBodyWidget> {
         return Theme(
           data: ThemeData.dark().copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: kCustomGreen,
+              primary: kCustomBlueAccent,
             ),
           ),
           child: child,

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -54,7 +53,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                 'Associa Fornitore',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(17),
-                  color: kCustomGreen,
+                  color: kCustomBlueAccent,
                 ),
               ),
               elevation: 2,
@@ -332,24 +331,11 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
 
                   }
                 }else{
-
-                  AwesomeDialog(
-                    context: context,
-                    animType: AnimType.RIGHSLIDE,
-                    dialogType: DialogType.WARNING,
-                    body: Center(child: Column(
-                      children: [
-                        Text('Nessun fornitore trovato con il seguente codice', textAlign: TextAlign.center,),
-                        Card(child: Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(supplierCodeControllerSearch.text, style: TextStyle(fontSize: getProportionateScreenHeight(30)),),
-                        )),
-                      ],
-                    ),),
-                    title: 'This is Ignored',
-                    desc:   'This is also Ignored',
-                    btnOkOnPress: () {},
-                  ).show();
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(
+                      backgroundColor: Colors.redAccent.withOpacity(0.8),
+                      duration: Duration(milliseconds: 3000),
+                      content: Text('Nessun fornitore trovato con il seguente codice: ' + supplierCodeControllerSearch.text)));
                   clearControllers();
                 }
               },
@@ -366,7 +352,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               Flexible(
                 child: CupertinoButton(
                   color: Colors.black54.withOpacity(0.5),
-                  child: Text("Clear", style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenHeight(18)),),
+                  child: Text("Clear", style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(18)),),
                   onPressed: () {
                     supplierCodeControllerSearch.clear();
                   },

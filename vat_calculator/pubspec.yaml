@@ -3,7 +3,7 @@ description: VatClaulator Project for Small/Medium Company
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+10
+version: 1.0.0+12
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
@@ -40,7 +40,6 @@ dependencies:
   chips_choice: ^2.0.1
   syncfusion_flutter_charts: ^19.3.56
   csc_picker: ^0.2.6
-  awesome_dialog: ^2.1.1
   sliding_up_panel: ^2.0.0+1
   syncfusion_flutter_pdf: ^19.3.57-beta
   rflutter_alert: ^1.0.2
@@ -53,6 +52,7 @@ dependencies:
   intl: ^0.17.0
   expandable_page_view: ^1.0.11
   fl_chart: ^0.45.1
+  persistent_bottom_nav_bar: ^4.0.2
 
 dev_dependencies:
   flutter_test:

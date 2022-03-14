@@ -136,7 +136,7 @@ class _OrdersScreenState extends State<OrdersScreen>
               'Ordini',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(20),
-                color: kCustomGreen,
+                color: kCustomBlueAccent,
               ),
             ),
             backgroundColor: kPrimaryColor,

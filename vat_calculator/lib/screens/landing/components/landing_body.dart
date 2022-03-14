@@ -75,7 +75,7 @@ class LandingBody extends StatelessWidget {
                     width: getProportionateScreenWidth(500),
                     child: CupertinoButton(
                       child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                      color: kCustomGreen,
+                      color: kCustomBlueAccent,
                       onPressed: () async {
                         context.loaderOverlay.show();
                         ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();

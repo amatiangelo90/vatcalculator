@@ -86,7 +86,7 @@ class HomeScreen extends StatelessWidget {
                             right: 2.5,
                             top: 2.5,
                             child: Center(
-                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomGreen,),
+                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomBlueAccent,),
                             ),
                           ),
                         ],
@@ -126,7 +126,7 @@ class HomeScreen extends StatelessWidget {
                                     .add_circle_outline,
                                 size: 13,
                                 color:
-                                kCustomGreen,
+                                kCustomBlueAccent,
                               ),
                             ),
                           ),
@@ -159,7 +159,7 @@ class HomeScreen extends StatelessWidget {
                     dataBundleNotifier.currentBranch.accessPrivilege + ' per ' + dataBundleNotifier.currentBranch.companyName : '',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(5),
-                      color: kCustomGreen,
+                      color: kCustomBlueAccent,
                     ),
                   ),
 

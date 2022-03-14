@@ -89,7 +89,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                       DatePicker(
                         DateTime.now().subtract(Duration(days: 4)),
                         initialSelectedDate: DateTime.now(),
-                        selectionColor: kCustomGreen,
+                        selectionColor: kCustomBlueAccent,
                         selectedTextColor: Colors.white,
                         width: getProportionateScreenHeight(40),
                         daysCount: 9,
@@ -164,7 +164,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                             child: CupertinoButton(
                               pressedOpacity: 0.5,
                               child: const Text('Salva Spesa'),
-                              color: kCustomGreen,
+                              color: kCustomBlueAccent,
                               onPressed: () async {
                                 try {
                                   KeyboardUtil.hideKeyboard(context);

@@ -30,9 +30,9 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
 
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(6.0),
               child: DefaultButton(
-                textColor: kCustomOrange,
+                textColor: Colors.white,
                 text: 'Procedi',
                 press: () async {
 
@@ -55,7 +55,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     );
                   }
                 },
-                color: Colors.black.withOpacity(0.8),
+                color: kPrimaryColor,
               ),
             ),
             appBar: AppBar(
@@ -73,7 +73,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     'Crea Ordine',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(18),
-                      color: kCustomGreen,
+                      color: kCustomBlueAccent,
                     ),
                   ),
                   Text(

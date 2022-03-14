@@ -33,7 +33,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: SvgPicture.asset(
                       "assets/icons/home.svg",
                       color: MenuState.home == selectedMenu
-                          ? kCustomGreen
+                          ? kCustomBlueAccent
                           : inActiveIconColor,
                       width: 30,
                     ),
@@ -45,7 +45,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                     child: Text(' Home ',
-                      style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenHeight(11)),
+                      style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
                     ),
                 ) : const SizedBox(height: 0,)
               ],
@@ -57,7 +57,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: SvgPicture.asset(
                       "assets/icons/storage.svg",
                       color: MenuState.storage == selectedMenu
-                          ? kCustomGreen
+                          ? kCustomBlueAccent
                           : inActiveIconColor,
                       width: 30,
                     ),
@@ -71,7 +71,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                   child: Text(' Magazzino ',
-                    style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenHeight(11)),
+                    style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)
                ],
@@ -91,7 +91,7 @@ class CustomBottomNavBar extends StatelessWidget {
                           icon: SvgPicture.asset(
                             "assets/icons/receipt.svg",
                             color: MenuState.orders == selectedMenu
-                                ? kCustomGreen
+                                ? kCustomBlueAccent
                                 : inActiveIconColor,
                             width: 30,
                           ),
@@ -160,7 +160,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                   child: Text(' Ordini ',
-                    style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenHeight(11)),
+                    style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)],
             ),
@@ -173,7 +173,7 @@ class CustomBottomNavBar extends StatelessWidget {
                       icon: SvgPicture.asset(
                         "assets/icons/Settings.svg",
                         color: MenuState.profile == selectedMenu
-                            ? kCustomGreen
+                            ? kCustomBlueAccent
                             : inActiveIconColor,
                         width: 30,
                       ),
@@ -188,7 +188,7 @@ class CustomBottomNavBar extends StatelessWidget {
                     ? Card(
                   color: kCustomGreyBlue,
                   child: Text(' Gestione ',
-                    style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenHeight(11)),
+                    style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)
               ],

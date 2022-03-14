@@ -57,7 +57,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
             'Gestione',
             style: TextStyle(
               fontSize: getProportionateScreenWidth(19),
-              color: kCustomGreen,
+              color: kCustomBlueAccent,
             ),
           ),
           backgroundColor: kPrimaryColor,
@@ -725,7 +725,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                 width: getProportionateScreenWidth(400),
                                 height: getProportionateScreenHeight(50),
                                 child: CupertinoButton(
-                                  color: kCustomGreen,
+                                  color: kCustomBlueAccent,
                                   onPressed: () {
                                     Navigator.push(
                                       context,

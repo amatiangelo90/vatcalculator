@@ -321,7 +321,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
           return Theme(
             data: ThemeData.dark().copyWith(
               colorScheme: const ColorScheme.dark(
-                primary: kCustomGreen,
+                primary: kCustomBlueAccent,
               ),
             ),
             child: child,

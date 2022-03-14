@@ -38,7 +38,7 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
             title: Text('Registra Fornitore',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomGreen,
+                color: kCustomBlueAccent,
               ),
             ),
             backgroundColor: kPrimaryColor,
