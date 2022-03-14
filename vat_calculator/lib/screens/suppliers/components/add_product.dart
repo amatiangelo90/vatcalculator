@@ -64,8 +64,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Text(
                   'Crea nuovo prodotto',
                   style: TextStyle(
-                    fontSize: getProportionateScreenWidth(15),
-                    color: kCustomWhite,
+                    fontSize: getProportionateScreenWidth(19),
+                    color: kCustomBlueAccent,
                   ),
                 ),
               ],
@@ -79,7 +79,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Nome', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Nome', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                   ],
                 ),
                 Padding(
@@ -98,7 +98,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                   ],
                 ),
 
@@ -121,9 +121,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           child: Container(
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
-                              color: _litresUnitMeasure ? kBeigeColor : Colors.white,
+                              color: _litresUnitMeasure ? kCustomBlueAccent : Colors.white,
                               border: Border.all(
-                                width: 0.2,
+                                width: 0.1,
                                 color: Colors.grey,
                               ),
                               borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
@@ -146,10 +146,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                width: 0.5,
-                                color: kBeigeColor,
+                                width: 0.1,
+                                color: Colors.grey,
                               ),
-                              color: _kgUnitMeasure ? kBeigeColor : Colors.white,
+                              color: _kgUnitMeasure ? kCustomBlueAccent : Colors.white,
                             ),
                             child: const Center(child: Text('kg', style: TextStyle(color:kPrimaryColor))),
                           ),
@@ -168,10 +168,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           child: Container(
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
-                              color: _packagesUnitMeasure ? kBeigeColor : Colors.white,
+                              color: _packagesUnitMeasure ? kCustomBlueAccent : Colors.white,
                               border: Border.all(
-                                width: 0.5,
-                                color: kBeigeColor,
+                                width: 0.1,
+                                color: Colors.grey,
                               ),
                             ),
                             child: const Center(child: Text('Pacchi', style: TextStyle(color:kPrimaryColor))),
@@ -192,10 +192,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                width: 0.5,
-                                color: kBeigeColor,
+                                width: 0.1,
+                                color: Colors.grey,
                               ),
-                              color: _otherUnitMeasure ? kBeigeColor : Colors.white,
+                              color: _otherUnitMeasure ? kCustomBlueAccent : Colors.white,
                               borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
                             ),
                             child: Center(child: Text('Altro', style: const TextStyle(color:kPrimaryColor),)),
@@ -221,7 +221,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                   ],
                 ),
                 Padding(
@@ -241,7 +241,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Iva Applicata', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Iva Applicata', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                   ],
                 ),
                 Padding(
@@ -263,9 +263,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           child: Container(
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
-                              color: _selectedValue4 ? kBeigeColor : Colors.white,
+                              color: _selectedValue4 ? kCustomBlueAccent : Colors.white,
                               border: Border.all(
-                                width: 0.2,
+                                width: 0.1,
                                 color: Colors.grey,
                               ),
                               borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
@@ -288,10 +288,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                width: 0.5,
-                                color: kBeigeColor,
+                                width: 0.1,
+                                color: Colors.grey,
                               ),
-                              color: _selectedValue5 ? kBeigeColor : Colors.white,
+                              color: _selectedValue5 ? kCustomBlueAccent : Colors.white,
                             ),
                             child: Center(child: const Text('5%', style: TextStyle(color:kPrimaryColor))),
                           ),
@@ -310,10 +310,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           child: Container(
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
-                              color: _selectedValue10 ? kBeigeColor : Colors.white,
+                              color: _selectedValue10 ? kCustomBlueAccent : Colors.white,
                               border: Border.all(
-                                width: 0.5,
-                                color: kBeigeColor,
+                                width: 0.1,
+                                color: Colors.grey,
                               ),
                             ),
                             child: Center(child: Text('10%', style: TextStyle(color:kPrimaryColor))),
@@ -334,10 +334,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                             height: MediaQuery.of(context).size.height *0.05,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                width: 0.5,
-                                color: kBeigeColor,
+                                width: 0.1,
+                                color: Colors.grey,
                               ),
-                              color: _selectedValue22 ? kBeigeColor : Colors.white,
+                              color: _selectedValue22 ? kCustomBlueAccent : Colors.white,
                               borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
                             ),
                             child: Center(child: Text('22%', style: TextStyle(color:kPrimaryColor),)),
@@ -350,7 +350,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Categoria', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Categoria', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                   ],
                 ),
                 Padding(
@@ -369,7 +369,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Descrizione', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Descrizione', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                   ],
                 ),
                 Padding(
@@ -391,7 +391,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           ),
           bottomSheet: Padding(
             padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
-            child: DefaultButton(color: Colors.green.shade700.withOpacity(0.8),
+            child: DefaultButton(color: kCustomBlueAccent,
               press: () async {
                 if(_nameController.text.isEmpty || _nameController.text == ''){
                   buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
