@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,7 +36,120 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           length: 3,
           child: Scaffold(
             appBar: AppBar(
+              actions: [
+                Stack(
+                  children: [ IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/bouvette.svg',
+                      color: kGreenAccent,
+                      width: 25,
+                    ),
+                    onPressed: () async {
+                      await dataBundleNotifier.getclientServiceInstance().createWorkstations([
+                        WorkstationModel(
+                            closed: 'N',
+                            extra: '',
+                            fkEventId: widget.event.pkEventId,
+                            pkWorkstationId: 0,
+                            name: 'Nuova Champagnerie',
+                            responsable: '',
+                            type: WORKSTATION_TYPE_CHAMP
+                        )
+                      ]);
 
+                      List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
+
+                      setState(() {
+                        widget.workstationModelList.clear();
+                        widget.workstationModelList.addAll(workstationModelListNew);
+                      });
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.green.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Nuova postazione Champagnerie creata')));
+                    },
+                  ),
+                    Positioned(
+                      top: 26.0,
+                      right: 9.0,
+                      child: Stack(
+                        children: <Widget>[
+                          Icon(
+                            Icons.brightness_1,
+                            size: 18,
+                            color: kPrimaryColor,
+                          ),
+                          Positioned(
+                            right: 2.5,
+                            top: 2.5,
+                            child: Center(
+                              child: Icon(Icons.add_circle_outline, size: 13, color: kGreenAccent,),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Stack(
+                  children: [ IconButton(
+                    icon: SvgPicture.asset(
+                      'assets/icons/bartender.svg',
+                      color: kCustomOrange,
+                      width: 25,
+                    ),
+                    onPressed: () async {
+                      await dataBundleNotifier.getclientServiceInstance().createWorkstations([
+                        WorkstationModel(
+                            closed: 'N',
+                            extra: '',
+                            fkEventId: widget.event.pkEventId,
+                            pkWorkstationId: 0,
+                            name: 'Nuovo Bar',
+                            responsable: '',
+                            type: WORKSTATION_TYPE_BAR
+                        )
+                      ]);
+
+                      List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
+
+                      setState(() {
+                        widget.workstationModelList.clear();
+                        widget.workstationModelList.addAll(workstationModelListNew);
+                      });
+
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.green.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Nuova postazione Bar creata')));
+
+                    },
+                  ),
+                    Positioned(
+                      top: 26.0,
+                      right: 9.0,
+                      child: Stack(
+                        children: <Widget>[
+                          Icon(
+                            Icons.brightness_1,
+                            size: 18,
+                            color: kPrimaryColor,
+                          ),
+                          Positioned(
+                            right: 2.5,
+                            top: 2.5,
+                            child: Center(
+                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomOrange,),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               bottom: TabBar(
                 indicatorColor: kCustomOrange,
                 indicatorWeight: 4,

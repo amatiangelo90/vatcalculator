@@ -86,7 +86,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomOrange, fontWeight: FontWeight.bold),),
                   Text(
                     'Tipo workstation: ' + widget.workstationModel.type,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(8), color: kCustomWhite, fontWeight: FontWeight.bold),),
                 ],
               ),
             ),
@@ -104,7 +104,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   }
 
   buildUnloadWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
-    List<Widget> rows = [];
+    List<Widget> rows = [
+    ];
     workStationProdModelList.forEach((element) {
       TextEditingController controller = TextEditingController(text: element.consumed.toString());
       rows.add(
@@ -331,6 +332,9 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                 ],
                               ),
                             ),
+                            Text(
+                              'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId).name,
+                              style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold),),
                             PaginatedDataTable(
                               rowsPerPage: 5,
                               availableRowsPerPage: const <int>[5],

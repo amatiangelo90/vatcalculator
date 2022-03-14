@@ -132,10 +132,8 @@ class EventCard extends StatelessWidget {
                       color: kCustomBlueAccent,
                       onPressed: () async {
                         List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
-                        print(workstationModelList.toString());
-                        print(workstationModelList.length);
-                        sleep(const Duration(milliseconds: 200));
 
+                        sleep(const Duration(milliseconds: 200));
                         Navigator.push(
                           context,
                           MaterialPageRoute(
