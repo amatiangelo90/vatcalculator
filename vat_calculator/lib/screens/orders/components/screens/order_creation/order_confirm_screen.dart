@@ -114,7 +114,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     }
 
                     if(performSaveOrderId != null){
-                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailByKontumServiceApi(
+                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailServiceApi(
                           supplierName: widget.currentSupplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
                           message: OrderUtils.buildMessageFromCurrentOrderList(
@@ -680,7 +680,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           Divider(),
                           Center(
                             child: Container(
-
                               width: getProportionateScreenWidth(500),
                               padding: const EdgeInsets.all(3.0),
                               height: getProportionateScreenHeight(150),
@@ -752,14 +751,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             },
           ),
         ));
-  }
-
-  refactorNumber(String number) {
-    if(number.startsWith('+39')){
-      return number;
-    }else{
-      return '+39' + number;
-    }
   }
 
   String buildDateFromMilliseconds(int date) {

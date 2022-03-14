@@ -2533,6 +2533,32 @@ class ClientVatService implements VatServiceInterface{
     }
   }
 
+  @override
+  Future<Response> updateEventModel(EventModel event) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        event.toMap());
 
 
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_EVENT + '...');
+    print('Body Request update event: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_EVENT,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService update event (' + VAT_SERVICE_URL_UPDATE_EVENT + '): ' + post.data.toString());
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
 }

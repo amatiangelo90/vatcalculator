@@ -66,6 +66,14 @@ String getStringDateFromDateTime(DateTime dateTime) {
   return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
 }
 
+String refactorNumber(String number) {
+  if(number.startsWith('+39')){
+    return number;
+  }else{
+    return '+39' + number;
+  }
+}
+
 String getDayFromWeekDay(int weekDay){
   switch(weekDay){
     case 1:

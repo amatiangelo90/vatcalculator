@@ -1563,4 +1563,18 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     return storageModel;
   }
+
+  SupplierModel getSupplierFromList(int fk_supplier_id) {
+    print('Retrieve supplier for id ' + fk_supplier_id.toString());
+    SupplierModel currentSupplierName;
+
+    currentListSuppliers.forEach((currentSupplier) {
+
+      if(currentSupplier.pkSupplierId == fk_supplier_id){
+        currentSupplierName = currentSupplier;
+      }
+    });
+
+    return currentSupplierName;
+  }
 }

@@ -40,6 +40,7 @@ const String VAT_SERVICE_URL_UPDATE_USER_DATA = 'http://$host:8080/vatservices/a
 const String VAT_SERVICE_URL_UPDATE_WORKSTATIONS_DETAILS = 'http://$host:8080/vatservices/api/v1/update/workstationdetails';
 const String VAT_SERVICE_URL_UPDATE_AMOUNT_HUNDRED = 'http://$host:8080/vatservices/api/v1/update/amounthundredonstorage';
 const String VAT_SERVICE_URL_UPDATE_BRANCH = 'http://$host:8080/vatservices/api/v1/update/branch';
+const String VAT_SERVICE_URL_UPDATE_EVENT = 'http://$host:8080/vatservices/api/v1/update/event';
 
 //Delete
 const String VAT_SERVICE_URL_DELETE_PRODUCT = 'http://$host:8080/vatservices/api/v1/delete/product';

@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
+import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 
 import '../../../client/pdf/pdf_service.dart';
 import '../../../constants.dart';
@@ -22,6 +25,7 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Card(
@@ -86,8 +90,27 @@ class OrderCard extends StatelessWidget {
                                 'assets/icons/textmessage.svg',
                                 height: getProportionateScreenHeight(25),
                               ),
-                              onPressed: () => {
-                                //launch('sms:${refactorNumber(number)}?body=$message');
+                              onPressed: () {
+                                String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                                    branchName: dataBundleNotifier.currentBranch.companyName,
+                                    orderId: order.code,
+                                    orderProductList: orderIdProductListMap[order.pk_order_id],
+                                    deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                                    supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                    currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                                    storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
+                                    storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
+                                    storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
+
+                                print('Message to send vrvrve: ' + message);
+                                SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
+
+                                message = message.replaceAll('#', '');
+                                message = message.replaceAll('<br>', '\n');
+                                message = message.replaceAll('</h4>', '');
+                                message = message.replaceAll('<h4>', '');
+
+                                launch('sms:${refactorNumber(supplierNumber.tel)}?body=$message');
                               }
                           ),
                           IconButton(
@@ -95,8 +118,27 @@ class OrderCard extends StatelessWidget {
                                 'assets/icons/ws.svg',
                                 height: getProportionateScreenHeight(25),
                               ),
-                              onPressed: () => {
-                                //launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$message');
+                              onPressed: () {
+                                String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                                    branchName: dataBundleNotifier.currentBranch.companyName,
+                                    orderId: order.code,
+                                    orderProductList: orderIdProductListMap[order.pk_order_id],
+                                    deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                                    supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                    currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                                    storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
+                                    storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
+                                    storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
+
+                                SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
+
+                                message = message.replaceAll('&', '%26');
+                                message = message.replaceAll('#', '');
+                                message = message.replaceAll('<br>', '\n');
+                                message = message.replaceAll('</h4>', '');
+                                message = message.replaceAll('<h4>', '');
+
+                                launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message');
                               }
                           ),
                           IconButton(

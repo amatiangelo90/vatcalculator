@@ -24,6 +24,9 @@ class EventManagerScreen extends StatefulWidget {
 }
 
 class _EventManagerScreenState extends State<EventManagerScreen> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   Map<int, List<WorkstationProductModel>> workstationIdProductListMap = {};
   List<WorkstationProductModel> workstationProductModel = [];
 
@@ -35,6 +38,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
               actions: [
                 Stack(
@@ -182,9 +186,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             backgroundColor: Colors.white,
             body: TabBarView(
               children: [
-                buildSettingEventPage(widget.workstationModelList, dataBundleNotifier),
+                buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier),
                 Text('chart'),
-                Text('settings'),
+                buildEventSettingsScreen(widget.event, dataBundleNotifier),
               ],
             ),
           ),
@@ -194,7 +198,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   }
 
 
-  buildSettingEventPage(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) {
+  buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) {
     List<Widget> listWgBar = [];
     workstationModelList.where((element) => element.type == WORKSTATION_TYPE_BAR).forEach((wkStation) {
       listWgBar.add(Padding(
@@ -229,6 +233,130 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           ),
         ])
     );
+  }
+
+  buildEventSettingsScreen(EventModel event, DataBundleNotifier dataBundleNotifier) {
+
+    TextEditingController controllerEventName = TextEditingController(text: event.eventName);
+    TextEditingController controllerLocation = TextEditingController(text: event.location);
+
+    List<Widget> widgetList = [
+      Row(
+        children: const [
+          Text('Nome Evento*',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ],
+      ),
+      CupertinoTextField(
+        textInputAction: TextInputAction.next,
+        restorationId: 'Nome Evento',
+        keyboardType: TextInputType.text,
+        controller: controllerEventName,
+        clearButtonMode: OverlayVisibilityMode.editing,
+        autocorrect: false,
+        placeholder: 'Nome Evento',
+      ),
+      Row(
+        children: const [
+          Text('Location',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ],
+      ),
+      CupertinoTextField(
+        textInputAction: TextInputAction.next,
+        restorationId: 'Location',
+        keyboardType: TextInputType.text,
+        controller: controllerLocation,
+        clearButtonMode: OverlayVisibilityMode.editing,
+        autocorrect: false,
+        placeholder: 'Location',
+      ),
+      const Text('*campo obbligatorio'),
+    ];
+    widgetList.add(
+      SizedBox(height: 20),
+    );
+    widgetList.add(
+      SizedBox(
+        width: MediaQuery.of(context).size.width - 40,
+        child: CupertinoButton(
+            color: kCustomBlueAccent,
+            child: const Text('Salva impostazioni'),
+            onPressed: () async {
+
+              if(controllerEventName.text == null || controllerEventName.text == ''){
+                _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                  backgroundColor: kPinaColor,
+                  duration: Duration(milliseconds: 600),
+                  content: Text(
+                      'Il nome dell\'evento è obbligatorio'),
+                ));
+              }else if(controllerLocation.text == null || controllerLocation.text == ''){
+                _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                  backgroundColor: kPinaColor,
+                  duration: Duration(milliseconds: 600),
+                  content: Text(
+                      'La location è obbligatoria'),
+                ));
+              }else{
+
+                event.location = controllerLocation.text;
+                event.eventName = controllerEventName.text;
+
+                dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+
+              }
+            }),
+      ),
+    );
+    widgetList.add(
+      SizedBox(height: 20),
+    );
+    widgetList.add(
+      Divider(height: 30, color: Colors.grey, indent: 30, endIndent: 30,)
+    );
+
+
+    List<Widget> widgetListButtons = [
+      SizedBox(
+        width: MediaQuery.of(context).size.width - 40,
+        child: CupertinoButton(
+            color: kCustomOrange,
+            child: const Text('Chiudi evento'),
+            onPressed: () async {
+              event.closed = 'Y';
+              await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+            }),
+      ),
+      SizedBox(height: 20),
+      SizedBox(
+        width: MediaQuery.of(context).size.width - 40,
+        child: CupertinoButton(
+            color: kPinaColor,
+            child: const Text('Elimina evento'),
+            onPressed: () async {
+
+            }),
+      ),
+    ];
+    return Container(
+      color: kPrimaryColor,
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: widgetList,
+                ),
+                Column(
+                  children: widgetListButtons,
+                ),
+              ]),
+        ),
+      ),
+    );
+
   }
 
 

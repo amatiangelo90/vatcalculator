@@ -111,7 +111,7 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     eventModel.closed == 'N' ? 'SI' : 'NO',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: kCustomOrange, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: eventModel.closed == 'N' ? Colors.greenAccent : kPinaColor, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ],

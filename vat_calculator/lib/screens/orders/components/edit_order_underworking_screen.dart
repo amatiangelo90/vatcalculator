@@ -25,6 +25,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import 'package:vat_calculator/size_config.dart';
 
+import '../../../client/fattureICloud/model/response_fornitori.dart';
 import '../orders_screen.dart';
 
 class OrderCompletionScreen extends StatefulWidget {
@@ -223,8 +224,27 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                       'assets/icons/textmessage.svg',
                       height: getProportionateScreenHeight(30),
                     ),
-                    onPressed: () => {
+                    onPressed: () {
+                      String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                          branchName: dataBundleNotifier.currentBranch.companyName,
+                          orderId: widget.orderModel.code,
+                          orderProductList: widget.productList,
+                          deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).year.toString(),
+                          supplierName: dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id),
+                          currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                          storageAddress: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).address,
+                          storageCap: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).cap,
+                          storageCity: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).city);
 
+                      print('Message to send: ' + message);
+                      SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id);
+
+                      message = message.replaceAll('#', '');
+                      message = message.replaceAll('<br>', '\n');
+                      message = message.replaceAll('</h4>', '');
+                      message = message.replaceAll('<h4>', '');
+
+                      launch('sms:${refactorNumber(supplierNumber.tel)}?body=$message');
                       //launch('sms:${refactorNumber(number)}?body=$message');
                     }
                 ),
@@ -233,8 +253,27 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                       'assets/icons/ws.svg',
                       height: getProportionateScreenHeight(30),
                     ),
-                    onPressed: () => {
-                      //launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$message');
+                    onPressed: () {
+                      String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                          branchName: dataBundleNotifier.currentBranch.companyName,
+                          orderId: widget.orderModel.code,
+                          orderProductList: widget.productList,
+                          deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(widget.orderModel.delivery_date).year.toString(),
+                          supplierName: dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id),
+                          currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                          storageAddress: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).address,
+                          storageCap: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).cap,
+                          storageCity: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).city);
+
+                      SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id);
+
+                      message = message.replaceAll('&', '%26');
+                      message = message.replaceAll('#', '');
+                      message = message.replaceAll('<br>', '\n');
+                      message = message.replaceAll('</h4>', '');
+                      message = message.replaceAll('<h4>', '');
+
+                      launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message');
                     }
                 ),
               ],

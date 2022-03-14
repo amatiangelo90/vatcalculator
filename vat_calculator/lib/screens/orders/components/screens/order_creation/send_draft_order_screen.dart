@@ -85,7 +85,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                           content: Text('Selezionare la data di consegna')));
                     }else{
 
-                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailByKontumServiceApi(
+                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailServiceApi(
                           supplierName: widget.currentSupplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
 
