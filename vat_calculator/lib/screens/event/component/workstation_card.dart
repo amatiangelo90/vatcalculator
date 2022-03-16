@@ -12,18 +12,18 @@ import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
 
 class WorkstationCard extends StatefulWidget {
-  const WorkstationCard({Key key, this.eventModel, this.workstationModel, this.isBarType}) : super(key: key);
+  const WorkstationCard({Key key, this.eventModel, this.workstationModel, this.isBarType, this.callBackFunctionEventManager}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
   final bool isBarType;
+  final callBackFunctionEventManager;
 
   @override
   State<WorkstationCard> createState() => _WorkstationCardState();
 }
 
 class _WorkstationCardState extends State<WorkstationCard> {
-
 
 
   @override
@@ -184,7 +184,8 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                 eventModel: widget.eventModel,
                                 workstationModel: widget.workstationModel,
                                 workStationProdModelList: workStationProdModelList,
-                                callbackFuntion: callbackFuntion
+                                callbackFuntion: callbackFuntion,
+                                callBackFunctionEventManager: widget.callBackFunctionEventManager
                             ),
                           ),
                         );
@@ -207,11 +208,11 @@ class _WorkstationCardState extends State<WorkstationCard> {
           children: [
             Column(children:[Row(
               children: [
-                Text('Prodotto', style: TextStyle(fontSize: getProportionateScreenHeight(12), color: widget.isBarType ? kCustomOrange : kGreenAccent)),
+                Text('Prodotto', style: TextStyle(fontSize: getProportionateScreenHeight(15), color: widget.isBarType ? kCustomOrange : kGreenAccent)),
               ],
             )]),
-            Column(children:[Text('Carico', style: TextStyle(fontSize: getProportionateScreenHeight(12),color: widget.isBarType ? kCustomOrange : kGreenAccent))]),
-            Column(children:[Text('Consumo', style: TextStyle(fontSize: getProportionateScreenHeight(12),color: widget.isBarType ? kCustomOrange : kGreenAccent))]),
+            Column(children:[Text('Carico', style: TextStyle(fontSize: getProportionateScreenHeight(15),color: widget.isBarType ? kCustomOrange : kGreenAccent))]),
+            Column(children:[Text('Scarico', style: TextStyle(fontSize: getProportionateScreenHeight(15),color: widget.isBarType ? kCustomOrange : kGreenAccent))]),
           ]
       )
     ];
@@ -223,16 +224,21 @@ class _WorkstationCardState extends State<WorkstationCard> {
           children: [
             Column(children:[Row(
               children: [
-                Text(workstationProd.productName, style: TextStyle(fontSize: 11.0, color: Colors.white)),
+                Text(workstationProd.productName, style: TextStyle(fontSize: 15.0, color: Colors.white)),
                 Text(' (${workstationProd.unitMeasure})', style: TextStyle(fontSize: 11.0)),
               ],
             )]),
-            Column(children:[Text(workstationProd.refillStock.toStringAsFixed(2), style: TextStyle(fontSize: 11.0, color: Colors.greenAccent.shade700))]),
-            Column(children:[Text(workstationProd.consumed.toStringAsFixed(2), style: TextStyle(fontSize: 11.0, color: Colors.redAccent.shade400))]),
+            Column(children:[Text(workstationProd.refillStock.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: 14.0, color: Colors.greenAccent.shade700))]),
+            Column(children:[Text(workstationProd.consumed.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: 14.0, color: Colors.redAccent.shade400))]),
           ]
         ));
       });
     return [Table(
+      columnWidths: {
+        0: FlexColumnWidth(3),
+        1: FlexColumnWidth(1),
+        2: FlexColumnWidth(1),
+      },
       children: list,
     )];
   }

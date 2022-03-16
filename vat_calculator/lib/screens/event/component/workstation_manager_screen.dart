@@ -21,12 +21,13 @@ import '../../../size_config.dart';
 import 'event_manager_screen.dart';
 
 class WorkstationManagerScreen extends StatefulWidget {
-  const WorkstationManagerScreen({Key key, this.eventModel, this.workstationModel, this.workStationProdModelList, this.callbackFuntion}) : super(key: key);
+  const WorkstationManagerScreen({Key key, this.eventModel, this.workstationModel, this.workStationProdModelList, this.callbackFuntion, this.callBackFunctionEventManager}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
   final List<WorkstationProductModel> workStationProdModelList;
   final Function callbackFuntion;
+  final Function callBackFunctionEventManager;
 
   @override
   State<WorkstationManagerScreen> createState() => _WorkstationManagerScreenState();
@@ -58,11 +59,11 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 tabs: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('CONSUMI', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    child: Text('CARICO', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('CARICO', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    child: Text('SCARICO', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -92,8 +93,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             ),
             body: TabBarView(
               children: [
-                buildUnloadWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
                 buildRefillWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
+                buildUnloadWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
                 buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
               ],
             ),
@@ -107,7 +108,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     List<Widget> rows = [
     ];
     workStationProdModelList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.consumed.toString());
+      TextEditingController controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', '').replaceAll('.0', ''));
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -190,9 +191,18 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 ),
                 GestureDetector(
                   onTap: () {
-                    setState(() {
-                      element.consumed = element.consumed + 1;
-                    });
+                    if(element.consumed + 1 > element.refillStock){
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        duration: Duration(milliseconds: 2000),
+                        content: Text(
+                            'Non puoi sforare la quantità di carico di [${element.refillStock} ${element.unitMeasure}] configurata per ${element.productName}'),
+                      ));
+                    }else{
+                      setState(() {
+                        element.consumed = element.consumed + 1;
+                      });
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -207,6 +217,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       );
     });
     rows.add(Divider(height: getProportionateScreenHeight(100), indent: 30, endIndent: 30,));
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Stack(
@@ -225,27 +236,43 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 Container(
                   color: kPrimaryColor,
                   child: DefaultButton(
-                    text: 'Salva Consumo',
+                    text: 'Effettua Scarico',
                     press: () async {
                       try{
-                        await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                            widget.workStationProdModelList,
-                            ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
-                            )
-                        );
-                        widget.callbackFuntion();
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          backgroundColor: Colors.green.withOpacity(0.8),
-                          duration: Duration(milliseconds: 600),
-                          content: Text(
-                              'Consumo per ${widget.workstationModel.name} registrato'),
-                        ));
+                        bool isValid = true;
+                        for(WorkstationProductModel workProd in widget.workStationProdModelList){
+                          if(workProd.consumed > workProd.refillStock){
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              backgroundColor: kPinaColor,
+                              duration: Duration(milliseconds: 3000),
+                              content: Text(
+                                  'Impossibile effettuare scarico di ${workProd.consumed} ${workProd.unitMeasure} per ${workProd.productName}. La quantità selezionata eccede quella di carico [${workProd.refillStock} ${workProd.unitMeasure}] configurata '),
+                            ));
 
+                            isValid = false;
+                            break;
+                          }
+                        }
+                        if(isValid){
+                          await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
+                              widget.workStationProdModelList,
+                              ActionModel(
+                                  date: DateTime.now().millisecondsSinceEpoch,
+                                  description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
+                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
+                              )
+                          );
+                          widget.callbackFuntion();
+                          widget.callBackFunctionEventManager();
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            backgroundColor: Colors.green.withOpacity(0.8),
+                            duration: Duration(milliseconds: 600),
+                            content: Text(
+                                'Scarico per ${widget.workstationModel.name} registrato'),
+                          ));
+                        }
                       }catch(e){
                         Scaffold.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
@@ -255,7 +282,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         ));
                       }
                     },
-                    color: kPinaColor,
+                    color: Colors.redAccent.withOpacity(0.8),
                   ),
                 ),
               ],
@@ -381,27 +408,28 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               ));
         },
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
-          child: Card(
-            color: kPrimaryColor,
-            elevation: 5,
-            child: Center(child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Text('Aggiungi prodotti', style: TextStyle(color: kCustomBlueAccent),),
-                Icon(Icons.add, color: kCustomBlueAccent),
-              ],
-            )),
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+          child: SizedBox(
+            height: getProportionateScreenHeight(50),
+            child: Card(
+              shadowColor: kCustomBlueAccent,
+              color: kPrimaryColor,
+              elevation: 1,
+              child: Center(child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: const [
+                  Text('Aggiungi prodotti', style: TextStyle(color: kCustomBlueAccent),),
+                  Icon(Icons.add, color: kCustomBlueAccent),
+                ],
+              )),
+            ),
           ),
         ),
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
         child: DefaultButton(
-
-
-
           text: loadPaxController.text == '' || loadPaxController.text == '0' ?
           'Configurare numero clienti per carico':
           'Carico per ${loadPaxController.text} persone',
@@ -477,7 +505,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     ];
 
     workStationProdModelList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.refillStock.toStringAsFixed(2));
+      TextEditingController controller = TextEditingController(text: element.refillStock.toStringAsFixed(2).replaceAll('.00', ''));
       rows.add(
         Padding(
           padding: const EdgeInsets.fromLTRB(5, 1, 8, 1),
@@ -486,7 +514,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             children: [
               GestureDetector(
                 onTap: (){
-                  TextEditingController amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2));
+                  TextEditingController amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''));
                   showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
@@ -575,7 +603,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     Row(
                       children: [
                         Text(
-                          element.amountHunderd.toStringAsFixed(2),
+                          element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''),
                           style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomBlueAccent),
                         ),
                         Text(
@@ -594,8 +622,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     onTap: () {
                       setState(() {
                         if (element.refillStock <= 1) {
-                          print('Elimina');
-
                           dataBundleNotifier.getclientServiceInstance().removeProductFromWorkstation(element);
                           workStationProdModelList.remove(element);
                           _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -608,6 +634,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           element.refillStock--;
                         }
                       });
+                      widget.callbackFuntion();
+                      widget.callBackFunctionEventManager();
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
@@ -649,11 +677,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           ),
         ),
       );
+      rows.add(Divider(color: Colors.black.withOpacity(0.3), height: 2, indent: 7,));
     });
+
+    rows.add(Divider(color: Colors.black.withOpacity(0.3), height: 132, indent: 7,));
     return Container(
       color: kPrimaryColor,
       child: Stack(
-        children: [ SingleChildScrollView(
+        children: [
+          SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -685,6 +717,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           )
                       );
                       widget.callbackFuntion();
+                      widget.callBackFunctionEventManager();
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: Duration(milliseconds: 600),
@@ -777,6 +810,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                               await dataBundleNotifier.getclientServiceInstance().updateWorkstationDetails(workstationModel);
                               widget.callbackFuntion();
+                              widget.callBackFunctionEventManager();
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
                                   duration: const Duration(milliseconds: 5000),

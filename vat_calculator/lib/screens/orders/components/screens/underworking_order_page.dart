@@ -132,11 +132,11 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
                           weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
 
-                          selectedDecoration: BoxDecoration(
+                          selectedDecoration: const BoxDecoration(
                             color: kCustomBlueAccent,
                             shape: BoxShape.circle,
                           ),
-                          todayDecoration: BoxDecoration(
+                          todayDecoration: const BoxDecoration(
                             color: kCustomBlueAccent,
                             shape: BoxShape.circle,
                           ),

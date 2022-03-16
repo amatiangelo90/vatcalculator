@@ -220,7 +220,10 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                     color: kCustomWhite,
                                                     width: 25,
                                                   ),
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    Navigator.pushNamed(context,
+                                                        CreateOrderScreen.routeName);
+                                                  },
                                                 ),
                                                 Positioned(
                                                   top: 26.0,
@@ -383,7 +386,10 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     color: kCustomWhite,
                                     width: 50,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.pushNamed(context,
+                                        EventCreateScreen.routeName);
+                                  },
                                 ),
                                 Positioned(
                                   top: 26.0,

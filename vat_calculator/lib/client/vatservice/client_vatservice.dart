@@ -2110,6 +2110,7 @@ class ClientVatService implements VatServiceInterface{
                 storeStock: workstationElement['storeStock'],
                 unitMeasure: workstationElement['unitMeasure'],
                 fkProductId: workstationElement['fkProductId'],
+                productPrice: workstationElement['productPrice'],
               )
           );
         });

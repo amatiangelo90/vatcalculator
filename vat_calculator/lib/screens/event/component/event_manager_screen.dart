@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +80,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       top: 26.0,
                       right: 9.0,
                       child: Stack(
-                        children: <Widget>[
+                        children: const <Widget>[
                           Icon(
                             Icons.brightness_1,
                             size: 18,
@@ -187,7 +189,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             body: TabBarView(
               children: [
                 buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier),
-                Text('chart'),
+                buildResocontoScreen(widget.workstationModelList, dataBundleNotifier),
                 buildEventSettingsScreen(widget.event, dataBundleNotifier),
               ],
             ),
@@ -207,6 +209,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           eventModel: widget.event,
           workstationModel: wkStation,
           isBarType : true,
+          callBackFunctionEventManager: (){
+            setState(() {
+
+            });
+          },
         ),
       ),);
     });
@@ -218,6 +225,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           eventModel: widget.event,
           workstationModel: wkStation,
           isBarType : false,
+          callBackFunctionEventManager: (){
+            setState(() {
+
+            });
+          },
         ),
       ),);
     });
@@ -234,7 +246,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ])
     );
   }
-
   buildEventSettingsScreen(EventModel event, DataBundleNotifier dataBundleNotifier) {
 
     TextEditingController controllerEventName = TextEditingController(text: event.eventName);
@@ -308,10 +319,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       ),
     );
     widgetList.add(
-      SizedBox(height: 20),
+      const SizedBox(height: 20),
     );
     widgetList.add(
-      Divider(height: 30, color: Colors.grey, indent: 30, endIndent: 30,)
+      const Divider(height: 130, color: Colors.grey, indent: 30, endIndent: 30,)
     );
 
 
@@ -358,6 +369,207 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
 
   }
+  buildDetailsAndStatistics(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) async {
 
 
+
+    return Container(
+      color: kPrimaryColor,
+      child: Padding(
+        padding: const EdgeInsets.all(18.0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+
+              ]),
+        ),
+      ),
+    );
+  }
+
+  buildResocontoScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) {
+    return FutureBuilder(
+      initialData: const Center(
+          child: CircularProgressIndicator(
+            color: kPinaColor,
+          )),
+      builder: (context, snapshot){
+        return snapshot.data;
+      },
+      future: retrieveDataToBuildRecapWidget(workstationModelList, dataBundleNotifier),
+    );
+  }
+
+  Future<Widget> retrieveDataToBuildRecapWidget(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) async {
+
+    Map<int, List<WorkstationProductModel>> map = {};
+
+    await Future.forEach(workstationModelList,
+            (WorkstationModel workstationModel) async {
+          List<WorkstationProductModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
+          if(map.containsKey(workstationModel.pkWorkstationId)){
+            map[workstationModel.pkWorkstationId].clear();
+            map[workstationModel.pkWorkstationId] = list;
+          }else{
+            map[workstationModel.pkWorkstationId] = list;
+          }
+        });
+
+    List<TableRow> rows = [
+      TableRow( children: [
+        Row(
+          children: [
+            Text('   PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)),),
+          ],
+        ),
+        Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('SCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('COSTO(€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
+      ]),
+    ];
+
+    Set<int> idsProductsPresent = Set();
+
+    map.forEach((workstationId, listProducts) {
+      listProducts.forEach((product) {
+          idsProductsPresent.add(product.fkProductId);
+      });
+    });
+
+    Map<int, SupportTableObj> supportTableObjList = {};
+
+    idsProductsPresent.forEach((productId) {
+      map.forEach((workstationId, listProducts) {
+        listProducts.forEach((product) {
+          if(product.fkProductId == productId){
+
+            if(supportTableObjList.containsKey(productId)){
+              supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
+              supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+
+            }else{
+              supportTableObjList[productId] = SupportTableObj(
+                  id: productId,
+                  amountin: product.refillStock,
+                  amountout: product.consumed,
+                  productName: product.productName,
+                  price: product.productPrice,
+                  unitMeasure: product.unitMeasure
+              );
+            }
+          }
+        });
+      });
+    });
+
+    double totalExpence = 0.0;
+
+    idsProductsPresent.forEach((id) {
+      totalExpence = totalExpence + ((supportTableObjList[id].amountin - supportTableObjList[id].amountout) * supportTableObjList[id].price);
+      rows.add(TableRow( children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('' + supportTableObjList[id].productName, textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+                  Text('€ ' + supportTableObjList[id].price.toStringAsFixed(2) + ' / ' + supportTableObjList[id].unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(10)),),
+                ],
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+          child: Column(
+            children: [
+              Text(supportTableObjList[id].amountin.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+          child: Text(supportTableObjList[id].amountout.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+          child: Text((supportTableObjList[id].amountin - supportTableObjList[id].amountout).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(16)),),
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+          child: Text(((supportTableObjList[id].amountin - supportTableObjList[id].amountout) * supportTableObjList[id].price).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(16)),),
+        ),
+      ]),);
+    });
+
+    rows.add(TableRow( children: [
+      Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Row(
+          children: [
+            Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(15)),),
+          ],
+        ),
+      ),
+      Text(''),
+      Text(''),
+      Text(''),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+        child: Text(totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite, fontSize: getProportionateScreenHeight(15)),),
+    ),
+    ]),);
+
+    return Container(
+      color: kPrimaryColor,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Table(
+            columnWidths: const {
+              0: FlexColumnWidth(5),
+              1: FlexColumnWidth(2),
+              2: FlexColumnWidth(2),
+              3: FlexColumnWidth(2),
+              4: FlexColumnWidth(3),
+            },
+            border: TableBorder.all(
+                color: Colors.grey,
+                width: 0.1
+            ),
+            children: rows,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SupportTableObj{
+
+  int id;
+  String productName;
+  double amountin;
+  double amountout;
+  double price;
+  String unitMeasure;
+
+  SupportTableObj({this.id, this.productName, this.amountin, this.amountout, this.price, this.unitMeasure});
+
+  toMap(){
+    return {
+      'id' : id,
+      'productName' : productName,
+      'amountin' : amountin,
+      'amountout' : amountout,
+      'unitMeasure' : unitMeasure
+    };
+  }
 }

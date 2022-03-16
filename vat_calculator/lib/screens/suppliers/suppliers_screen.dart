@@ -217,7 +217,7 @@ class SuppliersScreen extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0)),
-                  color:kCustomWhite,
+                  color: kPrimaryColor,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -229,7 +229,7 @@ class SuppliersScreen extends StatelessWidget {
                           SizedBox(width: getProportionateScreenWidth(5)),
                           SvgPicture.asset(
                             'assets/icons/supplier.svg',
-                            color: kPrimaryColor,
+                            color: Colors.white,
                             width: getProportionateScreenWidth(30),
                           ),
                           SizedBox(width: getProportionateScreenWidth(20)),
@@ -241,19 +241,19 @@ class SuppliersScreen extends StatelessWidget {
                                 supplier.nome,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: kPrimaryColor,
+                                    color: Colors.white,
                                     fontSize: getProportionateScreenWidth(15)),
                               ),
                               Text('#' + supplier.extra,
                                   style: TextStyle(
-                                    color: kBeigeColor,
+                                    color: kCustomOrange,
                                     fontSize: getProportionateScreenWidth(12),
                                   )),
                             ],
                           ),
                         ],
                       ),
-                      const Icon(Icons.arrow_forward_ios),
+                      const Icon(Icons.arrow_forward_ios, color: Colors.white),
                     ],
                   ),
                 ),

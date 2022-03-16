@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
@@ -113,9 +114,18 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Padding(
+                        Padding(
                           padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
-                          child: Text(' Cassa', style: TextStyle(color: Colors.white)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(' Cassa', style: TextStyle(color: Colors.white)),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SvgPicture.asset('assets/icons/Settings.svg'),
+                              ),
+                            ],
+                          ),
                         ),
                         SizedBox(
                           width: getProportionateScreenWidth(400),

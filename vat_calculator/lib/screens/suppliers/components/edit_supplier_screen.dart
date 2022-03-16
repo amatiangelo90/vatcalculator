@@ -64,7 +64,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 press: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
                 },
-                color: Colors.green.shade700.withOpacity(0.8),
+                color: kCustomBlueAccent,
               ),
             ),
             body: FutureBuilder(

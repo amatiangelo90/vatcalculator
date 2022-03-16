@@ -45,9 +45,10 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
           return Future.delayed(const Duration(milliseconds: 500));
         },
         child: Scaffold(
-          backgroundColor: Colors.grey.shade900,
+          backgroundColor: kPrimaryColor,
           appBar: AppBar(
-            backgroundColor: Colors.grey.shade900,
+            elevation: 5,
+            backgroundColor: kPrimaryColor,
             title: Text('Bozze Ordini', style: TextStyle(
               fontSize: getProportionateScreenWidth(17),
               color: kCustomOrange,
@@ -344,11 +345,11 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
             SizedBox(height: getProportionateScreenHeight(300),),
             Padding(
               padding: const EdgeInsets.all(18.0),
-              child: Center(child: Text('Nessuna bozza presente')),
+              child: Center(child: Text('Nessuna bozza presente', style: TextStyle(color: Colors.white),)),
             ),
 
             CupertinoButton(
-                color: Colors.orange,
+                color: kCustomOrange,
                 child: Text('Torna alla pagina Ordini'), onPressed: (){
               Navigator.pushNamed(context, OrdersScreen.routeName);
             }),

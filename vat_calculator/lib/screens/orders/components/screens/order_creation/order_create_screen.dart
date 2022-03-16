@@ -179,14 +179,14 @@ class CreateOrderScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)
-                    ? Colors.orangeAccent.withOpacity(0.6) : Colors.blueAccent.withOpacity(0.6),
+                    ? Colors.orangeAccent.withOpacity(0.6) : kCustomBlueAccent,
               ),
               child: Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0)),
-                  color: Colors.white,
+                  color: kPrimaryColor,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -198,7 +198,7 @@ class CreateOrderScreen extends StatelessWidget {
                           SizedBox(width: getProportionateScreenWidth(5)),
                           SvgPicture.asset(
                             'assets/icons/supplier.svg',
-                            color: kPrimaryColor,
+                            color: Colors.white,
                             width: getProportionateScreenWidth(30),
                           ),
                           SizedBox(width: getProportionateScreenWidth(20)),
@@ -209,12 +209,14 @@ class CreateOrderScreen extends StatelessWidget {
                               Text(
                                 supplier.nome,
                                 style: TextStyle(
-                                    color: kPrimaryColor,
-                                    fontSize: getProportionateScreenWidth(15)),
+                                    color: kCustomBlueAccent,
+                                    fontSize: getProportionateScreenWidth(15),
+                                    fontWeight: FontWeight.bold
+                                ),
                               ),
                               Text('#' + supplier.extra,
                                   style: TextStyle(
-                                    color: kBeigeColor,
+                                    color: Colors.white,
                                     fontSize: getProportionateScreenWidth(12),
                                   )),
                               ],
@@ -223,7 +225,7 @@ class CreateOrderScreen extends StatelessWidget {
                       ),
                       draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier) ? Text('Bozza') : Text(''),
 
-                      const Icon(Icons.arrow_forward_ios),
+                      const Icon(Icons.arrow_forward_ios, color: Colors.white),
                     ],
                   ),
                 ),

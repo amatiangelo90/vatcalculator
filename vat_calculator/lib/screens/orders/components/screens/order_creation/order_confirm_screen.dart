@@ -18,7 +18,9 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
+import '../../../../home/home_screen.dart';
 import '../../../orders_screen.dart';
+import 'order_sent_details_screen.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
   const OrderConfirmationScreen({Key key, this.currentSupplier}) : super(key: key);
@@ -168,22 +170,25 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
                         context.loaderOverlay.hide();
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen(),),);
-
-                        buildShowDialogToSendWhatsAppMessage(OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
-                          branchName: dataBundleNotifier.currentBranch.companyName,
-                          orderId: code,
-                          productList: dataBundleNotifier.currentProductModelListForSupplier,
-                          deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                        //Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen(),),);
+                        Navigator.pushNamed(context, HomeScreen.routeName);
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
+                          mail: widget.currentSupplier.mail,
                           supplierName: widget.currentSupplier.nome,
-                          currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                          storageAddress: currentStorageModel.address,
-                          storageCap: currentStorageModel.cap,
-                          storageCity: currentStorageModel.city,
-                        ),
-                            widget.currentSupplier.tel,
-                            widget.currentSupplier.mail,
-                            widget.currentSupplier.nome);
+                          number: widget.currentSupplier.tel,
+                          message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                            branchName: dataBundleNotifier.currentBranch.companyName,
+                            orderId: code,
+                            productList: dataBundleNotifier.currentProductModelListForSupplier,
+                            deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                            supplierName: widget.currentSupplier.nome,
+                            currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                            storageAddress: currentStorageModel.address,
+                            storageCap: currentStorageModel.cap,
+                            storageCity: currentStorageModel.city,
+                          )),),);
+
+
                       } else {
                         showDialog(
                             context: context,
@@ -490,7 +495,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
           ),
           CupertinoButton(
-              child: Text('Modifica', style: const TextStyle(color: Colors.black54),),
+              child: const Text('Modifica', style: TextStyle(color: Colors.black54),),
             onPressed: (){
               Navigator.of(context).pop();
             },
@@ -537,7 +542,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   ),
                 ],
               ),
-            ));
+            )
+        );
       }
     });
 
@@ -593,164 +599,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
         currentDate = pickedDate;
       });
     }
-  }
-
-  void buildShowDialogToSendWhatsAppMessage(String message, String number, String mail, String supplierName) {
-    String messageToShow = message.replaceAll('%0a', '\n');
-
-    message = message.replaceAll('&', '%26');
-    message = message.replaceAll('#', '');
-
-    Widget cancelButton = TextButton(
-
-      child: const Center(child: Text("No Grazie, ho finito!", style: TextStyle(color: kPrimaryColor),)),
-      onPressed:  () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          actions: [
-            cancelButton,
-          ],
-          contentPadding: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                  Radius.circular(10.0))),
-          content: Builder(
-            builder: (context) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius:
-                        const BorderRadius.only(
-                            topRight:
-                            Radius.circular(
-                                10.0),
-                            topLeft:
-                            Radius.circular(
-                                10.0)),
-                        color: Colors.green.shade800,
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment
-                                .spaceBetween,
-                            children: [
-                              Text(
-                                '  Ordine Inviato Correttamente',
-                                style: TextStyle(
-                                  fontSize:
-                                  getProportionateScreenWidth(
-                                      15),
-                                  fontWeight:
-                                  FontWeight.bold,
-                                  color: kCustomWhite,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.clear,
-                                  color: kCustomWhite,
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(
-                                      context);
-                                },
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Vuoi inoltrare l\'ordine a $supplierName tramite messaggio?',textAlign: TextAlign.center, style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),),
-                          Divider(),
-                          Center(
-                            child: Container(
-                              width: getProportionateScreenWidth(500),
-                              padding: const EdgeInsets.all(3.0),
-                              height: getProportionateScreenHeight(150),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.black.withOpacity(0.8),
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  width: 1.0,
-                                ),
-                              ),
-                              child: Expanded(
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Text(
-                                    messageToShow,
-                                    style: TextStyle(color: kCustomWhite),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Divider(),
-                          Padding(
-                            padding: const EdgeInsets.all(3.0),
-                            child: Text('Cellulare: ' + number, style: TextStyle(color: Colors.black, fontWeight: FontWeight.w400),),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  launch('sms:${refactorNumber(number)}?body=$message');
-                                },
-                                child: Column(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/icons/textmessage.svg',
-                                      height: 40,
-                                      width: 30,
-                                    ),
-                                    Text('Sms'),
-                                  ],
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$message');
-                                },
-                                child: Column(
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/icons/ws.svg',
-                                      height: 40,
-                                      width: 30,
-                                    ),
-                                    Text('What\'sApp'),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ));
   }
 
   String buildDateFromMilliseconds(int date) {

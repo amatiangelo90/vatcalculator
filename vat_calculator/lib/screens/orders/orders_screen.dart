@@ -130,7 +130,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                 ],
               ),
             ],
-            iconTheme: IconThemeData(color: kCustomWhite),
+            iconTheme: const IconThemeData(color: kCustomWhite),
             centerTitle: true,
             title: Text(
               'Ordini',

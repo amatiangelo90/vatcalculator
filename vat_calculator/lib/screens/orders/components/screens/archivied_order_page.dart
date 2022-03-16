@@ -64,6 +64,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
         builder: (context, dataBundleNotifier, child){
           _kOrders.addAll(getKOrders(dataBundleNotifier.currentArchiviedWorkingOrdersList));
           return Scaffold(
+            backgroundColor: kPrimaryColor,
             appBar: AppBar(
               elevation: 5,
               backgroundColor: kPrimaryColor,

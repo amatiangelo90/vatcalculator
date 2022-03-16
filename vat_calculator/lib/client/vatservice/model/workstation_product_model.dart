@@ -13,6 +13,7 @@ class WorkstationProductModel{
   int fkProductId;
   double storeStock;
   double amountHunderd;
+  double productPrice;
 
 
   WorkstationProductModel(
@@ -28,6 +29,7 @@ class WorkstationProductModel{
         @required this.fkProductId,
         @required this.storeStock,
         @required this.amountHunderd,
+        @required this.productPrice,
       });
 
   toMap(){
@@ -43,6 +45,7 @@ class WorkstationProductModel{
       'fkProductId' : fkProductId,
       'storeStock' : storeStock,
       'amountHunderd' : amountHunderd,
+      'productPrice' : productPrice,
     };
   }
 
@@ -59,6 +62,7 @@ class WorkstationProductModel{
       fkProductId: json['fkProductId'] as int,
       storeStock: json['storeStock'] as double,
       amountHunderd: json['amountHunderd'] as double,
+      productPrice: json['productPrice'] as double,
     );
   }
 }

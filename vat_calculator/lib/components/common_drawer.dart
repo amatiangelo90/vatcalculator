@@ -301,7 +301,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     height: getProportionateScreenHeight(28),
                                     width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
                                     child: Card(
-                                      color: kPinaColor,
+                                      color: kCustomOrange,
                                       child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
