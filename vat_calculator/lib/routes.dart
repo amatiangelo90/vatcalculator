@@ -11,15 +11,14 @@ import 'package:vat_calculator/screens/details_screen/details_ndc_received.dart'
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
+import 'package:vat_calculator/screens/main_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_confirm_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/landing/landing_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/archivied_order_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/draft_order_page.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
@@ -52,25 +51,20 @@ final Map<String, WidgetBuilder> routes = {
   SignUpScreen.routeName: (context) => SignUpScreen(),
   CompleteProfileScreen.routeName: (context) => const CompleteProfileScreen(),
   FattureAcquistiDetailsPage.routeName: (context) => const FattureAcquistiDetailsPage(),
-  HomeScreen.routeName: (context) => HomeScreen(),
   LandingScreen.routeName: (context) => LandingScreen(),
   FattureVenditeDetailsPage.routeName: (context) => FattureVenditeDetailsPage(),
   NDCReceivedDetailsPage.routeName: (context) => NDCReceivedDetailsPage(),
   NDCEmesseDetailsPage.routeName: (context) => NDCEmesseDetailsPage(),
-  OrdersScreen.routeName: (context) => OrdersScreen(),
   FattureInCloudCalculatorScreen.routeName: (context) => FattureInCloudCalculatorScreen(),
   CreateOrderScreen.routeName: (context) => CreateOrderScreen(),
   ArubaCalculatorScreen.routeName: (context) => ArubaCalculatorScreen(),
   BranchChoiceCreationEnjoy.routeName: (context) => BranchChoiceCreationEnjoy(),
-  OrdersScreen.routeName: (context) => OrdersScreen(),
-  StorageScreen.routeName: (context) => StorageScreen(),
   SuppliersScreen.routeName: (context) => SuppliersScreen(),
   AddSupplierScreen.routeName: (context) => AddSupplierScreen(),
   EditSuppliersScreen.routeName: (context) => EditSuppliersScreen(),
   AddProductScreen.routeName: (context) => const AddProductScreen(),
   EditProductScreen.routeName: (context) => const EditProductScreen(),
   AddStorageScreen.routeName: (context) => const AddStorageScreen(),
-  ProfileEditiScreen.routeName: (context) => ProfileEditiScreen(),
   RegisterFattureProviderScreen.routeName: (context) => RegisterFattureProviderScreen(),
   LoadStorageScreen.routeName: (context) => LoadStorageScreen(),
   UnloadStorageScreen.routeName: (context) => UnloadStorageScreen(),
@@ -90,4 +84,5 @@ final Map<String, WidgetBuilder> routes = {
   AmountHundredScreen.routeName: (context) => AmountHundredScreen(),
   UpdateBranchScreen.routeName: (context) => UpdateBranchScreen(),
   JoinSupplierAlreadyRegisteredScreen.routeName: (context) => JoinSupplierAlreadyRegisteredScreen(),
+  HomeScreenMain.routeName: (context) => HomeScreenMain(),
 };

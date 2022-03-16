@@ -7,22 +7,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
-import 'package:vat_calculator/components/common_drawer.dart';
-import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import '../../constants.dart';
-import '../../enums.dart';
 import '../../size_config.dart';
 import 'managment_pages/branch_edit_screen.dart';
 
 class ProfileEditiScreen extends StatefulWidget {
   const ProfileEditiScreen({Key key}) : super(key: key);
-
-  static String routeName = 'profile_edit_screen';
 
   @override
   State<ProfileEditiScreen> createState() => _ProfileEditiScreenState();
@@ -49,19 +44,6 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
         builder: (context, dataBundleNotifier, child) {
 
       return Scaffold(
-        drawer: const CommonDrawer(),
-        appBar: AppBar(
-          iconTheme: const IconThemeData(color: kCustomWhite),
-          centerTitle: true,
-          title: Text(
-            'Gestione',
-            style: TextStyle(
-              fontSize: getProportionateScreenWidth(19),
-              color: kCustomBlueAccent,
-            ),
-          ),
-          backgroundColor: kPrimaryColor,
-        ),
         body: RefreshIndicator(
           onRefresh: (){
             setState(() {
@@ -547,12 +529,6 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
             ),
           ),
         ),
-        bottomNavigationBar: const BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            notchMargin: 3,
-            color: kPrimaryColor,
-            child: CustomBottomNavBar(selectedMenu: MenuState.profile),
-          ),
       );
     });
   }

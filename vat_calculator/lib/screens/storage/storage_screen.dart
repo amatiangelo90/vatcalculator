@@ -6,31 +6,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/save_product_into_storage_request.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/components/common_drawer.dart';
-import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
-import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
-import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
+import '../../client/vatservice/model/utils/action_type.dart';
 import '../../constants.dart';
-import '../../enums.dart';
 import '../../size_config.dart';
 import '../suppliers/components/add_suppliers/add_supplier_choice.dart';
 import 'components/add_storage_screen.dart';
 import 'components/product_datasource_storage.dart';
 
 class StorageScreen extends StatefulWidget{
-  static String routeName = "/storagescreen";
+
   @override
   State<StorageScreen> createState() => _StorageScreenState();
 }
@@ -57,7 +49,7 @@ class _StorageScreenState extends State<StorageScreen> {
 
   String _selectedSupplier = 'Seleziona Fornitore';
 
-  int _rowsPerPage = 7;
+  int _rowsPerPage = 10;
 
   void setCurrentSupplier(String supplier, DataBundleNotifier dataBundleNotifier) {
     setState(() {
@@ -68,78 +60,11 @@ class _StorageScreenState extends State<StorageScreen> {
   @override
   Widget build(BuildContext context) {
 
-    const double _initFabHeight = 80.0;
-    double _fabHeight = 0;
-    double _panelHeightOpen = 0;
-    double _panelHeightClosed = 45.0;
-
-
-
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         suppliersList.clear();
-        //dataBundleNotifier.setToSelectedFalseAllItemOnCurrentStorageProductListForCurrentStorageDuplicated();
-        _panelHeightOpen = MediaQuery.of(context).size.height * .75;
         return Scaffold(
-
-          drawer: const CommonDrawer(),
-          appBar: AppBar(
-            iconTheme: IconThemeData(color: kCustomWhite),
-            actions: [
-              GestureDetector(
-                onTap: () {
-                  buildStorageChooserDialog(context, dataBundleNotifier);
-                },
-                child: Stack(
-                  children: [ IconButton(
-                    icon: SvgPicture.asset(
-                      'assets/icons/storage.svg',
-                      color: kCustomWhite,
-                      width: getProportionateScreenHeight(40),
-                    ),
-                    onPressed: () {
-                      buildStorageChooserDialog(context, dataBundleNotifier);
-                    },
-                  ),
-                    Positioned(
-                      top: 26.0,
-                      right: 4.0,
-                      child: Stack(
-                        children: const <Widget>[
-                          Icon(
-                            Icons.brightness_1,
-                            size: 20,
-                            color: kCustomBlueAccent,
-                          ),
-                          Positioned(
-                            right: 3.5,
-                            top: 3.5,
-                            child: Center(
-                              child: Icon(Icons.list, size: 13, color: Colors.white,),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10,),
-            ],
-            backgroundColor: kPrimaryColor,
-            centerTitle: true,
-            title: Text(dataBundleNotifier.currentBranch == null ? 'Area Magazzini' : dataBundleNotifier.currentStorage == null ?  'Area Magazzini': dataBundleNotifier.currentStorage.name, style: TextStyle(
-                fontSize: getProportionateScreenWidth(13),
-            color: kCustomWhite,
-          ),),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          bottomNavigationBar: const BottomAppBar(
-            shape: CircularNotchedRectangle(),
-            notchMargin: 3,
-            color: kPrimaryColor,
-            child: CustomBottomNavBar(selectedMenu: MenuState.storage),
-          ),
+          backgroundColor: kPrimaryColor,
           body: dataBundleNotifier.currentBranch == null
               ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -189,6 +114,7 @@ class _StorageScreenState extends State<StorageScreen> {
               SizedBox(
                 width: SizeConfig.screenWidth * 0.6,
                 child: DefaultButton(
+
                   text: "Crea Magazzino",
                   press: () async {
                     Navigator.push(
@@ -212,155 +138,6 @@ class _StorageScreenState extends State<StorageScreen> {
                       scrollDirection: Axis.vertical,
                       child: Column(
                         children: [
-
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                  onTap: (){
-                                    Navigator.pushNamed(context, UnloadStorageScreen.routeName);
-                                  },
-                                  child: Card(
-                                    color: kPrimaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Text('   SCARICO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange),),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.arrow_circle_down_outlined,
-                                              color: Colors.orange,
-                                              size: getProportionateScreenHeight(30),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pushNamed(context, UnloadStorageScreen.routeName);
-                                            }
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                  onTap: (){
-                                    Navigator.pushNamed(context, LoadStorageScreen.routeName);
-                                  },
-                                  child: Card(
-                                    color: kPrimaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Text('   CARICO', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.arrow_circle_up_outlined,
-                                              color: Colors.green,
-                                              size: getProportionateScreenHeight(30),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pushNamed(context, LoadStorageScreen.routeName);
-                                            }
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                  onTap: (){
-                                    try{
-                                      List<StorageProductModel> productToRemove = [];
-                                      dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
-                                        if(element.selected){
-                                          productToRemove.add(element);
-                                        }
-                                      });
-                                      if(productToRemove.isEmpty){
-                                        ScaffoldMessenger.of(context)
-                                            .showSnackBar(const SnackBar(
-                                            duration: Duration(milliseconds: 400),
-                                            content: Text('Nessun prodotto selezionato')));
-                                      }else{
-                                        productToRemove.forEach((productStorageElementToRemove) async {
-                                          await dataBundleNotifier.getclientServiceInstance()
-                                              .removeProductFromStorage(
-                                              storageProductModel: productStorageElementToRemove,
-                                              actionModel: ActionModel(
-                                                  date: DateTime.now().millisecondsSinceEpoch,
-                                                  description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                                      'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                                  type: ActionType.PRODUCT_DELETE
-                                              )
-                                          );
-                                        });
-                                        //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
-                                        sleep(const Duration(milliseconds: 500));
-                                        dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                                      }
-                                    }catch(e){
-                                      print('Impossible to remove product from storage. Exception: ' + e);
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                          duration: const Duration(milliseconds: 400),
-                                          content: Text('Impossible to remove product from storage. Exception: ' + e)));
-                                    }
-                                  },
-                                  child: Card(
-                                    color: kPrimaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Text('   ELIMINA', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: Colors.redAccent,
-                                              size: getProportionateScreenHeight(30),
-                                            ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                dataBundleNotifier.currentStorage == null ? const SizedBox(width: 0,) : GestureDetector(
-                                  onTap: (){
-                                    Navigator.pushNamed(context, AmountHundredScreen.routeName);
-                                  },
-                                  child: Card(
-                                    color: kPrimaryColor,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        const Text('   Q/100', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),),
-                                        IconButton(
-                                            icon: Icon(
-                                              Icons.apps,
-                                              color: Colors.lightBlueAccent,
-                                              size: getProportionateScreenHeight(30),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pushNamed(context, AmountHundredScreen.routeName);
-                                            }
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-
-                              ],
-                            ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: SizedBox(
@@ -383,20 +160,7 @@ class _StorageScreenState extends State<StorageScreen> {
                         ],
                       ),
                     ),
-                    SlidingUpPanel(
-                      maxHeight: _panelHeightOpen,
-                      minHeight: _panelHeightClosed,
-                      parallaxEnabled: true,
-                      parallaxOffset: .3,
-                      panelBuilder: (sc) => _panel(sc, dataBundleNotifier),
-                      borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(18.0),
-                          topRight: Radius.circular(18.0)),
-                      onPanelSlide: (double pos) => setState(() {
-                        _fabHeight = pos * (_panelHeightOpen - _panelHeightClosed) +
-                            _initFabHeight;
-                      }),
-                    ),
+
                   ],
                 );
               }
@@ -479,162 +243,17 @@ class _StorageScreenState extends State<StorageScreen> {
     );
   }
 
-  void buildStorageChooserDialog(BuildContext context, DataBundleNotifier dataBundleNotifier) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          content: Builder(
-            builder: (context) {
-              var width = MediaQuery.of(context).size.width;
-              return SizedBox(
 
-                width: width,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10.0),
-                              topLeft: Radius.circular(10.0)),
-                          color: kPrimaryColor,
-                        ),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '  Lista Magazzini',
-                              style: TextStyle(
-                                fontSize:
-                                getProportionateScreenWidth(17),
-                                color: Colors.white,
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.clear,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
 
-                      Column(
-                        children: buildListStorages(
-                            dataBundleNotifier, context),
-                      ),
-
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        ));
-  }
-
-  buildListStorages(DataBundleNotifier dataBundleNotifier, context) {
-    List<Widget> storagesWidgetList = [];
-
-    dataBundleNotifier.currentStorageList.forEach((currentStorageElement) {
-      storagesWidgetList.add(
-        GestureDetector(
-          child: Container(
-            decoration: BoxDecoration(
-              color: dataBundleNotifier.currentStorage.name ==
-                  currentStorageElement.name
-                  ? Colors.black.withOpacity(0.7)
-                  : Colors.white,
-              border: const Border(
-                bottom: BorderSide(width: 1.0, color: Colors.grey),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: Colors.yellow.shade700.withOpacity(0.8), width: getProportionateScreenWidth(16),), ),
-                      Text(
-                        '   ' + currentStorageElement.name,
-                        style: TextStyle(
-                          fontSize: dataBundleNotifier.currentStorage.name ==
-                              currentStorageElement.name
-                              ? getProportionateScreenWidth(16)
-                              : getProportionateScreenWidth(13),
-                          color: dataBundleNotifier.currentStorage.name ==
-                              currentStorageElement.name
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  dataBundleNotifier.currentStorage.name ==
-                      currentStorageElement.name ? Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
-                    child: SvgPicture.asset(
-                      'assets/icons/success-green.svg',
-                      color: Colors.yellow.shade700.withOpacity(0.8),
-                      width: 22,
-                    ),
-                  ) : SizedBox(height: 0,),
-                ],
-              ),
-            ),
-          ),
-          onTap: () {
-            //EasyLoading.show();
-            dataBundleNotifier.setCurrentStorage(currentStorageElement);
-            //EasyLoading.dismiss();
-            Navigator.pop(context);
-          },
-        ),
-      );
-    });
-    storagesWidgetList.add(
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: SizedBox(
-          height: getProportionateScreenHeight(50),
-          width: MediaQuery.of(context).size.width,
-          child: CupertinoButton(
-            child: Text('Crea Magazzino'),
-            color: Colors.green.shade900.withOpacity(0.9),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddStorageScreen(
-                    branch: dataBundleNotifier.currentBranch,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-    return storagesWidgetList;
-  }
 
   buildCurrentListProductTable(DataBundleNotifier dataBundleNotifier, context) {
+    dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+      element.selected = false;
+    });
 
     List<DataColumn> kTableColumns = <DataColumn>[
       DataColumn(
-        label: Row(children: [ const Text('Prodotto'),
+        label: Row(children: [ Text('PRODOTTO', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
           IconButton(
               icon: dataBundleNotifier.isZtoAOrderded ? SvgPicture.asset('assets/icons/sort_a_to_z.svg') : SvgPicture.asset('assets/icons/sort_z_to_a.svg'),
               onPressed: () {
@@ -642,16 +261,16 @@ class _StorageScreenState extends State<StorageScreen> {
               }
           ),]),
       ),
-      const DataColumn(
-        label: Text('Giacenza'),
+      DataColumn(
+        label: Text('GIACENZA', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold)),
         numeric: true,
       ),
-      const DataColumn(
-        label: Text('Prezzo'),
+      DataColumn(
+        label: Text('PREZZO', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold)),
         numeric: true,
       ),
-      const DataColumn(
-        label: Text('Fornitore'),
+      DataColumn(
+        label: Text('FORNITORE', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold)),
         numeric: true,
       ),
     ];
@@ -659,12 +278,6 @@ class _StorageScreenState extends State<StorageScreen> {
       children: [
         PaginatedDataTable(
           rowsPerPage: _rowsPerPage,
-          availableRowsPerPage: const <int>[7, 14, 21, 28],
-          onRowsPerPageChanged: (int value) {
-            setState(() {
-              _rowsPerPage = value;
-            });
-          },
           columns: kTableColumns,
           source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers),
         ),

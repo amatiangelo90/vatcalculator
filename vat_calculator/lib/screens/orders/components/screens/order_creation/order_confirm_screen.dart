@@ -171,7 +171,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         context.loaderOverlay.hide();
 
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen(),),);
-                        Navigator.pushNamed(context, HomeScreen.routeName);
+                        dataBundleNotifier.onItemTapped(0);
+                        Navigator.pop(context);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
                           mail: widget.currentSupplier.mail,
                           supplierName: widget.currentSupplier.nome,

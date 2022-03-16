@@ -463,8 +463,8 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                             }
 
                                             dataBundleNotifier.initializeCurrentDateTimeRange3Months();
-
-                                            Navigator.pushNamed(context, HomeScreen.routeName);
+                                            dataBundleNotifier.onItemTapped(0);
+                                            Navigator.pop(context);
                                           }
                                         },
                                       );

@@ -39,81 +39,86 @@ class AddStorageScreen extends StatelessWidget {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(
           backgroundColor: color,
-          duration: Duration(milliseconds: 800),
+          duration: const Duration(milliseconds: 800),
           content: Text(text)));
     }
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Scaffold(
-          bottomSheet: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width - 30,
-                  child: DefaultButton(
-                  color: Colors.green.shade900.withOpacity(0.9),
-                  text: 'Crea Magazzino',
-                  press: () async {
-                    if(_nameController.text.isEmpty || _nameController.text == ''){
-                      buildSnackBar(text: 'Inserire il nome del magazzino', color: kPinaColor);
-                    }else if(_addressController.text.isEmpty || _addressController.text == ''){
-                      buildSnackBar(text: 'Inserire l\'indirizzo', color: kPinaColor);
-                    }else if(_cityController.text.isEmpty || _cityController.text == ''){
-                      buildSnackBar(text: 'Inserire la città', color: kPinaColor);
-                    }else if(_capController.text.isEmpty || _capController.text == ''){
-                      buildSnackBar(text: 'Inserire il cap', color: kPinaColor);
-                    }else if(dataBundleNotifier.retrieveListStoragesName().contains(_nameController.text)){
-                      buildSnackBar(text: 'Esiste già un magazzino con questo nome : ' + _nameController.text, color: kPinaColor);
-                    }else{
-
-                      //EasyLoading.show();
-
-                      ClientVatService vatService = ClientVatService();
-                      StorageModel storageModel = StorageModel(
-                          name: _nameController.text,
-                          fkBranchId: branch.pkBranchId,
-                          address: _addressController.text,
-                          cap: _capController.text,
-                          city: _cityController.text,
-                          code: Uuid().v1().toString(),
-                          creationDate: DateTime.now(),
-                          pkStorageId: 0
-                      );
-
-                      Response performSaveStorage = await vatService.performSaveStorage(
-                          storageModel: storageModel,
-                          actionModel: ActionModel(
-                              date: DateTime.now().millisecondsSinceEpoch,
-                              description: 'Ha creato il magazzino ${storageModel.name}.',
-                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                              type: ActionType.STORAGE_CREATION
-                          )
-                      );
-                      //sleep(const Duration(seconds: 1));
-
-
-                      if(performSaveStorage != null && performSaveStorage.statusCode == 200){
-
-                        List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
-                        dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
-                        dataBundleNotifier.clearAndUpdateMapBundle();
-                        //EasyLoading.dismiss();
-                        buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
+          backgroundColor: kPrimaryColor,
+          bottomSheet: Container(
+            color: kPrimaryColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width - 30,
+                    child: DefaultButton(
+                    color: kCustomBlueAccent,
+                    text: 'Crea Magazzino',
+                    press: () async {
+                      if(_nameController.text.isEmpty || _nameController.text == ''){
+                        buildSnackBar(text: 'Inserire il nome del magazzino', color: kPinaColor);
+                      }else if(_addressController.text.isEmpty || _addressController.text == ''){
+                        buildSnackBar(text: 'Inserire l\'indirizzo', color: kPinaColor);
+                      }else if(_cityController.text.isEmpty || _cityController.text == ''){
+                        buildSnackBar(text: 'Inserire la città', color: kPinaColor);
+                      }else if(_capController.text.isEmpty || _capController.text == ''){
+                        buildSnackBar(text: 'Inserire il cap', color: kPinaColor);
+                      }else if(dataBundleNotifier.retrieveListStoragesName().contains(_nameController.text)){
+                        buildSnackBar(text: 'Esiste già un magazzino con questo nome : ' + _nameController.text, color: kPinaColor);
                       }else{
-                        //EasyLoading.dismiss();
-                        buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveStorage.toString(), color: kPinaColor);
-                      }
-                      Navigator.pushNamed(context, StorageScreen.routeName);
-                    }
 
-                  }),
+                        //EasyLoading.show();
+
+                        ClientVatService vatService = ClientVatService();
+                        StorageModel storageModel = StorageModel(
+                            name: _nameController.text,
+                            fkBranchId: branch.pkBranchId,
+                            address: _addressController.text,
+                            cap: _capController.text,
+                            city: _cityController.text,
+                            code: Uuid().v1().toString(),
+                            creationDate: DateTime.now(),
+                            pkStorageId: 0
+                        );
+
+                        Response performSaveStorage = await vatService.performSaveStorage(
+                            storageModel: storageModel,
+                            actionModel: ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description: 'Ha creato il magazzino ${storageModel.name}.',
+                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                type: ActionType.STORAGE_CREATION
+                            )
+                        );
+                        //sleep(const Duration(seconds: 1));
+
+
+                        if(performSaveStorage != null && performSaveStorage.statusCode == 200){
+
+                          List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
+                          dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
+                          dataBundleNotifier.clearAndUpdateMapBundle();
+                          //EasyLoading.dismiss();
+                          buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
+                        }else{
+                          //EasyLoading.dismiss();
+                          buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveStorage.toString(), color: kPinaColor);
+                        }
+                        dataBundleNotifier.onItemTapped(1);
+                        Navigator.pop(context);
+                      }
+
+                    }),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           appBar: AppBar(
             leading: IconButton(
@@ -126,9 +131,10 @@ class AddStorageScreen extends StatelessWidget {
             title: Text('Crea Magazzino',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomWhite,
+                color: kCustomBlueAccent,
               ),
             ),
+            elevation: 5,
             backgroundColor: kPrimaryColor,
           ),
           body: SingleChildScrollView(
@@ -140,7 +146,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Nome*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Nome*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -156,11 +162,11 @@ class AddStorageScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Indirizzo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Indirizzo*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -176,11 +182,11 @@ class AddStorageScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Città', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Città*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -196,11 +202,11 @@ class AddStorageScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 20,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Cap', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
+                    Text('   Cap*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -216,7 +222,10 @@ class AddStorageScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                Text('*campo obbligatorio'),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text('*campo obbligatorio'),
+                ),
                 const SizedBox(height: 50,),
               ],
             ),

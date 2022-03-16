@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/screens/main_page.dart';
 import 'package:vat_calculator/size_config.dart';
 
 import '../../../../home/home_screen.dart';
@@ -138,7 +139,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
             child: CupertinoButton(
                 color: kPrimaryColor,
                 child: const Text('Torna alla home'),
-                onPressed: () => Navigator.pushNamed(context, HomeScreen.routeName),),
+                onPressed: () => Navigator.pushNamed(context, HomeScreenMain.routeName),),
           ),
         ),
 

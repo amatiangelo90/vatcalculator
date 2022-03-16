@@ -88,14 +88,11 @@ class _HomePageBodyState extends State<HomePageBody> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      height: getProportionateScreenHeight(56),
-                      child: buildGestureDetectorBranchSelector(
-                          context, dataBundleNotifier),
-                    ),
+                  SizedBox(
+                    width: double.infinity,
+                    height: getProportionateScreenHeight(56),
+                    child: buildGestureDetectorBranchSelector(
+                        context, dataBundleNotifier),
                   ),
                   buildDateRecessedRegistrationWidget(dataBundleNotifier),
                   Padding(
@@ -141,8 +138,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                         ),
                         CupertinoButton(
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, OrdersScreen.routeName);
+                            dataBundleNotifier.onItemTapped(2);
+                            Navigator.pop(context);
                           },
                           child: Row(
                             children: [
@@ -489,7 +486,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                   borderRadius: const BorderRadius.only(
                                       topRight: Radius.circular(10.0),
                                       topLeft: Radius.circular(10.0)),
-                                  color: Colors.black.withOpacity(0.9),
+                                  color: kPrimaryColor,
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
@@ -515,6 +512,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                   ],
                                 ),
                               ),
+                              SizedBox(height: 1),
                               Column(
                                 children: buildListBranches(dataBundleNotifier),
                               ),
@@ -591,7 +589,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             decoration: BoxDecoration(
               color: dataBundleNotifier.currentBranch.pkBranchId ==
                       currentBranch.pkBranchId
-                  ? Colors.black.withOpacity(0.8)
+                  ? kPrimaryColor
                   : Colors.white,
               border: const Border(
                 bottom: BorderSide(width: 1.0, color: Colors.grey),
@@ -632,7 +630,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                   : getProportionateScreenWidth(13),
                           color: dataBundleNotifier.currentBranch.pkBranchId ==
                                   currentBranch.pkBranchId
-                              ? kCustomBlueAccent
+                              ? Colors.white
                               : Colors.black,
                         ),
                       ),
@@ -672,7 +670,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           width: MediaQuery.of(context).size.width,
           child: CupertinoButton(
             child: const Text('Crea Attività'),
-            color: Colors.greenAccent.shade700,
+            color: kCustomBlueAccent,
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(

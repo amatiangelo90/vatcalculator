@@ -32,8 +32,9 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
               appBar: AppBar(
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () => {
-                      Navigator.pushNamed(context, HomeScreen.routeName),
+                    onPressed: () {
+                    dataBundleNotifier.onItemTapped(0);
+                    Navigator.pop(context);
                     }),
                 iconTheme: const IconThemeData(color: Colors.white),
                 backgroundColor: kPrimaryColor,

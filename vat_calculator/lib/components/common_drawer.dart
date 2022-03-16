@@ -72,7 +72,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   padding: const EdgeInsets.all(20.0),
                                   child: GestureDetector(
                                     onTap: (){
-                                      Navigator.popAndPushNamed(context, HomeScreen.routeName);
+                                      dataBundleNotifier.onItemTapped(0);
+                                      Navigator.pop(context);
                                     },
                                     child: SizedBox(
                                       child: Image.asset('assets/logo/logo_home_white.png'),
@@ -167,7 +168,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         padding: const EdgeInsets.fromLTRB(0, 17, 0, 0),
                         child: buildDrawerRow('assets/icons/home.svg','Home',(){
                           dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, HomeScreen.routeName);
+                          dataBundleNotifier.onItemTapped(0);
+                          Navigator.pop(context);
                         },
                             Colors.white,
                             Colors.black54.withOpacity(0.1),
@@ -274,7 +276,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             backgroundColor: Colors.black54.withOpacity(0.1),
                           ),
                           onPressed: (){
-                            Navigator.pushNamed(context, OrdersScreen.routeName);
+                            dataBundleNotifier.onItemTapped(2);
+                            Navigator.pop(context);
                           },
                           child: Row(
                             children: [
@@ -361,8 +364,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             backgroundColor: Colors.black54.withOpacity(0.1),
                           ),
                           onPressed: (){
-
-                            Navigator.pushNamed(context, StorageScreen.routeName);
+                            dataBundleNotifier.onItemTapped(1);
+                            Navigator.pop(context);
                           },
                           child: Row(
                             children: [
@@ -373,7 +376,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 width: 22,
                               ),
                               const SizedBox(width: 20),
-                              const Expanded(child: Text('Magazzini', style: TextStyle(color: kCustomWhite),)),
+                              const Expanded(child: Text('Magazzino', style: TextStyle(color: kCustomWhite),)),
                               Row(
                                 children: [
                                   SizedBox(
@@ -540,7 +543,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           'Area Gestione',
                               (){
                                 dataBundleNotifier.setShowIvaButtonToFalse();
-                                Navigator.pushNamed(context, ProfileEditiScreen.routeName);
+                                dataBundleNotifier.onItemTapped(3);
+                                Navigator.pop(context);
                                 },
                         kCustomWhite,
                         Colors.black54.withOpacity(0.1),
@@ -619,7 +623,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
             child: buildDrawerRow('',branch.companyName,(){
               dataBundleNotifier.setShowIvaButtonToFalse();
               dataBundleNotifier.setCurrentBranch(branch);
-              Navigator.popAndPushNamed(context, HomeScreen.routeName);
+              dataBundleNotifier.onItemTapped(0);
+              Navigator.pop(context);
             }, kPrimaryColor,
                 kPrimaryColor,
                 kPinaColor),

@@ -512,8 +512,8 @@ class _ExpenceCardState extends State<ExpenceCard> {
               widget.showTopNavigatorRow ? Center(child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Spese', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange)),
-                  Text(' / Incassi', style: TextStyle(color: Colors.grey),),
+                  Text('SPESE', style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor)),
+                  Text(' / INCASSI', style: TextStyle(color: Colors.grey),),
                 ],
               )): SizedBox(width: 0),
             ],

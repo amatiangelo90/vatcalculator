@@ -1418,13 +1418,6 @@ class DataBundleNotifier extends ChangeNotifier {
     }
   }
 
-  void setToSelectedFalseAllItemOnCurrentStorageProductListForCurrentStorageDuplicated() {
-    currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
-      element.selected = false;
-    });
-    notifyListeners();
-  }
-
   BranchModel retrieveBranchById(int key) {
     BranchModel branchToReturn;
 
@@ -1576,5 +1569,26 @@ class DataBundleNotifier extends ChangeNotifier {
     });
 
     return currentSupplierName;
+  }
+
+  Color getProviderColor() {
+    if(currentBranch == null || currentBranch.providerFatture == '' &&  currentBranch.providerFatture == null){
+      return Colors.white;
+    }else{
+      switch(currentBranch.providerFatture){
+        case 'fatture_in_cloud':
+          return Colors.lightBlueAccent;
+        case 'aruba':
+          return Colors.orange;
+        default:
+          return Colors.white;
+      }
+    }
+  }
+
+  int selectedIndex = 0;
+  void onItemTapped(int index) {
+    selectedIndex = index;
+    notifyListeners();
   }
 }

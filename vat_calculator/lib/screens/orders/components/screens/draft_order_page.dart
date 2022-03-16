@@ -58,7 +58,8 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
             leading: GestureDetector(
                 child: const Icon(Icons.arrow_back_ios, color: kCustomWhite,),
               onTap: (){
-                  Navigator.pushNamed(context, HomeScreen.routeName);
+                dataBundleNotifier.onItemTapped(0);
+                Navigator.pop(context);
               },
             ),
           ),
@@ -351,7 +352,8 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
             CupertinoButton(
                 color: kCustomOrange,
                 child: Text('Torna alla pagina Ordini'), onPressed: (){
-              Navigator.pushNamed(context, OrdersScreen.routeName);
+              dataBundleNotifier.onItemTapped(2);
+              Navigator.pop(context);
             }),
           ],
         ),

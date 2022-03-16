@@ -21,7 +21,8 @@ class ArubaCalculatorScreen extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, HomeScreen.routeName);
+                dataBundleNotifier.onItemTapped(0);
+                Navigator.pop(context);
               },
               icon: Icon(
                 Icons.arrow_back_ios,

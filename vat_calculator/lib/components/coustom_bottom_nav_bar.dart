@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
-import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
-import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../constants.dart';
 import '../enums.dart';
@@ -33,19 +29,20 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: SvgPicture.asset(
                       "assets/icons/home.svg",
                       color: MenuState.home == selectedMenu
-                          ? kCustomBlueAccent
+                          ? Colors.white
                           : inActiveIconColor,
                       width: 30,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, HomeScreen.routeName);
+                      dataBundleNotifier.onItemTapped(0);
+                      Navigator.pop(context);
                     },
                 ),
                 MenuState.home == selectedMenu
                     ? Card(
-                  color: kCustomGreyBlue,
-                    child: Text(' Home ',
-                      style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
+                  color: kCustomBlueAccent,
+                    child: Text(' HOME ',
+                      style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11)),
                     ),
                 ) : const SizedBox(height: 0,)
               ],
@@ -57,21 +54,20 @@ class CustomBottomNavBar extends StatelessWidget {
                     icon: SvgPicture.asset(
                       "assets/icons/storage.svg",
                       color: MenuState.storage == selectedMenu
-                          ? kCustomBlueAccent
+                          ? Colors.white
                           : inActiveIconColor,
-                      width: 30,
+                      width: 32,
                     ),
                     onPressed: () {
-                      Navigator.pushNamed(context, StorageScreen.routeName);
-                      //dataBundleNotifier.setShowIvaButtonToFalse();
-                      //dataBundleNotifier.refreshSearchButtonStoreConfiguration();
+                      dataBundleNotifier.onItemTapped(1);
+                      Navigator.pop(context);
 
                     }),
                 MenuState.storage == selectedMenu
                     ? Card(
-                  color: kCustomGreyBlue,
-                  child: Text(' Magazzino ',
-                    style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
+                  color: kCustomBlueAccent,
+                  child: Text(' MAGAZZINO ',
+                    style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)
                ],
@@ -81,9 +77,8 @@ class CustomBottomNavBar extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, OrdersScreen.routeName);
-                    //dataBundleNotifier.refreshSearchButtonStoreConfiguration();
-                    //dataBundleNotifier.setShowIvaButtonToFalse();
+                    dataBundleNotifier.onItemTapped(2);
+                    Navigator.pop(context);
                   },
                   child: Stack(
                     children: [
@@ -91,15 +86,13 @@ class CustomBottomNavBar extends StatelessWidget {
                           icon: SvgPicture.asset(
                             "assets/icons/receipt.svg",
                             color: MenuState.orders == selectedMenu
-                                ? kCustomBlueAccent
+                                ? Colors.white
                                 : inActiveIconColor,
                             width: 30,
                           ),
                           onPressed: () {
-                            Navigator.pushNamed(
-                                context, OrdersScreen.routeName);
-                            //dataBundleNotifier.refreshSearchButtonStoreConfiguration();
-                            //dataBundleNotifier.setShowIvaButtonToFalse();
+                            dataBundleNotifier.onItemTapped(2);
+                            Navigator.pop(context);
 
                           }
                           ),
@@ -158,9 +151,9 @@ class CustomBottomNavBar extends StatelessWidget {
                 ),
                 MenuState.orders == selectedMenu
                     ? Card(
-                  color: kCustomGreyBlue,
-                  child: Text(' Ordini ',
-                    style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
+                  color: kCustomBlueAccent,
+                  child: Text(' ORDINI ',
+                    style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)],
             ),
@@ -173,22 +166,20 @@ class CustomBottomNavBar extends StatelessWidget {
                       icon: SvgPicture.asset(
                         "assets/icons/Settings.svg",
                         color: MenuState.profile == selectedMenu
-                            ? kCustomBlueAccent
+                            ? Colors.white
                             : inActiveIconColor,
                         width: 30,
                       ),
                       onPressed: () {
-                        Navigator.pushNamed(context, ProfileEditiScreen.routeName);
-                        //dataBundleNotifier.refreshSearchButtonStoreConfiguration();
-                        //dataBundleNotifier.setShowIvaButtonToFalse();
-
+                        dataBundleNotifier.onItemTapped(3);
+                        Navigator.pop(context);
                       }),
                 ),
                 MenuState.profile == selectedMenu
                     ? Card(
-                  color: kCustomGreyBlue,
-                  child: Text(' Gestione ',
-                    style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),
+                  color: kCustomBlueAccent,
+                  child: Text(' GESTIONE ',
+                    style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11)),
                   ),
                 ) : const SizedBox(height: 0,)
               ],

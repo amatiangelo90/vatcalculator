@@ -548,8 +548,8 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                 widget.showIndex ? Center(child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
-                    Text('Spese / ', style: TextStyle(color: Colors.grey)),
-                    Text('Incassi', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+                    Text('SPESE / ', style: TextStyle(color: Colors.grey)),
+                    Text('INCASSI', style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor),),
                   ],
                 )) : Text('')
               ],

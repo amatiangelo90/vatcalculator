@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
+import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
@@ -29,16 +30,17 @@ class ProductDataSourceStorage extends DataTableSource {
           }
         },
         cells: <DataCell>[
-          DataCell(Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(product.productName, style: const TextStyle(fontWeight: FontWeight.bold)),
-              Text(product.unitMeasure, style: TextStyle(fontSize: getProportionateScreenHeight(10))),
-            ],
-          )),
-          DataCell(Text(product.stock.toStringAsFixed(2), style: TextStyle(color: product.stock <= 0 ? Colors.red : Colors.green.shade900, fontWeight: FontWeight.bold),)),
-          DataCell(Text(product.price.toStringAsFixed(2))),
+          DataCell(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(product.productName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kPrimaryColor)),
+                  Text(product.unitMeasure, style: TextStyle(fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold,)),
+                ],
+            )),
+          DataCell(Text(product.stock.toStringAsFixed(2).replaceAll('.00',''), style: TextStyle( fontSize: getProportionateScreenHeight(16), color: product.stock <= 0 ? Colors.red : Colors.green.shade900, fontWeight: FontWeight.bold),)),
+          DataCell(Text(product.price.toStringAsFixed(2).replaceAll('.00',''))),
           DataCell(Text(getSupplierFromListById(_listSuppliers, product.supplierId))),
         ]
     );

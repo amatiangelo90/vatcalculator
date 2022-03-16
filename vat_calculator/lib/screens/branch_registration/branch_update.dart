@@ -174,7 +174,8 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                                   fkBranchId: 0);
                               int rowsUpdated = await dataBundleNotifier.getclientServiceInstance().performUpdateBranch(company, actionModel);
 
-                              Navigator.pushNamed(context, HomeScreen.routeName);
+                              dataBundleNotifier.onItemTapped(0);
+                              Navigator.pop(context);
                             }
 
                           }),

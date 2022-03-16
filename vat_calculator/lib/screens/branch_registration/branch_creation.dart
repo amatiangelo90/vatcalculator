@@ -113,7 +113,8 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                               List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                               dataBundleNotifier.addBranches(_branchList);
 
-                              Navigator.pushNamed(context, HomeScreen.routeName);
+                              dataBundleNotifier.onItemTapped(0);
+                              Navigator.pop(context);
                             }
 
                           }),

@@ -18,6 +18,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../main_page.dart';
 
 class LandingBody extends StatelessWidget {
   final String email;
@@ -152,7 +153,7 @@ class LandingBody extends StatelessWidget {
 
                         context.loaderOverlay.hide();
 
-                        Navigator.pushNamed(context, HomeScreen.routeName);
+                        Navigator.pushNamed(context, HomeScreenMain.routeName);
                       },
                     ),
                   ),

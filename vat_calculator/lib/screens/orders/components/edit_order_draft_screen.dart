@@ -171,7 +171,8 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
 
                         await dataBundleNotifier.getclientServiceInstance().deleteOrder(orderModel: widget.orderModel, actionModel: actionModel);
                         dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                        Navigator.pushNamed(context, OrdersScreen.routeName);
+                        dataBundleNotifier.onItemTapped(2);
+                        Navigator.pop(context);
                       },
                     );
                     showDialog(

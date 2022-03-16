@@ -229,7 +229,8 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              leading: GestureDetector(
                child: const Icon(Icons.arrow_back_ios),
                onTap: (){
-                 Navigator.pushNamed(context, HomeScreen.routeName);
+                 dataBundleNotifier.onItemTapped(0);
+                 Navigator.pop(context);
                },
              ),
              actions: [
