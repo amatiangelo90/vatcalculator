@@ -147,85 +147,143 @@ class _StorageScreenState extends State<StorageScreen> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: [
-                        SizedBox(
-                          width: getProportionateScreenWidth(350),
-                          child: TextButton(
-                            child: Center(child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: ButtonBar(
+
+                              alignment: MainAxisAlignment.spaceAround,
                               children: [
-                                Text('Aggiungi prodotti', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
-                                Icon(Icons.add, color: Colors.white),
-                              ],
-                            )),
-                            onPressed: () async {
-
-                            },
-                          ),
-                        ),
-                        ButtonBar(
-                          alignment: MainAxisAlignment.spaceAround,// this will take space as minimum as posible(to center)
-                          children: <Widget>[
-                            IconButton(
-                              icon: SvgPicture.asset('assets/icons/Trash.svg', height: 27, color: Colors.red),
-                              onPressed: (){
-                                try{
-                                  List<StorageProductModel> productToRemove = [];
-                                  dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
-                                    if(element.selected){
-                                      productToRemove.add(element);
+                                IconButton(
+                                  icon: SvgPicture.asset('assets/icons/Trash.svg', height: 27, color: Colors.red),
+                                  onPressed: (){
+                                    try{
+                                      List<StorageProductModel> productToRemove = [];
+                                      dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                                        if(element.selected){
+                                          productToRemove.add(element);
+                                        }
+                                      });
+                                      if(productToRemove.isEmpty){
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                            backgroundColor: kPinaColor,
+                                            duration: Duration(milliseconds: 600),
+                                            content: Text('Nessun prodotto selezionato')));
+                                      }else{
+                                        productToRemove.forEach((productStorageElementToRemove) async {
+                                          await dataBundleNotifier.getclientServiceInstance()
+                                              .removeProductFromStorage(
+                                              storageProductModel: productStorageElementToRemove,
+                                              actionModel: ActionModel(
+                                                  date: DateTime.now().millisecondsSinceEpoch,
+                                                  description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                                      'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
+                                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                                  type: ActionType.PRODUCT_DELETE
+                                              )
+                                          );
+                                        });
+                                        //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
+                                        sleep(const Duration(milliseconds: 500));
+                                        dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                      }
+                                    }catch(e){
+                                      print('Impossible to remove product from storage. Exception: ' + e);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                          duration: const Duration(milliseconds: 400),
+                                          content: Text('Impossible to remove product from storage. Exception: ' + e)));
                                     }
-                                  });
-                                  if(productToRemove.isEmpty){
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(
-                                      backgroundColor: kPinaColor,
-                                        duration: Duration(milliseconds: 600),
-                                        content: Text('Nessun prodotto selezionato')));
-                                  }else{
-                                    productToRemove.forEach((productStorageElementToRemove) async {
-                                      await dataBundleNotifier.getclientServiceInstance()
-                                          .removeProductFromStorage(
-                                          storageProductModel: productStorageElementToRemove,
-                                          actionModel: ActionModel(
-                                              date: DateTime.now().millisecondsSinceEpoch,
-                                              description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                                  'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                              type: ActionType.PRODUCT_DELETE
-                                          )
-                                      );
-                                    });
-                                    //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
-                                    sleep(const Duration(milliseconds: 500));
-                                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                                  }
-                                }catch(e){
-                                  print('Impossible to remove product from storage. Exception: ' + e);
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                      duration: const Duration(milliseconds: 400),
-                                      content: Text('Impossible to remove product from storage. Exception: ' + e)));
-                                }
-                              },
-                            ),
-                            RaisedButton(
-                              color: kPrimaryColor,
-                              child: new Text('Carico',style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(20)), ),
-                              onPressed: ()=> Navigator.pushNamed(context, LoadStorageScreen.routeName),
-                            ),
-                            RaisedButton(
+                                  },
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(160),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.pinkAccent.shade400,
+                                    ),
+                                    child: Center(child: Column(
+                                      children: [
+                                        Text('CREA ED AGGIUNGI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
+                                        Text('NUOVO PRODOTTO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
+                                      ],
+                                    )),
+                                    onPressed: () async {
 
-                              color: kPrimaryColor,
-                              child: new Text('Scarico',style: TextStyle(fontWeight: FontWeight.bold, color: kPinaColor, fontSize: getProportionateScreenHeight(20)), ),
-                              onPressed: ()=> Navigator.pushNamed(context, UnloadStorageScreen.routeName),
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(170),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.deepOrangeAccent.shade200,
+                                    ),
+                                    child: Center(child: Column(
+                                      children: [
+                                        Text('AGGIUNGI PRODOTTI DA ', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
+                                        Text('CATALOGO FORNITORI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
+                                      ],
+                                    )),
+                                    onPressed: () async {
+
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(160),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.lightGreen,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                                        Text('CARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                                      ],
+                                    ),
+                                    onPressed: ()=> Navigator.pushNamed(context, LoadStorageScreen.routeName),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(160),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: kCustomBordeaux,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                                        Text('SCARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                                      ],
+                                    ),
+                                    onPressed: ()=> Navigator.pushNamed(context, UnloadStorageScreen.routeName),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(160),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: kCustomBlueAccent,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Text('CONFIGURA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                                        Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                                      ],
+                                    ),
+                                    onPressed: (){
+
+                                    },
+                                  ),
+                                ),
+
+                            ],
                             ),
-                            RaisedButton(
-                              child: new Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(20)), ),
-                              onPressed: null,
-                            ),
-                          ],
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),

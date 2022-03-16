@@ -26,31 +26,40 @@ class UnloadStorageScreen extends StatefulWidget {
 }
 
 class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-
+            key: _scaffoldKey,
             appBar: AppBar(
               actions: [
                 IconButton(onPressed: (){
                   dataBundleNotifier.clearUnloadProductList();
-                }, icon: const Icon(Icons.clear, color: kPinaColor,))
+                }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
               ],
               leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                icon: Icon(Icons.arrow_back_ios, color: kPrimaryColor, size: getProportionateScreenHeight(20),),
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white, size: getProportionateScreenHeight(20),),
               ),
-              centerTitle: true, 
-              title: Text(dataBundleNotifier.currentStorage.name, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(15)),),
+              centerTitle: true,
+              backgroundColor: kPrimaryColor,
+              title: Column(
+                children: [
+                  Text(dataBundleNotifier.currentStorage.name, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
+                  Text('Sezione Scarico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent, fontSize: getProportionateScreenHeight(11)),),
+                ],
+              ),
             ),
             bottomSheet: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DefaultButton(
-                color: kPinaColor,
+                color: kCustomBordeaux,
                 text: 'Effettua Scarico',
                 press: () async {
                   int stockProductDiffentThan0 = 0;
@@ -67,7 +76,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                     }
                   });
                   if(stockProductDiffentThan0 == 0){
-                    Scaffold.of(context).showSnackBar(const SnackBar(
+                    _scaffoldKey.currentState.showSnackBar(const SnackBar(
                       backgroundColor: kPinaColor,
                       content: Text('Immettere la quantità di scarico per almeno un prodotto'),
                     ));
@@ -162,7 +171,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
   }
 
   buildCurrentListProdutctTableForStockManagmentUnload(DataBundleNotifier dataBundleNotifier, context){
-    List<Row> rows = [
+    List<Widget> rows = [
 
     ];
 
@@ -178,17 +187,27 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
               children: [
                 SizedBox(
                   width: getProportionateScreenWidth(200),
-                  child: Text(element.productName, overflow: TextOverflow.clip, style: TextStyle(fontSize: getProportionateScreenWidth(16)),),
+                  child: Text(element.productName, overflow: TextOverflow.clip, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenWidth(18)),),
                 ),
                 Row(
                   children: [
-                    Text(element.unitMeasure, style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                    Text(
+                      element.unitMeasure,
+                      style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomBlueAccent),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
-                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),),
+                      child: Icon(
+                        FontAwesomeIcons.dotCircle,
+                        size: getProportionateScreenWidth(3),
+                      ),
                     ),
                     dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
-                    TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(element.price.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8)),),
+                    TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
+                        element.price.toString() + ' €',
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
+                    ),
                   ],
                 ),
               ],
@@ -217,7 +236,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                       if( double.tryParse(text) != null){
                         element.stock = double.parse(text);
                       }else{
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere un valore numerico corretto per ' + element.productName),
                         ));
@@ -248,6 +267,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
           ],
         ),
       );
+      rows.add(Divider(height: 0.3, color: Colors.grey.withOpacity(0.2),));
     });
     return Column(
       children: rows,

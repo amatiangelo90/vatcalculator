@@ -22,11 +22,16 @@ class LoadStorageScreen extends StatefulWidget {
 }
 
 class _LoadStorageScreenState extends State<LoadStorageScreen> {
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
+        key: _scaffoldKey,
         bottomSheet: Padding(
           padding: const EdgeInsets.all(8.0),
           child: DefaultButton(
@@ -43,7 +48,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
               });
 
               if (currentProductWithMorethan0Amount == 0) {
-                Scaffold.of(context).showSnackBar(const SnackBar(
+                _scaffoldKey.currentState.showSnackBar(const SnackBar(
                   backgroundColor: kPinaColor,
                   content: Text(
                       'Immettere la quantità di carico per almeno un prodotto'),
@@ -84,21 +89,27 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
             },
             icon: Icon(
               Icons.arrow_back_ios,
-              color: kPrimaryColor,
+              color: Colors.white,
               size: getProportionateScreenHeight(20),
             ),
           ),
           actions: [
             IconButton(onPressed: (){
               dataBundleNotifier.clearLoadProductList();
-            }, icon: Icon(Icons.clear, color: kPinaColor,))
+            }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
           ],
           centerTitle: true,
-          title: Text(
-            dataBundleNotifier.currentStorage.name,
-            style: TextStyle(
-                color: kPrimaryColor,
-                fontSize: getProportionateScreenHeight(15)),
+          backgroundColor: kPrimaryColor,
+          title: Column(
+            children: [
+              Text(
+                dataBundleNotifier.currentStorage.name,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: getProportionateScreenHeight(17)),
+              ),
+              Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),),
+            ],
           ),
         ),
         body: SingleChildScrollView(
@@ -131,7 +142,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
 
   buildCurrentListProdutctTableForStockManagmentLoad(
       DataBundleNotifier dataBundleNotifier, context) {
-    List<Row> rows = [
+    List<Widget> rows = [
     ];
 
     dataBundleNotifier.currentStorageProductListForCurrentStorageLoad
@@ -151,15 +162,14 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                   child: Text(
                     element.productName,
                     overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(16)),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenWidth(18)),
                   ),
                 ),
                 Row(
                   children: [
                     Text(
                       element.unitMeasure,
-                      style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                        style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomBlueAccent),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -172,7 +182,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                     TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
                       element.price.toString() + ' €',
                       style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
                     ),
                   ],
                 ),
@@ -207,7 +217,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                       if (double.tryParse(text) != null) {
                         element.stock = double.parse(text);
                       } else {
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text(
                               'Immettere un valore numerico corretto per ' +
@@ -240,6 +250,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
           ],
         ),
       );
+      rows.add(Divider(height: 0.3, color: Colors.grey.withOpacity(0.2),));
     });
     return Column(
       children: rows,
