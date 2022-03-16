@@ -55,7 +55,7 @@ class OrderCard extends StatelessWidget {
                             child: ClipRect(
                               child: SvgPicture.asset(
                                 'assets/icons/receipt.svg',
-                                height: getProportionateScreenHeight(45),
+                                height: getProportionateScreenHeight(40),
                                 color: kCustomBlueAccent,
                               ),
                             ),
@@ -65,7 +65,7 @@ class OrderCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
                               Text(
                                 '#' + order.code,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -154,7 +154,6 @@ class OrderCard extends StatelessWidget {
                                 dataBundleNotifier.currentBranch);
                               }
                           ),
-
                         ],
                       ),
                     ],
@@ -368,12 +367,13 @@ class OrderCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(8),color: kCustomWhite),),
+                    Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomWhite),),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
                       child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
                     ),
-                    Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(8),color: kCustomWhite),),
+                    Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomBlueAccent),),
+
                   ],
                 ),
               ],

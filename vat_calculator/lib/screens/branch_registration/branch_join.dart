@@ -21,6 +21,7 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 
 import '../../constants.dart';
 import '../../size_config.dart';
+import '../main_page.dart';
 
 class BranchJoinScreen extends StatefulWidget {
   const BranchJoinScreen({Key key}) : super(key: key);
@@ -464,7 +465,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
 
                                             dataBundleNotifier.initializeCurrentDateTimeRange3Months();
                                             dataBundleNotifier.onItemTapped(0);
-                                            Navigator.pop(context);
+                                            Navigator.pushNamed(context, HomeScreenMain.routeName);
                                           }
                                         },
                                       );

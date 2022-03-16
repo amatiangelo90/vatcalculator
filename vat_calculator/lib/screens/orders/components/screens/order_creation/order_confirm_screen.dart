@@ -19,6 +19,7 @@ import 'package:vat_calculator/screens/orders/components/screens/orders_utils.da
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../../home/home_screen.dart';
+import '../../../../main_page.dart';
 import '../../../orders_screen.dart';
 import 'order_sent_details_screen.dart';
 
@@ -172,7 +173,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
                         //Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen(),),);
                         dataBundleNotifier.onItemTapped(0);
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, HomeScreenMain.routeName);
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
                           mail: widget.currentSupplier.mail,
                           supplierName: widget.currentSupplier.nome,

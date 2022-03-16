@@ -14,17 +14,23 @@ import 'package:vat_calculator/client/vatservice/model/save_product_into_storage
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import '../../client/vatservice/model/storage_product_model.dart';
 import '../../client/vatservice/model/utils/action_type.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../suppliers/components/add_suppliers/add_supplier_choice.dart';
 import 'components/add_storage_screen.dart';
 import 'components/product_datasource_storage.dart';
+import 'load_unload_screens/load_screen.dart';
+import 'load_unload_screens/unload_screen.dart';
 
 class StorageScreen extends StatefulWidget{
 
+
   @override
   State<StorageScreen> createState() => _StorageScreenState();
+
+  const StorageScreen({Key key}) : super(key: key);
 }
 
 class _StorageScreenState extends State<StorageScreen> {
@@ -48,8 +54,6 @@ class _StorageScreenState extends State<StorageScreen> {
   bool _otherUnitMeasure = false;
 
   String _selectedSupplier = 'Seleziona Fornitore';
-
-  int _rowsPerPage = 10;
 
   void setCurrentSupplier(String supplier, DataBundleNotifier dataBundleNotifier) {
     setState(() {
@@ -132,36 +136,118 @@ class _StorageScreenState extends State<StorageScreen> {
           )
               : Consumer<DataBundleNotifier>(
               builder: (context, dataBundleNotifier, child) {
-                return Stack(
-                  children: [
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: SizedBox(
-                              height: getProportionateScreenHeight(40),
-                              width: getProportionateScreenWidth(500),
-                              child: CupertinoTextField(
-                                textInputAction: TextInputAction.next,
-                                restorationId: 'Ricerca per nome o fornitore',
-                                keyboardType: TextInputType.text,
-                                clearButtonMode: OverlayVisibilityMode.editing,
-                                placeholder: 'Ricerca per nome o fornitore',
-                                onChanged: (currentText) {
-                                  dataBundleNotifier.filterStorageProductList(currentText);
-                                },
-                              ),
+                return RefreshIndicator(
+                  onRefresh: () {
+                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                    setState(() {});
+                    return Future.delayed(const Duration(milliseconds: 500));
+                  },
+                  child: SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: getProportionateScreenWidth(350),
+                          child: TextButton(
+                            child: Center(child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text('Aggiungi prodotti', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
+                                Icon(Icons.add, color: Colors.white),
+                              ],
+                            )),
+                            onPressed: () async {
+
+                            },
+                          ),
+                        ),
+                        ButtonBar(
+                          alignment: MainAxisAlignment.spaceAround,// this will take space as minimum as posible(to center)
+                          children: <Widget>[
+                            IconButton(
+                              icon: SvgPicture.asset('assets/icons/Trash.svg', height: 27, color: Colors.red),
+                              onPressed: (){
+                                try{
+                                  List<StorageProductModel> productToRemove = [];
+                                  dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                                    if(element.selected){
+                                      productToRemove.add(element);
+                                    }
+                                  });
+                                  if(productToRemove.isEmpty){
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(
+                                      backgroundColor: kPinaColor,
+                                        duration: Duration(milliseconds: 600),
+                                        content: Text('Nessun prodotto selezionato')));
+                                  }else{
+                                    productToRemove.forEach((productStorageElementToRemove) async {
+                                      await dataBundleNotifier.getclientServiceInstance()
+                                          .removeProductFromStorage(
+                                          storageProductModel: productStorageElementToRemove,
+                                          actionModel: ActionModel(
+                                              date: DateTime.now().millisecondsSinceEpoch,
+                                              description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
+                                                  'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
+                                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                              type: ActionType.PRODUCT_DELETE
+                                          )
+                                      );
+                                    });
+                                    //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
+                                    sleep(const Duration(milliseconds: 500));
+                                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                  }
+                                }catch(e){
+                                  print('Impossible to remove product from storage. Exception: ' + e);
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                      duration: const Duration(milliseconds: 400),
+                                      content: Text('Impossible to remove product from storage. Exception: ' + e)));
+                                }
+                              },
+                            ),
+                            RaisedButton(
+                              color: kPrimaryColor,
+                              child: new Text('Carico',style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(20)), ),
+                              onPressed: ()=> Navigator.pushNamed(context, LoadStorageScreen.routeName),
+                            ),
+                            RaisedButton(
+
+                              color: kPrimaryColor,
+                              child: new Text('Scarico',style: TextStyle(fontWeight: FontWeight.bold, color: kPinaColor, fontSize: getProportionateScreenHeight(20)), ),
+                              onPressed: ()=> Navigator.pushNamed(context, UnloadStorageScreen.routeName),
+                            ),
+                            RaisedButton(
+                              child: new Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(20)), ),
+                              onPressed: null,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: getProportionateScreenHeight(40),
+                            width: getProportionateScreenWidth(500),
+                            child: CupertinoTextField(
+                              textInputAction: TextInputAction.next,
+                              restorationId: 'Ricerca per nome o fornitore',
+                              keyboardType: TextInputType.text,
+                              clearButtonMode: OverlayVisibilityMode.editing,
+                              placeholder: 'Ricerca per nome o fornitore',
+                              onChanged: (currentText) {
+                                dataBundleNotifier.filterStorageProductList(currentText);
+                              },
                             ),
                           ),
-                          buildCurrentListProductTable(dataBundleNotifier, context),
-                          const SizedBox(height: 100,),
-                        ],
-                      ),
+                        ),
+                        buildCurrentListProductTable(dataBundleNotifier, context),
+                      ],
                     ),
-
-                  ],
+                  ),
                 );
               }
           ),
@@ -274,14 +360,10 @@ class _StorageScreenState extends State<StorageScreen> {
         numeric: true,
       ),
     ];
-    return Column(
-      children: [
-        PaginatedDataTable(
-          rowsPerPage: _rowsPerPage,
-          columns: kTableColumns,
-          source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers),
-        ),
-      ],
+    return PaginatedDataTable(
+      rowsPerPage: 8,
+      columns: kTableColumns,
+      source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers),
     );
   }
 

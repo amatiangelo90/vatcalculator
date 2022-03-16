@@ -11,6 +11,7 @@ import 'package:vat_calculator/screens/registration_provider/fatture_provider_re
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../main_page.dart';
 import 'components/body_chart.dart';
 
 class FattureInCloudCalculatorScreen extends StatelessWidget {
@@ -62,7 +63,7 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
               leading: IconButton(
                 onPressed: () {
                   dataBundleNotifier.onItemTapped(0);
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
                 },
                 icon: Icon(
                   Icons.arrow_back_ios,

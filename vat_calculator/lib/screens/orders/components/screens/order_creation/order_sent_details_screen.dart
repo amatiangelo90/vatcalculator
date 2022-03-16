@@ -34,7 +34,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(2.0),
                 child: SizedBox(
                   width: getProportionateScreenWidth(400),
-                  height: getProportionateScreenHeight(110),
+
                   child: Card(color: Colors.green,child:
                   Center(child:
                   Padding(
@@ -139,7 +139,12 @@ class OrderSentDetailsScreen extends StatelessWidget {
             child: CupertinoButton(
                 color: kPrimaryColor,
                 child: const Text('Torna alla home'),
-                onPressed: () => Navigator.pushNamed(context, HomeScreenMain.routeName),),
+                onPressed: () {
+
+                  Navigator.of(context).pop();
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
+
+                },),
           ),
         ),
 

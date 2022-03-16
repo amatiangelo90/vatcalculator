@@ -6,6 +6,7 @@ import 'package:vat_calculator/screens/expence_manager/components/expence_reg_ca
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
+import '../main_page.dart';
 import 'components/expence_body.dart';
 
 class ExpenceScreen extends StatefulWidget {
@@ -43,7 +44,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
                   dataBundleNotifier.onItemTapped(0);
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,

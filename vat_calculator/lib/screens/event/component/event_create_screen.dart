@@ -18,6 +18,7 @@ import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
+import 'package:vat_calculator/screens/main_page.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../event_home.dart';
@@ -83,7 +84,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
                     dataBundleNotifier.onItemTapped(0);
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, HomeScreenMain.routeName);
                     }),
                 iconTheme: const IconThemeData(color: Colors.white),
                 backgroundColor: kPrimaryColor,

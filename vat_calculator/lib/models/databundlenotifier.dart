@@ -1409,7 +1409,9 @@ class DataBundleNotifier extends ChangeNotifier {
   String retrieveStorageById(int fkStorageId) {
     StorageModel storage;
     currentStorageList.forEach((element) {
-      storage = element;
+      if(element.pkStorageId == fkStorageId){
+        storage = element;
+      }
     });
     if(storage != null && storage.name != null && storage.name != ''){
       return storage.name;

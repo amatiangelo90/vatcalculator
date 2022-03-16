@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/components/coustom_bottom_nav_bar.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/components/body.dart';
 import '../../../constants.dart';
-import '../../../enums.dart';
 import '../../../size_config.dart';
+import '../../main_page.dart';
 import 'components/body.dart';
 
 class ArubaCalculatorScreen extends StatelessWidget {
@@ -22,7 +19,7 @@ class ArubaCalculatorScreen extends StatelessWidget {
             leading: IconButton(
               onPressed: () {
                 dataBundleNotifier.onItemTapped(0);
-                Navigator.pop(context);
+                Navigator.pushNamed(context, HomeScreenMain.routeName);
               },
               icon: Icon(
                 Icons.arrow_back_ios,

@@ -10,6 +10,7 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
+import '../main_page.dart';
 import 'components/edit_supplier_screen.dart';
 
 class SuppliersScreen extends StatelessWidget {
@@ -49,7 +50,7 @@ class SuppliersScreen extends StatelessWidget {
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
                     dataBundleNotifier.onItemTapped(0);
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: kPrimaryColor,

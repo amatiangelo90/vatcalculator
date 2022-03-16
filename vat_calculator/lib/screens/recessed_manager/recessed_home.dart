@@ -9,6 +9,7 @@ import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../client/vatservice/model/cash_register_model.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
+import '../main_page.dart';
 import 'components/recessed_body.dart';
 import 'components/recessed_reg_card.dart';
 
@@ -38,7 +39,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
                   dataBundleNotifier.onItemTapped(0);
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,

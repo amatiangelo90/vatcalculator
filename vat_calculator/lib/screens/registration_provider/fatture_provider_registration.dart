@@ -15,6 +15,7 @@ import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.da
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
+import '../main_page.dart';
 
 class RegisterFattureProviderScreen extends StatefulWidget {
   const RegisterFattureProviderScreen({Key key}) : super(key: key);
@@ -230,7 +231,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                child: const Icon(Icons.arrow_back_ios),
                onTap: (){
                  dataBundleNotifier.onItemTapped(0);
-                 Navigator.pop(context);
+                 Navigator.pushNamed(context, HomeScreenMain.routeName);
                },
              ),
              actions: [

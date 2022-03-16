@@ -282,7 +282,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         ));
                       }
                     },
-                    color: Colors.redAccent.withOpacity(0.8),
+                    color: kCustomBordeaux,
                   ),
                 ),
               ],
@@ -295,211 +295,208 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
     List<Widget> rows = [
 
-      Divider(color: kCustomOrange,),
-      GestureDetector(
-        onTap: () async {
-          currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId));
-          currentStorageProductModelList.removeWhere((element) => getIdsProductListAlreadyPresent(workStationProdModelList).contains(element.fkProductId));
+      SizedBox(
+        width: getProportionateScreenWidth(350),
+        child: TextButton(
+          child: Center(child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('Aggiungi prodotti', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.bold),),
+              Icon(Icons.add, color: Colors.white),
+            ],
+          )),
+          onPressed: () async {
+            currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId));
+            currentStorageProductModelList.removeWhere((element) => getIdsProductListAlreadyPresent(workStationProdModelList).contains(element.fkProductId));
 
-          showDialog(
-              context: context,
-              builder: (_) => AlertDialog(
-                contentPadding: EdgeInsets.zero,
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                content: Builder(
-                  builder: (context) {
-                    List<DataColumn> kTableColumns = <DataColumn>[
-                      const DataColumn(
-                        label: Text('Prodotto'),
-                      ),
-                      const DataColumn(
-                        label: Text('Giacenza'),
-                        numeric: true,
-                      ),
-                      const DataColumn(
-                        label: Text('Q/100'),
-                        numeric: true,
-                      ),
-                    ];
-                    return SizedBox(
-                      width: getProportionateScreenWidth(900),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: [
-                            Container(
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(10.0),
-                                    topLeft: Radius.circular(10.0)),
-                                color: kPrimaryColor,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '  Lista Prodotti',
-                                    style: TextStyle(
-                                      fontSize:
-                                      getProportionateScreenWidth(17),
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.clear,
-                                      color: Colors.white,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Text(
-                              'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId).name,
-                              style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                            PaginatedDataTable(
-                              rowsPerPage: 5,
-                              availableRowsPerPage: const <int>[5],
-
-                              columns: kTableColumns,
-                              source: ProductDataSourceEvents(currentStorageProductModelList),
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(10),
-                            ),
-                            SizedBox(
-                              width: getProportionateScreenWidth(310),
-                              child: CupertinoButton(
-                                onPressed: () async {
-
-                                  currentStorageProductModelList.forEach((element) {
-                                    print(element.selected.toString());
-                                  });
-
-                                  await dataBundleNotifier
-                                      .getclientServiceInstance()
-                                      .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
-
-                                  List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
-
-                                  setState(() {
-                                    widget.workStationProdModelList.clear();
-                                    widget.workStationProdModelList.addAll(workStationProdModelList);
-                                  });
-
-                                  Navigator.of(context).pop();
-
-                                },
-                                child: Text('Aggiungi'),
-                                color: kCustomBlueAccent,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ));
-        },
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
-          child: SizedBox(
-            height: getProportionateScreenHeight(50),
-            child: Card(
-              shadowColor: kCustomBlueAccent,
-              color: kPrimaryColor,
-              elevation: 1,
-              child: Center(child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
-                  Text('Aggiungi prodotti', style: TextStyle(color: kCustomBlueAccent),),
-                  Icon(Icons.add, color: kCustomBlueAccent),
-                ],
-              )),
-            ),
-          ),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 30),
-        child: DefaultButton(
-          text: loadPaxController.text == '' || loadPaxController.text == '0' ?
-          'Configurare numero clienti per carico':
-          'Carico per ${loadPaxController.text} persone',
-          press: () async {
             showDialog(
                 context: context,
                 builder: (_) => AlertDialog(
-                  content: SizedBox(
-                    height: getProportionateScreenHeight(200),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('Persone attese all\'evento'),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: Builder(
+                    builder: (context) {
+                      List<DataColumn> kTableColumns = <DataColumn>[
+                        const DataColumn(
+                          label: Text('Prodotto'),
+                        ),
+                        const DataColumn(
+                          label: Text('Giacenza'),
+                          numeric: true,
+                        ),
+                        const DataColumn(
+                          label: Text('Q/100'),
+                          numeric: true,
+                        ),
+                      ];
+                      return SizedBox(
+                        width: getProportionateScreenWidth(900),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
                           child: Column(
                             children: [
-                              ConstrainedBox(
-                                constraints: BoxConstraints.loose(Size(
-                                    getProportionateScreenWidth(180),
-                                    getProportionateScreenWidth(60))),
-                                child: CupertinoTextField(
-                                  controller: loadPaxController,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: const TextInputType.numberWithOptions(
-                                      decimal: true, signed: true),
-                                  clearButtonMode: OverlayVisibilityMode.never,
-                                  textAlign: TextAlign.center,
-                                  autocorrect: false,
+                              Container(
+                                decoration: const BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(10.0),
+                                      topLeft: Radius.circular(10.0)),
+                                  color: kPrimaryColor,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '  Lista Prodotti',
+                                      style: TextStyle(
+                                        fontSize:
+                                        getProportionateScreenWidth(17),
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.clear,
+                                        color: Colors.white,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
+                              Text(
+                                'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId).name,
+                                style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                              PaginatedDataTable(
+                                rowsPerPage: 5,
+                                availableRowsPerPage: const <int>[5],
 
-                                  if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
-                                    double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
-                                    setState(() {
-                                      workStationProdModelList.forEach((workstationProd) {
-                                        workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
-                                      });
+                                columns: kTableColumns,
+                                source: ProductDataSourceEvents(currentStorageProductModelList),
+                              ),
+                              SizedBox(
+                                height: getProportionateScreenHeight(10),
+                              ),
+                              SizedBox(
+                                width: getProportionateScreenWidth(310),
+                                child: CupertinoButton(
+                                  onPressed: () async {
+
+                                    currentStorageProductModelList.forEach((element) {
+                                      print(element.selected.toString());
                                     });
 
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                      backgroundColor: Colors.green.withOpacity(0.9),
-                                      duration: Duration(milliseconds: 3000),
-                                      content: Text(
-                                          'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
-                                    ));
-                                  } else {
-                                    _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                      backgroundColor: kPinaColor,
-                                      duration: Duration(milliseconds: 600),
-                                      content: Text(
-                                          'Immettere un valore numerico corretto per effettuare il carico'),
-                                    ));
-                                  }
-                                  Navigator.of(context).pop();
-                                }),
-                              )
+                                    await dataBundleNotifier
+                                        .getclientServiceInstance()
+                                        .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
+
+                                    List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
+
+                                    setState(() {
+                                      widget.workStationProdModelList.clear();
+                                      widget.workStationProdModelList.addAll(workStationProdModelList);
+                                    });
+
+                                    Navigator.of(context).pop();
+
+                                  },
+                                  child: Text('Aggiungi'),
+                                  color: kCustomBlueAccent,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                )
-            );
+                ));
           },
-          color: kCustomOrange,
+        ),
+      ),
+      Padding(
+        padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
+        child: SizedBox(
+          width: getProportionateScreenWidth(350),
+          child: TextButton(
+            
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.pink,
+            ),
+            child: Text( loadPaxController.text == '' || loadPaxController.text == '0' ?
+            'Configurare numero clienti per carico':
+            'Carico per ${loadPaxController.text} persone', style: TextStyle(color: Colors.white)),
+            onPressed: () async {
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    content: SizedBox(
+                      height: getProportionateScreenHeight(200),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('Persone attese all\'evento'),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: [
+                                ConstrainedBox(
+                                  constraints: BoxConstraints.loose(Size(
+                                      getProportionateScreenWidth(180),
+                                      getProportionateScreenWidth(60))),
+                                  child: CupertinoTextField(
+                                    controller: loadPaxController,
+                                    textInputAction: TextInputAction.next,
+                                    keyboardType: const TextInputType.numberWithOptions(
+                                        decimal: true, signed: true),
+                                    clearButtonMode: OverlayVisibilityMode.never,
+                                    textAlign: TextAlign.center,
+                                    autocorrect: false,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
+
+                                    if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
+                                      double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
+                                      setState(() {
+                                        workStationProdModelList.forEach((workstationProd) {
+                                          workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
+                                        });
+                                      });
+
+                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        backgroundColor: Colors.green.withOpacity(0.9),
+                                        duration: Duration(milliseconds: 3000),
+                                        content: Text(
+                                            'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
+                                      ));
+                                    } else {
+                                      _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                        backgroundColor: kPinaColor,
+                                        duration: Duration(milliseconds: 600),
+                                        content: Text(
+                                            'Immettere un valore numerico corretto per effettuare il carico'),
+                                      ));
+                                    }
+                                    Navigator.of(context).pop();
+                                  }),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+              );
+            },
+          ),
         ),
       ),
     ];
@@ -734,7 +731,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       ));
                     }
                   },
-                  color: Colors.blueAccent.withOpacity(0.8),
+                  color: kCustomBlueAccent,
                 ),
               ),
             ],

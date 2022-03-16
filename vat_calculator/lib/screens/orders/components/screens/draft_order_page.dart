@@ -12,6 +12,7 @@ import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/size_config.dart';
+import '../../../main_page.dart';
 import '../../orders_screen.dart';
 import '../edit_order_draft_screen.dart';
 
@@ -59,7 +60,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                 child: const Icon(Icons.arrow_back_ios, color: kCustomWhite,),
               onTap: (){
                 dataBundleNotifier.onItemTapped(0);
-                Navigator.pop(context);
+                Navigator.pushNamed(context, HomeScreenMain.routeName);
               },
             ),
           ),

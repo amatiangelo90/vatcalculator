@@ -28,6 +28,7 @@ import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.da
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 
 import '../constants.dart';
+import '../screens/main_page.dart';
 import '../size_config.dart';
 import 'create_branch_button.dart';
 import 'loader_overlay_widget.dart';
@@ -73,7 +74,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   child: GestureDetector(
                                     onTap: (){
                                       dataBundleNotifier.onItemTapped(0);
-                                      Navigator.pop(context);
+                                      Navigator.pushNamed(context, HomeScreenMain.routeName);
                                     },
                                     child: SizedBox(
                                       child: Image.asset('assets/logo/logo_home_white.png'),
@@ -169,7 +170,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                         child: buildDrawerRow('assets/icons/home.svg','Home',(){
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           dataBundleNotifier.onItemTapped(0);
-                          Navigator.pop(context);
+                          Navigator.pushNamed(context, HomeScreenMain.routeName);
                         },
                             Colors.white,
                             Colors.black54.withOpacity(0.1),
@@ -624,7 +625,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
               dataBundleNotifier.setShowIvaButtonToFalse();
               dataBundleNotifier.setCurrentBranch(branch);
               dataBundleNotifier.onItemTapped(0);
-              Navigator.pop(context);
+              Navigator.pushNamed(context, HomeScreenMain.routeName);
             }, kPrimaryColor,
                 kPrimaryColor,
                 kPinaColor),

@@ -57,8 +57,8 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width - 30,
                       child: CupertinoButton(
-                          color: Colors.green,
-                          child: Text('Ricevuto', style: const TextStyle(color: kCustomWhite),),
+                          color: kCustomBlueAccent,
+                          child: const Text('Ricevuto', style: TextStyle(color: kCustomWhite),),
                           onPressed: (){
                             dataBundleNotifier.setEditOrderToFalse();
                             Widget cancelButton = TextButton(
@@ -67,9 +67,8 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 Navigator.of(context).pop();
                               },
                             );
-
                             Widget continueButton = TextButton(
-                              child: const Text("Ricevuto", style: TextStyle(color: Colors.green)),
+                              child: const Text("Ricevuto", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                               onPressed:  () async {
                                 Navigator.of(context).pop();
 
@@ -78,7 +77,6 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 await dataBundleNotifier.setCurrentStorage(storageModel);
 
                                 print('Start adding order to current storage stock');
-
                                 dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((element) {
                                   widget.productList.forEach((standardElement) {
                                     if (standardElement.pkProductId == element.fkProductId) {
@@ -86,9 +84,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                     }
                                   });
                                 });
-
                                 print('Finish uploading storage stock');
-
                                 ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
 
                                 //TODO aggiungere lista merce aggiunta a fronte del carico
@@ -443,11 +439,23 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.view_stream, color: kPrimaryColor,size: 5,),
-                Text( ' ' + currentProduct.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kPrimaryColor),),
-                Text(' (' + currentProduct.unita_misura + ')', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(currentProduct.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17), color: kPrimaryColor),),
+
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(currentProduct.prezzo_lordo.toStringAsFixed(2) + ' € - ' + currentProduct.unita_misura, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+
+                  ],
+                ),
               ],
             ),
             Row(

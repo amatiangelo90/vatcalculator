@@ -10,6 +10,7 @@ import 'package:vat_calculator/screens/orders/components/screens/draft_order_pag
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
+import '../../main_page.dart';
 
 class ComunicationUnloadStorageScreen extends StatelessWidget {
   const ComunicationUnloadStorageScreen({Key key, this.orderedMapBySuppliers})
@@ -80,9 +81,9 @@ class ComunicationUnloadStorageScreen extends StatelessWidget {
                     color: kPinaColor,
                     child: Text('Torna al Magazzino'),
                     onPressed: () {
-                      dataBundleNotifier
-                          .setCurrentBranch(dataBundleNotifier.currentBranch);
-                      Navigator.of(context).pop();
+                      dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                      Navigator.pushNamed(context, HomeScreenMain.routeName);
+                      dataBundleNotifier.onItemTapped(1);
                     },
                   ),
                 )

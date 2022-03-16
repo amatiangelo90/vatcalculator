@@ -14,6 +14,7 @@ import 'package:vat_calculator/screens/event/component/workstation_card.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
+import '../../main_page.dart';
 
 class EventManagerScreen extends StatefulWidget {
   const EventManagerScreen({Key key, this.event, this.workstationModelList}) : super(key: key);
@@ -169,7 +170,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
                   dataBundleNotifier.onItemTapped(0);
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,

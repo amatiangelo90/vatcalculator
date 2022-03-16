@@ -12,6 +12,7 @@ import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_su
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
+import '../../../../main_page.dart';
 import '../../edit_order_draft_screen.dart';
 import 'product_order_choice_screen.dart';
 
@@ -31,7 +32,7 @@ class CreateOrderScreen extends StatelessWidget {
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
                     dataBundleNotifier.onItemTapped(0);
-                    Navigator.pop(context);
+                    Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: Colors.black.withOpacity(0.9),

@@ -46,7 +46,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   static final List<Widget> _pages = <Widget>[
     const HomePageBody(),
-    StorageScreen(),
+    const StorageScreen(),
     const OrdersScreen(),
     const ProfileEditiScreen()
   ];
@@ -71,21 +71,99 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ),
             child: BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
-              items: const <BottomNavigationBarItem>[
+              items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: SvgPicture.asset(
+                    "assets/icons/home.svg",
+                    color: dataBundleNotifier.selectedIndex == 0
+                        ? kCustomBlueAccent
+                        : Colors.white,
+                    width: 25,
+                  ),
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: SvgPicture.asset(
+                    "assets/icons/storage.svg",
+                    color: dataBundleNotifier.selectedIndex == 1
+                        ? kCustomBlueAccent
+                        : Colors.white,
+                    width: 27,
+                  ),
                   label: 'Magazzino',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.document_scanner),
+                  icon: Stack(
+                    children: [
+                    SvgPicture.asset(
+                    "assets/icons/receipt.svg",
+                    color: dataBundleNotifier.selectedIndex == 2
+                        ? kCustomBlueAccent
+                        : Colors.white,
+                    width: 27,
+                  ),
+                      Positioned(
+                        top: -2.0,
+                        right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 0.0 : -2.0,
+                        child: Stack(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.brightness_1,
+                              size: 16,
+                              color: Colors.blueAccent,
+                            ),
+                            Positioned(
+                              right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 3.0 : 5.0,
+                              top: 3.5,
+                              child: Center(
+                                child: Text(
+                                  dataBundleNotifier.currentUnderWorkingOrdersList.length.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 8.0,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        top: 10.0,
+                        right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 0.0 : -2.0,
+                        child: Stack(
+                          children: <Widget>[
+                            Icon(
+                              Icons.brightness_1,
+                              size: 16,
+                              color: Colors.orange,
+                            ),
+                            Positioned(
+                              right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 5.0,
+                              top: 3.5,
+                              child: Center(
+                                child: Text(
+                                  dataBundleNotifier.currentDraftOrdersList.length.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 8.0,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                   label: 'Ordini',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
+                  icon: SvgPicture.asset(
+                    "assets/icons/Settings.svg",
+                    color: dataBundleNotifier.selectedIndex == 3
+                        ? kCustomBlueAccent
+                        : Colors.white,
+                    width: 25,
+                  ),
                   label: 'Gestione',
                 ),
               ],
@@ -235,10 +313,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               ),
             ],
           ),
-          elevation: 0,
+          elevation: 5,
         );
       case 1:
         return AppBar(
+          elevation: 5,
           iconTheme: const IconThemeData(color: kCustomWhite),
           actions: [
             GestureDetector(
@@ -246,11 +325,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 buildStorageChooserDialog(context, dataBundleNotifier);
               },
               child: Stack(
-                children: [ IconButton(
+                children: [
+                  IconButton(
                   icon: SvgPicture.asset(
                     'assets/icons/storage.svg',
                     color: kCustomWhite,
-                    width: getProportionateScreenHeight(40),
+                    width: getProportionateScreenHeight(28),
                   ),
                   onPressed: () {
                     buildStorageChooserDialog(context, dataBundleNotifier);
@@ -260,17 +340,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     top: 26.0,
                     right: 4.0,
                     child: Stack(
-                      children: const <Widget>[
-                        Icon(
+                      children: <Widget>[
+                        const Icon(
                           Icons.brightness_1,
                           size: 20,
-                          color: kCustomBlueAccent,
+                          color: Colors.red,
                         ),
                         Positioned(
-                          right: 3.5,
-                          top: 3.5,
+                          right: 6.5,
+                          top: 1.5,
                           child: Center(
-                            child: Icon(Icons.list, size: 13, color: Colors.white,),
+                            child: Text(dataBundleNotifier.currentStorageList.length.toString(), style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: getProportionateScreenWidth(10))),
                           ),
                         ),
                       ],
@@ -283,10 +363,27 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           ],
           backgroundColor: kPrimaryColor,
           centerTitle: true,
-          title: Text(dataBundleNotifier.currentBranch == null ? 'Area Magazzini' : dataBundleNotifier.currentStorage == null ?  'Area Magazzini': dataBundleNotifier.currentStorage.name, style: TextStyle(
+          title: dataBundleNotifier.currentStorage == null ? Text('Area Magazzini' , style: TextStyle(
             fontSize: getProportionateScreenWidth(17),
             color: kCustomBlueAccent,
-          ),),
+          ),) : Column(
+            children: [
+              Text(
+                dataBundleNotifier.currentStorage.name,
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(17),
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+              'Area gestione magazzini',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(8),
+                  color: kCustomBlueAccent,
+                ),
+              ),
+            ],
+          ),
         );
       case 2:
         return AppBar(
@@ -383,6 +480,43 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                             style: const TextStyle(
                                 fontSize: 8.0, color: Colors.white),
                           ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              ],
+            ),
+            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
+              children: [ Padding(
+                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                child: IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/receipt.svg',
+                    color: Colors.white,
+                    width: 25,
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, CreateOrderScreen.routeName);
+                  },
+                ),
+              ),
+                Positioned(
+                  top: 30.0,
+                  right: 9.0,
+                  child: Stack(
+                    children: const <Widget>[
+                      Icon(
+                        Icons.brightness_1,
+                        size: 18,
+                        color: kPrimaryColor,
+                      ),
+                      Positioned(
+                        right: 2.5,
+                        top: 2.5,
+                        child: Center(
+                          child: Icon(Icons.add_circle_outline, size: 13, color: kCustomBlueAccent,),
                         ),
                       ),
                     ],
