@@ -4,7 +4,6 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../main_page.dart';
