@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fatture_api.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
@@ -109,7 +105,11 @@ class _VatFattureInCloudCalculatorBodyState extends State<VatFattureInCloudCalcu
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Divider(color: Colors.white, height: 30,),
+                          dataBundleNotifier.fattureInCloudCompanyInfo != null ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(dataBundleNotifier.fattureInCloudCompanyInfo.nome, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(15)),),
+                          ) : Text(''),
+                          Divider(color: Colors.grey.shade300, height: 1),
                           buildWidgetRowForDetailsVatCalc('Fatture Acquisti', Colors.green.shade700, dataBundleNotifier.totalIvaAcquisti.toStringAsFixed(2), (){Navigator.pushNamed(context, FattureAcquistiDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/soldiin.svg'),
                           Divider(color: Colors.grey.shade300, indent: 50,  height: 30,),
                           buildWidgetRowForDetailsVatCalc('NDC(Emesse)', Colors.green.shade700, dataBundleNotifier.totalIvaNdcSent.toStringAsFixed(2), (){Navigator.pushNamed(context, NDCEmesseDetailsPage.routeName);}, Colors.green.shade700, 'assets/icons/note.svg'),

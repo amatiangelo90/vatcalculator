@@ -26,6 +26,7 @@ import 'package:vat_calculator/screens/orders/components/screens/orders_utils.da
 import 'package:vat_calculator/size_config.dart';
 
 import '../../../client/fattureICloud/model/response_fornitori.dart';
+import '../../main_page.dart';
 import '../orders_screen.dart';
 
 class OrderCompletionScreen extends StatefulWidget {
@@ -120,12 +121,9 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
                                 dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
 
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const OrdersScreen(),
-                                  ),
-                                );
+                                Navigator.pushNamed(context, HomeScreenMain.routeName);
+                                dataBundleNotifier.onItemTapped(2);
+
                                 context.loaderOverlay.hide();
                               },
                             );

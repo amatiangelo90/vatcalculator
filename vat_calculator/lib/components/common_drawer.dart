@@ -126,14 +126,14 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               ],
                             ),
                             const SizedBox(height: 10,),
-                            SizedBox(height: 2,child: Container(color: Colors.white,),),
+                            SizedBox(height: 2,child: Container(color: Colors.grey,),),
                             dataBundleNotifier.currentBranch == null ? const Padding(
                               padding: EdgeInsets.all(15.0),
                               child: CreateBranchButton(),
                             ) : SizedBox(
                               height: getProportionateScreenHeight(40),
                               child: Container(
-                                color: Colors.redAccent,
+                                color: kCustomBlueAccent,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -161,7 +161,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 ),
                               ),
                             ),
-                            SizedBox(height: 2,child: Container(color: Colors.white,),),
+                            SizedBox(height: 2,child: Container(color: Colors.grey,),),
                           ],
                         ),
                       ),

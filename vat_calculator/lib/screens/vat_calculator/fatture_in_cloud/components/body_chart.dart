@@ -80,6 +80,10 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
               )
                   : Column(
                 children: [
+                  dataBundleNotifier.fattureInCloudCompanyInfo != null ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(dataBundleNotifier.fattureInCloudCompanyInfo.nome, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.greenAccent, fontSize: getProportionateScreenHeight(15)),),
+                  ) : Text(''),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(

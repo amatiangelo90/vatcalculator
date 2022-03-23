@@ -5,13 +5,61 @@ import 'package:vat_calculator/client/fattureICloud/constant/utils_icloud.dart';
 
 import 'model/request_api.dart';
 import 'model/request_info.dart';
+import 'model/request_info_company.dart';
 import 'model/request_retrieve_fornitori.dart';
 import 'model/response_acquisti_api.dart';
 import 'model/response_fatture_api.dart';
 import 'model/response_fornitori.dart';
+import 'model/response_info_company.dart';
 
 
 class FattureInCloudClient {
+
+  Future<ResponseCompanyFattureInCloud> performRichiestaGetCompanyInfo(
+      String apiUid,
+      String apiKey) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        FattureInCloudRequestInfoCompany(
+            apiKey: apiKey,
+            apiUid: apiUid
+        ).toMap());
+
+    Response post;
+    ResponseCompanyFattureInCloud responseInfoCompany;
+
+    try{
+      post = await dio.post(
+        URL_FATTURE_ICLOUD_REQUEST_INFO_ACCOUNT,
+        data: body,
+      );
+
+      print('Request to retrieve info company: ' + body);
+      print('Response From Icloud (' + URL_FATTURE_ICLOUD_REQUEST_INFO_ACCOUNT + '): ' + post.data.toString());
+
+      String encode = json.encode(post.data);
+
+
+      Map valueMap = jsonDecode(encode);
+      if(valueMap.containsKey('success')){
+        if(valueMap['success']){
+          responseInfoCompany = ResponseCompanyFattureInCloud(
+            tipo_licenza: valueMap['tipo_licenza'],
+            nome: valueMap['nome'],
+            durata_licenza: valueMap['durata_licenza']
+          );
+        }else{
+          print('Impossible to retrieve data from ICloudFatture for info company');
+          throw Exception('Impossible to retrieve data from ICloudFatture for info company');
+        }
+      }
+
+    }catch(e){
+      print(e);
+    }
+    return responseInfoCompany;
+  }
 
   Future<Response> performRichiestaInfo(
       String apiUid,

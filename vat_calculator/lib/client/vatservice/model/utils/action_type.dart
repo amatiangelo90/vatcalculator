@@ -54,6 +54,7 @@ class ActionType{
 
   //Send order
   static const String SENT_ORDER = 'ORDINE INVIATO';
+  static const String SENT_BY_MESSAGE = 'ORDINE INVIATO TRAMITE SMS O WHAT\'S APP';
   static const String RECEIVED_ORDER = 'ORDINE RICEVUTO';
 
   //Update Privilege
@@ -246,6 +247,7 @@ class ActionType{
           'Icona da creare');
     }
   }
+
 
 
 }

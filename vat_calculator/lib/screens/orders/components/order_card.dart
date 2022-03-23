@@ -11,8 +11,8 @@ import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.da
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
-
 import '../../../client/pdf/pdf_service.dart';
+import '../../../client/vatservice/model/utils/order_state.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -48,41 +48,37 @@ class OrderCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
+                      Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
-                            child: ClipRect(
-                              child: SvgPicture.asset(
-                                'assets/icons/receipt.svg',
-                                height: getProportionateScreenHeight(40),
-                                color: kCustomBlueAccent,
-                              ),
-                            ),
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
-                              Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
-                              Text(
-                                '#' + order.code,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
-                              Row(
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
+                                child: ClipRect(
+                                  child: SvgPicture.asset(
+                                    'assets/icons/receipt.svg',
+                                    height: getProportionateScreenHeight(40),
+                                    color: kCustomBlueAccent,
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
                                   Text(
-                                    'Stato: ',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
-                                  Text(
-                                    order.status,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.greenAccent, fontWeight: FontWeight.bold),),
+                                    '#' + order.code,
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                             ],
                           ),
+
                         ],
                       ),
+
                       Row(
                         children: [
                           IconButton(
@@ -156,6 +152,16 @@ class OrderCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        '  Stato: ',
+                        style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                      Text(
+                        order.status,
+                        style: TextStyle(fontSize: getProportionateScreenHeight(13), color: OrderState.getStatusOrderColor(order.status), fontWeight: FontWeight.bold),),
                     ],
                   ),
                   Divider(
@@ -352,47 +358,49 @@ class OrderCard extends StatelessWidget {
 
     List<Row> rows = [];
     productList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.amount.toString());
-      rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(200),
-                  child: Text(element.nome, overflow: TextOverflow.clip, style: TextStyle(fontSize: getProportionateScreenWidth(16),color: kCustomWhite),),
-                ),
-                Row(
-                  children: [
-                    Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomWhite),),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
-                      child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
-                    ),
-                    Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomBlueAccent),),
+      if(element.amount > 0){
+        TextEditingController controller = TextEditingController(text: element.amount.toString());
+        rows.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: getProportionateScreenWidth(200),
+                    child: Text(element.nome, overflow: TextOverflow.clip, style: TextStyle(fontSize: getProportionateScreenWidth(16),color: kCustomWhite),),
+                  ),
+                  Row(
+                    children: [
+                      Text(element.prezzo_lordo.toString() + ' €', style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomWhite),),
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
+                      ),
+                      Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomBlueAccent),),
 
-                  ],
-                ),
-              ],
-            ),
-            ConstrainedBox(
-              constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
-              child: CupertinoTextField(
-                enabled: false,
-                controller: controller,
-                textInputAction: TextInputAction.next,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                clearButtonMode: OverlayVisibilityMode.never,
-                textAlign: TextAlign.center,
-                autocorrect: false,
+                    ],
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-      );
+              ConstrainedBox(
+                constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
+                child: CupertinoTextField(
+                  enabled: false,
+                  controller: controller,
+                  textInputAction: TextInputAction.next,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
+                  clearButtonMode: OverlayVisibilityMode.never,
+                  textAlign: TextAlign.center,
+                  autocorrect: false,
+                ),
+              ),
+            ],
+          ),
+        );
+      }
     });
 
     return Column(

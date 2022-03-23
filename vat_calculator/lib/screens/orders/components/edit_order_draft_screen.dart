@@ -132,7 +132,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     );
                   }
                 },
-                color: kCustomOrange,
+                color: kCustomBlueAccent,
               ),
             ),
           ),
@@ -141,7 +141,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             actions: [
               IconButton(
                 icon: Icon(Icons.save, size: getProportionateScreenHeight(35),),
-                  color: Colors.green.withOpacity(0.6),
+                  color: Colors.green.withOpacity(0.9),
                   onPressed: () async {
 
                   }
@@ -223,9 +223,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                                               color: kCustomWhite,
                                             ), onPressed: () {
                                               Navigator.pop(context);
-
                                               },),
-
                                           ],
                                         ),
                                       ),
@@ -269,7 +267,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                   'Bozza Ordine',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(10),
-                    color: kCustomWhite,
+                    color: kCustomBlueAccent,
                   ),
                 ),
               ],
@@ -291,7 +289,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                             children: [
                               Text('Carrello',
                                   style: TextStyle(
-                                      color: kPinaColor,
+                                      color: kPrimaryColor,
                                       fontSize: getProportionateScreenHeight(20),
                                       fontWeight: FontWeight.bold)),
                             ],
@@ -352,7 +350,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                   child: Text(
                     element.nome,
                     overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(16)),
+                    style: TextStyle(fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.bold),
                   ),
                 ),
                 Row(
@@ -360,7 +358,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     Text(
                       element.unita_misura,
                       style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                          TextStyle(fontSize: getProportionateScreenWidth(8), fontWeight: FontWeight.bold),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -372,7 +370,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     Text(
                       element.prezzo_lordo.toString() + ' €',
                       style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8)),
+                          TextStyle(fontSize: getProportionateScreenWidth(8), fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -478,9 +476,9 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
               Container(
                 width: 35,
                 height: 5,
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.all(const Radius.circular(12.0))),
+                decoration: const BoxDecoration(
+                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.all(Radius.circular(12.0))),
               ),
             ],
           ),
@@ -497,6 +495,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     Text(
                       "Aggiungi altri prodotti dal catalogo",
                       style: TextStyle(
+                        color: kPrimaryColor,
                         fontWeight: FontWeight.normal,
                         fontSize: getProportionateScreenHeight(12),
                       ),

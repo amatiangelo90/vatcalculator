@@ -2,7 +2,7 @@ import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -18,9 +18,8 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
-import '../../../../home/home_screen.dart';
 import '../../../../main_page.dart';
-import '../../../orders_screen.dart';
+import 'order_error_details_screen.dart';
 import 'order_sent_details_screen.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
@@ -55,7 +54,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             bottomSheet: Padding(
               padding: const EdgeInsets.all(8.0),
               child: DefaultButton(
-                text: 'Conferma ed Invia',
+                text: ''
+                    'Conferma ed Invia',
                 press: () async {
                   context.loaderOverlay.show();
                   print('Performing send order ...');
@@ -167,13 +167,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 type: ActionType.SENT_ORDER));
 
                         dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-
+                        dataBundleNotifier.onItemTapped(0);
+                        Navigator.pushNamed(context, HomeScreenMain.routeName);
 
                         context.loaderOverlay.hide();
 
-                        //Navigator.push(context, MaterialPageRoute(builder: (context) => const OrdersScreen(),),);
-                        dataBundleNotifier.onItemTapped(0);
-                        Navigator.pushNamed(context, HomeScreenMain.routeName);
+
+
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
                           mail: widget.currentSupplier.mail,
                           supplierName: widget.currentSupplier.nome,
@@ -188,10 +188,52 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                             storageAddress: currentStorageModel.address,
                             storageCap: currentStorageModel.cap,
                             storageCity: currentStorageModel.city,
-                          )),),);
+                          )),
+                        ),
+                        );
 
 
                       } else {
+                        context.loaderOverlay.hide();
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderErrorDetailsScreen(
+                            mail: widget.currentSupplier.mail,
+                            supplier: widget.currentSupplier,
+                            number: widget.currentSupplier.tel,
+                            performSaveOrderId : performSaveOrderId,
+                            code: code,
+                            deliveryDate: currentDate,
+                            message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                              branchName: dataBundleNotifier.currentBranch.companyName,
+                              orderId: code,
+                              productList: dataBundleNotifier.currentProductModelListForSupplier,
+                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                              supplierName: widget.currentSupplier.nome,
+                              currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                              storageAddress: currentStorageModel.address,
+                              storageCap: currentStorageModel.cap,
+                              storageCity: currentStorageModel.city,
+                            ),
+
+                        ),
+                        ),
+                        );
+
+                        String messageToSend = OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                          branchName: dataBundleNotifier.currentBranch.companyName,
+                          orderId: code,
+                          productList: dataBundleNotifier.currentProductModelListForSupplier,
+                          deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                          supplierName: widget.currentSupplier.nome,
+                          currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                          storageAddress: currentStorageModel.address,
+                          storageCap: currentStorageModel.cap,
+                          storageCity: currentStorageModel.city,
+                        );
+
+                        messageToSend = messageToSend.replaceAll('&', '%26');
+                        messageToSend = messageToSend.replaceAll('#', '');
+
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
@@ -257,18 +299,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                               ],
                                             ),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: Column(
-                                              children: [
-                                                Text('E\' stato riscontrato un errore durate l\''
-                                                    'invio dell\'ordine. Controlla che la mail ['+ widget.currentSupplier.mail +'] sia corretta oppure riprova fra '
-                                                    'un paio di minuti.\n\n' , textAlign: TextAlign.center,),
 
-                                                const Text('Se non disponi della mail puoi inviare il messaggio tramite what\'s app.  ' , textAlign: TextAlign.center,),
-                                              ],
-                                            ),
-                                          ),
                                         ],
                                       ),
                                     ),
@@ -276,7 +307,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 },
                               ),
                             ));
-                        context.loaderOverlay.hide();
+
                       }
                     }
                   }

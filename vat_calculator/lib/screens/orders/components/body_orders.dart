@@ -52,46 +52,6 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                         ],
                       ) : Column(
                         children: [
-                          Text(
-                            "Ciao, non hai ancora configurato nessun fornitore per " + dataBundleNotifier.currentBranch.companyName + '.'
-                                ' Che ne dici di importare quelli presenti sul tuo account FattureInCloud?',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: getProportionateScreenWidth(13),
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                          const SizedBox(height: 30,),
-                          SizedBox(
-                            width: SizeConfig.screenWidth * 0.6,
-                            child: DefaultButton(
-                              text: "Importa Lista Fornitori",
-                              press: () async {
-
-                                ClientVatService clientService = ClientVatService();
-                                FattureInCloudClient fattureInCloudClient = FattureInCloudClient();
-                                List<SupplierModel> listRichiestaFornitori
-                                = await fattureInCloudClient.performRichiestaFornitori(
-                                    dataBundleNotifier.currentBranch.apiUidOrPassword, dataBundleNotifier.currentBranch.apiKeyOrUser);
-                                print(listRichiestaFornitori.length);
-
-                                listRichiestaFornitori.forEach((currentFornitore) {
-                                  currentFornitore.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
-                                  clientService.performSaveSupplier(
-                                      anagraficaFornitore: currentFornitore,
-                                      actionModel: null);
-                                });
-
-                                if(dataBundleNotifier.currentBranch != null){
-                                  List<SupplierModel> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
-                                  dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
-                                  List<SupplierModel> _suppliersModelList2 = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
-                                  dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList2);
-                                }
-                              },
-                            ),
-                          ),
                           const SizedBox(height: 30,),
                           Text(
                             'oppure inizia a creare la tua lista fornitori',

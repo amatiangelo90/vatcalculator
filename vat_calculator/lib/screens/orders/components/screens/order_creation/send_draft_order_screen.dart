@@ -2,6 +2,7 @@ import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -16,6 +17,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
+import '../../../../main_page.dart';
 import '../../../orders_screen.dart';
 
 class DraftOrderConfirmationScreen extends StatefulWidget {
@@ -70,18 +72,18 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                           .showSnackBar(SnackBar(
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
-                          content: Text('Selezionare il magazzino')));
+                          content: const Text('Selezionare il magazzino')));
                     }else if(currentStorageModel == null){
                       ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
-                          content: Text('Selezionare il magazzino')));
+                          content: const Text('Selezionare il magazzino')));
                     }else if(currentDate == null) {
                       ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
-                          duration: Duration(milliseconds: 800),
+                          duration: const Duration(milliseconds: 800),
                           content: Text('Selezionare la data di consegna')));
                     }else{
 
@@ -133,12 +135,9 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                                     .retrieveNameLastNameCurrentUser(),
                                 type: ActionType.SENT_ORDER));
                         dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const OrdersScreen(),
-                          ),
-                        );
+                        context.loaderOverlay.show();
+                        dataBundleNotifier.onItemTapped(2);
+                        Navigator.pushNamed(context, HomeScreenMain.routeName);
                       } else {
                         showDialog(
                             context: context,
@@ -214,6 +213,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                                                     'un paio di minuti.\n\n' , textAlign: TextAlign.center,),
 
                                                 const Text('Se non disponi della mail puoi inviare il presente ordine tramite what\'s app.  ' , textAlign: TextAlign.center,),
+                                                CupertinoButton(child: SvgPicture.asset('assets/icons/ws.svg'), onPressed: (){}, color: Colors.red),
                                               ],
                                             ),
                                           ),
@@ -244,7 +244,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                     Navigator.of(context).pop(),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black54.withOpacity(0.6),
+              backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Text(
                 'Conferma Ordine',

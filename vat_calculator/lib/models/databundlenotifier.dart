@@ -24,6 +24,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/components/vat_data.dart';
+import '../client/fattureICloud/model/response_info_company.dart';
 import '../constants.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
@@ -135,6 +136,7 @@ class DataBundleNotifier extends ChangeNotifier {
   List<ResponseFattureApi> retrieveListaFattureBis = [];
 
   List<ResponseNDCApi> retrieveListaNDC = [];
+  ResponseCompanyFattureInCloud fattureInCloudCompanyInfo;
 
   List<ProductModel> storageTempListProduct = [];
   List<ProductOrderAmountModel> currentProdOrderModelList = [];
@@ -1178,6 +1180,9 @@ class DataBundleNotifier extends ChangeNotifier {
       retrieveListaAcquisti = await iCloudClient.retrieveListaAcquisti(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
       retrieveListaFatture = await iCloudClient.retrieveListaFatture(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
       retrieveListaNDC = await iCloudClient.retrieveListaNdc( currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
+
+      print('RISAA');
+      fattureInCloudCompanyInfo = await iCloudClient.performRichiestaGetCompanyInfo(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser,);
 
       retrieveListaFattureBis.addAll(retrieveListaFatture);
 

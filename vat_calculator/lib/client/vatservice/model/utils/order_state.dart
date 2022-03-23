@@ -13,6 +13,8 @@ class OrderState{
   static const String NOT_RECEIVED_ARCHIVED = 'NON RICEVUTO E ARCHIVIATO';
   static const String REFUSED_ARCHIVED = 'RIFIUTATO E ARCHIVIATO';
 
+  static const String SENT_BY_MESSAGE = 'INVIATO TRAMITE SMS O WHAT\'S APP';
+
   static getIconWidget(String status) {
 
     switch(status){
@@ -38,6 +40,17 @@ class OrderState{
             Colors.black,
             'Icona da creare');
 
+    }
+  }
+
+  static Color getStatusOrderColor(String status){
+    switch(status){
+      case SENT:
+        return Colors.greenAccent;
+      case SENT_BY_MESSAGE:
+        return Colors.pinkAccent;
+      default:
+        return Colors.white;
     }
   }
 }

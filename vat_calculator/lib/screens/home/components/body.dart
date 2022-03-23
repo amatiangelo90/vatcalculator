@@ -139,7 +139,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                         CupertinoButton(
                           onPressed: () {
                             dataBundleNotifier.onItemTapped(2);
-                            Navigator.pop(context);
                           },
                           child: Row(
                             children: [
@@ -256,7 +255,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     ),
                                   )
                                 : SizedBox(
-                                    height: getProportionateScreenHeight(205),
+                                    height: getProportionateScreenHeight(211),
                                     child: PageView.builder(
                                       onPageChanged: (value) {
                                         setState(() {

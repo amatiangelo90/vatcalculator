@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
@@ -180,58 +181,16 @@ class CreateOrderScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)
-                    ? Colors.orangeAccent.withOpacity(0.6) : kCustomBlueAccent,
+                color: kPrimaryColor,
               ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0)),
-                  color: kPrimaryColor,
+              child: draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier) ? ClipRect(
+                child: Banner(
+                  message: 'BOZZA',
+                  color: kCustomBlueAccent,
+                  location: BannerLocation.topEnd,
+                  child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(width: getProportionateScreenWidth(5)),
-                          SvgPicture.asset(
-                            'assets/icons/supplier.svg',
-                            color: Colors.white,
-                            width: getProportionateScreenWidth(30),
-                          ),
-                          SizedBox(width: getProportionateScreenWidth(20)),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                supplier.nome,
-                                style: TextStyle(
-                                    color: kCustomBlueAccent,
-                                    fontSize: getProportionateScreenWidth(15),
-                                    fontWeight: FontWeight.bold
-                                ),
-                              ),
-                              Text('#' + supplier.extra,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: getProportionateScreenWidth(12),
-                                  )),
-                              ],
-                          ),
-                        ],
-                      ),
-                      draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier) ? Text('Bozza') : Text(''),
-
-                      const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                    ],
-                  ),
-                ),
-              ),
+              ) : buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
             ),
           ),
         ),
@@ -258,5 +217,60 @@ class CreateOrderScreen extends StatelessWidget {
       }
     });
     return result;
+  }
+
+  buildSupplierRow(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, Color color) {
+    return Container(
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topRight: Radius.circular(10.0),
+            bottomRight: Radius.circular(10.0)),
+        color: Colors.white,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              SizedBox(width: getProportionateScreenWidth(10)),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    supplier.nome,
+                    style: TextStyle(
+                        color: kPrimaryColor,
+                        fontSize: getProportionateScreenWidth(17),
+                        overflow: TextOverflow.fade,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/supplier.svg',
+                        color: color,
+                        width: getProportionateScreenWidth(20),
+                      ),
+                      Text('  #' + supplier.extra,
+                          style: TextStyle(
+                            color: color,
+                            fontSize: getProportionateScreenWidth(12),
+                            fontWeight: FontWeight.bold
+                          )),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 25, 30, 25),
+            child: Icon(Icons.arrow_forward_ios, size: getProportionateScreenHeight(25), color: kPrimaryColor),
+          ),
+        ],
+      ),
+    );
   }
 }

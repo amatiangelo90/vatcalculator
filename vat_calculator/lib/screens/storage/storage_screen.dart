@@ -174,15 +174,18 @@ class _StorageScreenState extends State<StorageScreen> {
                                   },
                                 ),
                                 SizedBox(
-                                  width: getProportionateScreenWidth(160),
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.pinkAccent.shade400,
                                     ),
                                     child: Center(child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text('CREA ED AGGIUNGI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
-                                        Text('NUOVO PRODOTTO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
+                                        Text('CREA ED AGGIUNGI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                                        Text('NUOVO PRODOTTO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
                                       ],
                                     )),
                                     onPressed: () {
@@ -199,14 +202,17 @@ class _StorageScreenState extends State<StorageScreen> {
                                 ),
                                 SizedBox(
                                   width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.deepOrangeAccent.shade200,
                                     ),
                                     child: Center(child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Text('AGGIUNGI PRODOTTI DA ', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
-                                        Text('CATALOGO FORNITORI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold),),
+                                        Text('AGGIUNGI PRODOTTI DA ', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                                        Text('CATALOGO FORNITORI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
                                       ],
                                     )),
                                     onPressed: () async {
@@ -269,12 +275,16 @@ class _StorageScreenState extends State<StorageScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: getProportionateScreenWidth(160),
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.lightGreen,
                                     ),
                                     child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
                                         Text('CARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
@@ -284,7 +294,9 @@ class _StorageScreenState extends State<StorageScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: getProportionateScreenWidth(160),
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       backgroundColor: kCustomBordeaux,
@@ -299,12 +311,16 @@ class _StorageScreenState extends State<StorageScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: getProportionateScreenWidth(160),
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
                                   child: TextButton(
+
                                     style: TextButton.styleFrom(
                                       backgroundColor: kCustomBlueAccent,
                                     ),
                                     child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Text('CONFIGURA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
                                         Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
