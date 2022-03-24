@@ -84,10 +84,10 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(widget.workstationModel.name,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
                   Text(
                     'Tipo workstation: ' + widget.workstationModel.type,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(8), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(8), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
                 ],
               ),
             ),
@@ -431,64 +431,92 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             'Configurare numero clienti per carico':
             'Carico per ${loadPaxController.text} persone', style: TextStyle(color: Colors.white)),
             onPressed: () async {
+
               showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                    backgroundColor: kCustomWhite,
+                    contentPadding: EdgeInsets.only(top: 10.0),
+                    elevation: 30,
+
                     content: SizedBox(
-                      height: getProportionateScreenHeight(200),
+                      height: getProportionateScreenHeight(250),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Persone attese all\'evento'),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              children: [
-                                ConstrainedBox(
-                                  constraints: BoxConstraints.loose(Size(
-                                      getProportionateScreenWidth(180),
-                                      getProportionateScreenWidth(60))),
-                                  child: CupertinoTextField(
-                                    controller: loadPaxController,
-                                    textInputAction: TextInputAction.next,
-                                    keyboardType: const TextInputType.numberWithOptions(
-                                        decimal: true, signed: true),
-                                    clearButtonMode: OverlayVisibilityMode.never,
-                                    textAlign: TextAlign.center,
-                                    autocorrect: false,
+                          const Text('Persone attese all\'evento', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints.loose(Size(
+                                          getProportionateScreenWidth(300),
+                                          getProportionateScreenWidth(80))),
+                                      child: CupertinoTextField(
+                                        controller: loadPaxController,
+                                        textInputAction: TextInputAction.next,
+                                        keyboardType: TextInputType.number,
+                                        clearButtonMode: OverlayVisibilityMode.never,
+                                        textAlign: TextAlign.center,
+                                        autocorrect: false,
+                                      ),
+                                    ),
                                   ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: getProportionateScreenHeight(25),
+                              ),
+                              InkWell(
+                                child: Container(
+                                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                    decoration: const BoxDecoration(
+                                      color: kCustomBlueAccent,
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(25.0),
+                                          bottomRight: Radius.circular(25.0)),
+                                    ),
+                                    child: SizedBox(
+                                      width: getProportionateScreenWidth(300),
+                                      child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomBlueAccent, onPressed: () async {
+
+                                        if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
+                                          double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
+                                          setState(() {
+                                            workStationProdModelList.forEach((workstationProd) {
+                                              workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
+                                            });
+                                          });
+
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: Colors.green.withOpacity(0.9),
+                                            duration: Duration(milliseconds: 3000),
+                                            content: Text(
+                                                'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
+                                          ));
+                                        } else {
+                                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                            backgroundColor: kPinaColor,
+                                            duration: Duration(milliseconds: 600),
+                                            content: Text(
+                                                'Immettere un valore numerico corretto per effettuare il carico'),
+                                          ));
+                                        }
+                                        Navigator.of(context).pop();
+
+                                      }
+                                      ),
+                                    )
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
-
-                                    if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
-                                      double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
-                                      setState(() {
-                                        workStationProdModelList.forEach((workstationProd) {
-                                          workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
-                                        });
-                                      });
-
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                        backgroundColor: Colors.green.withOpacity(0.9),
-                                        duration: Duration(milliseconds: 3000),
-                                        content: Text(
-                                            'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
-                                      ));
-                                    } else {
-                                      _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                        backgroundColor: kPinaColor,
-                                        duration: Duration(milliseconds: 600),
-                                        content: Text(
-                                            'Immettere un valore numerico corretto per effettuare il carico'),
-                                      ));
-                                    }
-                                    Navigator.of(context).pop();
-                                  }),
-                                )
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
