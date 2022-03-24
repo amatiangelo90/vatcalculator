@@ -200,7 +200,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                             mail: widget.currentSupplier.mail,
                             supplier: widget.currentSupplier,
                             number: widget.currentSupplier.tel,
-                            performSaveOrderId : performSaveOrderId,
+                            performSaveOrderId : performSaveOrderId.data,
                             code: code,
                             deliveryDate: currentDate,
                             message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
@@ -219,94 +219,6 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         ),
                         );
 
-                        String messageToSend = OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
-                          branchName: dataBundleNotifier.currentBranch.companyName,
-                          orderId: code,
-                          productList: dataBundleNotifier.currentProductModelListForSupplier,
-                          deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                          supplierName: widget.currentSupplier.nome,
-                          currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                          storageAddress: currentStorageModel.address,
-                          storageCap: currentStorageModel.cap,
-                          storageCity: currentStorageModel.city,
-                        );
-
-                        messageToSend = messageToSend.replaceAll('&', '%26');
-                        messageToSend = messageToSend.replaceAll('#', '');
-
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              contentPadding: EdgeInsets.zero,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(10.0))),
-                              content: Builder(
-                                builder: (context) {
-                                  var height =
-                                      MediaQuery.of(context).size.height;
-                                  var width =
-                                      MediaQuery.of(context).size.width;
-                                  return SizedBox(
-                                    height: height - 350,
-                                    width: width - 90,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.only(
-                                                  topRight:
-                                                  Radius.circular(
-                                                      10.0),
-                                                  topLeft:
-                                                  Radius.circular(
-                                                      10.0)),
-                                              color: kPinaColor,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      '  Errore invio ordine',
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                        getProportionateScreenWidth(
-                                                            20),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                        color: kCustomWhite,
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      icon: const Icon(
-                                                        Icons.clear,
-                                                        color: kCustomWhite,
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                            context);
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ));
 
                       }
                     }

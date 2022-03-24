@@ -15,6 +15,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/orders/components/screens/draft_order_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/send_draft_order_screen.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/size_config.dart';
@@ -37,19 +38,6 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
   DateTime currentDate = DateTime.now();
 
 
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime pickedDate = await showDatePicker(
-        context: context,
-        initialDate: currentDate,
-        firstDate: DateTime(2020),
-        lastDate: DateTime(2050));
-    if (pickedDate != null && pickedDate != currentDate) {
-      setState(() {
-        currentDate = pickedDate;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -171,8 +159,8 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
 
                         await dataBundleNotifier.getclientServiceInstance().deleteOrder(orderModel: widget.orderModel, actionModel: actionModel);
                         dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.onItemTapped(2);
-                        Navigator.pop(context);
+                        Navigator.pushNamed(
+                            context, DraftOrderPage.routeName);
                       },
                     );
                     showDialog(

@@ -1,8 +1,6 @@
-import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
@@ -11,8 +9,8 @@ import 'package:vat_calculator/client/vatservice/model/workstation_product_model
 import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/workstation_card.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/size_config.dart';
+import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
 import '../../main_page.dart';
 
@@ -139,7 +137,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       right: 9.0,
                       child: Stack(
                         children: <Widget>[
-                          Icon(
+                          const Icon(
                             Icons.brightness_1,
                             size: 18,
                             color: kPrimaryColor,
@@ -191,8 +189,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             body: TabBarView(
               children: [
                 buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier),
-                buildResocontoScreen(widget.workstationModelList, dataBundleNotifier),
-                buildEventSettingsScreen(widget.event, dataBundleNotifier),
+
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreen(widget.workstationModelList, dataBundleNotifier),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(widget.event, dataBundleNotifier),
               ],
             ),
           ),
@@ -549,6 +548,30 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             children: rows,
           ),
         ),
+      ),
+    );
+  }
+
+  getPriviledgeWarningContainer() {
+    return Container(
+      color: kPrimaryColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              SvgPicture.asset('assets/icons/warning.svg', color: kCustomOrange, height: 100,),
+              Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kCustomOrange)),                        ],
+          ),
+          Center(child: SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              height: MediaQuery.of(context).size.height / 5,
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(child: Text('Utente non abilitato alla visualizzazione ed all\'utilizzo di questa sezione', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15),)),
+              )),),
+        ],
       ),
     );
   }

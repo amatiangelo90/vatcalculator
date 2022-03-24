@@ -51,8 +51,8 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
             elevation: 5,
             backgroundColor: kPrimaryColor,
             title: Text('Bozze Ordini', style: TextStyle(
-              fontSize: getProportionateScreenWidth(17),
-              color: kCustomOrange,
+              fontSize: getProportionateScreenWidth(18),
+              color: Colors.white,
             ),),
             centerTitle: true,
             titleTextStyle: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenWidth(15)),
@@ -219,7 +219,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text('    ' + dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id),style: TextStyle(fontSize: getProportionateScreenHeight(19)),),
+                          Text('    ' + dataBundleNotifier.getSupplierName(currentOrder.fk_supplier_id),style: TextStyle(fontSize: getProportionateScreenHeight(19),fontWeight: FontWeight.bold),),
                         ],
                       ),
                       Row(
@@ -248,8 +248,9 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                   .length
                                   .toString(),
                                 style: TextStyle(
-                                    color: kPinaColor,
-                                    fontSize: getProportionateScreenHeight(14)),
+                                    color: kPrimaryColor,
+                                    fontSize: getProportionateScreenHeight(14),
+                                    fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -266,8 +267,10 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                         dataBundleNotifier.orderIdProductListMap[
                                         currentOrder.pk_order_id]),
                                 style: TextStyle(
-                                    color: kPinaColor,
-                                    fontSize: getProportionateScreenHeight(14)),
+                                    color: kPrimaryColor,
+                                    fontSize: getProportionateScreenHeight(14),
+                                    fontWeight: FontWeight.bold
+                                ),
                               ),
                             ],
                           ),
@@ -295,10 +298,10 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                           child: Text(
                             'Modifica ed Inoltra',
                             style: TextStyle(
-                                fontSize: getProportionateScreenHeight(13)),
+                                fontSize: getProportionateScreenHeight(15)),
                           ),
                           pressedOpacity: 0.9,
-                          color: kCustomOrange,
+                          color: kCustomBlueAccent,
                           onPressed: () async {
 
                             List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
@@ -326,7 +329,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(10.0),
                               bottomRight: Radius.circular(10.0)),
-                          color: Colors.orange,
+                          color: kCustomBlueAccent,
 
                         ),
                       ),
@@ -345,16 +348,18 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: getProportionateScreenHeight(300),),
-            Padding(
-              padding: const EdgeInsets.all(18.0),
+            const Padding(
+              padding: EdgeInsets.all(18.0),
               child: Center(child: Text('Nessuna bozza presente', style: TextStyle(color: Colors.white),)),
             ),
 
             CupertinoButton(
                 color: kCustomOrange,
-                child: Text('Torna alla pagina Ordini'), onPressed: (){
-              dataBundleNotifier.onItemTapped(2);
-              Navigator.pop(context);
+                child: const Text('Torna alla pagina Ordini'), onPressed: (){
+
+                  dataBundleNotifier.onItemTapped(2);
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
+
             }),
           ],
         ),

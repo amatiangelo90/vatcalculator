@@ -176,29 +176,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Colors.black54.withOpacity(0.1),
                             kCustomWhite),
                       ),
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
-                        if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog (
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                content: SizedBox(
-                                    width: MediaQuery.of(context).size.width / 2,
-                                    height: MediaQuery.of(context).size.height / 5,
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Center(child: Text('Utente non abilitato per '
-                                          'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
-                                    )),
-                              )
-                          );
-                        } else{
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
                           dataBundleNotifier.setShowIvaButtonToFalse();
-
                           switch(dataBundleNotifier.currentBranch.providerFatture){
                             case 'fatture_in_cloud':
                               Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
@@ -210,61 +189,17 @@ class _CommonDrawerState extends State<CommonDrawer> {
                               Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
                               break;
                           }
-                        }
                       }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
-                        if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog (
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                content: SizedBox(
-                                    width: MediaQuery.of(context).size.width / 2,
-                                    height: MediaQuery.of(context).size.height / 5,
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Center(child: Text('Utente non abilitato per '
-                                          'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
-                                    )),
-                              )
-                          );
-                        } else{
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
                           Navigator.pushNamed(
                               context, ExpenceScreen.routeName);
-                        }
                       }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : buildDrawerRow('assets/icons/cashregister.svg','Gestione Incassi',(){
-                        if(dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE){
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog (
-                                contentPadding: EdgeInsets.zero,
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(
-                                        Radius.circular(10.0))),
-                                content: SizedBox(
-                                    width: MediaQuery.of(context).size.width / 2,
-                                    height: MediaQuery.of(context).size.height / 5,
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Center(child: Text('Utente non abilitato per '
-                                          'utilizzare la funzione calcolo iva', textAlign: TextAlign.center,)),
-                                    )),
-                              )
-                          );
-                        } else{
-                          Navigator.pushNamed(
-                              context, RecessedScreen.routeName);
-                        }
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/cashregister.svg','Gestione Incassi',(){
+                          Navigator.pushNamed(context, RecessedScreen.routeName);
                       }, Colors.white,
                           Colors.black54.withOpacity(0.1),
                           kCustomWhite),
@@ -501,7 +436,8 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             kCustomWhite),
                       ) : SizedBox(width: 0,),
                       showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) :Padding(
+
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
                           style: TextButton.styleFrom(
@@ -510,7 +446,9 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             backgroundColor: Colors.black54.withOpacity(0.1),
                           ),
                           onPressed: (){
-                            Navigator.pushNamed(context, ActionsDetailsScreen.routeName);
+                            Navigator.pushNamed(
+                                  context, ActionsDetailsScreen.routeName);
+
                           },
                           child: Row(
                             children: [
@@ -540,6 +478,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           ),
                         ),
                       ),
+
                       buildDrawerRow('assets/icons/Settings.svg',
                           'Area Gestione',
                               (){
@@ -643,6 +582,40 @@ class _CommonDrawerState extends State<CommonDrawer> {
       }
     });
     return counter.toString();
+  }
+
+  void buildCustomShowDialogPriviledgeWarning(String message) {
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog (
+          backgroundColor: kPrimaryColor,
+          contentPadding: EdgeInsets.zero,
+          shape: const RoundedRectangleBorder(
+              borderRadius:
+              BorderRadius.all(
+                  Radius.circular(10.0))),
+          content: SizedBox(
+              width: MediaQuery.of(context).size.width / 2,
+              height: MediaQuery.of(context).size.height / 3,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Column(
+                      children: [
+                        SvgPicture.asset('assets/icons/warning.svg', color: kCustomOrange, height: 100,),
+                        Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kCustomOrange)),                        ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(message, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
+                  ],
+                )),
+              )),
+        )
+    );
   }
 
 }

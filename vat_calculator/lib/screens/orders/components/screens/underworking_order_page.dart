@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -10,6 +11,7 @@ import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
+import 'order_creation/order_create_screen.dart';
 
 class UnderWorkingOrderPage extends StatefulWidget {
   const UnderWorkingOrderPage({Key key}) : super(key: key);
@@ -34,8 +36,8 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
   @override
   void initState() {
-    super.initState();
     _selectedEvents = ValueNotifier(_getEventsForDay(_focusedDay));
+    super.initState();
   }
 
   List<OrderModel> _getEventsForDay(DateTime day){
@@ -115,7 +117,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                         ),
                         daysOfWeekStyle: const DaysOfWeekStyle(
                           weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          weekendStyle:  TextStyle(fontSize: 14.0, color: Colors.redAccent),
+                          weekendStyle:  TextStyle(fontSize: 14.0, color: Colors.pinkAccent),
                         ),
 
                         firstDay: kFirstDay,
@@ -130,19 +132,19 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           markerSize: 11,
                           selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
                           defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.redAccent),
+                          weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.pinkAccent),
 
                           selectedDecoration: const BoxDecoration(
                             color: kCustomBlueAccent,
                             shape: BoxShape.circle,
                           ),
-                          todayDecoration: const BoxDecoration(
-                            color: kCustomBlueAccent,
+                          todayDecoration: BoxDecoration(
+                            color: Colors.blueAccent.withOpacity(0.2),
                             shape: BoxShape.circle,
                           ),
 
                           markerDecoration: BoxDecoration(
-                            color: Colors.red,
+                            color: Colors.pinkAccent,
                             borderRadius: BorderRadius.circular(3),
                           ),
                           outsideDaysVisible: false,
@@ -164,10 +166,8 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                     ),
                     Container(
                       height: 15,
-                      decoration: const BoxDecoration(
-                        color: kPrimaryColor,
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20)),
-                      ),
+                      color: kPrimaryColor,
+
                     ),
                     Expanded(
                       child: ValueListenableBuilder<List<OrderModel>>(

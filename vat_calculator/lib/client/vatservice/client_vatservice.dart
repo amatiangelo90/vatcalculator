@@ -268,25 +268,29 @@ class ClientVatService implements VatServiceInterface{
       List<dynamic> valueList = jsonDecode(encode);
 
       valueList.forEach((productOrderElement) {
+        if(productOrderElement['amount'] > 0){
+          prodOrderList.add(
+              ProductOrderAmountModel(
+                pkProductId: productOrderElement['pkProductId'],
+                nome: productOrderElement['name'],
+                codice: productOrderElement['code'],
+                unita_misura: productOrderElement['measureUnit'],
+                iva_applicata: productOrderElement['vatApplied'],
+                prezzo_lordo: productOrderElement['price'],
+                descrizione: productOrderElement['description'],
+                categoria: productOrderElement['category'],
+                fkSupplierId: productOrderElement['fkSupplierId'],
+                amount: productOrderElement['amount'],
+                pkOrderProductId: productOrderElement['pkOrderProductId'],
+                fkOrderId: productOrderElement['fkOrderId'],
+              )
+          );
+        }
 
-        prodOrderList.add(
-            ProductOrderAmountModel(
-              pkProductId: productOrderElement['pkProductId'],
-              nome: productOrderElement['name'],
-              codice: productOrderElement['code'],
-              unita_misura: productOrderElement['measureUnit'],
-              iva_applicata: productOrderElement['vatApplied'],
-              prezzo_lordo: productOrderElement['price'],
-              descrizione: productOrderElement['description'],
-              categoria: productOrderElement['category'],
-              fkSupplierId: productOrderElement['fkSupplierId'],
-              amount: productOrderElement['amount'],
-              pkOrderProductId: productOrderElement['pkOrderProductId'],
-              fkOrderId: productOrderElement['fkOrderId'],
-            )
-        );
       });
-      print('Response from ($VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID): ' + prodOrderList.toString());
+
+      print('Response from service to retrieve product into order ($VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID): ' + prodOrderList.toString());
+
       return prodOrderList;
 
     }catch(e){
@@ -1640,7 +1644,8 @@ class ClientVatService implements VatServiceInterface{
             pkUserBranchId: 0,
             fkUserId: fkUserId,
             fkBranchId: fkBranchId,
-            accessPrivilege: accessPrivilege
+            accessPrivilege: accessPrivilege,
+            configurations: ''
         ).toMap());
     print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH with body request $body');
 

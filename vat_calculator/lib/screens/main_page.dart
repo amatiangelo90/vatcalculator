@@ -57,6 +57,45 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
+            floatingActionButton: dataBundleNotifier.selectedIndex != 2 ? SizedBox(height: 0,) : FloatingActionButton(
+            onPressed: (){
+              Navigator.pushNamed(context, CreateOrderScreen.routeName);
+            },
+              backgroundColor: Colors.pinkAccent,
+            child: Stack(
+              children: [ IconButton(
+                icon: SvgPicture.asset(
+                  'assets/icons/receipt.svg',
+                  color: Colors.white,
+                  width: 30,
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, CreateOrderScreen.routeName);
+                },
+              ),
+                Positioned(
+                  top: 28.0,
+                  right: 8.0,
+                  child: Stack(
+                    children: const <Widget>[
+                      Icon(
+                        Icons.brightness_1,
+                        size: 18,
+                        color: Colors.white,
+                      ),
+                      Positioned(
+                        right: 2.5,
+                        top: 2.5,
+                        child: Center(
+                          child: Icon(Icons.add_circle_outline, size: 13, color: kPrimaryColor,),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
           drawer: CommonDrawer(),
           appBar: getAppBarByIndex(dataBundleNotifier.selectedIndex, dataBundleNotifier),
           body: Center(
@@ -488,51 +527,26 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
               ],
             ),
-            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
-              children: [ Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/receipt.svg',
-                    color: Colors.white,
-                    width: 25,
-                  ),
-                  onPressed: () {
-                    Navigator.pushNamed(context, CreateOrderScreen.routeName);
-                  },
-                ),
-              ),
-                Positioned(
-                  top: 30.0,
-                  right: 9.0,
-                  child: Stack(
-                    children: const <Widget>[
-                      Icon(
-                        Icons.brightness_1,
-                        size: 18,
-                        color: kPrimaryColor,
-                      ),
-                      Positioned(
-                        right: 2.5,
-                        top: 2.5,
-                        child: Center(
-                          child: Icon(Icons.add_circle_outline, size: 13, color: kCustomBlueAccent,),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
           ],
           iconTheme: const IconThemeData(color: kCustomWhite),
           centerTitle: true,
-          title: Text(
-            'Ordini',
-            style: TextStyle(
-              fontSize: getProportionateScreenWidth(20),
-              color: kCustomBlueAccent,
-            ),
+          title: Column(
+            children: [
+              Text(
+                'Ordini',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(17),
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                'Area gestione ordini',
+                style: TextStyle(
+                  fontSize: getProportionateScreenWidth(10),
+                  color: kCustomBlueAccent,
+                ),
+              ),
+            ],
           ),
           backgroundColor: kPrimaryColor,
         );

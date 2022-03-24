@@ -4,8 +4,6 @@ import 'package:vat_calculator/size_config.dart';
 //const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kPrimaryColor = Color(0XFF072227);
 
-
-
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
 const Color kPinaColor = Color(0xFFFF2442);
@@ -13,7 +11,7 @@ const Color kCustomBordeaux = Color(0xFF7c1228);
 const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF235789);
-const Color kCustomBlueAccent = Colors.blueAccent;
+const Color kCustomBlueAccent = Color(0xFF2986cc);
 Color kCustomOrange = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomPurple = Color(0xFF9924ff);
 const Color kGreenAccent = Color(0xFF0ABB9C);

@@ -1598,4 +1598,5 @@ class DataBundleNotifier extends ChangeNotifier {
     selectedIndex = index;
     notifyListeners();
   }
+
 }

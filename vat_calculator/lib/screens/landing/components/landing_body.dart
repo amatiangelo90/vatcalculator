@@ -152,7 +152,7 @@ class LandingBody extends StatelessWidget {
                         dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
                         context.loaderOverlay.hide();
-
+                        dataBundleNotifier.onItemTapped(0);
                         Navigator.pushNamed(context, HomeScreenMain.routeName);
                       },
                     ),

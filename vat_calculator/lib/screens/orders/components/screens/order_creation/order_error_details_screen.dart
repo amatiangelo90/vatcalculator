@@ -21,7 +21,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
   final String number;
   final String mail;
   final SupplierModel supplier;
-  final Response performSaveOrderId;
+  final int performSaveOrderId;
   final String code;
   final DateTime deliveryDate;
 
@@ -63,11 +63,12 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                       children: [
                         Text('E\' stato riscontrato un errore durate l\''
                             'invio dell\'ordine. Controlla che la mail ['+ supplier.mail +'] sia corretta oppure riprova fra '
-                            'un paio di minuti.\n\n' , textAlign: TextAlign.center,),
+                            'un paio di minuti.\n\n' , textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                         Divider(height: 1, indent: 20, endIndent: 20, color: Colors.grey.withOpacity(0.3)),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: const Text('Se non disponi della mail puoi inviare il messaggio tramite what\'s app oppure sms.  ' , textAlign: TextAlign.center,),
+
+                        const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text('Se non disponi della mail puoi inviare il messaggio tramite what\'s app oppure sms.  ' , textAlign: TextAlign.center,),
                         ),
                         Center(
                           child: Padding(
@@ -88,7 +89,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 scrollDirection: Axis.vertical,
                                 child: Text(
                                   message.replaceAll('%0a', '\n'),
-                                  style: TextStyle(color: kCustomWhite),
+                                  style: const TextStyle(color: kCustomWhite),
                                 ),
                               ),
                             ),
@@ -97,6 +98,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: (){
                             launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplier.tel)}&text=$messageToSend');
+                            performFinalAction(dataBundleNotifier, context);
                           },
                           child: Card(
                             elevation: 5,
@@ -104,19 +106,19 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(''),
+                                const Text(''),
                                 Column(
                                   children: [
-                                    Text('INOLTRA CON WHAT\'S APP', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                                    const Text('INOLTRA CON WHAT\'S APP', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                                     Text('AL NUMERO ${supplier.tel}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                                 IconButton(
                                   onPressed: (){
                                     launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplier.tel)}&text=$messageToSend');
+                                    performFinalAction(dataBundleNotifier, context);
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/ws.svg',
-
                                 ),),
 
                               ],
@@ -126,6 +128,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: (){
                             launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
+                            performFinalAction(dataBundleNotifier, context);
                           },
                           child: Card(
                             color: kPrimaryColor,
@@ -142,6 +145,9 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 IconButton(
                                   onPressed: (){
                                     launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
+                                    performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
+                                    dataBundleNotifier.setIndexIvaListValue(2);
+                                    Navigator.pushNamed(context, HomeScreenMain.routeName);
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/textmessage.svg',
 
@@ -156,6 +162,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: (){
                             launch('https://api.whatsapp.com/send/?text=$messageToSend');
+                            performFinalAction(dataBundleNotifier, context);
                           },
                           child: Card(
                             elevation: 5,
@@ -173,6 +180,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 IconButton(
                                   onPressed: (){
                                     launch('https://api.whatsapp.com/send/?text=$messageToSend');
+                                    performFinalAction(dataBundleNotifier, context);
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/ws.svg',
                                 ),),
@@ -183,9 +191,9 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (){
-                            performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
+
                             launch('sms:?body=$messageToSend');
-                            Navigator.pushNamed(context, HomeScreenMain.routeName);
+                            performFinalAction(dataBundleNotifier, context);
                           },
                           child: Card(
                             color: kPrimaryColor,
@@ -200,9 +208,8 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
-                                    performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
                                     launch('sms:?body=$messageToSend');
-                                    Navigator.pushNamed(context, HomeScreenMain.routeName);
+                                    performFinalAction(dataBundleNotifier, context);
 
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/textmessage.svg',
@@ -234,6 +241,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                   child: const Text('Torna alla home'),
                   onPressed: () {
 
+                    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
 
@@ -247,12 +255,12 @@ class OrderErrorDetailsScreen extends StatelessWidget {
     );
   }
 
-  Future<void> performFinishOrderAndSaveInSentBySmsOrWhatappState(DataBundleNotifier dataBundleNotifier, Response performSaveOrderId) async {
+  Future<void> performFinishOrderAndSaveInSentBySmsOrWhatappState(DataBundleNotifier dataBundleNotifier, int performSaveOrderId) async {
     await dataBundleNotifier
         .getclientServiceInstance()
         .updateOrderStatus(
         orderModel: OrderModel(
-            pk_order_id: performSaveOrderId.data,
+            pk_order_id: performSaveOrderId,
             status: OrderState.SENT_BY_MESSAGE,
             delivery_date: deliveryDate.millisecondsSinceEpoch,
             closedby: dataBundleNotifier
@@ -270,6 +278,12 @@ class OrderErrorDetailsScreen extends StatelessWidget {
 
     dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
     dataBundleNotifier.onItemTapped(0);
+  }
+
+  void performFinalAction(DataBundleNotifier dataBundleNotifier, context) {
+    performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
+    dataBundleNotifier.setIndexIvaListValue(2);
+    Navigator.pushNamed(context, HomeScreenMain.routeName);
   }
 }
 

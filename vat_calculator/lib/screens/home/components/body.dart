@@ -94,7 +94,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(
                         context, dataBundleNotifier),
                   ),
-                  buildDateRecessedRegistrationWidget(dataBundleNotifier),
+                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDateRecessedRegistrationWidget(dataBundleNotifier),
                   Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: Row(
@@ -420,7 +420,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ),
                     ),
                   ) :
-
                   SizedBox(
                     height: getProportionateScreenHeight(240),
                     child: PageView.builder(
@@ -453,6 +452,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ),
                   // buildActionsList(dataBundleNotifier.currentBranchActionsList),
+                  SizedBox(height: getProportionateScreenHeight(200),)
                 ],
               ),
             ),

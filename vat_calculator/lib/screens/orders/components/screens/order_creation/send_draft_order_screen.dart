@@ -19,6 +19,7 @@ import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../../main_page.dart';
 import '../../../orders_screen.dart';
+import 'order_error_details_screen.dart';
 
 class DraftOrderConfirmationScreen extends StatefulWidget {
   const DraftOrderConfirmationScreen({Key key, this.currentSupplier, this.draftOrder}) : super(key: key);
@@ -139,91 +140,30 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                         dataBundleNotifier.onItemTapped(2);
                         Navigator.pushNamed(context, HomeScreenMain.routeName);
                       } else {
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              contentPadding: EdgeInsets.zero,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(10.0))),
-                              content: Builder(
-                                builder: (context) {
-                                  var height =
-                                      MediaQuery.of(context).size.height;
-                                  var width =
-                                      MediaQuery.of(context).size.width;
-                                  return SizedBox(
-                                    height: height - 350,
-                                    width: width - 90,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                              borderRadius:
-                                              BorderRadius.only(
-                                                  topRight:
-                                                  Radius.circular(
-                                                      10.0),
-                                                  topLeft:
-                                                  Radius.circular(
-                                                      10.0)),
-                                              color: kPinaColor,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                                  children: [
-                                                    Text(
-                                                      '  Errore invio ordine',
-                                                      style: TextStyle(
-                                                        fontSize:
-                                                        getProportionateScreenWidth(
-                                                            20),
-                                                        fontWeight:
-                                                        FontWeight.bold,
-                                                        color: kCustomWhite,
-                                                      ),
-                                                    ),
-                                                    IconButton(
-                                                      icon: const Icon(
-                                                        Icons.clear,
-                                                        color: kCustomWhite,
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(
-                                                            context);
-                                                      },
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                Text('E\' stato riscontrato un errore durate l\''
-                                                    'invio dell\'ordine. Controlla che la mail ['+ widget.currentSupplier.mail +'] sia corretta oppure riprova fra '
-                                                    'un paio di minuti.\n\n' , textAlign: TextAlign.center,),
+                        context.loaderOverlay.hide();
 
-                                                const Text('Se non disponi della mail puoi inviare il presente ordine tramite what\'s app.  ' , textAlign: TextAlign.center,),
-                                                CupertinoButton(child: SvgPicture.asset('assets/icons/ws.svg'), onPressed: (){}, color: Colors.red),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderErrorDetailsScreen(
+                          mail: widget.currentSupplier.mail,
+                          supplier: widget.currentSupplier,
+                          number: widget.currentSupplier.tel,
+                          performSaveOrderId : widget.draftOrder.pk_order_id,
+                          code: code,
+                          deliveryDate: currentDate,
+                          message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                            branchName: dataBundleNotifier.currentBranch.companyName,
+                            orderId: code,
+                            productList: dataBundleNotifier.currentProductModelListForSupplier,
+                            deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                            supplierName: widget.currentSupplier.nome,
+                            currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                            storageAddress: currentStorageModel.address,
+                            storageCap: currentStorageModel.cap,
+                            storageCity: currentStorageModel.city,
+                          ),
+
+                        ),
+                        ),
+                        );
                       }
                     }
                   }catch(e){
@@ -234,7 +174,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                   }
 
                 },
-                color: Colors.green.shade900.withOpacity(0.8),
+                color: kCustomBlueAccent,
               ),
             ),
             appBar: AppBar(
@@ -309,7 +249,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
               child: Column(
                 children: [
                   Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold,
-                      fontSize: getProportionateScreenHeight(25), color: Colors.yellow.shade800.withOpacity(0.9)),),
+                      fontSize: getProportionateScreenHeight(25), color: kPrimaryColor),),
                   Text('#' + code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
                   Divider(endIndent: 40, indent: 40,),
                   Row(
@@ -405,7 +345,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                           children: [
                             CupertinoButton(
                               child:
-                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomOrange),),
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                               color: Colors.black.withOpacity(0.8),
                               onPressed: () => _selectDate(context),
                             )
@@ -508,19 +448,19 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              backgroundColor: Colors.black,
-              dialogBackgroundColor: Colors.black,
-              colorScheme: ColorScheme.dark(
-                onSurface: kCustomOrange,
-                primary: kCustomOrange,
-                secondary: Colors.black.withOpacity(0.9),
-                onSecondary: Colors.grey.withOpacity(0.9),
-                background: Colors.black.withOpacity(0.9),
-                onBackground: Colors.black.withOpacity(0.9),
+              backgroundColor: kPrimaryColor,
+              dialogBackgroundColor: kPrimaryColor,
+              colorScheme: const ColorScheme.dark(
+                onSurface: kCustomBlueAccent,
+                primary: kCustomBlueAccent,
+                secondary: kPrimaryColor,
+                onSecondary: kPrimaryColor,
+                background: kPrimaryColor,
+                onBackground: kPrimaryColor,
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomOrange, // button// text color
+                  primary: kCustomBlueAccent, // button// text color
                 ),
               ),
             ),

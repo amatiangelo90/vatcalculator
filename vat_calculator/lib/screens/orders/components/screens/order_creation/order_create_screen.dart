@@ -173,7 +173,6 @@ class CreateOrderScreen extends StatelessWidget {
                 ),
               );
             }
-
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 5, 10, 2),
