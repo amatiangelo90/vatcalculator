@@ -120,7 +120,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     );
                   }
                 },
-                color: kCustomBlueAccent,
+                color: kCustomGreenAccent,
               ),
             ),
           ),
@@ -255,7 +255,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                   'Bozza Ordine',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(10),
-                    color: kCustomBlueAccent,
+                    color: kCustomGreenAccent,
                   ),
                 ),
               ],

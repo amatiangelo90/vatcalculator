@@ -301,7 +301,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                                 fontSize: getProportionateScreenHeight(15)),
                           ),
                           pressedOpacity: 0.9,
-                          color: kCustomBlueAccent,
+                          color: kCustomGreenAccent,
                           onPressed: () async {
 
                             List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
@@ -329,7 +329,7 @@ class _DraftOrderPageState extends State<DraftOrderPage> {
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(10.0),
                               bottomRight: Radius.circular(10.0)),
-                          color: kCustomBlueAccent,
+                          color: kCustomGreenAccent,
 
                         ),
                       ),

@@ -32,7 +32,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
         title: Text('Registra la tua attività',
           style: TextStyle(
             fontSize: getProportionateScreenWidth(19),
-            color: kCustomBlueAccent,
+            color: kCustomGreenAccent,
           ),
         ),
         backgroundColor: kPrimaryColor,
@@ -65,7 +65,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.home_work, color: kCustomBlueAccent,),
+                                const Icon(Icons.home_work, color: kCustomGreenAccent,),
                                 const SizedBox(width: 5,),
                                 Text('Crea una nuova attività', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: getProportionateScreenWidth(20),
@@ -100,7 +100,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const Icon(Icons.people, color: kCustomBlueAccent),
+                                const Icon(Icons.people, color: kCustomGreenAccent),
                                 const SizedBox(width: 5,),
                                 Text('Unisciti ad una esistente', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: getProportionateScreenWidth(20),

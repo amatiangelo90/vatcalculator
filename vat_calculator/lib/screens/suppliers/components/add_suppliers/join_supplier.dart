@@ -53,7 +53,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                 'Associa Fornitore',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(17),
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
               elevation: 2,
@@ -352,7 +352,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               Flexible(
                 child: CupertinoButton(
                   color: Colors.black54.withOpacity(0.5),
-                  child: Text("Clear", style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(18)),),
+                  child: Text("Clear", style: TextStyle(color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(18)),),
                   onPressed: () {
                     supplierCodeControllerSearch.clear();
                   },

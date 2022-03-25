@@ -97,7 +97,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           'Crea Evento',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(19),
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                           ),
                         ),
                         Text(
@@ -178,7 +178,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   width: getProportionateScreenHeight(400),
                                   child: CupertinoButton(
                                     child:
-                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomBlueAccent),),
+                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomGreenAccent),),
                                     color: kPrimaryColor,
                                     onPressed: () => _selectDate(context),
                                   ),
@@ -510,7 +510,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         }
                       }
                     },
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
             );
@@ -526,8 +526,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
               backgroundColor: kPrimaryColor,
               dialogBackgroundColor: kPrimaryColor,
               colorScheme: const ColorScheme.dark(
-                onSurface: kCustomBlueAccent,
-                primary: kCustomBlueAccent,
+                onSurface: kCustomGreenAccent,
+                primary: kCustomGreenAccent,
                 secondary: kPrimaryColor,
                 onSecondary: kPrimaryColor,
                 background: kPrimaryColor,
@@ -535,7 +535,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomBlueAccent, // button// text color
+                  primary: kCustomGreenAccent, // button// text color
                 ),
               ),
             ),

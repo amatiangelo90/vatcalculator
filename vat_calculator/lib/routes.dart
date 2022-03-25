@@ -19,7 +19,6 @@ import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.da
 import 'package:vat_calculator/screens/landing/landing_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/archivied_order_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/draft_order_page.dart';
-import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
@@ -30,7 +29,6 @@ import 'package:vat_calculator/screens/storage/components/add_storage_screen.dar
 import 'package:vat_calculator/screens/storage/components/create_product_and_add_to_storage.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
 import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
-import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
@@ -42,6 +40,7 @@ import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_su
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
+import 'package:vat_calculator/screens/warnings/warning_screen.dart';
 import 'screens/sign_up/sign_up_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -87,4 +86,5 @@ final Map<String, WidgetBuilder> routes = {
   JoinSupplierAlreadyRegisteredScreen.routeName: (context) => JoinSupplierAlreadyRegisteredScreen(),
   HomeScreenMain.routeName: (context) => HomeScreenMain(),
   CreateAndAddProductScreen.routeName: (context) => CreateAndAddProductScreen(),
+  WarningScreen.routeName: (context) => WarningScreen(),
 };

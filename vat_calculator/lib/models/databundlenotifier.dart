@@ -51,8 +51,8 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<StorageModel> currentStorageList = [
   ];
-  Map<int, BundleUserStorageSupplier> currentMapBranchIdBundleSupplierStorageUsers = {
 
+  Map<int, BundleUserStorageSupplier> currentMapBranchIdBundleSupplierStorageUsers = {
   };
 
   List<ProductModel> currentProductModelListForSupplier = [
@@ -93,6 +93,7 @@ class DataBundleNotifier extends ChangeNotifier {
   List<CharData> charDataDebitIva = [];
 
   List<EventModel> eventModelList = [];
+  List<EventModel> eventModelListOlderThanToday = [];
 
   String currentPrivilegeType;
 
@@ -625,6 +626,7 @@ class DataBundleNotifier extends ChangeNotifier {
       currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
       currentTodayOrdersForCurrentBranch.clear();
+
     }
 
     if(currentListSuppliers != null && currentListSuppliers.isNotEmpty){
@@ -865,7 +867,6 @@ class DataBundleNotifier extends ChangeNotifier {
             DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
 
           currentTodayOrdersForCurrentBranch.add(orderItem);
-
         }
       }
     });
@@ -1597,6 +1598,63 @@ class DataBundleNotifier extends ChangeNotifier {
   void onItemTapped(int index) {
     selectedIndex = index;
     notifyListeners();
+  }
+
+  int areEventsOrOrderOlderThanTodayPresent() {
+
+    int result = 0;
+    if(currentUnderWorkingOrdersList.isNotEmpty){
+      currentUnderWorkingOrdersList.forEach((orderItem) {
+        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day < DateTime.now().day &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+          result = result + 1;
+        }
+      });
+    }
+    if(eventModelList.isNotEmpty){
+      eventModelList.forEach((eventItem) {
+
+        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day < DateTime.now().day &&
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == DateTime.now().month &&
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == DateTime.now().year && eventItem.closed == 'N'){
+
+          result = result + 1;
+        }
+      });
+    }
+    return result;
+  }
+
+  List<OrderModel> getOrdersOlderThanTodayUnderWorking() {
+
+    List<OrderModel> list = [];
+    if(currentUnderWorkingOrdersList.isNotEmpty){
+      currentUnderWorkingOrdersList.forEach((orderItem) {
+        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day < DateTime.now().day &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+          list.add(orderItem);
+        }
+      });
+    }
+    return list;
+  }
+
+  List<EventModel> getEventsOlderThanTodayNotClosed() {
+
+    List<EventModel> list = [];
+    if(eventModelList.isNotEmpty){
+      eventModelList.forEach((eventItem) {
+        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day < DateTime.now().day &&
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == DateTime.now().month &&
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == DateTime.now().year && eventItem.closed == 'N'){
+          list.add(eventItem);
+        }
+      });
+    }
+
+    return list;
   }
 
 }

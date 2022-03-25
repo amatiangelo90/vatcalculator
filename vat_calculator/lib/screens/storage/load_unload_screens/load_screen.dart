@@ -108,7 +108,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                     color: Colors.white,
                     fontSize: getProportionateScreenHeight(17)),
               ),
-              Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(11)),),
+              Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(11)),),
             ],
           ),
         ),
@@ -169,7 +169,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                   children: [
                     Text(
                       element.unitMeasure,
-                        style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomBlueAccent),
+                        style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomGreenAccent),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),

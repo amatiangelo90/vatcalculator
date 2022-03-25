@@ -224,7 +224,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     }
                   }
                 },
-                color: kCustomBlueAccent,
+                color: kCustomGreenAccent,
               ),
             ),
             appBar: AppBar(
@@ -240,7 +240,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 'Conferma Ordine',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(17),
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
               elevation: 2,
@@ -399,7 +399,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           children: [
                             CupertinoButton(
                               child:
-                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomBlueAccent),),
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomGreenAccent),),
                               color: Colors.black.withOpacity(0.8),
                               onPressed: () => _selectDate(context),
                             )
@@ -517,8 +517,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               backgroundColor: Colors.black,
               dialogBackgroundColor: Colors.black,
               colorScheme: ColorScheme.dark(
-                onSurface: kCustomBlueAccent,
-                primary: kCustomBlueAccent,
+                onSurface: kCustomGreenAccent,
+                primary: kCustomGreenAccent,
                 secondary: kPrimaryColor,
                 onSecondary: kPrimaryColor,
                 background: kPrimaryColor,
@@ -526,7 +526,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomBlueAccent, // button// text color
+                  primary: kCustomGreenAccent, // button// text color
                 ),
               ),
             ),

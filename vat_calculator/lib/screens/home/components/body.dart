@@ -20,7 +20,6 @@ import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/expence_manager/components/expence_reg_card.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../branch_registration/branch_update.dart';
@@ -34,7 +33,7 @@ class HomePageBody extends StatefulWidget {
 }
 
 class _HomePageBodyState extends State<HomePageBody> {
-  Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
+
   int currentOrderIndex = 0;
   int currentEventIndex = 0;
 
@@ -129,7 +128,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14.0,
-                                        color: kCustomBlueAccent),
+                                        color: kCustomGreenAccent),
                                   ),
                                 ),
                               ),
@@ -203,7 +202,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                             Text(
                                               'Effettua Ordine',
                                               style: TextStyle(
-                                                  color: kCustomBlueAccent,
+                                                  color: kCustomGreenAccent,
                                                   fontSize:
                                                       getProportionateScreenWidth(
                                                           17)),
@@ -240,7 +239,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                                 .add_circle_outline,
                                                             size: 13,
                                                             color:
-                                                                kCustomBlueAccent,
+                                                                kCustomGreenAccent,
                                                           ),
                                                         ),
                                                       ),
@@ -254,23 +253,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                                       ),
                                     ),
                                   )
-                                : SizedBox(
-                                    height: getProportionateScreenHeight(211),
-                                    child: PageView.builder(
-                                      onPageChanged: (value) {
-                                        setState(() {
-                                          currentOrderIndex = value;
-                                        });
-                                      },
-                                      itemCount: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList).length,
-                                      itemBuilder: (context, index) =>
-                                          OrderCard(
-                                        order: retrieveTodayOrdersList(dataBundleNotifier.currentUnderWorkingOrdersList)[index],
-                                        showExpandedTile: false,
-                                        orderIdProductListMap: orderIdProductListMap,
-                                      ),
-                                    ),
+                                : SingleChildScrollView(
+                                  scrollDirection: Axis.horizontal,
+                                  child: Row(
+                                    children: snapshot.data,
                                   ),
+                                ),
                             Padding(
                               padding: const EdgeInsets.all(2.0),
                               child: SingleChildScrollView(
@@ -321,7 +309,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14.0,
-                                        color: kCustomBlueAccent),
+                                        color: kCustomGreenAccent),
                                   ),
                                 ),
                               ),
@@ -369,7 +357,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             Text(
                               'Crea Evento',
                               style: TextStyle(
-                                  color: kCustomBlueAccent,
+                                  color: kCustomGreenAccent,
                                   fontSize:
                                   getProportionateScreenWidth(
                                       17)),
@@ -406,7 +394,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                                 .add_circle_outline,
                                             size: 13,
                                             color:
-                                            kCustomBlueAccent,
+                                            kCustomGreenAccent,
                                           ),
                                         ),
                                       ),
@@ -452,7 +440,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ),
                   // buildActionsList(dataBundleNotifier.currentBranchActionsList),
-                  SizedBox(height: getProportionateScreenHeight(200),)
+                  SizedBox(height: getProportionateScreenHeight(50),),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Developed by A.A.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(9))),
+                  ),
+                  SizedBox(height: getProportionateScreenHeight(20),),
                 ],
               ),
             ),
@@ -544,7 +537,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 child: Text(
                   '' + dataBundleNotifier.currentBranch.companyName,
                   style: TextStyle(
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                       fontSize: getProportionateScreenWidth(15),
                       fontWeight: FontWeight.bold),
                 ),
@@ -565,7 +558,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                       size: getProportionateScreenWidth(30),
                     ),
                   ),
@@ -607,7 +600,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                         Icons.format_align_right_rounded,
                         color: dataBundleNotifier.currentBranch.pkBranchId ==
                                 currentBranch.pkBranchId
-                            ? kCustomBlueAccent
+                            ? kCustomGreenAccent
                             : kPrimaryColor,
                       ),
                       Icon(
@@ -616,7 +609,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             : Icons.vpn_key_outlined,
                         color: dataBundleNotifier.currentBranch.pkBranchId ==
                                 currentBranch.pkBranchId
-                            ? kCustomBlueAccent
+                            ? kCustomGreenAccent
                             : kPrimaryColor,
                       ),
                       Text(
@@ -641,7 +634,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                           padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
                           child: SvgPicture.asset(
                             'assets/icons/success-green.svg',
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             width: 22,
                           ),
                         )
@@ -669,7 +662,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           width: MediaQuery.of(context).size.width,
           child: CupertinoButton(
             child: const Text('Crea Attività'),
-            color: kCustomBlueAccent,
+            color: kCustomGreenAccent,
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(
@@ -863,20 +856,26 @@ class _HomePageBodyState extends State<HomePageBody> {
   Future<List<Widget>> populateProductsListForTodayOrders(
       DataBundleNotifier dataBundleNotifier) async {
 
-    dataBundleNotifier.currentUnderWorkingOrdersList.forEach((element) async {
-      if (isToday(element.delivery_date)) {
+    List<OrderCard> orderCardList = [];
+
+    await Future.forEach(dataBundleNotifier.currentUnderWorkingOrdersList, (OrderModel orderModel) async {
+      if (isToday(orderModel.delivery_date)) {
         List<ProductOrderAmountModel> list = await dataBundleNotifier
             .getclientServiceInstance()
             .retrieveProductByOrderId(
-              OrderModel(
-                pk_order_id: element.pk_order_id,
-              ),
-            );
-        orderIdProductListMap[element.pk_order_id] = list;
+          OrderModel(
+            pk_order_id: orderModel.pk_order_id,
+          ),
+        );
+        orderCardList.add(OrderCard(
+          order: orderModel,
+          showExpandedTile: false,
+          orderIdProductList: list,
+        ));
       }
     });
 
-    return [];
+    return orderCardList;
   }
 
   buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {

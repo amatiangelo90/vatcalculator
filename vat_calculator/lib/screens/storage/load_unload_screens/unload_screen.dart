@@ -193,7 +193,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                   children: [
                     Text(
                       element.unitMeasure,
-                      style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomBlueAccent),
+                      style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomGreenAccent),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),

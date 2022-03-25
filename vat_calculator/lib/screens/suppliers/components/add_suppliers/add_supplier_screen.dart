@@ -50,7 +50,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width - 35,
                       child: CupertinoButton(
-                          color: kCustomBlueAccent,
+                          color: kCustomGreenAccent,
                           child: const Text('Salva Fornitore'),
                           onPressed: () async {
                             if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
@@ -109,7 +109,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     'Crea Nuovo Fornitore',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(17),
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                     ),
                   ),
                 ],

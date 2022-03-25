@@ -91,10 +91,10 @@ class ActionType{
               STORAGE_CREATION);
         case EVENT_CREATION:
           return CustomIcon.buildIconWidget('assets/icons/party.svg',
-              kCustomBlueAccent,
+              kCustomGreenAccent,
               Colors.black.withOpacity(0.7),
               Icons.add_circle_outline,
-              kCustomBlueAccent,
+              kCustomGreenAccent,
               EVENT_CREATION);
 
         case UPDATE_PRIVILEGE:

@@ -131,7 +131,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                           width: getProportionateScreenWidth(400),
                           height: getProportionateScreenHeight(45),
                           child: Card(
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -156,7 +156,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                         DatePicker(
                           DateTime.now().subtract(Duration(days: 4)),
                           initialSelectedDate: DateTime.now(),
-                          selectionColor: kCustomBlueAccent,
+                          selectionColor: kCustomGreenAccent,
                           selectedTextColor: Colors.white,
                           width: getProportionateScreenHeight(40),
                           daysCount: 9,
@@ -178,7 +178,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: CupertinoSlidingSegmentedControl<int>(
-                                  thumbColor: kCustomBlueAccent,
+                                  thumbColor: kCustomGreenAccent,
 
                                   children: dataBundleNotifier.ivaListCupertino,
                                   onValueChanged: (index){
@@ -271,7 +271,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                               child: CupertinoButton(
                                 pressedOpacity: 0.5,
                                 child: const Text('Salva Incasso'),
-                                color: kCustomBlueAccent,
+                                color: kCustomGreenAccent,
                                 onPressed: () async {
 
                                     if(isValueValid(recessedCashController)){
@@ -419,7 +419,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                               child: CupertinoButton(
                                 pressedOpacity: 0.5,
                                 child: const Text('Configura Registratore di Cassa', textAlign: TextAlign.center),
-                                color: kCustomBlueAccent,
+                                color: kCustomGreenAccent,
                                 onPressed: () async {
                                   TextEditingController cashRegisterNameController = TextEditingController();
 
@@ -475,14 +475,14 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                                     child: Container(
                                                         padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                                                         decoration: const BoxDecoration(
-                                                          color: kCustomBlueAccent,
+                                                          color: kCustomGreenAccent,
                                                           borderRadius: BorderRadius.only(
                                                               bottomLeft: Radius.circular(25.0),
                                                               bottomRight: Radius.circular(25.0)),
                                                         ),
                                                         child: SizedBox(
                                                           width: getProportionateScreenWidth(300),
-                                                          child: CupertinoButton(child: const Text('Crea'), color: kCustomBlueAccent, onPressed: () async {
+                                                          child: CupertinoButton(child: const Text('Crea'), color: kCustomGreenAccent, onPressed: () async {
 
                                                             if (cashRegisterNameController.text == null || cashRegisterNameController.text == '') {
                                                               Scaffold.of(context).showSnackBar(const SnackBar(

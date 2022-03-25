@@ -46,7 +46,7 @@ class CreateOrderScreen extends StatelessWidget {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(19),
-                          color: kCustomBlueAccent,
+                          color: kCustomGreenAccent,
                         ),
                       ),
                       Text(
@@ -185,7 +185,7 @@ class CreateOrderScreen extends StatelessWidget {
               child: draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier) ? ClipRect(
                 child: Banner(
                   message: 'BOZZA',
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                   location: BannerLocation.topEnd,
                   child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
                 ),

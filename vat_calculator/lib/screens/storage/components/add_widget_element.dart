@@ -92,10 +92,10 @@ class AddElementWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(element.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
-                            Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomBlueAccent,fontWeight: FontWeight.bold,),),
+                            Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGreenAccent,fontWeight: FontWeight.bold,),),
                           ],
                         ),
-                        SvgPicture.asset('assets/icons/rightarrow.svg', width: getProportionateScreenHeight(25), color: kCustomBlueAccent,
+                        SvgPicture.asset('assets/icons/rightarrow.svg', width: getProportionateScreenHeight(25), color: kCustomGreenAccent,
                         ),
                       ],
                     ),

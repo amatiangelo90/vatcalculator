@@ -290,7 +290,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       SizedBox(
         width: MediaQuery.of(context).size.width - 40,
         child: CupertinoButton(
-            color: kCustomBlueAccent,
+            color: kCustomGreenAccent,
             child: const Text('Salva impostazioni'),
             onPressed: () async {
 
@@ -425,10 +425,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             Text('   PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)),),
           ],
         ),
-        Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
-        Text('SCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
-        Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
-        Text('COSTO(€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('SCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(12)),),
+        Text('COSTO(€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(12)),),
       ]),
     ];
 
@@ -480,7 +480,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('' + supportTableObjList[id].productName, textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-                  Text('€ ' + supportTableObjList[id].price.toStringAsFixed(2) + ' / ' + supportTableObjList[id].unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(10)),),
+                  Text('€ ' + supportTableObjList[id].price.toStringAsFixed(2) + ' / ' + supportTableObjList[id].unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(10)),),
                 ],
               ),
             ],
@@ -514,7 +514,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         padding: const EdgeInsets.all(15.0),
         child: Row(
           children: [
-            Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(15)),),
+            Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(15)),),
           ],
         ),
       ),

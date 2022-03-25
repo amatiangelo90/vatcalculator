@@ -316,7 +316,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                   child: TextButton(
 
                                     style: TextButton.styleFrom(
-                                      backgroundColor: kCustomBlueAccent,
+                                      backgroundColor: kCustomGreenAccent,
                                     ),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,

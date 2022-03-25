@@ -109,7 +109,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     ),
                                     Row(
                                       children: [
-                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: kCustomBlueAccent,
+                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: kCustomGreenAccent,
                                         ) : const SizedBox(width: 0,),
                                         const SizedBox(width: 20,),
                                       ],
@@ -122,7 +122,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Row(
                               children: [
                                 const SizedBox(width: 20,),
-                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomBlueAccent)) : const SizedBox(width: 0,),
+                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomGreenAccent)) : const SizedBox(width: 0,),
                               ],
                             ),
                             const SizedBox(height: 10,),
@@ -133,7 +133,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             ) : SizedBox(
                               height: getProportionateScreenHeight(40),
                               child: Container(
-                                color: kCustomBlueAccent,
+                                color: kCustomGreenAccent,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [

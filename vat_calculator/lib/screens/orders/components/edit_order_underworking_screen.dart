@@ -58,7 +58,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width - 30,
                       child: CupertinoButton(
-                          color: kCustomBlueAccent,
+                          color: kCustomGreenAccent,
                           child: const Text('Ricevuto', style: TextStyle(color: kCustomWhite),),
                           onPressed: (){
                             dataBundleNotifier.setEditOrderToFalse();
@@ -279,7 +279,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               centerTitle: true,
               automaticallyImplyLeading: true,
               title: Text(
-                'Dettaglio Ordine', style: TextStyle(color: kCustomBlueAccent),
+                'Dettaglio Ordine', style: TextStyle(color: kCustomGreenAccent),
               ),
             ),
             body: SingleChildScrollView(
@@ -450,7 +450,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                 ),
                 Row(
                   children: [
-                    Text(currentProduct.prezzo_lordo.toStringAsFixed(2) + ' € - ' + currentProduct.unita_misura, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlueAccent),),
+                    Text(currentProduct.prezzo_lordo.toStringAsFixed(2) + ' € - ' + currentProduct.unita_misura, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
 
                   ],
                 ),

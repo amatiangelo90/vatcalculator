@@ -57,7 +57,7 @@ class AddStorageScreen extends StatelessWidget {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 30,
                     child: DefaultButton(
-                    color: kCustomBlueAccent,
+                    color: kCustomGreenAccent,
                     text: 'Crea Magazzino',
                     press: () async {
                       if(_nameController.text.isEmpty || _nameController.text == ''){
@@ -131,7 +131,7 @@ class AddStorageScreen extends StatelessWidget {
             title: Text('Crea Magazzino',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomBlueAccent,
+                color: kCustomGreenAccent,
               ),
             ),
             elevation: 5,

@@ -99,9 +99,9 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
+                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
                           formatButtonDecoration: BoxDecoration(
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
@@ -135,7 +135,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.pinkAccent),
 
                           selectedDecoration: const BoxDecoration(
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             shape: BoxShape.circle,
                           ),
                           todayDecoration: BoxDecoration(
@@ -180,7 +180,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                             itemBuilder: (context, order) {
                               return OrderCard(order: orderList[order],
                                 showExpandedTile: true,
-                                orderIdProductListMap: orderIdProductListMap,
+                                orderIdProductList: orderIdProductListMap[orderList[order].pk_order_id],
                               );
                             },
                           );

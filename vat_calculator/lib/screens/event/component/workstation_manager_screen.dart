@@ -87,7 +87,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
                   Text(
                     'Tipo workstation: ' + widget.workstationModel.type,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(8), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(8), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
                 ],
               ),
             ),
@@ -405,7 +405,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                                   },
                                   child: Text('Aggiungi'),
-                                  color: kCustomBlueAccent,
+                                  color: kCustomGreenAccent,
                                 ),
                               ),
                             ],
@@ -478,14 +478,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                 child: Container(
                                     padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                                     decoration: const BoxDecoration(
-                                      color: kCustomBlueAccent,
+                                      color: kCustomGreenAccent,
                                       borderRadius: BorderRadius.only(
                                           bottomLeft: Radius.circular(25.0),
                                           bottomRight: Radius.circular(25.0)),
                                     ),
                                     child: SizedBox(
                                       width: getProportionateScreenWidth(300),
-                                      child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomBlueAccent, onPressed: () async {
+                                      child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomGreenAccent, onPressed: () async {
 
                                         if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
                                           double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
@@ -629,7 +629,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       children: [
                         Text(
                           element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''),
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomBlueAccent),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomGreenAccent),
                         ),
                         Text(
                           ' ' + element.unitMeasure + ' x 100/pax' ,
@@ -759,7 +759,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       ));
                     }
                   },
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
             ],
@@ -816,7 +816,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 60,
                     child: CupertinoButton(
-                        color: kCustomBlueAccent,
+                        color: kCustomGreenAccent,
                         child: const Text('Salva Impostazioni'),
                         onPressed: () async {
                           if(controllerWorkStationName.text == null || controllerWorkStationName.text == ''){

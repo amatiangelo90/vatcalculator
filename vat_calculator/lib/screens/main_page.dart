@@ -12,6 +12,7 @@ import 'package:vat_calculator/screens/storage/components/add_storage_screen.dar
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
+import 'package:vat_calculator/screens/warnings/warning_screen.dart';
 
 import '../client/vatservice/model/utils/privileges.dart';
 import '../components/common_drawer.dart';
@@ -57,7 +58,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
-            floatingActionButton: dataBundleNotifier.selectedIndex != 2 ? SizedBox(height: 0,) : FloatingActionButton(
+            floatingActionButton: dataBundleNotifier.selectedIndex == 2 ? FloatingActionButton(
             onPressed: (){
               Navigator.pushNamed(context, CreateOrderScreen.routeName);
             },
@@ -95,8 +96,54 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 ),
               ],
             ),
-          ),
-          drawer: CommonDrawer(),
+          ) : dataBundleNotifier.selectedIndex == 0 && dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent() != 0
+                && DateTime.now().hour > 5 ? FloatingActionButton(
+              elevation: 7,
+              onPressed: (){
+                Navigator.pushNamed(context, WarningScreen.routeName);
+              },
+              backgroundColor: Colors.pinkAccent,
+              child: Stack(
+                children: [ IconButton(
+                  icon: SvgPicture.asset(
+                    'assets/icons/warning.svg',
+                    color: Colors.yellow,
+                    width: getProportionateScreenWidth(50),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, WarningScreen.routeName);
+                  },
+                ),
+                  Positioned(
+                    top: 24.0,
+                    right: 2.0,
+                    child: Stack(
+                      children: <Widget>[
+                        const Icon(
+                          Icons.brightness_1,
+                          size: 18,
+                          color: kPrimaryColor,
+                        ),
+                        Positioned(
+                          right: 4.0,
+                          top: 1,
+                          child: Center(
+                            child: Text(
+                              dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent().toString(),
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                  fontSize: 10.0,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ) : const SizedBox(height: 0,),
+          drawer: const CommonDrawer(),
           appBar: getAppBarByIndex(dataBundleNotifier.selectedIndex, dataBundleNotifier),
           body: Center(
             child: _pages.elementAt(dataBundleNotifier.selectedIndex),
@@ -115,7 +162,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   icon: SvgPicture.asset(
                     "assets/icons/home.svg",
                     color: dataBundleNotifier.selectedIndex == 0
-                        ? kCustomBlueAccent
+                        ? kCustomGreenAccent
                         : Colors.white,
                     width: 25,
                   ),
@@ -125,7 +172,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   icon: SvgPicture.asset(
                     "assets/icons/storage.svg",
                     color: dataBundleNotifier.selectedIndex == 1
-                        ? kCustomBlueAccent
+                        ? kCustomGreenAccent
                         : Colors.white,
                     width: 27,
                   ),
@@ -137,7 +184,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     SvgPicture.asset(
                     "assets/icons/receipt.svg",
                     color: dataBundleNotifier.selectedIndex == 2
-                        ? kCustomBlueAccent
+                        ? kCustomGreenAccent
                         : Colors.white,
                     width: 27,
                   ),
@@ -199,7 +246,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   icon: SvgPicture.asset(
                     "assets/icons/Settings.svg",
                     color: dataBundleNotifier.selectedIndex == 3
-                        ? kCustomBlueAccent
+                        ? kCustomGreenAccent
                         : Colors.white,
                     width: 25,
                   ),
@@ -207,7 +254,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 ),
               ],
               currentIndex: dataBundleNotifier.selectedIndex,
-              selectedItemColor: kCustomBlueAccent,
+              selectedItemColor: kCustomGreenAccent,
               unselectedItemColor: Colors.white,
               onTap: dataBundleNotifier.onItemTapped,
             ),
@@ -274,7 +321,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         right: 2.5,
                         top: 2.5,
                         child: Center(
-                          child: Icon(Icons.add_circle_outline, size: 13, color: kCustomBlueAccent,),
+                          child: Icon(Icons.add_circle_outline, size: 13, color: kCustomGreenAccent,),
                         ),
                       ),
                     ],
@@ -314,7 +361,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                 .add_circle_outline,
                             size: 13,
                             color:
-                            kCustomBlueAccent,
+                            kCustomGreenAccent,
                           ),
                         ),
                       ),
@@ -347,7 +394,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 dataBundleNotifier.currentBranch.accessPrivilege + ' per ' + dataBundleNotifier.currentBranch.companyName : '',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(5),
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
             ],
@@ -404,7 +451,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           centerTitle: true,
           title: dataBundleNotifier.currentStorage == null ? Text('Area Magazzini' , style: TextStyle(
             fontSize: getProportionateScreenWidth(17),
-            color: kCustomBlueAccent,
+            color: kCustomGreenAccent,
           ),) : Column(
             children: [
               Text(
@@ -418,7 +465,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               'Area gestione magazzini',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(8),
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
             ],
@@ -543,7 +590,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 'Area gestione ordini',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                 ),
               ),
             ],
@@ -558,7 +605,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             'Gestione',
             style: TextStyle(
               fontSize: getProportionateScreenWidth(19),
-              color: kCustomBlueAccent,
+              color: kCustomGreenAccent,
             ),
           ),
           backgroundColor: kPrimaryColor,
@@ -652,7 +699,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 children: [
                   Row(
                     children: [
-                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: kCustomBlueAccent, width: getProportionateScreenWidth(25),), ),
+                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: kCustomGreenAccent, width: getProportionateScreenWidth(25),), ),
                       Text(
                         '   ' + currentStorageElement.name,
                         style: TextStyle(
@@ -698,7 +745,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
           width: MediaQuery.of(context).size.width,
           child: CupertinoButton(
             child: Text('Crea Magazzino'),
-            color: kCustomBlueAccent,
+            color: kCustomGreenAccent,
             onPressed: () {
               Navigator.pop(context);
               Navigator.push(
@@ -716,6 +763,5 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
     );
     return storagesWidgetList;
   }
-
 }
 

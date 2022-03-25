@@ -57,7 +57,7 @@ class EventCard extends StatelessWidget {
                                   child: SvgPicture.asset(
                                     'assets/icons/party.svg',
                                     height: getProportionateScreenHeight(45),
-                                    color: kCustomBlueAccent,
+                                    color: kCustomGreenAccent,
                                   ),
                                 ),
                               ),
@@ -68,7 +68,7 @@ class EventCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(eventModel.eventName,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
                               Text(
                                 'Creato da: ' + eventModel.owner,
                                 style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
@@ -129,7 +129,7 @@ class EventCard extends StatelessWidget {
                   showButton ? SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                       onPressed: () async {
                         List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
 

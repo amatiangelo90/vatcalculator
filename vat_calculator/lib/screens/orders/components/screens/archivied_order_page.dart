@@ -68,9 +68,9 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
             appBar: AppBar(
               elevation: 5,
               backgroundColor: kPrimaryColor,
-              title: const Text('Archivio Ordini'),
+              title: Text('Archivio Ordini', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17))),
               centerTitle: true,
-              titleTextStyle: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenWidth(15)),
+              titleTextStyle: TextStyle(color: kCustomGreenAccent, fontSize: getProportionateScreenWidth(15)),
               leading: GestureDetector( 
                 child: const Icon(Icons.arrow_back_ios, color: Colors.white),
                 onTap: (){
@@ -82,7 +82,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
               initialData: <Widget>[
                 const Center(
                     child: CircularProgressIndicator(
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                     )),
                 const SizedBox(),
                 Column(
@@ -112,25 +112,25 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
+                          titleTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
                           formatButtonDecoration: BoxDecoration(
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
                             Icons.arrow_back_ios,
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             size: getProportionateScreenHeight(16),
                           ),
                           rightChevronIcon: Icon(
                             Icons.arrow_forward_ios,
-                            color: kCustomBlueAccent,
+                            color: kCustomGreenAccent,
                             size: getProportionateScreenHeight(16),
                           ),
                         ),
                         daysOfWeekStyle: const DaysOfWeekStyle(
-                          weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
-                          weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomBlueAccent),
+                          weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
+                          weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
 
                         ),
 

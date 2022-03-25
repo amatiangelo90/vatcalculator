@@ -73,7 +73,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     'Crea Ordine',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(18),
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                     ),
                   ),
                   Text(

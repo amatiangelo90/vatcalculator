@@ -17,10 +17,10 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({Key key, @required this.order, @required this.orderIdProductListMap, @required this.showExpandedTile}) : super(key: key);
+  const OrderCard({Key key, @required this.order, @required this.orderIdProductList, @required this.showExpandedTile}) : super(key: key);
 
   final OrderModel order;
-  final Map<int, List<ProductOrderAmountModel>> orderIdProductListMap;
+  final List<ProductOrderAmountModel> orderIdProductList;
   final bool showExpandedTile;
 
   @override
@@ -28,294 +28,297 @@ class OrderCard extends StatelessWidget {
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          color: kPrimaryColor,
-          elevation: 5,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                productList: orderIdProductListMap[order.pk_order_id],),),);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        children: [
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
-                                child: ClipRect(
-                                  child: SvgPicture.asset(
-                                    'assets/icons/receipt.svg',
-                                    height: getProportionateScreenHeight(40),
-                                    color: kCustomBlueAccent,
+        return SizedBox(
+          width: MediaQuery.of(context).size.width - 2,
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+            color: kPrimaryColor,
+            elevation: 5,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+                  productList: orderIdProductList,),),);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
+                                  child: ClipRect(
+                                    child: SvgPicture.asset(
+                                      'assets/icons/receipt.svg',
+                                      height: getProportionateScreenHeight(40),
+                                      color: kCustomGreenAccent,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomBlueAccent, fontWeight: FontWeight.bold),),
-                                  Text(
-                                    '#' + order.code,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
-                                ],
-                              ),
-                            ],
-                          ),
-
-                        ],
-                      ),
-
-                      Row(
-                        children: [
-                          IconButton(
-                              icon: SvgPicture.asset(
-                                'assets/icons/textmessage.svg',
-                                height: getProportionateScreenHeight(25),
-                              ),
-                              onPressed: () {
-                                String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
-                                    branchName: dataBundleNotifier.currentBranch.companyName,
-                                    orderId: order.code,
-                                    orderProductList: orderIdProductListMap[order.pk_order_id],
-                                    deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
-                                    supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                    currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                                    storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
-                                    storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
-                                    storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
-
-                                print('Message to send vrvrve: ' + message);
-                                SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
-
-                                message = message.replaceAll('#', '');
-                                message = message.replaceAll('<br>', '\n');
-                                message = message.replaceAll('</h4>', '');
-                                message = message.replaceAll('<h4>', '');
-
-                                launch('sms:${refactorNumber(supplierNumber.tel)}?body=$message');
-                              }
-                          ),
-                          IconButton(
-                              icon: SvgPicture.asset(
-                                'assets/icons/ws.svg',
-                                height: getProportionateScreenHeight(25),
-                              ),
-                              onPressed: () {
-                                String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
-                                    branchName: dataBundleNotifier.currentBranch.companyName,
-                                    orderId: order.code,
-                                    orderProductList: orderIdProductListMap[order.pk_order_id],
-                                    deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
-                                    supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                    currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                                    storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
-                                    storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
-                                    storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
-
-                                SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
-
-                                message = message.replaceAll('&', '%26');
-                                message = message.replaceAll('#', '');
-                                message = message.replaceAll('<br>', '\n');
-                                message = message.replaceAll('</h4>', '');
-                                message = message.replaceAll('<h4>', '');
-
-                                launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message');
-                              }
-                          ),
-                          IconButton(
-                              icon: SvgPicture.asset(
-                                'assets/icons/pdf.svg',
-                                height: getProportionateScreenHeight(25),
-                              ),
-                              onPressed: () {
-                                PdfService pdfService = PdfService();
-                                pdfService.generatePdfOrderAndOpenOnDevide(
-                                    order,
-                                    orderIdProductListMap[order.pk_order_id],
-                                dataBundleNotifier.currentBranch);
-                              }
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        '  Stato: ',
-                        style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
-                      Text(
-                        order.status,
-                        style: TextStyle(fontSize: getProportionateScreenHeight(13), color: OrderState.getStatusOrderColor(order.status), fontWeight: FontWeight.bold),),
-                    ],
-                  ),
-                  Divider(
-                    color: kCustomOrange,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Column(
-                        children: [
-                          Text(
-                            'Prodotti',
-                            style: TextStyle(
-                              color: kCustomOrange,
-                              fontSize: getProportionateScreenHeight(13),),
-                          ),
-                          Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
-                            style: TextStyle(
-                                color: kCustomWhite,
-                                fontSize: getProportionateScreenHeight(15),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                            'Prezzo Stimato',
-                            style: TextStyle(
-                                color: kCustomOrange,
-                                fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            '€ ' +
-                                calculatePriceFromProductList(
-                                    orderIdProductListMap[
-                                    order.pk_order_id]),
-                            style: TextStyle(
-                                color: kCustomWhite,
-                                fontSize: getProportionateScreenHeight(15),
-                                fontWeight: FontWeight.bold
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                      style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
+                                    Text(
+                                      '#' + order.code,
+                                      style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                                  ],
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
 
-                  Divider(
-                    color: kCustomOrange,
-                  ),
-                  showExpandedTile ? ExpansionTile(
-                    textColor: kCustomWhite,
-                    collapsedIconColor: kCustomWhite,
-                    iconColor: kCustomWhite,
-                    title: Text(
-                      'Mostra Dettagli',
-                      style: TextStyle(
-                          color: kCustomWhite,
-                          fontSize: getProportionateScreenHeight(13)),
-                    ),
-                    children: [
+                          ],
+                        ),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                              const Text('Creato da: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(getUserDetailsById(order.fk_user_id, order.fk_branch_id,
-                                  dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
-                                style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange),),
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                              const Text('Stato: ', style: TextStyle(fontWeight: FontWeight.bold ,color: kCustomWhite),),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(order.status,
-                                style: TextStyle(color: kCustomOrange),),
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                              Text('Effettuato: ', style: const TextStyle(fontWeight: FontWeight.bold,color: kCustomWhite),),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
-                                style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                            ],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                              const Text('Consegna: ', style: TextStyle(fontWeight: FontWeight.bold,color: kCustomWhite),),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
-                                style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
-                              SizedBox(width: getProportionateScreenWidth(10),),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: getProportionateScreenHeight(20),),
-                      const Text('Carrello'),
-                      buildProductListWidget(orderIdProductListMap[order.pk_order_id], dataBundleNotifier),
-                      SizedBox(height: getProportionateScreenHeight(20),),
-                    ],
-                  ) : SizedBox(width: 0,),
-                  SizedBox(
-                    width: getProportionateScreenWidth(400),
-                    child: CupertinoButton(
-                      color: kCustomBlueAccent,
-                      onPressed: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                          productList: orderIdProductListMap[order.pk_order_id],),),);
-                      },
-                      child: Text('Completa Ordine'),
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: SvgPicture.asset(
+                                  'assets/icons/textmessage.svg',
+                                  height: getProportionateScreenHeight(25),
+                                ),
+                                onPressed: () {
+                                  String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                                      branchName: dataBundleNotifier.currentBranch.companyName,
+                                      orderId: order.code,
+                                      orderProductList: orderIdProductList,
+                                      deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                                      supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                      currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                                      storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
+                                      storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
+                                      storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
+
+                                  print('Message to send vrvrve: ' + message);
+                                  SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
+
+                                  message = message.replaceAll('#', '');
+                                  message = message.replaceAll('<br>', '\n');
+                                  message = message.replaceAll('</h4>', '');
+                                  message = message.replaceAll('<h4>', '');
+
+                                  launch('sms:${refactorNumber(supplierNumber.tel)}?body=$message');
+                                }
+                            ),
+                            IconButton(
+                                icon: SvgPicture.asset(
+                                  'assets/icons/ws.svg',
+                                  height: getProportionateScreenHeight(25),
+                                ),
+                                onPressed: () {
+                                  String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
+                                      branchName: dataBundleNotifier.currentBranch.companyName,
+                                      orderId: order.code,
+                                      orderProductList: orderIdProductList,
+                                      deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                                      supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
+                                      currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                                      storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
+                                      storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
+                                      storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
+
+                                  SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
+
+                                  message = message.replaceAll('&', '%26');
+                                  message = message.replaceAll('#', '');
+                                  message = message.replaceAll('<br>', '\n');
+                                  message = message.replaceAll('</h4>', '');
+                                  message = message.replaceAll('<h4>', '');
+
+                                  launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message');
+                                }
+                            ),
+                            IconButton(
+                                icon: SvgPicture.asset(
+                                  'assets/icons/pdf.svg',
+                                  height: getProportionateScreenHeight(25),
+                                ),
+                                onPressed: () {
+                                  PdfService pdfService = PdfService();
+                                  pdfService.generatePdfOrderAndOpenOnDevide(
+                                      order,
+                                      orderIdProductList,
+                                  dataBundleNotifier.currentBranch);
+                                }
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Row(
+                      children: [
+                        Text(
+                          '  Stato: ',
+                          style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                        Text(
+                          order.status,
+                          style: TextStyle(fontSize: getProportionateScreenHeight(13), color: OrderState.getStatusOrderColor(order.status), fontWeight: FontWeight.bold),),
+                      ],
+                    ),
+                    Divider(
+                      color: kCustomOrange,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Column(
+                          children: [
+                            Text(
+                              'Prodotti',
+                              style: TextStyle(
+                                color: kCustomOrange,
+                                fontSize: getProportionateScreenHeight(13),),
+                            ),
+                            Text(orderIdProductList == null ? '0' : orderIdProductList.length.toString(),
+                              style: TextStyle(
+                                  color: kCustomWhite,
+                                  fontSize: getProportionateScreenHeight(15),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Text(
+                              'Prezzo Stimato',
+                              style: TextStyle(
+                                  color: kCustomOrange,
+                                  fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              '€ ' +
+                                  calculatePriceFromProductList(
+                                      orderIdProductList),
+                              style: TextStyle(
+                                  color: kCustomWhite,
+                                  fontSize: getProportionateScreenHeight(15),
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    Divider(
+                      color: kCustomOrange,
+                    ),
+                    showExpandedTile ? ExpansionTile(
+                      textColor: kCustomWhite,
+                      collapsedIconColor: kCustomWhite,
+                      iconColor: kCustomWhite,
+                      title: Text(
+                        'Mostra Dettagli',
+                        style: TextStyle(
+                            color: kCustomWhite,
+                            fontSize: getProportionateScreenHeight(13)),
+                      ),
+                      children: [
+
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                                const Text('Creato da: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(getUserDetailsById(order.fk_user_id, order.fk_branch_id,
+                                    dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange),),
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                                const Text('Stato: ', style: TextStyle(fontWeight: FontWeight.bold ,color: kCustomWhite),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(order.status,
+                                  style: TextStyle(color: kCustomOrange),),
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                                Text('Effettuato: ', style: const TextStyle(fontWeight: FontWeight.bold,color: kCustomWhite),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
+                                  style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                                const Text('Consegna: ', style: TextStyle(fontWeight: FontWeight.bold,color: kCustomWhite),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
+                                  style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
+                                SizedBox(width: getProportionateScreenWidth(10),),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: getProportionateScreenHeight(20),),
+                        const Text('Carrello'),
+                        buildProductListWidget(orderIdProductList, dataBundleNotifier),
+                        SizedBox(height: getProportionateScreenHeight(20),),
+                      ],
+                    ) : SizedBox(width: 0,),
+                    SizedBox(
+                      width: getProportionateScreenWidth(400),
+                      child: CupertinoButton(
+                        color: kCustomGreenAccent,
+                        onPressed: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
+                            productList: orderIdProductList,),),);
+                        },
+                        child: Text('Completa Ordine'),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -379,7 +382,7 @@ class OrderCard extends StatelessWidget {
                         padding: const EdgeInsets.all(3.0),
                         child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
                       ),
-                      Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomBlueAccent),),
+                      Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomGreenAccent),),
 
                     ],
                   ),

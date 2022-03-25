@@ -174,7 +174,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                   }
 
                 },
-                color: kCustomBlueAccent,
+                color: kCustomGreenAccent,
               ),
             ),
             appBar: AppBar(
@@ -451,8 +451,8 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
               backgroundColor: kPrimaryColor,
               dialogBackgroundColor: kPrimaryColor,
               colorScheme: const ColorScheme.dark(
-                onSurface: kCustomBlueAccent,
-                primary: kCustomBlueAccent,
+                onSurface: kCustomGreenAccent,
+                primary: kCustomGreenAccent,
                 secondary: kPrimaryColor,
                 onSecondary: kPrimaryColor,
                 background: kPrimaryColor,
@@ -460,7 +460,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomBlueAccent, // button// text color
+                  primary: kCustomGreenAccent, // button// text color
                 ),
               ),
             ),

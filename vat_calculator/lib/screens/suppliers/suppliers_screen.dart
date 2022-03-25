@@ -35,7 +35,7 @@ class SuppliersScreen extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 30,
                       child: CupertinoButton(
-                        color: kCustomBlueAccent,
+                        color: kCustomGreenAccent,
                           child: const Text('Aggiungi nuovo fornitore'), onPressed: () {
                         Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                       }),
@@ -61,7 +61,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
-                  color: kCustomBlueAccent,
+                  color: kCustomGreenAccent,
                   fontWeight: FontWeight.bold
                 ),
               ),
@@ -123,7 +123,7 @@ class SuppliersScreen extends StatelessWidget {
                             height: 100,
                             width: SizeConfig.screenWidth * 0.9,
                             child: DefaultButton(
-                              color: kCustomBlueAccent,
+                              color: kCustomGreenAccent,
                               text: "Crea Fornitore",
                               press: () async {
                                 Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
@@ -212,7 +212,7 @@ class SuppliersScreen extends StatelessWidget {
                 color: dataBundleNotifier.userDetailsList[0].id.toString() ==
                         supplier.id
                     ? Colors.greenAccent
-                    :  kCustomBlueAccent,
+                    :  kCustomGreenAccent,
               ),
               child: Container(
                 decoration: const BoxDecoration(

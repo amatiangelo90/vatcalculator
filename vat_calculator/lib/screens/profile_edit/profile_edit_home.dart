@@ -701,7 +701,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                 width: getProportionateScreenWidth(400),
                                 height: getProportionateScreenHeight(50),
                                 child: CupertinoButton(
-                                  color: kCustomBlueAccent,
+                                  color: kCustomGreenAccent,
                                   onPressed: () {
                                     Navigator.push(
                                       context,

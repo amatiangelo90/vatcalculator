@@ -62,7 +62,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                   child: SizedBox(
                     width: getProportionateScreenWidth(350),
                     child: CupertinoButton(
-                      color: kCustomBlueAccent,
+                      color: kCustomGreenAccent,
                       onPressed: () async {
                         if(_nameController.text.isEmpty || _nameController.text == ''){
                           buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
@@ -158,7 +158,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
             title: Column(
               children: [
                 Text(dataBundleNotifier.currentStorage.name, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
-                Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: kCustomBlueAccent, fontSize: getProportionateScreenHeight(10)),),
+                Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(10)),),
               ],
             ),
           ),

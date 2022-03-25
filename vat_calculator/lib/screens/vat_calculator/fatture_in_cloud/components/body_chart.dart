@@ -413,7 +413,7 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
                           spots: listFake
                       ),
                       LineChartBarData(
-                          colors: [kCustomBlueAccent, kCustomBlueAccent, kCustomBlueAccent],
+                          colors: [kCustomGreenAccent, kCustomGreenAccent, kCustomGreenAccent],
                           spots: listCreditVat
                       ),
                       LineChartBarData(
