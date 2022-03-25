@@ -62,7 +62,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             onPressed: (){
               Navigator.pushNamed(context, CreateOrderScreen.routeName);
             },
-              backgroundColor: Colors.pinkAccent,
+              backgroundColor: kCustomPinkAccent,
             child: Stack(
               children: [ IconButton(
                 icon: SvgPicture.asset(
@@ -102,7 +102,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               onPressed: (){
                 Navigator.pushNamed(context, WarningScreen.routeName);
               },
-              backgroundColor: Colors.pinkAccent,
+              backgroundColor: kCustomPinkAccent,
               child: Stack(
                 children: [ IconButton(
                   icon: SvgPicture.asset(
@@ -430,7 +430,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         const Icon(
                           Icons.brightness_1,
                           size: 20,
-                          color: Colors.red,
+                          color: kCustomPinkAccent,
                         ),
                         Positioned(
                           right: 6.5,

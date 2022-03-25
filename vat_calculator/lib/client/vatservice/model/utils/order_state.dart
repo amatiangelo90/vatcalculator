@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/components/icon_custom.dart';
 
+import '../../../../constants.dart';
+
 class OrderState{
   static const String DRAFT = 'BOZZA';
   static const String SENT = 'INVIATO';
@@ -48,7 +50,7 @@ class OrderState{
       case SENT:
         return Colors.greenAccent;
       case SENT_BY_MESSAGE:
-        return Colors.pinkAccent;
+        return kCustomPinkAccent;
       default:
         return Colors.white;
     }

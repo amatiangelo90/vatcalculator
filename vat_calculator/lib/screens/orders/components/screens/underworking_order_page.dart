@@ -117,7 +117,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                         ),
                         daysOfWeekStyle: const DaysOfWeekStyle(
                           weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          weekendStyle:  TextStyle(fontSize: 14.0, color: Colors.pinkAccent),
+                          weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomPinkAccent),
                         ),
 
                         firstDay: kFirstDay,
@@ -132,7 +132,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           markerSize: 11,
                           selectedTextStyle: const TextStyle(fontSize: 14.0, color: kCustomWhite),
                           defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          weekendTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.pinkAccent),
+                          weekendTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomPinkAccent),
 
                           selectedDecoration: const BoxDecoration(
                             color: kCustomGreenAccent,
@@ -144,7 +144,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           ),
 
                           markerDecoration: BoxDecoration(
-                            color: Colors.pinkAccent,
+                            color: kCustomPinkAccent,
                             borderRadius: BorderRadius.circular(3),
                           ),
                           outsideDaysVisible: false,

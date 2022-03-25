@@ -69,16 +69,17 @@ class OrderCard extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                      style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
+                                      style: TextStyle(fontSize: getProportionateScreenHeight(15), color: Colors.white, fontWeight: FontWeight.bold),),
                                     Text(
                                       '#' + order.code,
-                                      style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                                      style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
                                   ],
                                 ),
                               ],
                             ),
 
                           ],
+
                         ),
 
                         Row(
@@ -154,6 +155,18 @@ class OrderCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '  Data Consegna: ',
+                          style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                        Text(
+                          DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' +
+                          DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' +
+                          DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                          style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.white, fontWeight: FontWeight.bold),),
                       ],
                     ),
                     Row(
