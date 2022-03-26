@@ -31,7 +31,7 @@ class WarningScreen extends StatelessWidget {
               backgroundColor: kPrimaryColor,
               centerTitle: true,
               bottom: TabBar(
-                indicatorColor: kCustomOrange,
+                indicatorColor: kCustomBordeaux,
                 indicatorWeight: 4,
                 tabs: [
                   Padding(
@@ -113,7 +113,13 @@ class WarningScreen extends StatelessWidget {
     List<EventModel> eventsList = dataBundleNotifier.getEventsOlderThanTodayNotClosed();
 
     List<Widget> eventWidget = [
-      Text('Termina le serate')
+      SizedBox(
+        width: getProportionateScreenWidth(500),
+        child: Container(color: kCustomBordeaux, child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Center(child: Text('EVENTI DA CHIUDERE', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white),)),
+        )),
+      ),
     ];
     eventsList.forEach((eventModelItem) {
       eventWidget.add(EventCard(eventModel: eventModelItem, showArrow: false, showButton: true));
@@ -129,7 +135,13 @@ class WarningScreen extends StatelessWidget {
 
 
     List<Widget> orderListWidget = [
-      const Text('Completa gli ordini')
+      SizedBox(
+        width: getProportionateScreenWidth(500),
+        child: Container(color: kCustomBordeaux, child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Center(child: Text('ORDINI DA COMPLETARE', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white),)),
+        )),
+      ),
     ];
     await Future.forEach(ordersList, (OrderModel orderItem) async {
 

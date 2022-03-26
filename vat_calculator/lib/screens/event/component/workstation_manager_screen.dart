@@ -106,6 +106,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
   buildUnloadWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
     List<Widget> rows = [
+      widget.eventModel.closed == 'Y' ? Container(
+        child: SizedBox(
+          width: getProportionateScreenWidth(500),
+          child: Container(color: kCustomBordeaux, child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
+          )),
+        ),
+      ) : SizedBox(width: 0,),
     ];
     workStationProdModelList.forEach((element) {
       TextEditingController controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', '').replaceAll('.0', ''));
@@ -238,49 +247,59 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   child: DefaultButton(
                     text: 'Effettua Scarico',
                     press: () async {
-                      try{
-                        bool isValid = true;
-                        for(WorkstationProductModel workProd in widget.workStationProdModelList){
-                          if(workProd.consumed > workProd.refillStock){
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                              backgroundColor: kPinaColor,
-                              duration: Duration(milliseconds: 3000),
-                              content: Text(
-                                  'Impossibile effettuare scarico di ${workProd.consumed} ${workProd.unitMeasure} per ${workProd.productName}. La quantità selezionata eccede quella di carico [${workProd.refillStock} ${workProd.unitMeasure}] configurata '),
-                            ));
+                      if(widget.eventModel.closed == 'Y'){
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          duration: Duration(milliseconds: 3000),
+                          content: Text(
+                              'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi effettuare lo scarico.'),
+                        ));
+                      }else{
+                        try{
+                          bool isValid = true;
+                          for(WorkstationProductModel workProd in widget.workStationProdModelList){
+                            if(workProd.consumed > workProd.refillStock){
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                backgroundColor: kPinaColor,
+                                duration: Duration(milliseconds: 3000),
+                                content: Text(
+                                    'Impossibile effettuare scarico di ${workProd.consumed} ${workProd.unitMeasure} per ${workProd.productName}. La quantità selezionata eccede quella di carico [${workProd.refillStock} ${workProd.unitMeasure}] configurata '),
+                              ));
 
-                            isValid = false;
-                            break;
+                              isValid = false;
+                              break;
+                            }
                           }
-                        }
-                        if(isValid){
-                          await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                              widget.workStationProdModelList,
-                              ActionModel(
-                                  date: DateTime.now().millisecondsSinceEpoch,
-                                  description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
-                              )
-                          );
-                          widget.callbackFuntion();
-                          widget.callBackFunctionEventManager();
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            backgroundColor: Colors.green.withOpacity(0.8),
-                            duration: Duration(milliseconds: 600),
+                          if(isValid){
+                            await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
+                                widget.workStationProdModelList,
+                                ActionModel(
+                                    date: DateTime.now().millisecondsSinceEpoch,
+                                    description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
+                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                    type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
+                                )
+                            );
+                            widget.callbackFuntion();
+                            widget.callBackFunctionEventManager();
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              backgroundColor: Colors.green.withOpacity(0.8),
+                              duration: Duration(milliseconds: 600),
+                              content: Text(
+                                  'Scarico per ${widget.workstationModel.name} registrato'),
+                            ));
+                          }
+                        }catch(e){
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
                             content: Text(
-                                'Scarico per ${widget.workstationModel.name} registrato'),
+                                'Errore durante operazione di scarico bar ' +
+                                    e),
                           ));
                         }
-                      }catch(e){
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          content: Text(
-                              'Errore durante operazione di scarico bar ' +
-                                  e),
-                        ));
                       }
+
                     },
                     color: kCustomBordeaux,
                   ),
@@ -295,6 +314,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
     List<Widget> rows = [
 
+      widget.eventModel.closed == 'Y' ? Container(
+        child: SizedBox(
+          width: getProportionateScreenWidth(500),
+          child: Container(color: kCustomBordeaux, child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
+          )),
+        ),
+      ) : SizedBox(width: 0,),
       SizedBox(
         width: getProportionateScreenWidth(350),
         child: TextButton(
@@ -307,114 +335,125 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             ],
           )),
           onPressed: () async {
-            currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId));
-            currentStorageProductModelList.removeWhere((element) => getIdsProductListAlreadyPresent(workStationProdModelList).contains(element.fkProductId));
 
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: Builder(
-                    builder: (context) {
-                      List<DataColumn> kTableColumns = <DataColumn>[
-                        const DataColumn(
-                          label: Text('Prodotto'),
-                        ),
-                        const DataColumn(
-                          label: Text('Giacenza'),
-                          numeric: true,
-                        ),
-                        const DataColumn(
-                          label: Text('Q/100'),
-                          numeric: true,
-                        ),
-                      ];
-                      return SizedBox(
-                        width: getProportionateScreenWidth(900),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: const BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      topLeft: Radius.circular(10.0)),
-                                  color: kPrimaryColor,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '  Lista Prodotti',
-                                      style: TextStyle(
-                                        fontSize:
-                                        getProportionateScreenWidth(17),
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.clear,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Text(
-                                'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId).name,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                              PaginatedDataTable(
-                                rowsPerPage: 5,
-                                availableRowsPerPage: const <int>[5],
+            if(widget.eventModel.closed == 'Y'){
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                backgroundColor: kPinaColor,
+                duration: Duration(milliseconds: 3000),
+                content: Text(
+                    'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi aggiungere prodotti alla postazione.'),
+              ));
+            }else{
+              currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId));
+              currentStorageProductModelList.removeWhere((element) => getIdsProductListAlreadyPresent(workStationProdModelList).contains(element.fkProductId));
 
-                                columns: kTableColumns,
-                                source: ProductDataSourceEvents(currentStorageProductModelList),
-                              ),
-                              SizedBox(
-                                height: getProportionateScreenHeight(10),
-                              ),
-                              SizedBox(
-                                width: getProportionateScreenWidth(310),
-                                child: CupertinoButton(
-                                  onPressed: () async {
-
-                                    currentStorageProductModelList.forEach((element) {
-                                      print(element.selected.toString());
-                                    });
-
-                                    await dataBundleNotifier
-                                        .getclientServiceInstance()
-                                        .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
-
-                                    List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
-
-                                    setState(() {
-                                      widget.workStationProdModelList.clear();
-                                      widget.workStationProdModelList.addAll(workStationProdModelList);
-                                    });
-
-                                    Navigator.of(context).pop();
-
-                                  },
-                                  child: Text('Aggiungi'),
-                                  color: kCustomGreenAccent,
-                                ),
-                              ),
-                            ],
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    contentPadding: EdgeInsets.zero,
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                    content: Builder(
+                      builder: (context) {
+                        List<DataColumn> kTableColumns = <DataColumn>[
+                          const DataColumn(
+                            label: Text('Prodotto'),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ));
+                          const DataColumn(
+                            label: Text('Giacenza'),
+                            numeric: true,
+                          ),
+                          const DataColumn(
+                            label: Text('Q/100'),
+                            numeric: true,
+                          ),
+                        ];
+                        return SizedBox(
+                          width: getProportionateScreenWidth(900),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10.0),
+                                        topLeft: Radius.circular(10.0)),
+                                    color: kPrimaryColor,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '  Lista Prodotti',
+                                        style: TextStyle(
+                                          fontSize:
+                                          getProportionateScreenWidth(17),
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId).name,
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                                PaginatedDataTable(
+                                  rowsPerPage: 5,
+                                  availableRowsPerPage: const <int>[5],
+
+                                  columns: kTableColumns,
+                                  source: ProductDataSourceEvents(currentStorageProductModelList),
+                                ),
+                                SizedBox(
+                                  height: getProportionateScreenHeight(10),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(310),
+                                  child: CupertinoButton(
+                                    onPressed: () async {
+
+                                      currentStorageProductModelList.forEach((element) {
+                                        print(element.selected.toString());
+                                      });
+
+                                      await dataBundleNotifier
+                                          .getclientServiceInstance()
+                                          .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
+
+                                      List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
+
+                                      setState(() {
+                                        widget.workStationProdModelList.clear();
+                                        widget.workStationProdModelList.addAll(workStationProdModelList);
+                                      });
+
+                                      Navigator.of(context).pop();
+
+                                    },
+                                    child: Text('Aggiungi'),
+                                    color: kCustomGreenAccent,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ));
+            }
+
           },
         ),
       ),
@@ -431,98 +470,107 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             'Configurare numero clienti per carico':
             'Carico per ${loadPaxController.text} persone', style: TextStyle(color: Colors.white)),
             onPressed: () async {
+                if(widget.eventModel.closed == 'Y'){
+                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                backgroundColor: kPinaColor,
+                duration: Duration(milliseconds: 3000),
+                content: Text(
+                'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi eseguire il carico per la postazione corrente.'),
+                ));
+                }else{
+                  showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                        backgroundColor: kCustomWhite,
+                        contentPadding: EdgeInsets.only(top: 10.0),
+                        elevation: 30,
 
-              showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                    backgroundColor: kCustomWhite,
-                    contentPadding: EdgeInsets.only(top: 10.0),
-                    elevation: 30,
-
-                    content: SizedBox(
-                      height: getProportionateScreenHeight(250),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('Persone attese all\'evento', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                        content: SizedBox(
+                          height: getProportionateScreenHeight(250),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              const Text('Persone attese all\'evento', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
                               Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints.loose(Size(
-                                          getProportionateScreenWidth(300),
-                                          getProportionateScreenWidth(80))),
-                                      child: CupertinoTextField(
-                                        controller: loadPaxController,
-                                        textInputAction: TextInputAction.next,
-                                        keyboardType: TextInputType.number,
-                                        clearButtonMode: OverlayVisibilityMode.never,
-                                        textAlign: TextAlign.center,
-                                        autocorrect: false,
+                                  Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: ConstrainedBox(
+                                          constraints: BoxConstraints.loose(Size(
+                                              getProportionateScreenWidth(300),
+                                              getProportionateScreenWidth(80))),
+                                          child: CupertinoTextField(
+                                            controller: loadPaxController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: TextInputType.number,
+                                            clearButtonMode: OverlayVisibilityMode.never,
+                                            textAlign: TextAlign.center,
+                                            autocorrect: false,
+                                          ),
+                                        ),
                                       ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(25),
+                                  ),
+                                  InkWell(
+                                    child: Container(
+                                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                        decoration: const BoxDecoration(
+                                          color: kCustomGreenAccent,
+                                          borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(25.0),
+                                              bottomRight: Radius.circular(25.0)),
+                                        ),
+                                        child: SizedBox(
+                                          width: getProportionateScreenWidth(300),
+                                          child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomGreenAccent, onPressed: () async {
+
+                                            if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
+                                              double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
+                                              setState(() {
+                                                workStationProdModelList.forEach((workstationProd) {
+                                                  workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
+                                                });
+                                              });
+
+                                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                backgroundColor: Colors.green.withOpacity(0.9),
+                                                duration: Duration(milliseconds: 3000),
+                                                content: Text(
+                                                    'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
+                                              ));
+                                            } else {
+                                              _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                backgroundColor: kPinaColor,
+                                                duration: Duration(milliseconds: 600),
+                                                content: Text(
+                                                    'Immettere un valore numerico corretto per effettuare il carico'),
+                                              ));
+                                            }
+                                            Navigator.of(context).pop();
+
+                                          }
+                                          ),
+                                        )
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(
-                                height: getProportionateScreenHeight(25),
-                              ),
-                              InkWell(
-                                child: Container(
-                                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                    decoration: const BoxDecoration(
-                                      color: kCustomGreenAccent,
-                                      borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(25.0),
-                                          bottomRight: Radius.circular(25.0)),
-                                    ),
-                                    child: SizedBox(
-                                      width: getProportionateScreenWidth(300),
-                                      child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomGreenAccent, onPressed: () async {
-
-                                        if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
-                                          double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
-                                          setState(() {
-                                            workStationProdModelList.forEach((workstationProd) {
-                                              workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
-                                            });
-                                          });
-
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                            backgroundColor: Colors.green.withOpacity(0.9),
-                                            duration: Duration(milliseconds: 3000),
-                                            content: Text(
-                                                'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
-                                          ));
-                                        } else {
-                                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                            backgroundColor: kPinaColor,
-                                            duration: Duration(milliseconds: 600),
-                                            content: Text(
-                                                'Immettere un valore numerico corretto per effettuare il carico'),
-                                          ));
-                                        }
-                                        Navigator.of(context).pop();
-
-                                      }
-                                      ),
-                                    )
-                                ),
-                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
-                  )
-              );
+                        ),
+                      )
+                  );
+                }
+
             },
           ),
         ),
@@ -729,35 +777,45 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                   text: 'Effettua Carico',
                   press: () async {
-                    try{
-
-                      await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                          widget.workStationProdModelList,
-                          ActionModel(
-                              date: DateTime.now().millisecondsSinceEpoch,
-                              description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                              type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
-                          )
-                      );
-                      widget.callbackFuntion();
-                      widget.callBackFunctionEventManager();
+                    if(widget.eventModel.closed == 'Y'){
                       _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        backgroundColor: Colors.green.withOpacity(0.8),
-                        duration: Duration(milliseconds: 600),
-                        content: Text(
-                            'Carico per ${widget.workstationModel.name} effettuato'),
-                      ));
-
-                    }catch(e){
-                      Scaffold.of(context).showSnackBar(SnackBar(
                         backgroundColor: kPinaColor,
+                        duration: Duration(milliseconds: 3000),
                         content: Text(
-                            'Errore durante operazione di scarico bar ' +
-                                e),
+                            'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi effettuare il carico.'),
                       ));
+                    }else{
+                      try{
+
+                        await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
+                            widget.workStationProdModelList,
+                            ActionModel(
+                                date: DateTime.now().millisecondsSinceEpoch,
+                                description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
+                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
+                            )
+                        );
+                        widget.callbackFuntion();
+                        widget.callBackFunctionEventManager();
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          backgroundColor: Colors.green.withOpacity(0.8),
+                          duration: Duration(milliseconds: 600),
+                          content: Text(
+                              'Carico per ${widget.workstationModel.name} effettuato'),
+                        ));
+
+                      }catch(e){
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          content: Text(
+                              'Errore durante operazione di scarico bar ' +
+                                  e),
+                        ));
+                      }
                     }
+
                   },
                   color: kCustomGreenAccent,
                 ),
@@ -869,29 +927,37 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         color: Colors.red.shade700.withOpacity(0.9),
                         child: Text('Elimina ${widget.workstationModel.name}'),
                         onPressed: () async {
-                          try{
-                            await dataBundleNotifier.getclientServiceInstance().removeWorkstation(widget.workstationModel);
-                            List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
+                          if(widget.eventModel.closed == 'Y'){
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              backgroundColor: kPinaColor,
+                              duration: Duration(milliseconds: 3000),
+                              content: Text(
+                                  'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi eliminare la postazione.'),
+                            ));
+                          }else{
+                            try{
+                              await dataBundleNotifier.getclientServiceInstance().removeWorkstation(widget.workstationModel);
+                              List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
 
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => EventManagerScreen(
-                              event: widget.eventModel,
-                              workstationModelList: workstationModelList,
-                            ),),);
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => EventManagerScreen(
+                                event: widget.eventModel,
+                                workstationModelList: workstationModelList,
+                              ),),);
 
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                duration: const Duration(milliseconds: 2000),
-                                backgroundColor: Colors.green.withOpacity(0.9),
-                                content: Text('Eliminata la postazione ${widget.workstationModel.name}', style: const TextStyle(color: Colors.white),)));
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 2000),
+                                  backgroundColor: Colors.green.withOpacity(0.9),
+                                  content: Text('Eliminata la postazione ${widget.workstationModel.name}', style: const TextStyle(color: Colors.white),)));
 
-                          }catch(e){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                duration: const Duration(milliseconds: 5000),
-                                backgroundColor: Colors.red,
-                                content: Text('Impossibile eliminare postazione ${widget.workstationModel.name}. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
+                            }catch(e){
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 5000),
+                                  backgroundColor: Colors.red,
+                                  content: Text('Impossibile eliminare postazione ${widget.workstationModel.name}. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
+                            }
                           }
-
                         }),
                   ),
                 ],

@@ -99,9 +99,9 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle: TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
+                          titleTextStyle: TextStyle(fontSize: 14.0, color: Colors.white),
                           formatButtonDecoration: BoxDecoration(
-                            color: kCustomGreenAccent,
+                            color: kCustomBlue,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
@@ -134,8 +134,8 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                           defaultTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
                           weekendTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomPinkAccent),
 
-                          selectedDecoration: const BoxDecoration(
-                            color: kCustomGreenAccent,
+                          selectedDecoration: BoxDecoration(
+                            color: kCustomBlue,
                             shape: BoxShape.circle,
                           ),
                           todayDecoration: BoxDecoration(
