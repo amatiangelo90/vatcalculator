@@ -26,11 +26,25 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayOpacity: 0.9,
-      overlayWidget: const LoaderOverlayWidget(message: 'Creazione evento in corso...',),
+      overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati in corso...',),
       child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Scaffold(
               backgroundColor: Colors.white,
+              bottomSheet: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  width: getProportionateScreenWidth(400),
+                  child: CupertinoButton(
+                    color: kCustomGreenAccent,
+                    child: Text('CREA EVENTO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15))),
+                    onPressed: (){
+                      Navigator.pushNamed(context,
+                          EventCreateScreen.routeName);
+                    },
+                  ),
+                ),
+              ),
               appBar: AppBar(
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),

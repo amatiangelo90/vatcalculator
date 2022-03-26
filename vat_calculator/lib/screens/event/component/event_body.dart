@@ -81,6 +81,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
         ),);
       }
     });
+    eventList.add(SizedBox(height: getProportionateScreenHeight(100),));
     return eventList;
   }
 }

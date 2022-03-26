@@ -130,7 +130,7 @@ class EventCard extends StatelessWidget {
                   showButton ? SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
-                      color: kCustomGreenAccent,
+                      color: kCustomOrange,
                       onPressed: () async {
                         List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
 

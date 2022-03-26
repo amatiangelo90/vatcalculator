@@ -863,39 +863,36 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 100,
-                      child: CupertinoButton(
-                          color: Colors.red.shade700.withOpacity(0.9),
-                          child: Text('Elimina ${widget.workstationModel.name}'),
-                          onPressed: () async {
-                            try{
-                              await dataBundleNotifier.getclientServiceInstance().removeWorkstation(widget.workstationModel);
-                              List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 60,
+                    child: CupertinoButton(
+                        color: Colors.red.shade700.withOpacity(0.9),
+                        child: Text('Elimina ${widget.workstationModel.name}'),
+                        onPressed: () async {
+                          try{
+                            await dataBundleNotifier.getclientServiceInstance().removeWorkstation(widget.workstationModel);
+                            List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
 
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => EventManagerScreen(
-                                event: widget.eventModel,
-                                workstationModelList: workstationModelList,
-                              ),),);
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => EventManagerScreen(
+                              event: widget.eventModel,
+                              workstationModelList: workstationModelList,
+                            ),),);
 
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  duration: const Duration(milliseconds: 2000),
-                                  backgroundColor: Colors.green.withOpacity(0.9),
-                                  content: Text('Eliminata la postazione ${widget.workstationModel.name}', style: const TextStyle(color: Colors.white),)));
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                duration: const Duration(milliseconds: 2000),
+                                backgroundColor: Colors.green.withOpacity(0.9),
+                                content: Text('Eliminata la postazione ${widget.workstationModel.name}', style: const TextStyle(color: Colors.white),)));
 
-                            }catch(e){
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  duration: const Duration(milliseconds: 5000),
-                                  backgroundColor: Colors.red,
-                                  content: Text('Impossibile eliminare postazione ${widget.workstationModel.name}. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
-                            }
+                          }catch(e){
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                duration: const Duration(milliseconds: 5000),
+                                backgroundColor: Colors.red,
+                                content: Text('Impossibile eliminare postazione ${widget.workstationModel.name}. Riprova più tardi. Errore: $e', style: TextStyle(color: Colors.white),)));
+                          }
 
-                          }),
-                    ),
+                        }),
                   ),
                 ],
               ),
