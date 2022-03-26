@@ -8,6 +8,7 @@ import 'package:vat_calculator/screens/details_screen/detailis_ndc_emesse.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_vendite.dart';
 import 'package:vat_calculator/screens/details_screen/details_ndc_received.dart';
+import 'package:vat_calculator/screens/event/component/archivied_events_screen.dart';
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
@@ -87,4 +88,5 @@ final Map<String, WidgetBuilder> routes = {
   HomeScreenMain.routeName: (context) => HomeScreenMain(),
   CreateAndAddProductScreen.routeName: (context) => CreateAndAddProductScreen(),
   WarningScreen.routeName: (context) => WarningScreen(),
+  ArchiviedEventPage.routeName: (context) => ArchiviedEventPage(),
 };

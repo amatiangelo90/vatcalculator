@@ -13,6 +13,7 @@ import 'package:vat_calculator/size_config.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
 import '../../main_page.dart';
+import '../event_home.dart';
 
 class EventManagerScreen extends StatefulWidget {
   const EventManagerScreen({Key key, this.event, this.workstationModelList}) : super(key: key);
@@ -46,7 +47,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   children: [ IconButton(
                     icon: SvgPicture.asset(
                       'assets/icons/bouvette.svg',
-                      color: kGreenAccent,
+                      color: kCustomEvidenziatoreGreen,
                       width: 25,
                     ),
                     onPressed: () async {
@@ -89,7 +90,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                             right: 2.5,
                             top: 2.5,
                             child: Center(
-                              child: Icon(Icons.add_circle_outline, size: 13, color: kGreenAccent,),
+                              child: Icon(Icons.add_circle_outline, size: 13, color: kCustomEvidenziatoreGreen,),
                             ),
                           ),
                         ],
@@ -177,10 +178,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(widget.event.eventName,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(22), color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white, fontWeight: FontWeight.bold),),
                   Text(
                     'Creato da: ' + widget.event.owner,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: Colors.white, fontWeight: FontWeight.bold),),
                 ],
               ),
               elevation: 5,
@@ -188,9 +189,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             backgroundColor: Colors.white,
             body: TabBarView(
               children: [
-                buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier),
+                buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
 
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreen(widget.workstationModelList, dataBundleNotifier),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(widget.event, dataBundleNotifier),
               ],
             ),
@@ -201,8 +202,21 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   }
 
 
-  buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) {
-    List<Widget> listWgBar = [];
+  buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
+    List<Widget> listWgBar = [
+
+    ];
+    if(event.closed == 'Y'){
+      listWgBar.add(
+        SizedBox(
+          width: getProportionateScreenWidth(500),
+          child: Container(color: kCustomBordeaux, child: Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
+          )),
+        ),
+      );
+    }
     workstationModelList.where((element) => element.type == WORKSTATION_TYPE_BAR).forEach((wkStation) {
       listWgBar.add(Padding(
         padding: const EdgeInsets.all(8.0),
@@ -239,10 +253,24 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         scrollDirection: Axis.vertical,
         child: Column(children: [
           Column(
-            children: listWgBar,
+            children: listWgBar.isNotEmpty ? listWgBar : [
+              Container(
+                color: kPrimaryColor,
+                child: Center(
+                  child: Text('Nessuna postazione Bar presente', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16))),
+                ),
+              )
+            ],
           ),
           Column(
-            children: listWgChamp,
+            children: listWgChamp.isNotEmpty ? listWgChamp : [
+              Container(
+                color: kPrimaryColor,
+                child: Center(
+                  child: Text('Nessuna postazione Champagnerie presente', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16))),
+                ),
+              )
+            ],
           ),
         ])
     );
@@ -251,38 +279,60 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
     TextEditingController controllerEventName = TextEditingController(text: event.eventName);
     TextEditingController controllerLocation = TextEditingController(text: event.location);
+    List<Widget> widgetList = [];
+    if(event.closed == 'Y'){
+      widgetList.add(SizedBox(
+        width: getProportionateScreenWidth(500),
+        child: Container(color: kCustomBordeaux, child: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
+        )),
+      ),);
+    }
 
-    List<Widget> widgetList = [
-      Row(
-        children: const [
-          Text('Nome Evento*',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ],
+    widgetList.addAll([
+      Padding(
+        padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+        child: Row(
+          children: const [
+            Text('Nome Evento*',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
-      CupertinoTextField(
-        textInputAction: TextInputAction.next,
-        restorationId: 'Nome Evento',
-        keyboardType: TextInputType.text,
-        controller: controllerEventName,
-        clearButtonMode: OverlayVisibilityMode.editing,
-        autocorrect: false,
-        placeholder: 'Nome Evento',
+      Padding(
+        padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+        child: CupertinoTextField(
+          textInputAction: TextInputAction.next,
+          restorationId: 'Nome Evento',
+          keyboardType: TextInputType.text,
+          controller: controllerEventName,
+          clearButtonMode: OverlayVisibilityMode.editing,
+          autocorrect: false,
+          placeholder: 'Nome Evento',
+        ),
       ),
-      Row(
-        children: const [
-          Text('Location',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ],
+      Padding(
+        padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+        child: Row(
+          children: const [
+            Text('Location',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          ],
+        ),
       ),
-      CupertinoTextField(
-        textInputAction: TextInputAction.next,
-        restorationId: 'Location',
-        keyboardType: TextInputType.text,
-        controller: controllerLocation,
-        clearButtonMode: OverlayVisibilityMode.editing,
-        autocorrect: false,
-        placeholder: 'Location',
+      Padding(
+        padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+        child: CupertinoTextField(
+          textInputAction: TextInputAction.next,
+          restorationId: 'Location',
+          keyboardType: TextInputType.text,
+          controller: controllerLocation,
+          clearButtonMode: OverlayVisibilityMode.editing,
+          autocorrect: false,
+          placeholder: 'Location',
+        ),
       ),
       const Text('*campo obbligatorio'),
-    ];
+    ]);
     widgetList.add(
       SizedBox(height: 20),
     );
@@ -323,26 +373,87 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       const SizedBox(height: 20),
     );
     widgetList.add(
-      const Divider(height: 130, color: Colors.grey, indent: 30, endIndent: 30,)
+      Divider(height: getProportionateScreenHeight(220), color: Colors.grey, indent: 30, endIndent: 30,)
     );
 
 
     List<Widget> widgetListButtons = [
-      SizedBox(
+      event.closed == 'N' ? SizedBox(
         width: MediaQuery.of(context).size.width - 40,
         child: CupertinoButton(
-            color: kCustomOrange,
+            color: Colors.redAccent,
             child: const Text('Chiudi evento'),
             onPressed: () async {
-              event.closed = 'Y';
-              await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                    backgroundColor: kCustomWhite,
+                    contentPadding: EdgeInsets.only(top: 10.0),
+                    elevation: 30,
+
+                    content: SizedBox(
+                      height: getProportionateScreenHeight(270),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Chiudi Evento?', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('Chiudendo l\'evento ${event.eventName} i tuoi dipendenti non potranno più accedervi. '
+                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                              ),
+                              SizedBox(height: 25),
+                              InkWell(
+                                child: Container(
+                                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                    decoration: const BoxDecoration(
+                                      color: Colors.redAccent,
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(25.0),
+                                          bottomRight: Radius.circular(25.0)),
+                                    ),
+                                    child: SizedBox(
+                                      width: getProportionateScreenWidth(300),
+                                      child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
+                                        try{
+                                          event.closed = 'Y';
+                                          await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                                          Navigator.pushNamed(context, EventHomeScreen.routeName);
+                                        }catch(e){
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: kCustomBordeaux,
+                                            duration: const Duration(milliseconds: 3000),
+                                            content: Text(
+                                                'Impossibile chiudere evento ' +
+                                                    event.eventName + '. ' + e),
+                                          ));
+                                        }
+                                      }
+                                      ),
+                                    )
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+              );
             }),
-      ),
+      ) : SizedBox(height: 0),
       SizedBox(height: 20),
       SizedBox(
         width: MediaQuery.of(context).size.width - 40,
         child: CupertinoButton(
-            color: kPinaColor,
+            color: kCustomBordeaux,
             child: const Text('Elimina evento'),
             onPressed: () async {
 
@@ -351,46 +462,24 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     ];
     return Container(
       color: kPrimaryColor,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: widgetList,
-                ),
-                Column(
-                  children: widgetListButtons,
-                ),
-              ]),
-        ),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                children: widgetList,
+              ),
+              Column(
+                children: widgetListButtons,
+              ),
+            ]),
       ),
     );
 
   }
-  buildDetailsAndStatistics(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) async {
 
-
-
-    return Container(
-      color: kPrimaryColor,
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-
-              ]),
-        ),
-      ),
-    );
-  }
-
-  buildResocontoScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) {
+  buildResocontoScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
     return FutureBuilder(
       initialData: const Center(
           child: CircularProgressIndicator(
@@ -399,11 +488,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       builder: (context, snapshot){
         return snapshot.data;
       },
-      future: retrieveDataToBuildRecapWidget(workstationModelList, dataBundleNotifier),
+      future: retrieveDataToBuildRecapWidget(workstationModelList, dataBundleNotifier, event),
     );
   }
 
-  Future<Widget> retrieveDataToBuildRecapWidget(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier) async {
+  Future<Widget> retrieveDataToBuildRecapWidget(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) async {
 
     Map<int, List<WorkstationProductModel>> map = {};
 
@@ -530,22 +619,33 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     return Container(
       color: kPrimaryColor,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: Table(
-            columnWidths: const {
-              0: FlexColumnWidth(5),
-              1: FlexColumnWidth(2),
-              2: FlexColumnWidth(2),
-              3: FlexColumnWidth(2),
-              4: FlexColumnWidth(3),
-            },
-            border: TableBorder.all(
-                color: Colors.grey,
-                width: 0.1
-            ),
-            children: rows,
+          child: Column(
+            children: [
+              event.closed == 'Y' ? SizedBox(
+                width: getProportionateScreenWidth(500),
+                child: Container(color: kCustomBordeaux, child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
+                )),
+              ) : SizedBox(height: 0),
+              Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(5),
+                  1: FlexColumnWidth(2),
+                  2: FlexColumnWidth(2),
+                  3: FlexColumnWidth(2),
+                  4: FlexColumnWidth(3),
+                },
+                border: TableBorder.all(
+                    color: Colors.grey,
+                    width: 0.1
+                ),
+                children: rows,
+              ),
+            ],
           ),
         ),
       ),

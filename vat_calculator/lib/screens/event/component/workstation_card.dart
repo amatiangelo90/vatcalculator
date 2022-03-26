@@ -32,7 +32,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
         return Card(
-          shadowColor: widget.isBarType ? kCustomOrange : kGreenAccent,
+          shadowColor: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.0),
           ),
@@ -61,7 +61,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                   child: SvgPicture.asset(
                                     widget.isBarType ? 'assets/icons/bartender.svg' : 'assets/icons/bouvette.svg',
                                     height: getProportionateScreenHeight(45),
-                                    color: widget.isBarType ? kCustomOrange : kGreenAccent,
+                                    color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen,
                                   ),
                                 ),
                               ),
@@ -72,7 +72,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(widget.workstationModel.name,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: widget.isBarType ? kCustomOrange : kGreenAccent, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen, fontWeight: FontWeight.bold),),
                               Row(
                                 children: [
                                   Text(
@@ -80,7 +80,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     dataBundleNotifier.retrieveStorageById(widget.eventModel.fkStorageId),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kGreenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -90,7 +90,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     widget.workstationModel.type,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kGreenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -100,7 +100,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     widget.workstationModel.responsable == '' ? '-' : widget.workstationModel.responsable,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kGreenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
@@ -112,7 +112,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                     DateTime.fromMillisecondsSinceEpoch(widget.eventModel.eventDate).day.toString() + '/' +
                                         DateTime.fromMillisecondsSinceEpoch(widget.eventModel.eventDate).month.toString() + '/' +
                                         DateTime.fromMillisecondsSinceEpoch(widget.eventModel.eventDate).year.toString(),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kGreenAccent, fontWeight: FontWeight.bold),),
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen, fontWeight: FontWeight.bold),),
                                 ],
                               ),
 
@@ -173,7 +173,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                   SizedBox(
                     width: getProportionateScreenWidth(400),
                     child: CupertinoButton(
-                      color: widget.isBarType ? kCustomOrange : kGreenAccent,
+                      color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen,
                       onPressed: () async {
                         List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
 
@@ -208,11 +208,11 @@ class _WorkstationCardState extends State<WorkstationCard> {
           children: [
             Column(children:[Row(
               children: [
-                Text('Prodotto', style: TextStyle(fontSize: getProportionateScreenHeight(15), color: widget.isBarType ? kCustomOrange : kGreenAccent)),
+                Text('Prodotto', style: TextStyle(fontSize: getProportionateScreenHeight(15), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen)),
               ],
             )]),
-            Column(children:[Text('Carico', style: TextStyle(fontSize: getProportionateScreenHeight(15),color: widget.isBarType ? kCustomOrange : kGreenAccent))]),
-            Column(children:[Text('Scarico', style: TextStyle(fontSize: getProportionateScreenHeight(15),color: widget.isBarType ? kCustomOrange : kGreenAccent))]),
+            Column(children:[Text('Carico', style: TextStyle(fontSize: getProportionateScreenHeight(15),color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen))]),
+            Column(children:[Text('Scarico', style: TextStyle(fontSize: getProportionateScreenHeight(15),color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen))]),
           ]
       )
     ];

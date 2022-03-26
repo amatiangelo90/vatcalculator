@@ -128,7 +128,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14.0,
-                                        color: kCustomGreenAccent),
+                                        color: Colors.white),
                                   ),
                                 ),
                               ),
@@ -309,7 +309,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14.0,
-                                        color: kCustomGreenAccent),
+                                        color: Colors.white),
                                   ),
                                 ),
                               ),

@@ -97,14 +97,14 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           'Crea Evento',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(19),
-                            color: kCustomGreenAccent,
+                            color: Colors.white,
                           ),
                         ),
                         Text(
                           'Pagina creazione eventi',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(10),
-                            color: kCustomWhite,
+                            color: kCustomGreenAccent,
                           ),
                         ),
                       ],

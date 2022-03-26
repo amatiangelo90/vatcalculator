@@ -2567,4 +2567,51 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
+
+  @override
+  Future<List<EventModel>> retrieveEventsClosedListByBranchId(BranchModel currentBranch) async {
+    var dio = Dio();
+
+    List<EventModel> eventList = [];
+
+
+    String body = json.encode(
+        currentBranch.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_CLOSED_EVENTS_BY_BRANCHES,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve closed events list by branch): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_CLOSED_EVENTS_BY_BRANCHES + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((orderElement) {
+
+        eventList.add(
+            EventModel(
+              pkEventId: orderElement['pkEventId'],
+              closed: orderElement['closed'],
+              creationDate: orderElement['creationDate'],
+              eventDate: orderElement['eventDate'],
+              eventName: orderElement['eventName'],
+              fkBranchId: orderElement['fkBranchId'],
+              fkStorageId: orderElement['fkStorageId'],
+              owner: orderElement['owner'],
+              location: orderElement['location'],
+            ));
+      });
+      return eventList;
+    }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+
+  }
 }

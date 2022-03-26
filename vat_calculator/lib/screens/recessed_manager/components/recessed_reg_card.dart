@@ -3,21 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/datepiker/date_picker_timeline.dart';
-import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-
 import '../../../client/vatservice/model/cash_register_model.dart';
 import '../../../client/vatservice/model/recessed_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../../expence_manager/expence_home.dart';
 import '../recessed_home.dart';
 
 class RecessedCard extends StatefulWidget {
@@ -178,7 +173,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: CupertinoSlidingSegmentedControl<int>(
-                                  thumbColor: kCustomGreenAccent,
+                                  thumbColor: Colors.white,
 
                                   children: dataBundleNotifier.ivaListCupertino,
                                   onValueChanged: (index){

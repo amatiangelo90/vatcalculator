@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
@@ -7,6 +8,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../main_page.dart';
+import 'component/archivied_events_screen.dart';
 import 'component/event_body.dart';
 import 'component/event_create_screen.dart';
 
@@ -47,14 +49,14 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           'Area Eventi',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(17),
-                            color: kCustomOrange,
+                            color: Colors.white,
                           ),
                         ),
                         Text(
                           dataBundleNotifier.currentBranch.companyName,
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(11),
-                            color: kCustomWhite,
+                            color: kCustomGreenAccent,
                           ),
                         ),
                       ],
@@ -62,13 +64,64 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                   ],
                 ),
                 actions: [
-                  IconButton(
-                    icon: const Icon(Icons.add),
-                    onPressed: (){
-                      Navigator.pushNamed(
-                          context, EventCreateScreen.routeName);
-                    },
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    child: IconButton(
+                        icon: SvgPicture.asset(
+                          "assets/icons/archive.svg",
+                          width: 25,
+                          color: kCustomWhite,
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, ArchiviedEventPage.routeName);
+                        }),
                   ),
+                  SizedBox(width: 5),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    child: Stack(
+                      children: [
+                        IconButton(
+                          icon: SvgPicture.asset(
+                            'assets/icons/party.svg',
+                            color: Colors.white,
+                            width: 50,
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context,
+                                EventCreateScreen.routeName);
+                          },
+                        ),
+                        Positioned(
+                          top: 26.0,
+                          right: 9.0,
+                          child: Stack(
+                            children:  const <Widget>[
+                              Icon(
+                                Icons.brightness_1,
+                                size: 18,
+                                color: kPrimaryColor,
+                              ),
+                              Positioned(
+                                right: 2.5,
+                                top: 2.5,
+                                child: Center(
+                                  child: Icon(
+                                    Icons
+                                        .add_circle_outline,
+                                    size: 13,
+                                    color:
+                                    kCustomGreenAccent,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(width: 5),
                 ],
                 elevation: 2,
               ),

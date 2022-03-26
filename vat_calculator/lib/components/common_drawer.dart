@@ -409,7 +409,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
                                     ),
                                   ),
-                                  showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30,) : const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
+                                  showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30, color: Colors.white,) : const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
                                 ],
                               ),
                             ],
@@ -567,7 +567,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
               Navigator.pushNamed(context, HomeScreenMain.routeName);
             }, kPrimaryColor,
                 kPrimaryColor,
-                kPinaColor),
+                kCustomGreenAccent),
           ),
       );
     });

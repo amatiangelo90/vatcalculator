@@ -81,62 +81,51 @@ class _SecondClassState extends State<SecondClass>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          Center(
-            child: AnimatedOpacity(
-              curve: Curves.fastLinearToSlowEaseIn,
-              duration: const Duration(seconds: 6),
-              opacity: _opacity,
-              child: AnimatedContainer(
-                curve: Curves.fastLinearToSlowEaseIn,
-                duration: const Duration(seconds: 6),
-                height: _value ? 50 : 200,
-                width: _value ? 50 : 200,
-                decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.deepPurpleAccent.withOpacity(.2),
-                      blurRadius: 100,
-                      spreadRadius: 10,
-                    ),
-                  ],
-                  color: kCustomGreenAccent,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Stack(
-                  children :[
-                    Center(
-                    child: Container(
-                      width: 650,
-                      height: 450,
-                      decoration: BoxDecoration(
-                          color: kCustomGreenAccent, shape: BoxShape.circle),
-                      child: AnimatedBuilder(
-                        animation: scaleAnimation,
-                        builder: (c, child) => Transform.scale(
-                          scale: scaleAnimation.value,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: kCustomGreenAccent,
-                            ),
+      backgroundColor: kPrimaryColor,
+      body: Center(
+        child: AnimatedOpacity(
+          curve: Curves.fastLinearToSlowEaseIn,
+          duration: const Duration(seconds: 6),
+          opacity: _opacity,
+          child: AnimatedContainer(
+            curve: Curves.fastLinearToSlowEaseIn,
+            duration: const Duration(seconds: 6),
+            height: _value ? 50 : 200,
+            width: _value ? 50 : 200,
+            decoration: BoxDecoration(
+              color: kCustomGreenAccent,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(
+              children :[
+                Center(
+                  child: Container(
+                    width: 650,
+                    height: 450,
+                    decoration: BoxDecoration(
+                        color: kCustomGreenAccent, shape: BoxShape.circle),
+                    child: AnimatedBuilder(
+                      animation: scaleAnimation,
+                      builder: (c, child) => Transform.scale(
+                        scale: scaleAnimation.value,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: kCustomGreenAccent,
                           ),
                         ),
                       ),
                     ),
                   ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(40, 60, 40, 40),
-                      child: Image.asset('assets/logo/logo_home_white.png',width: getProportionateScreenWidth(1500),),
-                    ),
-                  ],
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(40, 60, 40, 40),
+                  child: Image.asset('assets/logo/logo_home_white.png',width: getProportionateScreenWidth(1500),),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

@@ -11,12 +11,12 @@ const Color kCustomBordeaux = Color(0xFF7c1228);
 const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF235789);
-const Color kCustomGreenAccent = Color(0xFF009900);
+const Color kCustomGreenAccent = Color(0xFF187436);
 const Color kCustomPinkAccent = Color(0xFFe8175d);
 //const Color kCustomGreenAccent = Color(0xE11f8d2e);
 Color kCustomOrange = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomPurple = Color(0xFF9924ff);
-const Color kGreenAccent = Color(0xFF0ABB9C);
+const Color kCustomEvidenziatoreGreen = Color(0xFF0ABB9C);
 
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kTextColor = Color(0xFF757575);

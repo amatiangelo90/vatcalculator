@@ -61,7 +61,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
-                  color: kCustomGreenAccent,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold
                 ),
               ),
@@ -69,7 +69,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Pagina gestione fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: Colors.white,
+                  color: kCustomGreenAccent,
                 ),
               ),
             ],

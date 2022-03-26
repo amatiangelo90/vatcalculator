@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
@@ -41,7 +42,7 @@ class MyStatefulWidget extends StatefulWidget {
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
 }
 
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerProvider{
 
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
@@ -102,7 +103,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               onPressed: (){
                 Navigator.pushNamed(context, WarningScreen.routeName);
               },
-              backgroundColor: kCustomPinkAccent,
+              backgroundColor: Colors.red.shade700,
               child: Stack(
                 children: [ IconButton(
                   icon: SvgPicture.asset(
@@ -122,7 +123,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         const Icon(
                           Icons.brightness_1,
                           size: 18,
-                          color: kPrimaryColor,
+                          color: Colors.black,
                         ),
                         Positioned(
                           right: 4.0,
@@ -399,7 +400,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 dataBundleNotifier.currentBranch.accessPrivilege + ' per ' + dataBundleNotifier.currentBranch.companyName : '',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(5),
-                  color: kCustomGreenAccent,
+                  color: kCustomEvidenziatoreGreen,
                 ),
               ),
             ],
@@ -470,7 +471,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
               'Area gestione magazzini',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(8),
-                  color: kCustomGreenAccent,
+                  color: kCustomEvidenziatoreGreen,
                 ),
               ),
             ],
@@ -595,7 +596,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                 'Area gestione ordini',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: kCustomGreenAccent,
+                  color: kCustomEvidenziatoreGreen,
                 ),
               ),
             ],
@@ -767,6 +768,11 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
       ),
     );
     return storagesWidgetList;
+  }
+
+  @override
+  Ticker createTicker(TickerCallback onTick) {
+    return Ticker(onTick);
   }
 }
 

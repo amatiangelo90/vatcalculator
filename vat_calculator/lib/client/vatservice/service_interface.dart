@@ -68,6 +68,7 @@ abstract class VatServiceInterface{
   Future<void>  updateUserData(UserDetailsModel userDetail);
   Future<List<WorkstationProductModel>> retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation);
   Future<List<EventModel>> retrieveEventsListByBranchId(BranchModel currentBranch);
+  Future<List<EventModel>> retrieveEventsClosedListByBranchId(BranchModel currentBranch);
   Future updateWorkstationProductModel(List<WorkstationProductModel> workStationProdModelList, ActionModel actionModel);
 
   Future<Response> createCashRegister(CashRegisterModel cashRegisterModel);

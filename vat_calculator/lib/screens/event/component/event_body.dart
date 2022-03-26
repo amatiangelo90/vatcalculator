@@ -24,9 +24,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
       builder: (child, dataBundleNotifier, _){
         return Stack(
           children: [
-
             SingleChildScrollView(
-
               scrollDirection: Axis.vertical,
               child: Column(
                 children: buildEventsWidgetByCurrentDate(dataBundleNotifier, dateTime),

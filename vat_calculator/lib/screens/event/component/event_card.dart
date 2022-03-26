@@ -57,7 +57,7 @@ class EventCard extends StatelessWidget {
                                   child: SvgPicture.asset(
                                     'assets/icons/party.svg',
                                     height: getProportionateScreenHeight(45),
-                                    color: kCustomGreenAccent,
+                                    color: kCustomOrange,
                                   ),
                                 ),
                               ),
@@ -68,10 +68,8 @@ class EventCard extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(eventModel.eventName,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
-                              Text(
-                                'Creato da: ' + eventModel.owner,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
+
                               Row(
                                 children: [
                                   Text(
@@ -114,6 +112,9 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: eventModel.closed == 'N' ? Colors.greenAccent : kPinaColor, fontWeight: FontWeight.bold),),
                                 ],
                               ),
+                              Text(
+                                'Creato da: ' + eventModel.owner,
+                                style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
                             ],
                           ),
                         ],
