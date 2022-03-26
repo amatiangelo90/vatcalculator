@@ -153,17 +153,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             data: ThemeData(
             backgroundColor: kPrimaryColor,
             canvasColor: kPrimaryColor,
+
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
             child: BottomNavigationBar(
+
               type: BottomNavigationBarType.fixed,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
                   icon: SvgPicture.asset(
                     "assets/icons/home.svg",
                     color: dataBundleNotifier.selectedIndex == 0
-                        ? kCustomGreenAccent
-                        : Colors.white,
+                        ? Colors.white
+                        : Colors.grey.shade700,
                     width: 25,
                   ),
                   label: 'Home',
@@ -172,8 +174,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   icon: SvgPicture.asset(
                     "assets/icons/storage.svg",
                     color: dataBundleNotifier.selectedIndex == 1
-                        ? kCustomGreenAccent
-                        : Colors.white,
+                        ? Colors.white
+                        : Colors.grey.shade700,
                     width: 27,
                   ),
                   label: 'Magazzino',
@@ -184,13 +186,13 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                     SvgPicture.asset(
                     "assets/icons/receipt.svg",
                     color: dataBundleNotifier.selectedIndex == 2
-                        ? kCustomGreenAccent
-                        : Colors.white,
+                        ? Colors.white
+                        : Colors.grey.shade700,
                     width: 27,
                   ),
                       Positioned(
                         top: -2.0,
-                        right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 0.0 : -2.0,
+                        right: dataBundleNotifier.currentUnderWorkingOrdersList.length > 9 ? 0.0 : -1.1,
                         child: Stack(
                           children: <Widget>[
                             const Icon(
@@ -206,7 +208,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                   dataBundleNotifier.currentUnderWorkingOrdersList.length.toString(),
                                   style: const TextStyle(
                                       fontSize: 8.0,
-                                      color: Colors.white),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold
+                                  ),
                                 ),
                               ),
                             ),
@@ -215,7 +219,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       ),
                       Positioned(
                         top: 10.0,
-                        right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 0.0 : -2.0,
+                        right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 0.0 : -1.1,
                         child: Stack(
                           children: <Widget>[
                             Icon(
@@ -231,7 +235,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                                   dataBundleNotifier.currentDraftOrdersList.length.toString(),
                                   style: const TextStyle(
                                       fontSize: 8.0,
-                                      color: Colors.white),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -246,16 +251,16 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                   icon: SvgPicture.asset(
                     "assets/icons/Settings.svg",
                     color: dataBundleNotifier.selectedIndex == 3
-                        ? kCustomGreenAccent
-                        : Colors.white,
+                        ? Colors.white
+                        : Colors.grey.shade700,
                     width: 25,
                   ),
                   label: 'Gestione',
                 ),
               ],
               currentIndex: dataBundleNotifier.selectedIndex,
-              selectedItemColor: kCustomGreenAccent,
-              unselectedItemColor: Colors.white,
+              selectedItemColor: Colors.white,
+              unselectedItemColor: Colors.grey.shade700,
               onTap: dataBundleNotifier.onItemTapped,
             ),
               ),
@@ -505,17 +510,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       ),
                       Positioned(
                         right:
-                        dataBundleNotifier.currentArchiviedWorkingOrdersList.length >
-                            9
-                            ? 3.0
-                            : 5.0,
+                        dataBundleNotifier.currentArchiviedWorkingOrdersList.length > 9 ? 3.0 : 5.0,
                         top: 2,
                         child: Center(
                           child: Text(
                             dataBundleNotifier.currentArchiviedWorkingOrdersList.length
                                 .toString(),
                             style: const TextStyle(
-                                fontSize: 8.0, color: Colors.white),
+                                fontSize: 8.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                            ),
                           ),
                         ),
                       ),
@@ -605,7 +610,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
             'Gestione',
             style: TextStyle(
               fontSize: getProportionateScreenWidth(19),
-              color: kCustomGreenAccent,
+              color: Colors.white,
             ),
           ),
           backgroundColor: kPrimaryColor,

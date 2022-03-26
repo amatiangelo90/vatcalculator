@@ -202,7 +202,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                             Text(
                                               'Effettua Ordine',
                                               style: TextStyle(
-                                                  color: kCustomGreenAccent,
+                                                  color: Colors.white,
                                                   fontSize:
                                                       getProportionateScreenWidth(
                                                           17)),
@@ -357,7 +357,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             Text(
                               'Crea Evento',
                               style: TextStyle(
-                                  color: kCustomGreenAccent,
+                                  color: Colors.white,
                                   fontSize:
                                   getProportionateScreenWidth(
                                       17)),
@@ -537,7 +537,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 child: Text(
                   '' + dataBundleNotifier.currentBranch.companyName,
                   style: TextStyle(
-                      color: kCustomGreenAccent,
+                      color: Colors.white,
                       fontSize: getProportionateScreenWidth(15),
                       fontWeight: FontWeight.bold),
                 ),
@@ -550,7 +550,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                         icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                         onPressed: (){
                           Navigator.pushNamed(context, UpdateBranchScreen.routeName);
-
                         },
                     )
                   ),
@@ -558,7 +557,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: kCustomGreenAccent,
+                      color: Colors.white,
                       size: getProportionateScreenWidth(30),
                     ),
                   ),

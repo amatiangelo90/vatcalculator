@@ -133,7 +133,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoButton(
-                          color: kCustomOrange,
+                          color: kCustomGreenAccent,
                           child: const Text('AGGIORNA'),
                           onPressed: () async {
                             if(controllerCompanyName2.text == null || controllerCompanyName2.text == ''){
@@ -198,7 +198,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
             title: Text('Aggiorna dettagli attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomOrange,
+                color: kCustomGreenAccent,
               ),
             ),
             backgroundColor: Colors.grey.shade900.withOpacity(0.9),
