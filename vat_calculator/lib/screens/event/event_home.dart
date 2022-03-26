@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../constants.dart';
@@ -78,7 +79,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                   ],
                 ),
                 actions: [
-                  Padding(
+                  dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? const SizedBox(width: 5) : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: IconButton(
                         icon: SvgPicture.asset(
@@ -90,7 +91,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           Navigator.pushNamed(context, ArchiviedEventPage.routeName);
                         }),
                   ),
-                  SizedBox(width: 5),
+                  const SizedBox(width: 5),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: Stack(
