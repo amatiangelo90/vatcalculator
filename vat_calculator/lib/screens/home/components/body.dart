@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,11 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(
                         context, dataBundleNotifier),
                   ),
+                  ElevatedButton(onPressed: (){
+                    sleep(Duration(seconds: 5));
+                    dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
+                        'evento sdioasd sdiufa sdaskdbfas asldbf adslsbadf llhabdslhdfb', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo evento', 'sdfsdfsdfsdfsd');
+                  }, child: Text('DIO CARO')),
                   dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDateRecessedRegistrationWidget(dataBundleNotifier),
                   Padding(
                     padding: const EdgeInsets.all(0.0),
@@ -440,7 +446,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ),
                   // buildActionsList(dataBundleNotifier.currentBranchActionsList),
-                  SizedBox(height: getProportionateScreenHeight(50),),
+                  SizedBox(height: getProportionateScreenHeight(dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? 280 : 100),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text('Developed by A.A.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(9))),

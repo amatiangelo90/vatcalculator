@@ -13,7 +13,7 @@ class BranchModel{
   String apiKeyOrUser;
   String apiUidOrPassword;
   String accessPrivilege;
-  String configuration;
+  String token;
 
   BranchModel({
     @required this.pkBranchId,
@@ -28,7 +28,7 @@ class BranchModel{
     @required this.apiKeyOrUser,
     @required this.apiUidOrPassword,
     @required this.accessPrivilege,
-    @required this.configuration,
+    @required this.token,
   });
 
 
@@ -47,7 +47,7 @@ class BranchModel{
       'idUidPassword' : apiUidOrPassword,
       'fkUserId' : 0,
       'accessPrivilege' : accessPrivilege,
-      'configuration' : configuration,
+      'token' : token,
     };
   }
 }

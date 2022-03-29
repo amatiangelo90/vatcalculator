@@ -61,6 +61,7 @@ abstract class VatServiceInterface{
   Future<Response> removeProviderFromBranch({BranchModel branchModel, ActionModel actionModel});
   Future<Response> createUserBranchRelation({int fkUserId, int fkBranchId, String accessPrivilege, ActionModel actionModel});
   Future<Response> updatePrivilegeForUserBranchRelation({int branchId, int userId, String privilegeType, ActionModel actionModel});
+  Future<Response> updateFirebaseTokenForUserBranchRelation({int branchId, int userId, String token});
   Future<Response> removeUserBranchRelation({int branchId, int userId, ActionModel actionModel});
   Future<Response> performEditSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel});
   Future<Response> removeProductFromOrder(ProductOrderAmountModel element);

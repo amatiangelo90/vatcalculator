@@ -508,21 +508,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                 SizedBox(
                   height: getProportionateScreenHeight(30),
                 ),
-                GestureDetector(
-                  onLongPress: (){
-                    if(dataBundleNotifier.currentBranch.configuration == null){
-                      //dataBundleNotifier.getclientServiceInstance().updateConfiguration();
-                    }
-                    //dataBundleNotifier.getclientServiceInstance().updateConfiguration();
-
-                  },
-                  child: const Card(
-                    color: Colors.white,
-                    elevation: 0,
-                    child: Padding(
-                      padding: EdgeInsets.all(38.0),
-                      child: Text('Version 1.5.10', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold)),
-                    ),
+                const Card(
+                  color: Colors.white,
+                  elevation: 0,
+                  child: Padding(
+                    padding: EdgeInsets.all(38.0),
+                    child: Text('Version 1.5.10', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],

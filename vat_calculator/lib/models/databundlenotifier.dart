@@ -1,4 +1,4 @@
-import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/email_sender/emailservice.dart';
@@ -21,10 +21,9 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/components/vat_data.dart';
 import '../client/fattureICloud/model/response_info_company.dart';
+import '../client/firebase_service/firebase_messaging_service_impl.dart';
 import '../constants.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
@@ -98,6 +97,7 @@ class DataBundleNotifier extends ChangeNotifier {
   String currentPrivilegeType;
 
   ClientVatService clientService = ClientVatService();
+  FirebaseMessagingService clientMessagingFirebase = FirebaseMessagingService();
   FattureInCloudClient iCloudClient = FattureInCloudClient();
   EmailSenderService emailService = EmailSenderService();
 
@@ -172,6 +172,14 @@ class DataBundleNotifier extends ChangeNotifier {
       return ClientVatService();
     }else{
       return clientService;
+    }
+  }
+
+  FirebaseMessagingService getclientMessagingFirebase(){
+    if(clientMessagingFirebase == null){
+      return FirebaseMessagingService();
+    }else{
+      return clientMessagingFirebase;
     }
   }
 

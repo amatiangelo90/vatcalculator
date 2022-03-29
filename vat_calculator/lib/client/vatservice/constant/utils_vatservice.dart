@@ -66,6 +66,10 @@ const String VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH = 'http://$
 const String VAT_SERVICE_URL_RETRIEVE_USERS_LIST_RELATIONED_ON_BRANCH_BY_BRANCH_ID = 'http://$host:8080/vatservices/api/v1/retrieve/userslistbybranchid';
 //update table users_branches with new privilege access for current user
 const String VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE = 'http://$host:8080/vatservices/api/v1/update/userbranch/privilege';
+
+//update table users_branches with new privilege access for current user
+const String VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_REFRESH_FIREBASE_TOKEN = 'http://$host:8080/vatservices/api/v1/update/userbranch/token';
+
 // remove user branch relation
 const String VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION = 'http://$host:8080/vatservices/api/v1/remove/userbranchrelation';
 // remove user branch relation

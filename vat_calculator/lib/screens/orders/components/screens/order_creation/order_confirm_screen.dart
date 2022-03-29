@@ -173,6 +173,12 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         context.loaderOverlay.hide();
 
 
+                        String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
+
+                        dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
+                            'Ordine per fornitore ${widget.currentSupplier.nome} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
+
+
 
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
                           mail: widget.currentSupplier.mail,
@@ -203,6 +209,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                             performSaveOrderId : performSaveOrderId.data,
                             code: code,
                             deliveryDate: currentDate,
+                            storageModel: currentStorageModel,
                             message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
                               branchName: dataBundleNotifier.currentBranch.companyName,
                               orderId: code,
@@ -399,7 +406,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           children: [
                             CupertinoButton(
                               child:
-                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomGreenAccent),),
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.green),),
                               color: Colors.black.withOpacity(0.8),
                               onPressed: () => _selectDate(context),
                             )
@@ -517,8 +524,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               backgroundColor: Colors.black,
               dialogBackgroundColor: Colors.black,
               colorScheme: ColorScheme.dark(
-                onSurface: kCustomGreenAccent,
-                primary: kCustomGreenAccent,
+                onSurface: Colors.white,
+                primary: Colors.white,
                 secondary: kPrimaryColor,
                 onSecondary: kPrimaryColor,
                 background: kPrimaryColor,
@@ -526,7 +533,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomGreenAccent, // button// text color
+                  primary: Colors.white, // button// text color
                 ),
               ),
             ),

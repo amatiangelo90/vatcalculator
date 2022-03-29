@@ -699,7 +699,7 @@ class ClientVatService implements VatServiceInterface{
                 apiKeyOrUser: branchElement['idKeyUser'],
                 apiUidOrPassword: branchElement['idUidPassword'],
                 accessPrivilege: branchElement['accessPrivilege'],
-                configuration: branchElement['configuration'],
+                token: branchElement['token'],
             ));
       });
       return branchList;
@@ -1645,7 +1645,7 @@ class ClientVatService implements VatServiceInterface{
             fkUserId: fkUserId,
             fkBranchId: fkBranchId,
             accessPrivilege: accessPrivilege,
-            configurations: ''
+            token: ''
         ).toMap());
     print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH with body request $body');
 
@@ -1681,8 +1681,8 @@ class ClientVatService implements VatServiceInterface{
         UserBranchRelationModel(pkUserBranchId: 0,
             fkBranchId: branchId,
             fkUserId: userId,
-            accessPrivilege: privilegeType)
-            .toMap());
+            accessPrivilege: privilegeType,
+            token: '').toMap());
 
 
     print('Calling ' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE + '...');
@@ -1714,6 +1714,45 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
+
+  @override
+  Future<Response> updateFirebaseTokenForUserBranchRelation({int branchId, int userId, String token}) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        UserBranchRelationModel(pkUserBranchId: 0,
+            fkBranchId: branchId,
+            fkUserId: userId,
+            accessPrivilege: '',
+            token: token).toMap());
+
+
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_REFRESH_FIREBASE_TOKEN + '...');
+    print('Body Request update user branches table with new token for current user: ' + body);
+
+    Response post;
+    try{
+
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_REFRESH_FIREBASE_TOKEN,
+        data: body,
+      );
+
+      if(post != null && post.data != null){
+        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_REFRESH_FIREBASE_TOKEN + '): ' + post.data.toString());
+        try{
+          print('Token updated!!');
+        }catch(e){
+          print('Exception: ' + e.toString());
+        }
+      }
+
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
   @override
   Future<Response> removeUserBranchRelation({int branchId, int userId, ActionModel actionModel}) async {
     var dio = Dio();
@@ -2287,7 +2326,7 @@ class ClientVatService implements VatServiceInterface{
         company.toMap());
 
 
-    print('Calling ' + VAT_SERVICE_URL_SAVE_BRANCH + '...');
+    print('Calling ' + VAT_SERVICE_URL_UPDATE_BRANCH + '...');
     print('Body Request Update branch: ' + body);
 
     Response post;
@@ -2301,12 +2340,14 @@ class ClientVatService implements VatServiceInterface{
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH + '): ' + post.data.toString());
         try{
-          actionModel.fkBranchId = post.data;
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
+          if(actionModel != null){
+            actionModel.fkBranchId = post.data;
+            String actionBody = json.encode(actionModel.toMap());
+            await dio.post(
+              VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
+              data: actionBody,
+            );
+          }
         }catch(e){
           print('Exception: ' + e.toString());
         }

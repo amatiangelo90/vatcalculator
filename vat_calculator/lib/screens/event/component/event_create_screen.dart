@@ -178,7 +178,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   width: getProportionateScreenHeight(400),
                                   child: CupertinoButton(
                                     child:
-                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: kCustomGreenAccent),),
+                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.green),),
                                     color: kPrimaryColor,
                                     onPressed: () => _selectDate(context),
                                   ),
@@ -494,6 +494,12 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           List<EventModel> _eventModelList = await dataBundleNotifier.getclientServiceInstance().retrieveEventsListByBranchId(dataBundleNotifier.currentBranch);
                           dataBundleNotifier.addCurrentEventsList(_eventModelList);
                         }
+
+                        String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
+
+                        dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
+                          'Evento ${controllerEventName.value.text} in programma $eventDatePretty a ${controllerLocation.value.text}', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo evento', '');
+
                         Navigator.pushNamed(context, EventHomeScreen.routeName);
                         context.loaderOverlay.hide();
                         ScaffoldMessenger.of(context)
@@ -525,17 +531,17 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
             data: Theme.of(context).copyWith(
               backgroundColor: kPrimaryColor,
               dialogBackgroundColor: kPrimaryColor,
-              colorScheme: const ColorScheme.dark(
-                onSurface: kCustomGreenAccent,
+              colorScheme: ColorScheme.dark(
+                onSurface: Colors.white,
                 primary: kCustomGreenAccent,
-                secondary: kPrimaryColor,
-                onSecondary: kPrimaryColor,
-                background: kPrimaryColor,
-                onBackground: kPrimaryColor,
+                secondary: Colors.white,
+                onSecondary: Colors.white,
+                background: Colors.white,
+                onBackground: Colors.white,
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: kCustomGreenAccent, // button// text color
+                  primary: Colors.white, // button// text color
                 ),
               ),
             ),

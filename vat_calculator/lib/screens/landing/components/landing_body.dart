@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -151,8 +152,25 @@ class LandingBody extends StatelessWidget {
 
                         dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
+                        //subscribe user to topics for notifications
+                        //TODO run this command in background
+                        await Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (BranchModel branch) async {
+
+                          //TODO token firebase messaging, can be usefull. Keep in mind
+                          //if(branch.token == null || branch.token == ''){
+                          //  FirebaseMessaging.instance.getToken().then((value) async {
+                          //    branch.token = value;
+                          //    await dataBundleNotifier.getclientServiceInstance().updateFirebaseTokenForUserBranchRelation(branchId: branch.pkBranchId, userId: dataBundleNotifier.userDetailsList[0].id, token: value);
+                          //  });
+                          //}
+
+                          await FirebaseMessaging.instance.unsubscribeFromTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Unsubscription from topic [branch-${branch.pkBranchId.toString()}] done!!'));
+                          await FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
+                        });
+
                         context.loaderOverlay.hide();
                         dataBundleNotifier.onItemTapped(0);
+
                         Navigator.pushNamed(context, HomeScreenMain.routeName);
                       },
                     ),

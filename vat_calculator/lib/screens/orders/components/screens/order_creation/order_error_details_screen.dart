@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/screens/main_page.dart';
 import 'package:vat_calculator/size_config.dart';
@@ -15,7 +16,7 @@ import '../../../../../client/vatservice/model/utils/order_state.dart';
 import '../../../../../models/databundlenotifier.dart';
 
 class OrderErrorDetailsScreen extends StatelessWidget {
-  const OrderErrorDetailsScreen({Key key, this.message, this.number, this.mail, this.supplier, this.performSaveOrderId, this.code, this.deliveryDate}) : super(key: key);
+  const OrderErrorDetailsScreen({Key key, this.message, this.number, this.mail, this.supplier, this.performSaveOrderId, this.code, this.deliveryDate, this.storageModel}) : super(key: key);
 
   final String message;
   final String number;
@@ -24,6 +25,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
   final int performSaveOrderId;
   final String code;
   final DateTime deliveryDate;
+  final StorageModel storageModel;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +99,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (){
+                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                             launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplier.tel)}&text=$messageToSend');
                             performFinalAction(dataBundleNotifier, context);
                           },
@@ -115,6 +118,8 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
+
+                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                                     launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplier.tel)}&text=$messageToSend');
                                     performFinalAction(dataBundleNotifier, context);
                                   }, icon: SvgPicture.asset(
@@ -127,6 +132,8 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (){
+
+                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                             launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
                             performFinalAction(dataBundleNotifier, context);
                           },
@@ -144,10 +151,11 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
+
+                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                                     launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
                                     performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
-                                    dataBundleNotifier.setIndexIvaListValue(2);
-                                    Navigator.pushNamed(context, HomeScreenMain.routeName);
+
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/textmessage.svg',
 
@@ -161,6 +169,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         const Text('oppure, se il numero configurato è sbagliato invia l\'ordine selezionando un numero dalla tua lista di contatti' , textAlign: TextAlign.center,),
                         GestureDetector(
                           onTap: (){
+                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                             launch('https://api.whatsapp.com/send/?text=$messageToSend');
                             performFinalAction(dataBundleNotifier, context);
                           },
@@ -179,6 +188,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
+                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                                     launch('https://api.whatsapp.com/send/?text=$messageToSend');
                                     performFinalAction(dataBundleNotifier, context);
                                   }, icon: SvgPicture.asset(
@@ -191,7 +201,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (){
-
+                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                             launch('sms:?body=$messageToSend');
                             performFinalAction(dataBundleNotifier, context);
                           },
@@ -208,6 +218,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
+                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                                     launch('sms:?body=$messageToSend');
                                     performFinalAction(dataBundleNotifier, context);
 
@@ -284,6 +295,14 @@ class OrderErrorDetailsScreen extends StatelessWidget {
     performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
     dataBundleNotifier.setIndexIvaListValue(2);
     Navigator.pushNamed(context, HomeScreenMain.routeName);
+  }
+
+  void sendOrderPushNotification(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, DateTime currentDate, StorageModel currentStorageModel) {
+    String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
+
+    dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
+        'Ordine per fornitore ${supplier.nome} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
+
   }
 }
 

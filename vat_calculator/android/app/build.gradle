@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         applicationId "com.acorp.businessmanager"
-        minSdkVersion 19
+        minSdkVersion 21
         compileSdkVersion 31
         targetSdkVersion 30
         versionCode flutterVersionCode.toInteger()
@@ -70,4 +70,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation platform('com.google.firebase:firebase-bom:28.4.2')
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    implementation 'com.google.firebase:firebase-messaging:20.1.7'
 }

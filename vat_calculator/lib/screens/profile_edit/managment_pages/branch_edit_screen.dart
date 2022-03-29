@@ -193,7 +193,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                                 .getclientServiceInstance()
                                                 .updatePrivilegeForUserBranchRelation(
                                                 branchId: currentBranch.pkBranchId,
-                                              userId: listUserModel[index].id,
+                                                userId: listUserModel[index].id,
 
                                               privilegeType: Privileges.ADMIN,
                                                 actionModel: ActionModel(
