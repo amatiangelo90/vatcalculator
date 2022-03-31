@@ -457,6 +457,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             child: const Text('Elimina evento'),
             onPressed: () async {
 
+              
+
             }),
       ),
     ];

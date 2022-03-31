@@ -30,6 +30,7 @@ import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
 
+
   List<UserDetailsModel> userDetailsList = [
   ];
 

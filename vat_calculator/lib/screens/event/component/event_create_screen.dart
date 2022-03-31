@@ -400,25 +400,13 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           .showSnackBar(SnackBar(
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
-                          content: Text('Associare un magazzino all\'evento')));
+                          content: const Text('Associare un magazzino all\'evento')));
                     }else if(_champagneriePositionCounter == 0 && _barPositionCounter == 0){
                       ScaffoldMessenger.of(context)
                           .showSnackBar(SnackBar(
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
-                          duration: Duration(milliseconds: 1000),
-                          content: Text('Configurare almeno una fra Postazione Bar e Postazione Champagnerie')));
-                    }else if(_barPositionCounter > 0 && getNumberElementsFromProductList(currentStorageProductModelListBar) == 0){
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(
-                          backgroundColor: Colors.redAccent.withOpacity(0.8),
-                          duration: Duration(milliseconds: 1000),
-                          content: Text('Assegnare almeno un prodotto alle postazioni bar')));
-                    }else if(_champagneriePositionCounter > 0 && getNumberElementsFromProductList(currentStorageProductModelListChampagnerie) == 0){
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(
-                          backgroundColor: Colors.redAccent.withOpacity(0.8),
-                          duration: Duration(milliseconds: 1000),
-                          content: Text('Assegnare almeno un prodotto alle postazioni champagnerie')));
+                          duration: const Duration(milliseconds: 1000),
+                          content: const Text('Configurare almeno una fra Postazione Bar e Postazione Champagnerie')));
                     }else{
 
                       try{

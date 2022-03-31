@@ -21,6 +21,7 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
           {
             "to": "/topics/$topicName",
             "notification": {
+              "sound": "default",
               "title": "$title",
               "body": "$message"
             },
@@ -30,7 +31,7 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
           }
       );
 
-      Response response = await dio.post(
+      await dio.post(
         FIREBASE_MESSAGING_SERVICE_URL,
         data: jsonEncodedBody,
       );

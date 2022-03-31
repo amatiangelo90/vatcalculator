@@ -163,11 +163,9 @@ class LandingBody extends StatelessWidget {
                           //    await dataBundleNotifier.getclientServiceInstance().updateFirebaseTokenForUserBranchRelation(branchId: branch.pkBranchId, userId: dataBundleNotifier.userDetailsList[0].id, token: value);
                           //  });
                           //}
-
-                          await FirebaseMessaging.instance.unsubscribeFromTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Unsubscription from topic [branch-${branch.pkBranchId.toString()}] done!!'));
+                          //await FirebaseMessaging.instance.unsubscribeFromTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Unsubscription from topic [branch-${branch.pkBranchId.toString()}] done!!'));
                           await FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
                         });
-
                         context.loaderOverlay.hide();
                         dataBundleNotifier.onItemTapped(0);
 

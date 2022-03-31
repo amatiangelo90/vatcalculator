@@ -395,7 +395,6 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
                       leftTitles: SideTitles(
                           getTextStyles: (context, value) => TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),
                           showTitles: true,
-
                       ),
 
                       topTitles: SideTitles(showTitles: false),

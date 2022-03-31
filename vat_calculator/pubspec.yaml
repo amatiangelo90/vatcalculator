@@ -3,7 +3,7 @@ description: VatClaulator Project for Small/Medium Company
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.0+20
+version: 1.0.0+24
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
@@ -55,7 +55,6 @@ dependencies:
   fl_chart: ^0.45.1
   persistent_bottom_nav_bar: ^4.0.2
   firebase_messaging: ^11.2.11
-  awesome_notifications: ^0.6.21
   firebase_analytics: ^9.1.2
 
 dev_dependencies:

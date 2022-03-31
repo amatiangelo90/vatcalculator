@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,7 +18,6 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 
 import '../../constants.dart';
 import '../../size_config.dart';
@@ -362,6 +362,8 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                               )
                                           );
                                           if(response == null){
+                                            await FirebaseMessaging.instance.subscribeToTopic('branch-${retrieveBranchByBranchId[0].pkBranchId}').then((value) => print('Subscription to topic [branch-${retrieveBranchByBranchId[0].pkBranchId}] done!!'));
+
                                             showDialog(
                                                 context: context,
                                                 builder: (_) => AlertDialog (

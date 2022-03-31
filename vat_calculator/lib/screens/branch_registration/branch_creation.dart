@@ -7,7 +7,6 @@ import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../main_page.dart';
@@ -113,6 +112,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
 
                               List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                               dataBundleNotifier.addBranches(_branchList);
+
 
                               dataBundleNotifier.onItemTapped(0);
                               Navigator.pushNamed(context, HomeScreenMain.routeName);

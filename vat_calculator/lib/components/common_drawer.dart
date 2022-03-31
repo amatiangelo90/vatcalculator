@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
@@ -14,19 +13,14 @@ import 'package:vat_calculator/screens/branch_registration/branch_creation.dart'
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
-import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
-import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
-
 import '../constants.dart';
 import '../screens/main_page.dart';
 import '../size_config.dart';
@@ -116,13 +110,12 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                     ),
                                   ],
                                 ),
-
                               ],
                             ),
                             Row(
                               children: [
                                 const SizedBox(width: 20,),
-                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomGreenAccent)) : const SizedBox(width: 0,),
+                                dataBundleNotifier.userDetailsList.isNotEmpty ? Text(dataBundleNotifier.userDetailsList[0].email, style:const TextStyle(color: kCustomEvidenziatoreGreen)) : const SizedBox(width: 0,),
                               ],
                             ),
                             const SizedBox(height: 10,),

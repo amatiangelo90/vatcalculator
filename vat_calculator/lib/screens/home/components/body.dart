@@ -94,11 +94,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(
                         context, dataBundleNotifier),
                   ),
-                  ElevatedButton(onPressed: (){
-                    sleep(Duration(seconds: 5));
-                    dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
-                        'evento sdioasd sdiufa sdaskdbfas asldbf adslsbadf llhabdslhdfb', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo evento', 'sdfsdfsdfsdfsd');
-                  }, child: Text('DIO CARO')),
                   dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDateRecessedRegistrationWidget(dataBundleNotifier),
                   Padding(
                     padding: const EdgeInsets.all(0.0),

@@ -87,7 +87,9 @@ class EventCard extends StatelessWidget {
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: kCustomOrange, fontWeight: FontWeight.bold),),
+                                    textAlign: TextAlign.justify,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: kCustomOrange, fontWeight: FontWeight.bold),),
                                 ],
                               ),
                               Row(
