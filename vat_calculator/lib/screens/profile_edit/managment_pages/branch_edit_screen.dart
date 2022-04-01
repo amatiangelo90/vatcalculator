@@ -384,8 +384,13 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                           color: kCustomWhite,
                                           height: getProportionateScreenHeight(23),
                                         ),
-                                        onPressed: () => {
-                                          launch('tel://${getRefactoredNumber(listUserModel[index].phone)}')
+                                        onPressed: () {
+
+                                          if(canLaunch('tel://${getRefactoredNumber(listUserModel[index].phone)}') != null){
+                                            launch('tel://${getRefactoredNumber(listUserModel[index].phone)}');
+                                          }else{
+                                            print('rottooo');
+                                          }
                                         }
                                     ),
                                     IconButton(
@@ -393,8 +398,13 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                           'assets/icons/ws.svg',
                                           height: getProportionateScreenHeight(25),
                                         ),
-                                        onPressed: () => {
-                                          launch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}')
+                                        onPressed: () {
+                                          if(canLaunch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}') != null){
+                                            print('dentro');
+                                            launch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}');
+                                          }else{
+                                            print('rottooo');
+                                          }
                                         }
                                     ),
                                     SizedBox(width: 10,),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -40,7 +42,7 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
               title: Text(dataBundleNotifier.currentStorage.name, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(15)),),
             ),
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 color: Colors.blueAccent,
                 text: 'QuantitàX100',

@@ -58,7 +58,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                   child: SizedBox(
                     width: getProportionateScreenWidth(350),
                     child: CupertinoButton(

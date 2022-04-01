@@ -2655,4 +2655,31 @@ class ClientVatService implements VatServiceInterface{
     }
 
   }
+
+  @override
+  Future<List<String>> retrieveTokenList(BranchModel branchModel) async {
+
+    var dio = Dio();
+
+    String body = json.encode(branchModel.toMap());
+
+    print('Calling ' + VAT_SERVICE_URL_RETRIEVE_TOKEN_BY_BRANCH + '...');
+    print('Body Request to retrieve tokens: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_TOKEN_BY_BRANCH,
+        data: body,
+      );
+
+      String encode = json.encode(post.data);
+      List<dynamic> valueList = jsonDecode(encode);
+
+      print('Tokens Retrieved: ' + valueList.cast<String>().toString());
+      return valueList.cast<String>();
+    }catch(e){
+      rethrow;
+    }
+  }
 }

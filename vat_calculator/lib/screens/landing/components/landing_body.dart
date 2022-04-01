@@ -150,21 +150,23 @@ class LandingBody extends StatelessWidget {
                           dataBundleNotifier.addCurrentEventsList(_eventModelList);
                         }
 
+                        List<String> tokenList = await clientService.retrieveTokenList(dataBundleNotifier.currentBranch);
+                        dataBundleNotifier.setCurrentBossTokenList(tokenList);
+
                         dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
                         //subscribe user to topics for notifications
                         //TODO run this command in background
-                        await Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (BranchModel branch) async {
+                        Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (BranchModel branch) {
 
-                          //TODO token firebase messaging, can be usefull. Keep in mind
-                          //if(branch.token == null || branch.token == ''){
-                          //  FirebaseMessaging.instance.getToken().then((value) async {
-                          //    branch.token = value;
-                          //    await dataBundleNotifier.getclientServiceInstance().updateFirebaseTokenForUserBranchRelation(branchId: branch.pkBranchId, userId: dataBundleNotifier.userDetailsList[0].id, token: value);
-                          //  });
-                          //}
+                          if(branch.token == null || branch.token == ''){
+                            FirebaseMessaging.instance.getToken().then((value) {
+                              branch.token = value;
+                              dataBundleNotifier.getclientServiceInstance().updateFirebaseTokenForUserBranchRelation(branchId: branch.pkBranchId, userId: dataBundleNotifier.userDetailsList[0].id, token: value);
+                            });
+                          }
                           //await FirebaseMessaging.instance.unsubscribeFromTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Unsubscription from topic [branch-${branch.pkBranchId.toString()}] done!!'));
-                          await FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
+                          FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
                         });
                         context.loaderOverlay.hide();
                         dataBundleNotifier.onItemTapped(0);

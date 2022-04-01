@@ -1,11 +1,11 @@
+import 'dart:io';
+
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -52,7 +52,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
           overlayWidget: const LoaderOverlayWidget(message: 'Invio ordine in corso...',),
           child: Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 text: ''
                     'Conferma ed Invia',

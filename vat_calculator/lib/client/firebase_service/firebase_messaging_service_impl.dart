@@ -41,4 +41,50 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
       print(e);
     }
   }
+
+  @override
+  Future<Response> sendNotificationToUsersByTokens(List<String> tokensList, String message, String title, String msgId) async {
+    try{
+      if(tokensList != null && tokensList.isNotEmpty){
+        var dio = Dio();
+
+        dio.options.headers['Authorization'] = 'key=$FIREBASE_USER_KEY';
+        dio.options.headers['Content-Type'] = 'application/json';
+
+        String tokensListString = '"';
+
+        tokensList.forEach((token) {
+          tokensListString = tokensListString + token + '","';
+        });
+        tokensListString = tokensListString.substring(0, tokensListString.length - 1);
+        tokensListString = tokensListString.substring(0, tokensListString.length - 1);
+
+        var jsonEncodedBody = jsonEncode(
+            {
+              "registration_ids": [tokensListString],
+              "notification": {
+                "sound": "default",
+                "title": "$title",
+                "body": "$message"
+              },
+              "data": {
+                "msgId": "$msgId"
+              }
+            }
+        );
+
+        await dio.post(
+          FIREBASE_MESSAGING_SERVICE_URL,
+          data: jsonEncodedBody,
+        );
+      }else{
+        print('Not sending push notification. Tokens list is empty');
+      }
+
+
+
+    }catch(e){
+      print(e);
+    }
+  }
 }

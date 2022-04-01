@@ -202,7 +202,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                   child: CupertinoTextField(
                                     controller: recessedCashController,
                                     textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true, signed: false),
                                     clearButtonMode: OverlayVisibilityMode.never,
                                     textAlign: TextAlign.center,
                                     autocorrect: false,
@@ -222,7 +222,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                   child: CupertinoTextField(
                                     controller: recessedFiscalController,
                                     textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true, signed: false),
                                     clearButtonMode: OverlayVisibilityMode.never,
                                     textAlign: TextAlign.center,
                                     autocorrect: false,
@@ -242,7 +242,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                   child: CupertinoTextField(
                                     controller: recessedPosController,
                                     textInputAction: TextInputAction.next,
-                                    keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
+                                    keyboardType: TextInputType.numberWithOptions(decimal: true, signed: false),
                                     clearButtonMode: OverlayVisibilityMode.never,
                                     textAlign: TextAlign.center,
                                     autocorrect: false,

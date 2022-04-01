@@ -119,7 +119,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                 child: CupertinoTextField(
                                   controller: expenceController,
                                   textInputAction: TextInputAction.next,
-                                  keyboardType: const TextInputType.numberWithOptions(signed: true,decimal:  true),
+                                  keyboardType: const TextInputType.numberWithOptions(signed: false,decimal:  true),
                                   clearButtonMode: OverlayVisibilityMode.never,
                                   textAlign: TextAlign.center,
                                   autocorrect: false,

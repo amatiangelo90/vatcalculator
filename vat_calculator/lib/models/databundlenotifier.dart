@@ -85,8 +85,9 @@ class DataBundleNotifier extends ChangeNotifier {
   List<OrderModel> currentArchiviedWorkingOrdersList = [];
 
   List<ActionModel> currentBranchActionsList = [
-
   ];
+
+  List<String> currentBossTokenList = [];
 
   List<ProductModel> productListForChoicedSupplierToPerformOrder = [];
   List<CharData> charDataCreditIva = [];
@@ -250,7 +251,7 @@ class DataBundleNotifier extends ChangeNotifier {
     }else if(date.month == 4 || date.month == 5 || date.month == 6){
       currentDateTimeRangeVatService = DateTimeRange(
         start: DateTime(date.year, 4, 1, 0, 0, 0, 0,0),
-        end: DateTime(date.year, 3, DateTime(date.year, 7, 0).day, 0, 0, 0, 0,0),
+        end: DateTime(date.year, 6, DateTime(date.year, 7, 0).day, 0, 0, 0, 0,0),
       );
     }else if(date.month == 7 || date.month == 8 || date.month == 9){
       currentDateTimeRangeVatService = DateTimeRange(
@@ -580,6 +581,9 @@ class DataBundleNotifier extends ChangeNotifier {
     currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
 
     clearAndUpdateMapBundle();
+
+    List<String> tokenList = await clientService.retrieveTokenList(currentBranch);
+    setCurrentBossTokenList(tokenList);
 
     //retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
     notifyListeners();
@@ -1614,9 +1618,9 @@ class DataBundleNotifier extends ChangeNotifier {
     int result = 0;
     if(currentUnderWorkingOrdersList.isNotEmpty){
       currentUnderWorkingOrdersList.forEach((orderItem) {
-        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day < DateTime.now().day &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day < DateTime.now().day ||
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month < DateTime.now().month ||
+            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year < DateTime.now().year){
           result = result + 1;
         }
       });
@@ -1624,14 +1628,17 @@ class DataBundleNotifier extends ChangeNotifier {
     if(eventModelList.isNotEmpty){
       eventModelList.forEach((eventItem) {
 
-        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day < DateTime.now().day &&
-            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == DateTime.now().month &&
-            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == DateTime.now().year && eventItem.closed == 'N'){
+        if((DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day < DateTime.now().day ||
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month < DateTime.now().month ||
+            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year < DateTime.now().year)
+                && eventItem.closed == 'N'){
 
           result = result + 1;
         }
       });
     }
+
+    print('There are orders or events pending: ' + result.toString());
     return result;
   }
 
@@ -1664,6 +1671,12 @@ class DataBundleNotifier extends ChangeNotifier {
     }
 
     return list;
+  }
+
+  void setCurrentBossTokenList(List<String> tokenList) {
+    currentBossTokenList.clear();
+    currentBossTokenList.addAll(tokenList);
+    notifyListeners();
   }
 
 }

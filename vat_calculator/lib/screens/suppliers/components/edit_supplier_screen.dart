@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -58,7 +60,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           controllerPIva = TextEditingController(text: widget.currentSupplier.piva);
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 text: 'Crea Prodotto',
                 press: () {
@@ -111,7 +113,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
         builder: (context, dataBundleNotifier, _){
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 text: 'Crea Ordine',
                 press: () async {
@@ -149,7 +151,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width - 30,
                     child: DefaultButton(
@@ -375,7 +377,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   widget.currentSupplier.nome,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
-                    color: kCustomOrange,
+                    color: Colors.white,
                   ),
                 ),
                 elevation: 2,

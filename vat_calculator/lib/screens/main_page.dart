@@ -97,18 +97,19 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 ),
               ],
             ),
-          ) : dataBundleNotifier.selectedIndex == 0 && dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent() != 0
+          ) : dataBundleNotifier.selectedIndex == 0
+                && dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent() != 0
                 && DateTime.now().hour > 5 ? FloatingActionButton(
               elevation: 7,
               onPressed: (){
                 Navigator.pushNamed(context, WarningScreen.routeName);
               },
-              backgroundColor: Colors.red.shade700,
+              backgroundColor: Colors.red.shade700.withOpacity(0.9),
               child: Stack(
                 children: [ IconButton(
                   icon: SvgPicture.asset(
                     'assets/icons/warning.svg',
-                    color: Colors.yellow,
+                    color: Colors.yellow.shade400,
                     width: getProportionateScreenWidth(50),
                   ),
                   onPressed: () {
@@ -126,14 +127,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                           color: Colors.black,
                         ),
                         Positioned(
-                          right: 4.0,
+                          right: dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent() > 9 ? 2.0 : 4.3,
                           top: 1,
                           child: Center(
                             child: Text(
                               dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent().toString(),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                  fontSize: 10.0,
+                                  fontSize: 9.0,
                                   color: Colors.white),
                             ),
                           ),

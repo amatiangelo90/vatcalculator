@@ -83,7 +83,7 @@ class EventCard extends StatelessWidget {
                               Row(
                                 children: [
                                   Text(
-                                    'Magazzino di riferimento: ',
+                                    'Magazzino: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),

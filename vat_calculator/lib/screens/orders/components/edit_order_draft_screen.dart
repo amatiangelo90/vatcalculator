@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -94,7 +96,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
           bottomSheet: Container(
             color: Colors.white,
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 text: 'Procedi',
                 press: () async {

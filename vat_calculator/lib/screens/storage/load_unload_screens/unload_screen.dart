@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +59,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
               ),
             ),
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 color: kCustomBordeaux,
                 text: 'Effettua Scarico',

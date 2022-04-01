@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,12 +30,12 @@ class SuppliersScreen extends StatelessWidget {
             dataBundleNotifier.currentListSuppliers.isNotEmpty ? Container(
               color: Colors.transparent,
               child: Padding(
-                padding: const EdgeInsets.all(13.0),
+                padding: EdgeInsets.all(Platform.isAndroid ? 13.0 : 20.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width - 30,
+                      width: MediaQuery.of(context).size.width - 40,
                       child: CupertinoButton(
                         color: kCustomGreenAccent,
                           child: const Text('Aggiungi nuovo fornitore'), onPressed: () {
@@ -74,7 +76,7 @@ class SuppliersScreen extends StatelessWidget {
               ),
             ],
           ),
-          elevation: 2,
+          elevation: 5,
         ),
         body: Container(
           color: Colors.white,
@@ -174,7 +176,7 @@ class SuppliersScreen extends StatelessWidget {
               children: [
                 Icon(
                   Icons.circle,
-                  color: Colors.greenAccent,
+                  color: kCustomGreenAccent,
                 ),
                 const Text(' Creati dall\'utente', style: TextStyle(color: kPrimaryColor),),
               ],
@@ -182,6 +184,9 @@ class SuppliersScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+    listout.add(
+        Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
     );
     dataBundleNotifier.currentListSuppliersDuplicated.forEach((supplier) {
       listout.add(
@@ -204,7 +209,7 @@ class SuppliersScreen extends StatelessWidget {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 5, 10, 2),
+            padding: const EdgeInsets.fromLTRB(2, 0, 10, 0),
             child: Container(
               padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
@@ -219,7 +224,7 @@ class SuppliersScreen extends StatelessWidget {
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0)),
-                  color: kPrimaryColor,
+                  color: Colors.white,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -231,7 +236,7 @@ class SuppliersScreen extends StatelessWidget {
                           SizedBox(width: getProportionateScreenWidth(5)),
                           SvgPicture.asset(
                             'assets/icons/supplier.svg',
-                            color: Colors.white,
+                            color: kPrimaryColor,
                             width: getProportionateScreenWidth(30),
                           ),
                           SizedBox(width: getProportionateScreenWidth(20)),
@@ -243,12 +248,12 @@ class SuppliersScreen extends StatelessWidget {
                                 supplier.nome,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: kPrimaryColor,
                                     fontSize: getProportionateScreenWidth(15)),
                               ),
                               Text('#' + supplier.extra,
                                   style: TextStyle(
-                                    color: kCustomOrange,
+                                    color: kCustomBordeaux,
                                     fontSize: getProportionateScreenWidth(12),
                                   )),
                             ],
@@ -263,6 +268,9 @@ class SuppliersScreen extends StatelessWidget {
             ),
           ),
         ),
+      );
+      listout.add(
+        Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
       );
     });
 

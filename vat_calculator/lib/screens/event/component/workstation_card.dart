@@ -76,7 +76,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                               Row(
                                 children: [
                                   Text(
-                                    'Magazzino di riferimento: ',
+                                    'Magazzino: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
                                     dataBundleNotifier.retrieveStorageById(widget.eventModel.fkStorageId),

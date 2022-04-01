@@ -905,11 +905,20 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       color: kCustomOrange,
                                     ),
                                     onPressed: () {
-                                      launch('https://api.whatsapp.com/send/?text=Ciao,'
-                                              '%0aassocia il tuo account alla '
-                                              'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
-                                              '' +
-                                          companyList[index].companyName);
+
+                                      if(canLaunch('https://api.whatsapp.com/send/?text=Ciao,'
+                                          '%0aassocia il tuo account alla '
+                                          'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                          '' +
+                                          companyList[index].companyName) != null){
+                                        launch('https://api.whatsapp.com/send/?text=Ciao,'
+                                            '%0aassocia il tuo account alla '
+                                            'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                            '' +
+                                            companyList[index].companyName);
+                                      }else{
+                                        print('rottooo');
+                                      }
                                     },
                                   ),
                                 ],

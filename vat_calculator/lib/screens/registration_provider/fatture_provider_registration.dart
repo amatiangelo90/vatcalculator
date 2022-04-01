@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +52,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              mainAxisAlignment: MainAxisAlignment.center,
              children: [
                Padding(
-                 padding: const EdgeInsets.all(8.0),
+                 padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                  child: SizedBox(
                    width: MediaQuery.of(context).size.width - 30,
                    child: CupertinoButton(

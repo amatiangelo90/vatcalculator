@@ -53,9 +53,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
 
         return Scaffold(
           key: _scaffoldKey,
-          backgroundColor: Colors.grey.shade900.withOpacity(0.9),
+          backgroundColor: kPrimaryColor,
           bottomSheet: Container(
-            color: Colors.black54.withOpacity(0.9),
+            color: kPrimaryColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -126,6 +126,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
             ),
           ),
           appBar: AppBar(
+            elevation: 5,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
@@ -137,10 +138,10 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
             title: Text('Crea nuova attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomGreenAccent,
+                color: Colors.white,
               ),
             ),
-            backgroundColor: Colors.grey.shade900.withOpacity(0.9),
+            backgroundColor: kPrimaryColor,
           ),
           body: Container(
             child: Padding(

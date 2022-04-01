@@ -65,7 +65,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   'Crea nuovo prodotto',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(19),
-                    color: kCustomGreenAccent,
+                    color: Colors.white,
                   ),
                 ),
               ],
@@ -128,7 +128,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               ),
                               borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                             ),
-                            child: Center(child: Text('litri', style: TextStyle(color: kPrimaryColor),)),
+                            child: Center(child: Text('litri',
+                              style: TextStyle(color: _litresUnitMeasure ?
+                              Colors.white : kPrimaryColor, fontWeight: FontWeight.bold),)),
                           ),
                         ),
                       ),
@@ -151,7 +153,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               ),
                               color: _kgUnitMeasure ? kCustomGreenAccent : Colors.white,
                             ),
-                            child: const Center(child: Text('kg', style: TextStyle(color:kPrimaryColor))),
+                            child: Center(child: Text('kg', style: TextStyle(color: _kgUnitMeasure ?
+                            Colors.white : kPrimaryColor, fontWeight: FontWeight.bold))),
                           ),
                         ),
                       ),
@@ -174,7 +177,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 color: Colors.grey,
                               ),
                             ),
-                            child: const Center(child: Text('Pacchi', style: TextStyle(color:kPrimaryColor))),
+                            child: Center(child: Text('Pacchi', style: TextStyle(color: _packagesUnitMeasure ?
+                            Colors.white : kPrimaryColor, fontWeight: FontWeight.bold))),
                           ),
                         ),
                       ),
@@ -198,7 +202,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               color: _otherUnitMeasure ? kCustomGreenAccent : Colors.white,
                               borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
                             ),
-                            child: Center(child: Text('Altro', style: const TextStyle(color:kPrimaryColor),)),
+                            child: Center(child: Text('Altro', style: TextStyle(color: _otherUnitMeasure ?
+                            Colors.white : kPrimaryColor, fontWeight: FontWeight.bold),)),
                           ),
                         ),
                       ),
@@ -231,7 +236,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     child: CupertinoTextField(
                       controller: _priceController,
                       textInputAction: TextInputAction.next,
-                      keyboardType: TextInputType.number,
+                      keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
                       clearButtonMode: OverlayVisibilityMode.editing,
                       autocorrect: false,
                     ),
@@ -270,7 +275,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               ),
                               borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                             ),
-                            child: Center(child: Text('4%', style: TextStyle(color: kPrimaryColor),)),
+                            child: Center(child: Text('4%', style: TextStyle(color: _selectedValue4 ? Colors.white : kPrimaryColor),)),
                           ),
                         ),
                       ),
@@ -293,7 +298,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               ),
                               color: _selectedValue5 ? kCustomGreenAccent : Colors.white,
                             ),
-                            child: Center(child: const Text('5%', style: TextStyle(color:kPrimaryColor))),
+                            child: Center(child: Text('5%', style: TextStyle(color: _selectedValue5 ? Colors.white : kPrimaryColor))),
                           ),
                         ),
                       ),
@@ -316,7 +321,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 color: Colors.grey,
                               ),
                             ),
-                            child: Center(child: Text('10%', style: TextStyle(color:kPrimaryColor))),
+                            child: Center(child: Text('10%', style: TextStyle(color: _selectedValue10 ? Colors.white : kPrimaryColor))),
                           ),
                         ),
                       ),
@@ -338,9 +343,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 color: Colors.grey,
                               ),
                               color: _selectedValue22 ? kCustomGreenAccent : Colors.white,
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
+                              borderRadius: const BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
                             ),
-                            child: Center(child: Text('22%', style: TextStyle(color:kPrimaryColor),)),
+                            child: Center(child: Text('22%', style: TextStyle(color: _selectedValue22 ? Colors.white : kPrimaryColor),)),
                           ),
                         ),
                       ),
@@ -390,7 +395,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             ),
           ),
           bottomSheet: Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+            padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
             child: DefaultButton(color: kCustomGreenAccent,
               press: () async {
                 if(_nameController.text.isEmpty || _nameController.text == ''){
@@ -401,7 +406,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
                 }else if(_priceController.text.isEmpty || _priceController.text == ''){
                   buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
-                }else if(double.tryParse(_priceController.text) == null){
+                }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
                   buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
                 } else{
 
@@ -412,7 +417,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       codice: const Uuid().v1(),
                       descrizione: _descriptionController.text,
                       iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
-                      prezzo_lordo: double.parse(_priceController.text),
+                      prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
                       unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                       fkSupplierId: widget.supplier.pkSupplierId
                   );

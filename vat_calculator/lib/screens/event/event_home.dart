@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,7 +35,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
             return Scaffold(
               backgroundColor: Colors.white,
               bottomSheet: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                 child: SizedBox(
                   width: getProportionateScreenWidth(400),
                   child: CupertinoButton(

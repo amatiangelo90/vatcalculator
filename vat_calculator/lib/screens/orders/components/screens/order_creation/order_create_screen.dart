@@ -36,7 +36,7 @@ class CreateOrderScreen extends StatelessWidget {
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black.withOpacity(0.9),
+              backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Column(
                 children: [
@@ -46,14 +46,14 @@ class CreateOrderScreen extends StatelessWidget {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(19),
-                          color: kCustomGreenAccent,
+                          color: Colors.white,
                         ),
                       ),
                       Text(
                         'Seleziona Fornitore',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(10),
-                          color: kCustomWhite,
+                          color: kCustomGreenAccent,
                         ),
                       ),
                     ],

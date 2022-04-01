@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,7 +54,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
           overlayWidget: const LoaderOverlayWidget(message: 'Invio ordine in corso...',),
           child: Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 text: 'Conferma ed Invia',
                 press: () async {

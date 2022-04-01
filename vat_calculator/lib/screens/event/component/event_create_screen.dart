@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -371,7 +373,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                 ),
               ),
               bottomSheet: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                 child: DefaultButton(
                   text: 'Crea Evento',
                   press: () async {
@@ -401,12 +403,6 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           backgroundColor: Colors.redAccent.withOpacity(0.8),
                           duration: Duration(milliseconds: 800),
                           content: const Text('Associare un magazzino all\'evento')));
-                    }else if(_champagneriePositionCounter == 0 && _barPositionCounter == 0){
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(
-                          backgroundColor: Colors.redAccent.withOpacity(0.8),
-                          duration: const Duration(milliseconds: 1000),
-                          content: const Text('Configurare almeno una fra Postazione Bar e Postazione Champagnerie')));
                     }else{
 
                       try{

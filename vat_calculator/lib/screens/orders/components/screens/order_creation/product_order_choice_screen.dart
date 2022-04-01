@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -30,7 +32,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
 
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(6.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 textColor: Colors.white,
                 text: 'Procedi',
@@ -65,7 +67,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     Navigator.pushNamed(context, CreateOrderScreen.routeName),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black.withOpacity(0.9),
+              backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Column(
                 children: [
@@ -73,7 +75,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     'Crea Ordine',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(18),
-                      color: kCustomGreenAccent,
+                      color: Colors.white,
                     ),
                   ),
                   Text(

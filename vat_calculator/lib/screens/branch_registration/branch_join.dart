@@ -53,6 +53,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
           color: kPrimaryColor,
           child: Scaffold(
             appBar: AppBar(
+              elevation: 5,
               leading: IconButton(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(
@@ -64,7 +65,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
               title: Text('Unisciti ad una attività',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(19),
-                  color: kCustomGreenAccent,
+                  color: Colors.white,
                 ),
               ),
               backgroundColor: kPrimaryColor,
@@ -96,7 +97,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                 textStyle: const TextStyle(color: Colors.black),
                                 pinTheme: PinTheme(
                                   inactiveColor: kPrimaryColor,
-                                  selectedColor: kPinaColor,
+                                  selectedColor: Colors.green,
                                   activeColor: Colors.white,
                                   shape: PinCodeFieldShape.box,
                                   borderRadius: BorderRadius.circular(4),

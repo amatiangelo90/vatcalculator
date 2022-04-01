@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -37,7 +38,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
           return Scaffold(
             backgroundColor: Colors.black,
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
             ),
             appBar: AppBar(
               leading: IconButton(

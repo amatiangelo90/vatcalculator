@@ -54,9 +54,9 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               children: [
                 Container(
                   child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 30,
+                      width: MediaQuery.of(context).size.width - 40,
                       child: CupertinoButton(
                           color: kCustomBlue,
                           child: const Text('Ricevuto', style: TextStyle(color: kCustomWhite),),

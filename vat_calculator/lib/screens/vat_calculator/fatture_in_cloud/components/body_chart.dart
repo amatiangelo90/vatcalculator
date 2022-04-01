@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -250,7 +251,7 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
 
     if (vatCredit >= (vatDebit + currentRecessedVat)) {
       listOut.add(Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: EdgeInsets.all(Platform.isAndroid ? 6.0 : 16),
         child: Card(
           shape: RoundedRectangleBorder(
             side: BorderSide(color: Colors.green.withOpacity(0.7), width: 1),
@@ -281,7 +282,7 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
       ));
     } else {
       listOut.add(Padding(
-        padding: const EdgeInsets.all(5.0),
+        padding: EdgeInsets.all(Platform.isAndroid ? 6.0 : 16),
         child: Card(
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.white12, width: 1),

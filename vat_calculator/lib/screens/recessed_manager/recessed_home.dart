@@ -51,15 +51,15 @@ class _RecessedScreenState extends State<RecessedScreen> {
                       Text(
                         'Gestione Incassi',
                         style: TextStyle(
-                          fontSize: getProportionateScreenWidth(16),
-                          color: kCustomGreenAccent,
+                          fontSize: getProportionateScreenWidth(17),
+                          color: Colors.white,
                         ),
                       ),
                       Text(
                         dataBundleNotifier.currentBranch.companyName,
                         style: TextStyle(
-                          fontSize: getProportionateScreenWidth(11),
-                          color: kCustomWhite,
+                          fontSize: getProportionateScreenWidth(12),
+                          color: kCustomEvidenziatoreGreen,
                         ),
                       ),
                     ],

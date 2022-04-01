@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/src/response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -244,7 +246,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
               ),
             ),
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: SizedBox(
                 width: getProportionateScreenWidth(400),
                 child: CupertinoButton(

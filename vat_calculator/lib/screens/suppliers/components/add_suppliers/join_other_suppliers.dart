@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -27,8 +29,8 @@ class _JoinSupplierAlreadyRegisteredScreenState extends State<JoinSupplierAlread
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
             backgroundColor: kCustomWhite,
-            bottomSheet: const Padding(
-              padding: EdgeInsets.all(8.0),
+            bottomSheet: Padding(
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
             ),
             appBar: AppBar(
               leading: IconButton(

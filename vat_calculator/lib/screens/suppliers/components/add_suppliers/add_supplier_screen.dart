@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -33,7 +35,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
       return Scaffold(
         key: _scaffoldKey,
         bottomSheet: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
           child: DefaultButton(
             color: Colors.green.shade700,
             text: 'Effettua Carico',
