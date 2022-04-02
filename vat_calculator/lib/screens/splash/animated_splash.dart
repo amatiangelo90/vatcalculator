@@ -81,7 +81,7 @@ class _SecondClassState extends State<SecondClass>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      backgroundColor: kPrimaryColor,
+      backgroundColor: Colors.white,
       body: Center(
         child: AnimatedOpacity(
           curve: Curves.fastLinearToSlowEaseIn,
@@ -93,7 +93,7 @@ class _SecondClassState extends State<SecondClass>
             height: _value ? 50 : 200,
             width: _value ? 50 : 200,
             decoration: BoxDecoration(
-              color: kCustomGreenAccent,
+              color: kPrimaryColor,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Stack(
@@ -103,7 +103,7 @@ class _SecondClassState extends State<SecondClass>
                     width: 650,
                     height: 450,
                     decoration: BoxDecoration(
-                        color: kCustomGreenAccent, shape: BoxShape.circle),
+                        color: kPrimaryColor, shape: BoxShape.circle),
                     child: AnimatedBuilder(
                       animation: scaleAnimation,
                       builder: (c, child) => Transform.scale(
@@ -111,7 +111,7 @@ class _SecondClassState extends State<SecondClass>
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: kCustomGreenAccent,
+                            color: kPrimaryColor,
                           ),
                         ),
                       ),

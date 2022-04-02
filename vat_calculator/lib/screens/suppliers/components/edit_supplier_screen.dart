@@ -153,7 +153,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 Padding(
                   padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 30,
+                    width: MediaQuery.of(context).size.width - 40,
                     child: DefaultButton(
                       text: 'Modifica Fornitore',
                         color: Colors.orange.shade700.withOpacity(0.8),

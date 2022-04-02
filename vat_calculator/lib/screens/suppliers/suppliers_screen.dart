@@ -71,7 +71,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Pagina gestione fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: kCustomGreenAccent,
+                  color: Colors.green,
                 ),
               ),
             ],
@@ -216,8 +216,8 @@ class SuppliersScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 color: dataBundleNotifier.userDetailsList[0].id.toString() ==
                         supplier.id
-                    ? Colors.greenAccent
-                    :  kCustomGreenAccent,
+                    ? kCustomGreenAccent
+                    :  Colors.blueAccent,
               ),
               child: Container(
                 decoration: const BoxDecoration(

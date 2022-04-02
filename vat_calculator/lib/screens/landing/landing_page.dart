@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
+import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/screens/landing/components/landing_body.dart';
 
 class LandingScreen extends StatelessWidget {
@@ -17,7 +18,7 @@ class LandingScreen extends StatelessWidget {
       overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati...',),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.black,
+          backgroundColor: kPrimaryColor,
           leading: const SizedBox(),
         ),
         body: LandingBody(email: email,),

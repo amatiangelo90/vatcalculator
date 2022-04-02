@@ -231,7 +231,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                   date: DateTime.now()
                                                       .millisecondsSinceEpoch,
                                                   description:
-                                                  'Ha registrato spesa per Daniele ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
+                                                  'Ha registrato spesa ${expenceController.text} € con casuale [${casualeExpenceController.text}] per attività ${dataBundleNotifier.currentBranch.companyName}',
                                                   fkBranchId: dataBundleNotifier
                                                       .currentBranch.pkBranchId,
                                                   user: dataBundleNotifier
@@ -254,7 +254,7 @@ class _ExpenceCardState extends State<ExpenceCard> {
                                                   backgroundColor: Colors.greenAccent
                                                       .withOpacity(0.8),
                                                   content: const Text(
-                                                    'Spesa per Daniele registrata',
+                                                    'Spesa registrata',
                                                     style: TextStyle(
                                                         fontFamily: 'LoraFont',
                                                         color: Colors.white),

@@ -413,6 +413,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
           elevation: 5,
           iconTheme: const IconThemeData(color: kCustomWhite),
           actions: [
+            dataBundleNotifier.currentBranch == null ? SizedBox(height: 0,) :
             GestureDetector(
               onTap: () {
                 buildStorageChooserDialog(context, dataBundleNotifier);
@@ -458,7 +459,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
           centerTitle: true,
           title: dataBundleNotifier.currentStorage == null ? Text('Area Magazzini' , style: TextStyle(
             fontSize: getProportionateScreenWidth(17),
-            color: kCustomGreenAccent,
+            color: Colors.white
           ),) : Column(
             children: [
               Text(

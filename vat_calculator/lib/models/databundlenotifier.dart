@@ -1195,7 +1195,6 @@ class DataBundleNotifier extends ChangeNotifier {
       retrieveListaFatture = await iCloudClient.retrieveListaFatture(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
       retrieveListaNDC = await iCloudClient.retrieveListaNdc( currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
 
-      print('RISAA');
       fattureInCloudCompanyInfo = await iCloudClient.performRichiestaGetCompanyInfo(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser,);
 
       retrieveListaFattureBis.addAll(retrieveListaFatture);
@@ -1637,8 +1636,6 @@ class DataBundleNotifier extends ChangeNotifier {
         }
       });
     }
-
-    print('There are orders or events pending: ' + result.toString());
     return result;
   }
 

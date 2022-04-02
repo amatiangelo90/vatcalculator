@@ -42,7 +42,7 @@ class _StorageScreenState extends State<StorageScreen> {
       builder: (context, dataBundleNotifier, child) {
         suppliersList.clear();
         return Scaffold(
-          backgroundColor: kPrimaryColor,
+          backgroundColor: dataBundleNotifier.currentBranch == null ? Colors.white : kPrimaryColor,
           body: dataBundleNotifier.currentBranch == null
               ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
