@@ -60,7 +60,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                 Padding(
                   padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                   child: SizedBox(
-                    width: getProportionateScreenWidth(350),
+                    width: getProportionateScreenWidth(330),
                     child: CupertinoButton(
                       color: kCustomGreenAccent,
                       onPressed: () async {
@@ -158,7 +158,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
             title: Column(
               children: [
                 Text(dataBundleNotifier.currentStorage.name, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
-                Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(10)),),
+                Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
               ],
             ),
           ),
@@ -253,7 +253,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
         Row(
           children: [
             const SizedBox(width: 11,),
-            Text('   Nome', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(10))),
+            Text('   Nome', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold)),
           ],
         ),
         Padding(
@@ -272,7 +272,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
         Row(
           children: [
             const SizedBox(width: 11,),
-            Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(10))),
+            Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold)),
           ],
         ),
         Padding(
@@ -294,7 +294,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                   child: Container(
                     height: MediaQuery.of(context).size.height *0.04,
                     decoration: BoxDecoration(
-                      color: _litresUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
+                      color: _litresUnitMeasure ? kCustomGreenAccent : Colors.white,
                       border: Border.all(
                         width: 0.2,
                         color: Colors.grey,
@@ -322,7 +322,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                         width: 0.1,
                         color: kBeigeColor,
                       ),
-                      color: _kgUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
+                      color: _kgUnitMeasure ? kCustomGreenAccent : Colors.white,
                     ),
                     child: Center(child: Text('kg', style: TextStyle(color: _kgUnitMeasure ? Colors.white : kPrimaryColor,))),
                   ),
@@ -341,7 +341,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                   child: Container(
                     height: MediaQuery.of(context).size.height *0.04,
                     decoration: BoxDecoration(
-                      color: _packagesUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
+                      color: _packagesUnitMeasure ? kCustomGreenAccent : Colors.white,
                       border: Border.all(
                         width: 0.1,
                         color: kBeigeColor,
@@ -368,7 +368,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                         width: 0.1,
                         color: kBeigeColor,
                       ),
-                      color: _otherUnitMeasure ? Colors.lightGreen.shade700.withOpacity(0.6) : Colors.white,
+                      color: _otherUnitMeasure ? kCustomGreenAccent : Colors.white,
                       borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
                     ),
                     child: Center(child: Text('Altro', style: TextStyle(color: _otherUnitMeasure ? Colors.white : kPrimaryColor,),)),
@@ -394,7 +394,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
         Row(
           children: [
             const SizedBox(width: 11,),
-            Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(10))),
+            Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold)),
           ],
         ),
         Padding(
@@ -404,7 +404,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
             child: CupertinoTextField(
               controller: _priceController,
               textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.number,
+              keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
               clearButtonMode: OverlayVisibilityMode.editing,
               autocorrect: false,
             ),

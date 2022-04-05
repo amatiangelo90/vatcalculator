@@ -24,12 +24,12 @@ class FileSaveHelper {
         File(Platform.isWindows ? '$path\\$fileName' : '$path/$fileName');
     await file.writeAsBytes(bytes, flush: true);
     if (Platform.isAndroid || Platform.isIOS) {
+
       final Map<String, String> argument = <String, String>{
         'file_path': '$path/$fileName'
       };
       try {
-        final Future<Map<String, String>> result =
-            _platformCall.invokeMethod('viewPdf', argument);
+        final Future<Map<String, String>> result = _platformCall.invokeMethod('viewPdf', argument);
       } catch (e) {
         throw Exception(e);
       }

@@ -1,4 +1,5 @@
 
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/email_sender/emailservice.dart';
@@ -24,6 +25,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/vat_data.dart';
 import '../client/fattureICloud/model/response_info_company.dart';
 import '../client/firebase_service/firebase_messaging_service_impl.dart';
+import '../client/vatservice/model/expence_event_model.dart';
 import '../constants.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
@@ -1644,9 +1646,7 @@ class DataBundleNotifier extends ChangeNotifier {
     List<OrderModel> list = [];
     if(currentUnderWorkingOrdersList.isNotEmpty){
       currentUnderWorkingOrdersList.forEach((orderItem) {
-        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day < DateTime.now().day &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).isBefore(DateTime.now())){
           list.add(orderItem);
         }
       });
@@ -1659,9 +1659,7 @@ class DataBundleNotifier extends ChangeNotifier {
     List<EventModel> list = [];
     if(eventModelList.isNotEmpty){
       eventModelList.forEach((eventItem) {
-        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day < DateTime.now().day &&
-            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == DateTime.now().month &&
-            DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == DateTime.now().year && eventItem.closed == 'N'){
+        if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).isBefore(DateTime.now()) && eventItem.closed == 'N'){
           list.add(eventItem);
         }
       });
@@ -1673,6 +1671,37 @@ class DataBundleNotifier extends ChangeNotifier {
   void setCurrentBossTokenList(List<String> tokenList) {
     currentBossTokenList.clear();
     currentBossTokenList.addAll(tokenList);
+    notifyListeners();
+  }
+
+  List<ExpenceEventModel> listExpenceEvent = [];
+
+  void setCurrentExpenceEventList(List<ExpenceEventModel> list){
+    listExpenceEvent.clear();
+    listExpenceEvent.addAll(list);
+    notifyListeners();
+  }
+
+  void addExpenceEventItem(ExpenceEventModel expenceEventModel) {
+    listExpenceEvent.add(expenceEventModel);
+    notifyListeners();
+  }
+
+  void updateExpenceEventItem(ExpenceEventModel expenceEventModel) {
+    listExpenceEvent.forEach((expenceEvent) {
+      if(expenceEventModel.pkEventExpenceId == expenceEvent.pkEventExpenceId){
+        expenceEvent.amount = expenceEventModel.amount;
+        expenceEvent.description = expenceEventModel.description;
+        expenceEvent.cost = expenceEventModel.cost;
+      }
+    });
+    notifyListeners();
+  }
+
+  void removeExpenceEventItem(ExpenceEventModel expenceEventModel) {
+    listExpenceEvent.removeWhere((expt) =>
+      expt.pkEventExpenceId == expenceEventModel.pkEventExpenceId
+    );
     notifyListeners();
   }
 

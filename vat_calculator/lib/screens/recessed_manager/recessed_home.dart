@@ -254,7 +254,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
             bottomSheet: Container(
               color: kPrimaryColor,
               child: SizedBox(
-                height: 50,
+                height: 70,
                 child: Table(
                   border: TableBorder.all(
                       color: Colors.grey,
@@ -270,27 +270,27 @@ class _RecessedScreenState extends State<RecessedScreen> {
                         child: Text(getTotalCashFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: Colors.white),),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(10), 0, 122),
                         child: Text(getTotalAmountFFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: Colors.white),),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(10), 0, 50),child: Text(getTotalAmountPosFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: Colors.white),),
                       ),
                       Padding(
                         padding: EdgeInsets.fromLTRB(0, getProportionateScreenWidth(10), 0, 50),
                         child: Text(getTotalAmountExtraFromCurrentListRecessed(dataBundleNotifier
                             .getRecessedListByRangeDate(
                             dataBundleNotifier.currentDateTimeRangeVatService.start,
-                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
+                            dataBundleNotifier.currentDateTimeRangeVatService.end), dataBundleNotifier.currentCashRegisterModel), textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenWidth(16),fontWeight: FontWeight.bold, color: Colors.white),),
                       ),
                     ]),
                   ],

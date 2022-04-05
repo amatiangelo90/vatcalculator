@@ -11,9 +11,9 @@ import 'helper/save_file_mobile.dart';
 class PdfService{
 
   Future<void> generatePdfOrderAndOpenOnDevide(
-
       OrderModel order,
       List<ProductOrderAmountModel> productList, BranchModel currentBranch) async {
+
 
     final PdfDocument document = PdfDocument();
     final PdfPage page = document.pages.add();

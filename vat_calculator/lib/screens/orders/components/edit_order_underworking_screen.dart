@@ -121,6 +121,10 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
                                 dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
 
+                                dataBundleNotifier.getclientMessagingFirebase().sendNotificationToUsersByTokens(dataBundleNotifier.currentBossTokenList,
+                                    '${dataBundleNotifier.userDetailsList[0].firstName} ha ricevuto l\'ordine di ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)} '
+                                        'per ${dataBundleNotifier.currentBranch.companyName}.',
+                                    'Ordine ${widget.orderModel.code} Ricevuto',DateTime.now().millisecondsSinceEpoch.toString());
                                 Navigator.pushNamed(context, HomeScreenMain.routeName);
                                 dataBundleNotifier.onItemTapped(2);
 

@@ -78,6 +78,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           );
         } else {
           return RefreshIndicator(
+            color: kPrimaryColor,
             onRefresh: () {
               dataBundleNotifier
                   .setCurrentBranch(dataBundleNotifier.currentBranch);

@@ -116,7 +116,7 @@ class WarningScreen extends StatelessWidget {
       SizedBox(
         width: getProportionateScreenWidth(500),
         child: Container(color: kCustomBordeaux, child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(1.0),
           child: Center(child: Text('EVENTI DA CHIUDERE', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white),)),
         )),
       ),
@@ -137,8 +137,9 @@ class WarningScreen extends StatelessWidget {
     List<Widget> orderListWidget = [
       SizedBox(
         width: getProportionateScreenWidth(500),
+
         child: Container(color: kCustomBordeaux, child: Padding(
-          padding: const EdgeInsets.all(18.0),
+          padding: const EdgeInsets.all(1.0),
           child: Center(child: Text('ORDINI DA COMPLETARE', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white),)),
         )),
       ),

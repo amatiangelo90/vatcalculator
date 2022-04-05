@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
+import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'model/action_model.dart';
 import 'model/branch_model.dart';
@@ -71,7 +72,6 @@ abstract class VatServiceInterface{
   Future<List<EventModel>> retrieveEventsListByBranchId(BranchModel currentBranch);
   Future<List<EventModel>> retrieveEventsClosedListByBranchId(BranchModel currentBranch);
   Future updateWorkstationProductModel(List<WorkstationProductModel> workStationProdModelList, ActionModel actionModel);
-
   Future<Response> createCashRegister(CashRegisterModel cashRegisterModel);
   Future<Response> updateCashRegister(CashRegisterModel cashRegisterModel);
   Future<Response> deleteCashRegister(CashRegisterModel cashRegisterModel);
@@ -79,4 +79,10 @@ abstract class VatServiceInterface{
   Future<Response> removeProductFromWorkstation(WorkstationProductModel prodModelWorkstation);
   Future<Response> updateEventModel(EventModel event);
   Future<List<String>> retrieveTokenList(BranchModel branchModel);
+
+  Future<List<ExpenceEventModel>> retrieveEventExpencesByEventId(EventModel eventModel);
+  Future<Response> updateEventExpenceModel(ExpenceEventModel expenceEventModel);
+  Future<Response> createEventExpenceModel(ExpenceEventModel expenceEventModel);
+  Future<Response> deleteEventExpenceModel(ExpenceEventModel expenceEventModel);
+
 }

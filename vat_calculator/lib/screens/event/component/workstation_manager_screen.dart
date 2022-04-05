@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +15,6 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
-
 import '../../../client/vatservice/client_vatservice.dart';
 import '../../../client/vatservice/model/storage_product_model.dart';
 import '../../../constants.dart';
@@ -21,7 +22,12 @@ import '../../../size_config.dart';
 import 'event_manager_screen.dart';
 
 class WorkstationManagerScreen extends StatefulWidget {
-  const WorkstationManagerScreen({Key key, this.eventModel, this.workstationModel, this.workStationProdModelList, this.callbackFuntion, this.callBackFunctionEventManager}) : super(key: key);
+  const WorkstationManagerScreen({Key key,
+    this.eventModel,
+    this.workstationModel,
+    this.workStationProdModelList,
+    this.callbackFuntion,
+    this.callBackFunctionEventManager}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
@@ -43,8 +49,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   @override
   Widget build(BuildContext context) {
 
-    TextEditingController paxController = TextEditingController();
-
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
         return DefaultTabController(
@@ -59,15 +63,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 tabs: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('CARICO', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    child: Text('CARICO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text('SCARICO', style: TextStyle(color: kCustomOrange, fontWeight: FontWeight.bold),),
+                    child: Text('SCARICO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset('assets/icons/Settings.svg', color:kCustomOrange, height: getProportionateScreenHeight(25),)
+                    child: SvgPicture.asset('assets/icons/Settings.svg', color:Colors.white, height: getProportionateScreenHeight(25),)
                   ),
                 ],
               ),
@@ -87,7 +91,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
                   Text(
                     'Tipo workstation: ' + widget.workstationModel.type,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(8), color: kCustomGreenAccent, fontWeight: FontWeight.bold),),
+                    style: TextStyle(fontSize: getProportionateScreenHeight(10), color: Colors.green, fontWeight: FontWeight.bold),),
                 ],
               ),
             ),
@@ -117,7 +121,13 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       ) : SizedBox(width: 0,),
     ];
     workStationProdModelList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', '').replaceAll('.0', ''));
+      TextEditingController controller;
+      bool isError = false;
+      if(element.consumed == 0){
+        controller = TextEditingController();
+      }else{
+        controller = TextEditingController(text: element.consumed.toStringAsFixed(2));
+      }
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,9 +147,9 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 Row(
                   children: [
                     Text(
-                      '   ' + element.unitMeasure,
+                      '  ' + element.unitMeasure,
                       style:
-                      TextStyle(fontSize: getProportionateScreenWidth(8)),
+                      TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.green),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -172,21 +182,28 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   ),
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints.loose(Size(
-                      getProportionateScreenWidth(70),
-                      getProportionateScreenWidth(60))),
+                  constraints: BoxConstraints.loose(
+                      Size(getProportionateScreenWidth(70),
+                      getProportionateScreenWidth(60),),
+
+                  ),
                   child: CupertinoTextField(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0),),
+                      border: Border.all(color: isError ? Colors.red : Colors.transparent),
+                      color: Colors.white
+                    ),
                     controller: controller,
-                    onChanged: (text) {
-                      if (double.tryParse(text) != null) {
-                        element.consumed = double.parse(text);
-                      } else {
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                    onSubmitted: (text){
+                      if(double.tryParse(text.replaceAll(',', '.')) != null){
+                        element.consumed = double.parse(text.replaceAll(',', '.'));
+                      }else{
+                        controller.clear();
+                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
                           backgroundColor: kPinaColor,
-                          duration: const Duration(milliseconds: 1600),
+                          duration: Duration(milliseconds: 600),
                           content: Text(
-                              'Immettere un valore numerico corretto per ' +
-                                  element.productName),
+                              'Immettere un valore numerico corretto per effettuare il carico'),
                         ));
                       }
                     },
@@ -205,7 +222,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         backgroundColor: kPinaColor,
                         duration: Duration(milliseconds: 2000),
                         content: Text(
-                            'Non puoi sforare la quantità di carico di [${element.refillStock} ${element.unitMeasure}] configurata per ${element.productName}'),
+                            'Non puoi sforare la quantità di carico di [${element.refillStock.toStringAsFixed(2)} ${element.unitMeasure}] configurata per ${element.productName}'),
                       ));
                     }else{
                       setState(() {
@@ -213,8 +230,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       });
                     }
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  child: const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Icon(FontAwesomeIcons.plus,
                         color: Colors.lightGreenAccent),
                   ),
@@ -224,6 +241,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           ],
         ),
       );
+      rows.add(Divider(color: Colors.grey.withOpacity(0.2), indent: 5, endIndent: 10, height: 10,));
     });
     rows.add(Divider(height: getProportionateScreenHeight(100), indent: 30, endIndent: 30,));
 
@@ -244,64 +262,67 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 SizedBox(width: 0,),
                 Container(
                   color: kPrimaryColor,
-                  child: DefaultButton(
-                    text: 'Effettua Scarico',
-                    press: () async {
-                      if(widget.eventModel.closed == 'Y'){
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          duration: Duration(milliseconds: 3000),
-                          content: Text(
-                              'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi effettuare lo scarico.'),
-                        ));
-                      }else{
-                        try{
-                          bool isValid = true;
-                          for(WorkstationProductModel workProd in widget.workStationProdModelList){
-                            if(workProd.consumed > workProd.refillStock){
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                backgroundColor: kPinaColor,
-                                duration: Duration(milliseconds: 3000),
-                                content: Text(
-                                    'Impossibile effettuare scarico di ${workProd.consumed} ${workProd.unitMeasure} per ${workProd.productName}. La quantità selezionata eccede quella di carico [${workProd.refillStock} ${workProd.unitMeasure}] configurata '),
-                              ));
+                  child: Padding(
+                    padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 15.0),
+                    child: DefaultButton(
+                      text: 'Effettua Scarico',
+                      press: () async {
+                        if(widget.eventModel.closed == 'Y'){
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
+                            duration: Duration(milliseconds: 3000),
+                            content: Text(
+                                'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi effettuare lo scarico.'),
+                          ));
+                        }else{
+                          try{
+                            bool isValid = true;
+                            for(WorkstationProductModel workProd in widget.workStationProdModelList){
+                              if(workProd.consumed > workProd.refillStock){
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  backgroundColor: kPinaColor,
+                                  duration: Duration(milliseconds: 5000),
+                                  content: Text(
+                                      'Impossibile effettuare scarico di ${workProd.consumed.toStringAsFixed(2)} ${workProd.unitMeasure} per ${workProd.productName}. La quantità selezionata eccede quella di carico [${workProd.refillStock.toStringAsFixed(2)} ${workProd.unitMeasure}] configurata '),
+                                ));
 
-                              isValid = false;
-                              break;
+                                isValid = false;
+                                break;
+                              }
                             }
-                          }
-                          if(isValid){
-                            await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                                widget.workStationProdModelList,
-                                ActionModel(
-                                    date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                    type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
-                                )
-                            );
-                            widget.callbackFuntion();
-                            widget.callBackFunctionEventManager();
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                              backgroundColor: Colors.green.withOpacity(0.8),
-                              duration: Duration(milliseconds: 600),
+                            if(isValid){
+                              await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
+                                  widget.workStationProdModelList,
+                                  ActionModel(
+                                      date: DateTime.now().millisecondsSinceEpoch,
+                                      description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
+                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                      type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
+                                  )
+                              );
+                              widget.callbackFuntion();
+                              widget.callBackFunctionEventManager();
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                backgroundColor: Colors.green.withOpacity(0.8),
+                                duration: Duration(milliseconds: 600),
+                                content: Text(
+                                    'Scarico per ${widget.workstationModel.name} registrato'),
+                              ));
+                            }
+                          }catch(e){
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              backgroundColor: kPinaColor,
                               content: Text(
-                                  'Scarico per ${widget.workstationModel.name} registrato'),
+                                  'Errore durante operazione di scarico bar ' +
+                                      e),
                             ));
                           }
-                        }catch(e){
-                          Scaffold.of(context).showSnackBar(SnackBar(
-                            backgroundColor: kPinaColor,
-                            content: Text(
-                                'Errore durante operazione di scarico bar ' +
-                                    e),
-                          ));
                         }
-                      }
 
-                    },
-                    color: kCustomBordeaux,
+                      },
+                      color: kCustomBordeaux,
+                    ),
                   ),
                 ),
               ],
@@ -313,7 +334,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> rows = [
-
       widget.eventModel.closed == 'Y' ? Container(
         child: SizedBox(
           width: getProportionateScreenWidth(500),
@@ -462,7 +482,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
         child: SizedBox(
           width: getProportionateScreenWidth(350),
           child: TextButton(
-            
             style: TextButton.styleFrom(
               backgroundColor: Colors.pink,
             ),
@@ -570,7 +589,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       )
                   );
                 }
-
             },
           ),
         ),
@@ -578,7 +596,12 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     ];
 
     workStationProdModelList.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.refillStock.toStringAsFixed(2).replaceAll('.00', ''));
+      TextEditingController controller;
+      if(element.refillStock == 0){
+        controller = TextEditingController();
+      }else{
+        controller = TextEditingController(text: element.refillStock.toStringAsFixed(2));
+      }
       rows.add(
         Padding(
           padding: const EdgeInsets.fromLTRB(5, 1, 8, 1),
@@ -587,7 +610,13 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             children: [
               GestureDetector(
                 onTap: (){
-                  TextEditingController amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''));
+                  TextEditingController amountController;
+                  if(element.amountHunderd != 0){
+                    amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2));
+                  }else{
+                    amountController = TextEditingController();
+                  }
+
                   showDialog(
                       context: context,
                       builder: (_) => AlertDialog(
@@ -620,7 +649,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                       child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
 
                                         if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
-
                                           try{
                                             double currentValue = double.parse(amountController.text.replaceAll(",", "."));
                                             dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
@@ -644,7 +672,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                         } else {
                                           _scaffoldKey.currentState.showSnackBar(const SnackBar(
                                             backgroundColor: kPinaColor,
-                                            duration: Duration(milliseconds: 600),
+                                            duration: Duration(milliseconds: 1600),
                                             content: Text(
                                                 'Immettere un valore numerico corretto per effettuare il carico'),
                                           ));
@@ -677,12 +705,12 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       children: [
                         Text(
                           element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''),
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(10), color: kCustomGreenAccent),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(11), color: Colors.green),
                         ),
                         Text(
                           ' ' + element.unitMeasure + ' x 100/pax' ,
                           style:
-                          TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.white),
+                          TextStyle(fontSize: getProportionateScreenWidth(11), color: Colors.white),
                         ),
                       ],
                     ),
@@ -727,6 +755,9 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       textInputAction: TextInputAction.next,
                       keyboardType: const TextInputType.numberWithOptions(
                           decimal: true, signed: true),
+                      onChanged: (value){
+                        element.refillStock = double.parse(value.replaceAll(',', '.'));
+                      },
                       clearButtonMode: OverlayVisibilityMode.never,
                       textAlign: TextAlign.center,
                       autocorrect: false,
@@ -750,7 +781,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           ),
         ),
       );
-      rows.add(Divider(color: Colors.black.withOpacity(0.3), height: 2, indent: 7,));
+      rows.add(Divider(color: Colors.grey.withOpacity(0.3), height: 12, indent: 7,));
     });
 
     rows.add(Divider(color: Colors.black.withOpacity(0.3), height: 132, indent: 7,));
@@ -772,7 +803,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             children: [
               SizedBox(width: 0,),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 15.0),
                 child: DefaultButton(
 
                   text: 'Effettua Carico',
@@ -787,24 +818,46 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     }else{
                       try{
 
-                        await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                            widget.workStationProdModelList,
-                            ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
-                            )
-                        );
-                        widget.callbackFuntion();
-                        widget.callBackFunctionEventManager();
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          backgroundColor: Colors.green.withOpacity(0.8),
-                          duration: Duration(milliseconds: 600),
-                          content: Text(
-                              'Carico per ${widget.workstationModel.name} effettuato'),
-                        ));
+                        bool isEverthingOk = true;
+                        String productWrong = '';
+                        widget.workStationProdModelList.forEach((prodModel) {
+                          if(double.tryParse(prodModel.refillStock.toString()) != null){
+                            print('Cocomero');
+                          }else{
+                            isEverthingOk = false;
+                            productWrong = prodModel.productName;
+                          }
+                        });
+
+                        if(isEverthingOk){
+                          await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
+                              widget.workStationProdModelList,
+                              ActionModel(
+                                  date: DateTime.now().millisecondsSinceEpoch,
+                                  description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
+                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                  type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
+                              )
+                          );
+
+                          widget.callbackFuntion();
+                          widget.callBackFunctionEventManager();
+
+                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            backgroundColor: Colors.green.withOpacity(0.8),
+                            duration: Duration(milliseconds: 600),
+                            content: Text(
+                                'Carico per ${widget.workstationModel.name} effettuato'),
+                          ));
+                        }else{
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
+                            content: Text(
+                                'Immettere un valore numerico corretto per $productWrong'),
+                          ));
+                        }
+
 
                       }catch(e){
                         Scaffold.of(context).showSnackBar(SnackBar(

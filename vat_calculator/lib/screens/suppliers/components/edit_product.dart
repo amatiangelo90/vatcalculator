@@ -83,8 +83,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   Text(
                     'Modifica prodotto',
                     style: TextStyle(
-                      fontSize: getProportionateScreenWidth(15),
-                      color: kCustomWhite,
+                      fontSize: getProportionateScreenWidth(17),
+                      color: Colors.white,
                     ),
                   ),
                 ],
@@ -142,14 +142,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             child: Container(
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
-                                color: _litresUnitMeasure ? kBeigeColor : Colors.white,
+                                color: _litresUnitMeasure ? kCustomGreenAccent : Colors.white,
                                 border: Border.all(
-                                  width: 0.2,
+                                  width: 0.1,
                                   color: Colors.grey,
                                 ),
                                 borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                               ),
-                              child: Center(child: Text('litri', style: TextStyle(color: kPrimaryColor),)),
+                              child: Center(child: Text('litri', style: TextStyle(color: _litresUnitMeasure ? Colors.white : kPrimaryColor),)),
                             ),
                           ),
                         ),
@@ -167,12 +167,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  width: 0.5,
-                                  color: kBeigeColor,
+                                  width: 0.1,
+                                  color: Colors.grey,
                                 ),
-                                color: _kgUnitMeasure ? kBeigeColor : Colors.white,
+                                color: _kgUnitMeasure ? kCustomGreenAccent : Colors.white,
                               ),
-                              child: const Center(child: Text('kg', style: TextStyle(color:kPrimaryColor))),
+                              child: Center(child: Text('kg', style: TextStyle(color: _kgUnitMeasure ? Colors.white : kPrimaryColor))),
                             ),
                           ),
                         ),
@@ -189,13 +189,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             child: Container(
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
-                                color: _packagesUnitMeasure ? kBeigeColor : Colors.white,
+                                color: _packagesUnitMeasure ? kCustomGreenAccent : Colors.white,
                                 border: Border.all(
-                                  width: 0.5,
-                                  color: kBeigeColor,
+                                  width: 0.1,
+                                  color: Colors.grey,
                                 ),
                               ),
-                              child: const Center(child: Text('Pacchi', style: TextStyle(color:kPrimaryColor))),
+                              child: Center(child: Text('Pacchi', style: TextStyle(color:_packagesUnitMeasure ? Colors.white : kPrimaryColor))),
                             ),
                           ),
                         ),
@@ -214,13 +214,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  width: 0.5,
-                                  color: kBeigeColor,
+                                  width: 0.1,
+                                  color: Colors.grey,
                                 ),
-                                color: _otherUnitMeasure ? kBeigeColor : Colors.white,
+                                color: _otherUnitMeasure ? kCustomGreenAccent : Colors.white,
                                 borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
                               ),
-                              child: Center(child: Text('Altro', style: const TextStyle(color:kPrimaryColor),)),
+                              child: Center(child: Text('Altro', style: TextStyle(color:_otherUnitMeasure ? Colors.white : kPrimaryColor),)),
                             ),
                           ),
                         ),
@@ -252,7 +252,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       child: CupertinoTextField(
                         controller: _priceController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.number,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
                         clearButtonMode: OverlayVisibilityMode.editing,
                         autocorrect: false,
                       ),
@@ -284,14 +284,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             child: Container(
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
-                                color: _selectedValue4 ? kBeigeColor : Colors.white,
+                                color: _selectedValue4 ? kCustomGreenAccent : Colors.white,
                                 border: Border.all(
                                   width: 0.2,
                                   color: Colors.grey,
                                 ),
                                 borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                               ),
-                              child: Center(child: Text('4%', style: TextStyle(color: kPrimaryColor),)),
+                              child: Center(child: Text('4%', style: TextStyle(color: _selectedValue4 ? Colors.white : kPrimaryColor),)),
                             ),
                           ),
                         ),
@@ -309,12 +309,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  width: 0.5,
-                                  color: kBeigeColor,
+                                  width: 0.1,
+                                  color: Colors.grey,
                                 ),
-                                color: _selectedValue5 ? kBeigeColor : Colors.white,
+                                color: _selectedValue5 ? kCustomGreenAccent : Colors.white,
                               ),
-                              child: Center(child: const Text('5%', style: TextStyle(color:kPrimaryColor))),
+                              child: Center(child: Text('5%', style: TextStyle(color:_selectedValue5 ? Colors.white : kPrimaryColor))),
                             ),
                           ),
                         ),
@@ -331,13 +331,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             child: Container(
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
-                                color: _selectedValue10 ? kBeigeColor : Colors.white,
+                                color: _selectedValue10 ? kCustomGreenAccent : Colors.white,
                                 border: Border.all(
-                                  width: 0.5,
-                                  color: kBeigeColor,
+                                  width: 0.1,
+                                  color: Colors.grey,
                                 ),
                               ),
-                              child: Center(child: Text('10%', style: TextStyle(color:kPrimaryColor))),
+                              child: Center(child: Text('10%', style: TextStyle(color:_selectedValue10 ? Colors.white : kPrimaryColor))),
                             ),
                           ),
                         ),
@@ -355,13 +355,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               height: MediaQuery.of(context).size.height *0.05,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  width: 0.5,
-                                  color: kBeigeColor,
+                                  width: 0.1,
+                                  color: Colors.grey,
                                 ),
-                                color: _selectedValue22 ? kBeigeColor : Colors.white,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
+                                color: _selectedValue22 ? kCustomGreenAccent : Colors.white,
+                                borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: const Radius.circular(3)),
                               ),
-                              child: Center(child: Text('22%', style: TextStyle(color:kPrimaryColor),)),
+                              child: Center(child: Text('22%', style: TextStyle(color:_selectedValue22 ? Colors.white : kPrimaryColor),)),
                             ),
                           ),
                         ),
@@ -419,7 +419,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
                         }else if(_priceController.text.isEmpty || _priceController.text == ''){
                           buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
-                        }else if(double.tryParse(_priceController.text) == null){
+                        }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
                           buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
                         } else{
 
@@ -430,7 +430,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             codice: const Uuid().v1(),
                             descrizione: _descriptionController.text,
                             iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
-                            prezzo_lordo: double.parse(_priceController.text),
+                            prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
                             unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                           );
 

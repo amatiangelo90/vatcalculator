@@ -216,16 +216,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                   child: CupertinoTextField(
                     controller: controller,
                     onChanged: (text) {
-                      if (double.tryParse(text) != null) {
-                        element.stock = double.parse(text);
-                      } else {
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          content: Text(
-                              'Immettere un valore numerico corretto per ' +
-                                  element.productName),
-                        ));
-                      }
+                        element.stock = double.parse(text.replaceAll(',', '.'));
                     },
                     textInputAction: TextInputAction.next,
                     keyboardType: const TextInputType.numberWithOptions(

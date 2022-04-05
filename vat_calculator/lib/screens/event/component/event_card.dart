@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import '../../../client/vatservice/model/expence_event_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'event_manager_screen.dart';
@@ -135,6 +136,9 @@ class EventCard extends StatelessWidget {
                       color: kCustomOrange,
                       onPressed: () async {
                         List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
+                        List<ExpenceEventModel> listExpenceEvent = await dataBundleNotifier.getclientServiceInstance().retrieveEventExpencesByEventId(eventModel);
+
+                        dataBundleNotifier.setCurrentExpenceEventList(listExpenceEvent);
 
                         sleep(const Duration(milliseconds: 200));
                         Navigator.push(

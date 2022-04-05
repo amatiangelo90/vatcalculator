@@ -151,6 +151,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                           performSaveOrderId : widget.draftOrder.pk_order_id,
                           code: code,
                           deliveryDate: currentDate,
+                          storageModel: currentStorageModel,
                           message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
                             branchName: dataBundleNotifier.currentBranch.companyName,
                             orderId: code,

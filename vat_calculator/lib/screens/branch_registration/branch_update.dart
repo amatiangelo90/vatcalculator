@@ -120,9 +120,9 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
         }
 
         return Scaffold(
-          backgroundColor: Colors.grey.shade900.withOpacity(0.9),
+          backgroundColor: kPrimaryColor,
           bottomSheet: Container(
-            color: Colors.black54.withOpacity(0.9),
+            color: kPrimaryColor,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -187,6 +187,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
             ),
           ),
           appBar: AppBar(
+            elevation: 5,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
@@ -198,10 +199,10 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
             title: Text('Aggiorna dettagli attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomGreenAccent,
+                color: Colors.white,
               ),
             ),
-            backgroundColor: Colors.grey.shade900.withOpacity(0.9),
+            backgroundColor: kPrimaryColor,
           ),
           body: Container(
             child: Padding(

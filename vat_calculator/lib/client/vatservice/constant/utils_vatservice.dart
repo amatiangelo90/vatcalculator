@@ -96,3 +96,9 @@ const String VAT_SERVICE_URL_UPDATE_CASH_REGISTER = 'http://$host:8080/vatservic
 const String VAT_SERVICE_URL_CREATAE_CASH_REGISTER = 'http://$host:8080/vatservices/api/v1/create/cashregister';
 const String VAT_SERVICE_URL_DELETE_CASH_REGISTER = 'http://$host:8080/vatservices/api/v1/delete/cashregister';
 
+//Expence Event api
+
+const String VAT_SERVICE_URL_CREATE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/create/eventexpence';
+const String VAT_SERVICE_URL_UPDATE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/update/eventexpence';
+const String VAT_SERVICE_URL_DELETE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/delete/eventexpence';
+const String VAT_SERVICE_URL_RETRIEVE_EVENT_EXPENCES_BY_EVENT_ID = 'http://$host:8080/vatservices/api/v1/retrieve/eventexpencelistbyeventid';

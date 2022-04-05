@@ -314,9 +314,8 @@ class _StorageScreenState extends State<StorageScreen> {
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
-
                                     style: TextButton.styleFrom(
-                                      backgroundColor: kCustomGreenAccent,
+                                      backgroundColor: Colors.lightBlueAccent,
                                     ),
                                     child: Column(
                                       mainAxisAlignment: MainAxisAlignment.center,

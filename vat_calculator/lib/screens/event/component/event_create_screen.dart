@@ -106,7 +106,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           'Pagina creazione eventi',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(10),
-                            color: kCustomGreenAccent,
+                            color: Colors.green,
                           ),
                         ),
                       ],
@@ -180,7 +180,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   width: getProportionateScreenHeight(400),
                                   child: CupertinoButton(
                                     child:
-                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.green),),
+                                    Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.white, ),),
                                     color: kPrimaryColor,
                                     onPressed: () => _selectDate(context),
                                   ),
@@ -515,9 +515,10 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
             data: Theme.of(context).copyWith(
               backgroundColor: kPrimaryColor,
               dialogBackgroundColor: kPrimaryColor,
+              canvasColor: Colors.white,
               colorScheme: ColorScheme.dark(
                 onSurface: Colors.white,
-                primary: kCustomGreenAccent,
+                primary: Colors.white,
                 secondary: Colors.white,
                 onSecondary: Colors.white,
                 background: Colors.white,

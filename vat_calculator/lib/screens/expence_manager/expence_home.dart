@@ -57,7 +57,7 @@ class _ExpenceScreenState extends State<ExpenceScreen> {
                         'Area Gestione Spese',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(17),
-                          color: kCustomOrange,
+                          color: Colors.white,
                         ),
                       ),
                       Text(

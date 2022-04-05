@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -22,9 +23,18 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../main_page.dart';
 
-class LandingBody extends StatelessWidget {
+class LandingBody extends StatefulWidget {
   final String email;
   const LandingBody({Key key, this.email}) : super(key: key);
+
+  @override
+  State<LandingBody> createState() => _LandingBodyState();
+}
+
+class _LandingBodyState extends State<LandingBody> {
+
+  bool isButtonPressed = false;
+  int _currentValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +69,7 @@ class LandingBody extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    email,
+                    widget.email,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(18),
@@ -69,12 +79,17 @@ class LandingBody extends StatelessWidget {
                   ),
                 ],
               ),
-              LinearProgressIndicator(
-                value: controller.value,
-                semanticsLabel: 'Linear progress indicator',
-              ),
               SizedBox(height: getProportionateScreenHeight(100),),
-              Padding(
+              isButtonPressed ? Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
+                child: FAProgressBar(
+                    size: 20,
+                    progressColor: Colors.green,
+                    backgroundColor: Colors.white,
+                    currentValue: _currentValue,
+                    displayText: '%',
+                    ),
+              ) : Padding(
                 padding: EdgeInsets.all(Platform.isAndroid ? 10.0 : 30.0),
                 child: SizedBox(
                   width: getProportionateScreenWidth(500),
@@ -82,9 +97,13 @@ class LandingBody extends StatelessWidget {
                     child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
                     color: kCustomGreenAccent,
                     onPressed: () async {
-                      context.loaderOverlay.show();
+                      setState(() {
+                        isButtonPressed = true;
+                      });
+
+
                       ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                      UserModel userModelRetrieved = await clientService.retrieveUserByEmail(email);
+                      UserModel userModelRetrieved = await clientService.retrieveUserByEmail(widget.email);
                       if(userModelRetrieved != null){
                         Response response = await clientService.checkSpecialUser(userModelRetrieved);
                         if(response != null && response.statusCode != null && response.statusCode == 200){
@@ -94,7 +113,6 @@ class LandingBody extends StatelessWidget {
                           }
                         }
                       }
-                      print('Privilege: ' + userModelRetrieved.privilege.toString());
                       UserDetailsModel dataBundle = UserDetailsModel(
                           userModelRetrieved.id,
                           userModelRetrieved.mail,
@@ -108,7 +126,7 @@ class LandingBody extends StatelessWidget {
                       List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
                       dataBundleNotifier.addDataBundle(dataBundle);
                       dataBundleNotifier.addBranches(_branchList);
-
+                      _currentValue = 100;
                       List<RecessedModel> _recessedModelList = [];
                       List<CashRegisterModel> _cashRegisterModelList = [];
 
@@ -156,25 +174,24 @@ class LandingBody extends StatelessWidget {
                         List<String> tokenList = await clientService.retrieveTokenList(
                             dataBundleNotifier.currentBranch);
                         dataBundleNotifier.setCurrentBossTokenList(tokenList);
+
                       }
                       dataBundleNotifier.initializeCurrentDateTimeRange3Months();
 
-                      //subscribe user to topics for notifications
-                      //TODO run this command in background
                       Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (BranchModel branch) {
-
                         if(branch.token == null || branch.token == ''){
                           FirebaseMessaging.instance.getToken().then((value) {
                             branch.token = value;
                             dataBundleNotifier.getclientServiceInstance().updateFirebaseTokenForUserBranchRelation(branchId: branch.pkBranchId, userId: dataBundleNotifier.userDetailsList[0].id, token: value);
                           });
                         }
-                        //await FirebaseMessaging.instance.unsubscribeFromTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Unsubscription from topic [branch-${branch.pkBranchId.toString()}] done!!'));
                         FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
                       });
-                      context.loaderOverlay.hide();
+                      _currentValue = 100;
+                      setState(() {
+                        isButtonPressed = false;
+                      });
                       dataBundleNotifier.onItemTapped(0);
-
                       Navigator.pushNamed(context, HomeScreenMain.routeName);
                     },
                   ),

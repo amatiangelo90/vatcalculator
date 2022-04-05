@@ -724,14 +724,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                       ),
                     ],
                   ),
-                  dataBundleNotifier.currentStorage.name ==
-                      currentStorageElement.name ? Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
-                    child: SvgPicture.asset(
-                      'assets/icons/success-green.svg',
-                      width: getProportionateScreenHeight(25),
-                    ),
-                  ) : const SizedBox(height: 0,),
+
                 ],
               ),
             ),

@@ -45,18 +45,18 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
   @override
   Future<Response> sendNotificationToUsersByTokens(List<String> tokensList, String message, String title, String msgId) async {
     try{
+      print('Send notification to follow list tokens ' + tokensList.toString());
       if(tokensList != null && tokensList.isNotEmpty){
         var dio = Dio();
 
         dio.options.headers['Authorization'] = 'key=$FIREBASE_USER_KEY';
         dio.options.headers['Content-Type'] = 'application/json';
 
-        String tokensListString = '"';
+        String tokensListString = '';
 
         tokensList.forEach((token) {
-          tokensListString = tokensListString + token + '","';
+          tokensListString = tokensListString + token + ',';
         });
-        tokensListString = tokensListString.substring(0, tokensListString.length - 1);
         tokensListString = tokensListString.substring(0, tokensListString.length - 1);
 
         var jsonEncodedBody = jsonEncode(
@@ -73,6 +73,7 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
             }
         );
 
+        print('Request: ' + jsonEncodedBody);
         await dio.post(
           FIREBASE_MESSAGING_SERVICE_URL,
           data: jsonEncodedBody,

@@ -5,6 +5,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dar
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
+import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
@@ -23,6 +24,7 @@ import 'model/user_branch_relation_model.dart';
 import 'model/user_model.dart';
 
 class ClientVatService implements VatServiceInterface{
+
   @override
   Future<Response> performSaveUser(String firstName,String lastName, String phoneNumber, String eMail, String privileges, int relatedUserId) async {
     var dio = Dio();
@@ -2680,6 +2682,117 @@ class ClientVatService implements VatServiceInterface{
       return valueList.cast<String>();
     }catch(e){
       rethrow;
+    }
+  }
+
+  @override
+  Future<Response> createEventExpenceModel(ExpenceEventModel expenceEventModel) async {
+    var dio = Dio();
+
+    print('Create expence ${expenceEventModel.description} for event with id ${expenceEventModel.fkEventId}');
+    String body = json.encode(
+        expenceEventModel.toMap());
+    print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_EVENT_EXPENCE with body request $body');
+
+    Response post;
+    try {
+      post = await dio.post(
+        VAT_SERVICE_URL_CREATE_EVENT_EXPENCE,
+        data: body,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  @override
+  Future<Response> deleteEventExpenceModel(ExpenceEventModel expenceEventModel) async {
+    var dio = Dio();
+
+    print('DELETE expence ${expenceEventModel.description} for event with id ${expenceEventModel.fkEventId}');
+    String body = json.encode(
+        expenceEventModel.toMap());
+    print('Calling the following endpoint $VAT_SERVICE_URL_DELETE_EVENT_EXPENCE with body request $body');
+
+    Response post;
+    try {
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_EVENT_EXPENCE,
+        data: body,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  @override
+  Future<List<ExpenceEventModel>> retrieveEventExpencesByEventId(EventModel eventModel) async {
+
+    var dio = Dio();
+
+    List<ExpenceEventModel> expenceEventModel = [];
+
+    String body = json.encode(
+        eventModel.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_EVENT_EXPENCES_BY_EVENT_ID,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieved event expence by event id): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_EVENT_EXPENCES_BY_EVENT_ID + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((eventExpenceItem) {
+        expenceEventModel.add(
+            ExpenceEventModel(
+              pkEventExpenceId: eventExpenceItem['pkEventExpenceId'],
+              amount: eventExpenceItem['amount'],
+              cost: eventExpenceItem['cost'],
+              dateTimeInsert: eventExpenceItem['pkEventId'],
+              description: eventExpenceItem['description'],
+              fkEventId: eventExpenceItem['fkEventId']
+            ));
+      });
+
+      return expenceEventModel;
+    }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> updateEventExpenceModel(ExpenceEventModel expenceEventModel) async {
+    var dio = Dio();
+
+    print('Update expence ${expenceEventModel.description} for event with id ${expenceEventModel.fkEventId}');
+    String body = json.encode(
+        expenceEventModel.toMap());
+    print('Calling the following endpoint $VAT_SERVICE_URL_UPDATE_EVENT_EXPENCE with body request $body');
+
+    Response post;
+    try {
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_EVENT_EXPENCE,
+        data: body,
+      );
+      return post;
+    } catch(e){
+      print(e);
+      return null;
     }
   }
 }

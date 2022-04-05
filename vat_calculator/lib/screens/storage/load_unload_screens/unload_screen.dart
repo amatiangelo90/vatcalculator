@@ -144,10 +144,13 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                             );
                           }
                         });
-
-
                       });
                     });
+
+                    dataBundleNotifier.getclientMessagingFirebase().sendNotificationToUsersByTokens(dataBundleNotifier.currentBossTokenList,
+                        '${dataBundleNotifier.userDetailsList[0].firstName} ha effettuato uno scarico su magazzino '
+                            '${dataBundleNotifier.currentStorage.name} per ${dataBundleNotifier.currentBranch.companyName}.',
+                        'Scarico ${dataBundleNotifier.currentStorage.name}',DateTime.now().millisecondsSinceEpoch.toString());
 
                     Navigator.push(context, MaterialPageRoute(builder: (context) => ComunicationUnloadStorageScreen(orderedMapBySuppliers: recapMapForCustomer ,),),);
                   }
@@ -235,15 +238,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                   child: CupertinoTextField(
                     controller: controller,
                     onChanged: (text) {
-                      if( double.tryParse(text) != null){
-                        element.stock = double.parse(text);
-                      }else{
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          content: Text('Immettere un valore numerico corretto per ' + element.productName),
-                        ));
-                      }
-
+                      element.stock = double.parse(text.replaceAll(',', '.'));
                     },
                     textInputAction: TextInputAction.next,
                     keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
