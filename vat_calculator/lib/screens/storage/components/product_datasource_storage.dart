@@ -6,12 +6,12 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
 class ProductDataSourceStorage extends DataTableSource {
+
   int _selectedCount = 0;
-
   final List<StorageProductModel> _products;
-  ProductDataSourceStorage(this._products, this._listSuppliers );
+  ProductDataSourceStorage(this._products, this._listSuppliers, this.isEmployee);
   final List<SupplierModel> _listSuppliers;
-
+  final bool isEmployee;
 
   @override
   DataRow getRow(int index) {
@@ -40,7 +40,7 @@ class ProductDataSourceStorage extends DataTableSource {
                 ],
             )),
           DataCell(Text(product.stock.toStringAsFixed(2).replaceAll('.00',''), style: TextStyle( fontSize: getProportionateScreenHeight(15), color: product.stock <= 0 ? Colors.red : kPrimaryColor, fontWeight: FontWeight.bold),)),
-          DataCell(Text(product.price.toStringAsFixed(2).replaceAll('.00','') + ' €')),
+          DataCell(Text(isEmployee ? '---' :  product.price.toStringAsFixed(2).replaceAll('.00','') + ' €' )),
           DataCell(Text(getSupplierFromListById(_listSuppliers, product.supplierId))),
         ]
     );

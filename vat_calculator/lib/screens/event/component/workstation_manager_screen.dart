@@ -9,6 +9,7 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -126,7 +127,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       if(element.consumed == 0){
         controller = TextEditingController();
       }else{
-        controller = TextEditingController(text: element.consumed.toStringAsFixed(2));
+        controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', ''));
       }
       rows.add(
         Row(
@@ -195,8 +196,9 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     ),
                     controller: controller,
                     onSubmitted: (text){
+                      RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
                       if(double.tryParse(text.replaceAll(',', '.')) != null){
-                        element.consumed = double.parse(text.replaceAll(',', '.'));
+                        element.consumed = double.parse(text.replaceAll(',', '.').replaceAll(regex, ''));
                       }else{
                         controller.clear();
                         _scaffoldKey.currentState.showSnackBar(const SnackBar(
@@ -205,6 +207,12 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           content: Text(
                               'Immettere un valore numerico corretto per effettuare il carico'),
                         ));
+                      }
+                    },
+                    onChanged: (text){
+                      RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+                      if(double.tryParse(text.replaceAll(',', '.')) != null){
+                        element.consumed = double.parse(text.replaceAll(',', '.').replaceAll(regex, ''));
                       }
                     },
                     textInputAction: TextInputAction.next,
@@ -278,14 +286,16 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           try{
                             bool isValid = true;
                             for(WorkstationProductModel workProd in widget.workStationProdModelList){
-                              if(workProd.consumed > workProd.refillStock){
+                              print('PRoduct: '+ workProd.productName);
+                              print('refillStock: '+ workProd.refillStock.toString());
+                              print('consumed: ' + workProd.consumed.toString());
+                              if(workProd.refillStock < workProd.consumed){
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                                   backgroundColor: kPinaColor,
                                   duration: Duration(milliseconds: 5000),
                                   content: Text(
                                       'Impossibile effettuare scarico di ${workProd.consumed.toStringAsFixed(2)} ${workProd.unitMeasure} per ${workProd.productName}. La quantità selezionata eccede quella di carico [${workProd.refillStock.toStringAsFixed(2)} ${workProd.unitMeasure}] configurata '),
                                 ));
-
                                 isValid = false;
                                 break;
                               }
@@ -478,7 +488,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
         ),
       ),
       Padding(
-        padding: EdgeInsets.fromLTRB(0, 2, 0, 10),
+        padding: const EdgeInsets.fromLTRB(0, 2, 0, 10),
         child: SizedBox(
           width: getProportionateScreenWidth(350),
           child: TextButton(
@@ -556,7 +566,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                               double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
                                               setState(() {
                                                 workStationProdModelList.forEach((workstationProd) {
-                                                  workstationProd.refillStock = workstationProd.amountHunderd * currentValue;
+                                                  workstationProd.refillStock = workstationProd.amountHunderd * (currentValue/100);
                                                 });
                                               });
 
@@ -600,7 +610,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       if(element.refillStock == 0){
         controller = TextEditingController();
       }else{
-        controller = TextEditingController(text: element.refillStock.toStringAsFixed(2));
+        controller = TextEditingController(text: element.refillStock.toStringAsFixed(2).replaceAll('.00', ''));
       }
       rows.add(
         Padding(
@@ -610,84 +620,86 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             children: [
               GestureDetector(
                 onTap: (){
-                  TextEditingController amountController;
-                  if(element.amountHunderd != 0){
-                    amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2));
-                  }else{
-                    amountController = TextEditingController();
-                  }
+                  if(dataBundleNotifier.currentBranch.accessPrivilege != Privileges.EMPLOYEE){
+                    TextEditingController amountController;
+                    if(element.amountHunderd != 0){
+                      amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2));
+                    }else{
+                      amountController = TextEditingController();
+                    }
 
-                  showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        content: SizedBox(
-                          height: getProportionateScreenHeight(200),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Q/100 per ${element.productName}'),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  children: [
-                                    ConstrainedBox(
-                                      constraints: BoxConstraints.loose(Size(
-                                          getProportionateScreenWidth(150),
-                                          getProportionateScreenWidth(60))),
-                                      child: CupertinoTextField(
-                                        controller: amountController,
-                                        textInputAction: TextInputAction.next,
-                                        keyboardType: const TextInputType.numberWithOptions(
-                                            decimal: true, signed: true),
-                                        clearButtonMode: OverlayVisibilityMode.never,
-                                        textAlign: TextAlign.center,
-                                        autocorrect: false,
+                    showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          content: SizedBox(
+                            height: getProportionateScreenHeight(200),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Q/100 per ${element.productName}'),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      ConstrainedBox(
+                                        constraints: BoxConstraints.loose(Size(
+                                            getProportionateScreenWidth(150),
+                                            getProportionateScreenWidth(60))),
+                                        child: CupertinoTextField(
+                                          controller: amountController,
+                                          textInputAction: TextInputAction.next,
+                                          keyboardType: const TextInputType.numberWithOptions(
+                                              decimal: true, signed: true),
+                                          clearButtonMode: OverlayVisibilityMode.never,
+                                          textAlign: TextAlign.center,
+                                          autocorrect: false,
+                                        ),
                                       ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
 
-                                        if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
-                                          try{
-                                            double currentValue = double.parse(amountController.text.replaceAll(",", "."));
-                                            dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
-                                            setState(() {
-                                              element.amountHunderd = currentValue;
-                                            });
-                                          }catch(e){
+                                          if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
+                                            try{
+                                              double currentValue = double.parse(amountController.text.replaceAll(",", "."));
+                                              dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
+                                              setState(() {
+                                                element.amountHunderd = currentValue;
+                                              });
+                                            }catch(e){
+                                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                backgroundColor: kPinaColor,
+                                                duration: Duration(milliseconds: 600),
+                                                content: Text(
+                                                    'Errore configurazione Q/100. ' + e),
+                                              ));
+                                            }
                                             _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                              backgroundColor: kPinaColor,
-                                              duration: Duration(milliseconds: 600),
+                                              backgroundColor: Colors.green.withOpacity(0.9),
+                                              duration: Duration(milliseconds: 1600),
                                               content: Text(
-                                                  'Errore configurazione Q/100. ' + e),
+                                                  'Configurato Q/100 ${amountController.text} per ${element.productName}'),
+                                            ));
+                                          } else {
+                                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                              backgroundColor: kPinaColor,
+                                              duration: Duration(milliseconds: 1600),
+                                              content: Text(
+                                                  'Immettere un valore numerico corretto per effettuare il carico'),
                                             ));
                                           }
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                            backgroundColor: Colors.green.withOpacity(0.9),
-                                            duration: Duration(milliseconds: 1600),
-                                            content: Text(
-                                                'Configurato Q/100 ${amountController.text} per ${element.productName}'),
-                                          ));
-                                        } else {
-                                          _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                            backgroundColor: kPinaColor,
-                                            duration: Duration(milliseconds: 1600),
-                                            content: Text(
-                                                'Immettere un valore numerico corretto per effettuare il carico'),
-                                          ));
-                                        }
-                                        Navigator.of(context).pop();
-                                      }),
-                                    )
-                                  ],
+                                          Navigator.of(context).pop();
+                                        }),
+                                      )
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      )
-                  );
+                        )
+                    );
+                  }
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -756,7 +768,9 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       keyboardType: const TextInputType.numberWithOptions(
                           decimal: true, signed: true),
                       onChanged: (value){
-                        element.refillStock = double.parse(value.replaceAll(',', '.'));
+                        RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+                        element.refillStock = double.parse(double.parse(value.replaceAll(',', '.')).toStringAsFixed(2).replaceAll(regex, ''));
+
                       },
                       clearButtonMode: OverlayVisibilityMode.never,
                       textAlign: TextAlign.center,
@@ -822,7 +836,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         String productWrong = '';
                         widget.workStationProdModelList.forEach((prodModel) {
                           if(double.tryParse(prodModel.refillStock.toString()) != null){
-                            print('Cocomero');
+                            print(prodModel.productName + ' ok as refillStock value');
                           }else{
                             isEverthingOk = false;
                             productWrong = prodModel.productName;

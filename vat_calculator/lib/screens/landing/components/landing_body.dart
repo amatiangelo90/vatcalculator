@@ -79,7 +79,9 @@ class _LandingBodyState extends State<LandingBody> {
                   ),
                 ],
               ),
-              SizedBox(height: getProportionateScreenHeight(100),),
+              SizedBox(height: getProportionateScreenHeight(110),),
+              Text('1.0.38', style: TextStyle(fontSize: getProportionateScreenHeight(12))),
+
               isButtonPressed ? Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
                 child: FAProgressBar(

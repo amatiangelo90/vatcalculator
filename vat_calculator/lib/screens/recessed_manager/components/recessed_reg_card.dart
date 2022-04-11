@@ -313,7 +313,18 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                                 'Nessun importo valorizzato',
                                                 style: TextStyle(color: Colors.white),
                                               )));
-                                    } else if(double.parse(recessedFiscalController.text.replaceAll(",", "."))
+                                    } else if (double.parse(recessedFiscalController.text.replaceAll(",", ".")) < double.parse(recessedPosController.text.replaceAll(",", "."))){
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                              duration:
+                                              const Duration(milliseconds: 2500),
+                                              backgroundColor:
+                                              Colors.redAccent.withOpacity(0.8),
+                                              content: const Text(
+                                                'L\'importo pos non può essere superiore all\'incasso totale ',
+                                                style: TextStyle(color: Colors.white),
+                                              )));
+                                    }else if(double.parse(recessedFiscalController.text.replaceAll(",", "."))
                                         > (double.parse(recessedCashController.text.replaceAll(",", ".")) + double.parse(recessedPosController.text.replaceAll(",", ".")))){
                                       ScaffoldMessenger.of(context).showSnackBar(
                                           SnackBar(

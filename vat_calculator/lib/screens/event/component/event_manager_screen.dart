@@ -40,19 +40,20 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
         return DefaultTabController(
-          length: 3,
+          length: 4,
 
           child: Scaffold(
             key: _scaffoldKey,
             appBar: AppBar(
 
               bottom: TabBar(
-                indicatorColor: kCustomOrange,
-                indicatorWeight: 4,
+                indicatorColor: Colors.red,
+                indicatorWeight: 2,
                 tabs: [
-                  Tab(icon: SvgPicture.asset('assets/icons/party.svg', color: kCustomOrange, width: getProportionateScreenHeight(34),)),
+                  Tab(icon: SvgPicture.asset('assets/icons/party.svg', width: getProportionateScreenHeight(34),color: Colors.white,)),
                   Tab(icon: SvgPicture.asset('assets/icons/chart.svg', width: getProportionateScreenHeight(27),)),
-                  Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomOrange,)),
+                  Tab(icon: SvgPicture.asset('assets/icons/bartender.svg', width: getProportionateScreenHeight(27),color: Colors.white,)),
+                  Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white,)),
                 ],
               ),
               leading: IconButton(
@@ -81,6 +82,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               children: [
                 buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(widget.workstationModelList, dataBundleNotifier, widget.event),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(widget.event, dataBundleNotifier),
               ],
             ),
@@ -521,6 +523,22 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
+
+  buildResocontoScreenExtraExpences(List<WorkstationModel> workstationModelList,
+      DataBundleNotifier dataBundleNotifier, EventModel event) {
+    return FutureBuilder(
+      initialData: const Center(
+          child: CircularProgressIndicator(
+            color: kPinaColor,
+          )),
+      builder: (context, snapshot){
+        return snapshot.data;
+      },
+      future: retrieveDataToBuildRecapWidgetExtraExpences(workstationModelList, dataBundleNotifier, event),
+    );
+  }
+
+
   Future<Widget> retrieveDataToBuildRecapWidget(List<WorkstationModel> workstationModelList,
       DataBundleNotifier dataBundleNotifier,
       EventModel event) async {
@@ -538,81 +556,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             map[workstationModel.pkWorkstationId] = list;
           }
         });
-
-    double totalExpenceEvent = 0.0;
-
-    List<TableRow> rowsExpenceEvent = [
-      TableRow( children: [
-        GestureDetector(
-          child: Row(
-            children: [
-              Text('   TIPO SPESA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-            ],
-          ),
-        ),
-        Text('Q', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-        Text('', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-        Text('€', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-        Text('TOT. (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-      ]),
-    ];
-
-    dataBundleNotifier.listExpenceEvent.forEach((expence) {
-      totalExpenceEvent = totalExpenceEvent + (expence.amount * expence.cost);
-      rowsExpenceEvent.add(TableRow( children: [
-        GestureDetector(
-          onTap: (){
-            _openEditingExpenceCard(expence);
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
-                child: Text('  ' + expence.description, textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-              ),
-              ],
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            _openEditingExpenceCard(expence);
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-            child: Text(expence.amount.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            _openEditingExpenceCard(expence);
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
-            child: Text('x', textAlign: TextAlign.center, style: TextStyle( color: Colors.blue, fontSize: getProportionateScreenHeight(20)),),
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            _openEditingExpenceCard(expence);
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-            child: Text(expence.cost.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            _openEditingExpenceCard(expence);
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-            child: Text((expence.amount * expence.cost).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-          ),
-        ),
-      ]),);
-    });
 
     List<TableRow> rows = [];
 
@@ -632,11 +575,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
     Set<int> idsProductsPresent = Set();
 
-    map.forEach((workstationId, listProducts) {
-      listProducts.forEach((product) {
+    if(map != null || map.isNotEmpty){
+      map.forEach((workstationId, listProducts) {
+        listProducts.forEach((product) {
           idsProductsPresent.add(product.fkProductId);
+        });
       });
-    });
+    }
+
 
     Map<int, SupportTableObj> supportTableObjList = {};
 
@@ -734,7 +680,164 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child: Text('€ ' + (totalExpence + totalExpenceEvent).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(30)),),
+                      child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(30)),),
+                    ),
+                  ],
+                ),),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Riepilogo Costi Workstations', style: TextStyle(fontSize: getProportionateScreenHeight(18), color: Colors.white), ),
+                    Text(''),
+                  ],
+                ),
+              ),
+              Table(
+                columnWidths: const {
+                  0: FlexColumnWidth(5),
+                  1: FlexColumnWidth(2),
+                  2: FlexColumnWidth(2),
+                  3: FlexColumnWidth(2),
+                  4: FlexColumnWidth(3),
+                },
+                border: TableBorder.all(
+                    color: Colors.grey,
+                    width: 0.1
+                ),
+                children: rows,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(18)),),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite, fontSize: getProportionateScreenHeight(20)),),
+                  ),
+
+                ],
+              ),
+              SizedBox(height: 50),
+            ],
+
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<Widget> retrieveDataToBuildRecapWidgetExtraExpences(List<WorkstationModel> workstationModelList,
+      DataBundleNotifier dataBundleNotifier,
+      EventModel event) async {
+
+    double totalExpenceEvent = 0.0;
+
+    List<TableRow> rowsExpenceEvent = [
+      TableRow( children: [
+        GestureDetector(
+          child: Row(
+            children: [
+              Text('   TIPO SPESA', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
+            ],
+          ),
+        ),
+        Text('Q', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+        Text('', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+        Text('€', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+        Text('TOT. (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+      ]),
+    ];
+
+    dataBundleNotifier.listExpenceEvent.forEach((expence) {
+      totalExpenceEvent = totalExpenceEvent + (expence.amount * expence.cost);
+      rowsExpenceEvent.add(TableRow( children: [
+        GestureDetector(
+          onTap: (){
+            _openEditingExpenceCard(expence);
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                child: Text('  ' + expence.description, textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+              ),
+            ],
+          ),
+        ),
+        GestureDetector(
+          onTap: (){
+            _openEditingExpenceCard(expence);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
+            child: Text(expence.amount.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+          ),
+        ),
+        GestureDetector(
+          onTap: (){
+            _openEditingExpenceCard(expence);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
+            child: Text('x', textAlign: TextAlign.center, style: TextStyle( color: Colors.blue, fontSize: getProportionateScreenHeight(20)),),
+          ),
+        ),
+        GestureDetector(
+          onTap: (){
+            _openEditingExpenceCard(expence);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+            child: Text(expence.cost.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+          ),
+        ),
+        GestureDetector(
+          onTap: (){
+            _openEditingExpenceCard(expence);
+          },
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+            child: Text((expence.amount * expence.cost).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+          ),
+        ),
+      ]),);
+    });
+
+    return Container(
+      color: kPrimaryColor,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              event.closed == 'Y' ? SizedBox(
+                width: getProportionateScreenWidth(500),
+                child: Container(color: kCustomBordeaux, child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
+                )),
+              ) : SizedBox(height: 10),
+              SizedBox(
+                width: getProportionateScreenWidth(500),
+                child: Container(color: Colors.lightBlueAccent, child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(24)),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(18.0),
+                      child: Text('€ ' + totalExpenceEvent.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(30)),),
                     ),
                   ],
                 ),),
@@ -795,44 +898,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               Divider(
                 height: 44,
                 color: kPrimaryColor,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Riepilogo Costi Workstations', style: TextStyle(fontSize: getProportionateScreenHeight(18), color: Colors.white), ),
-                    Text(''),
-                  ],
-                ),
-              ),
-              Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(5),
-                  1: FlexColumnWidth(2),
-                  2: FlexColumnWidth(2),
-                  3: FlexColumnWidth(2),
-                  4: FlexColumnWidth(3),
-                },
-                border: TableBorder.all(
-                    color: Colors.grey,
-                    width: 0.1
-                ),
-                children: rows,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(18)),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite, fontSize: getProportionateScreenHeight(20)),),
-                  ),
-
-                ],
               ),
               SizedBox(height: 50),
             ],

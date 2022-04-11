@@ -34,7 +34,6 @@ class HomeScreenMain extends StatelessWidget {
   }
 }
 
-
 class MyStatefulWidget extends StatefulWidget {
   const MyStatefulWidget({Key key}) : super(key: key);
 
@@ -336,7 +335,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 ),
               ],
             ),
-            Stack(
+            dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Stack(
               children: [
                 IconButton(
                   icon: SvgPicture.asset(
@@ -485,7 +484,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
           actions: [
             dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
               children: [
-                Padding(
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: IconButton(
                       icon: SvgPicture.asset(

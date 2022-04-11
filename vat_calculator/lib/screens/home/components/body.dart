@@ -341,7 +341,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ],
                     ),
                   ),
-                  dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).isEmpty ? Padding(
+                  dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).isEmpty ?
+
+                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Padding(
+                    padding: const EdgeInsets.all(28.0),
+                    child: const Text('Non hai eventi in programma oggi'),
+                  ) : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
                       width: getProportionateScreenWidth(400),

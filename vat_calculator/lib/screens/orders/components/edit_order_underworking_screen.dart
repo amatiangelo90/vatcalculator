@@ -251,7 +251,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                       'assets/icons/ws.svg',
                       height: getProportionateScreenHeight(30),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
                           branchName: dataBundleNotifier.currentBranch.companyName,
                           orderId: widget.orderModel.code,
@@ -265,13 +265,28 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
 
                       SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id);
 
+                      print(message);
+
                       message = message.replaceAll('&', '%26');
+                      message = message.replaceAll(' ', '%20');
                       message = message.replaceAll('#', '');
-                      message = message.replaceAll('<br>', '\n');
+                      message = message.replaceAll('<br>', '%0a');
                       message = message.replaceAll('</h4>', '');
                       message = message.replaceAll('<h4>', '');
+                      message = message.replaceAll('à', 'a');
+                      message = message.replaceAll('è', 'e');
+                      message = message.replaceAll('ò', 'o');
+                      message = message.replaceAll('ù', 'u');
+                      message = message.replaceAll('é', 'e');
 
-                      launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message');
+                      String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message';
+
+
+                      if (await canLaunch(urlString)) {
+                        await launch(urlString);
+                      } else {
+                        throw 'Could not launch $urlString';
+                      }
                     }
                 ),
               ],

@@ -11,6 +11,7 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../client/vatservice/model/storage_product_model.dart';
 import '../../client/vatservice/model/utils/action_type.dart';
+import '../../client/vatservice/model/utils/privileges.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import 'components/add_storage_screen.dart';
@@ -129,7 +130,7 @@ class _StorageScreenState extends State<StorageScreen> {
 
                               alignment: MainAxisAlignment.spaceAround,
                               children: [
-                                IconButton(
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : IconButton(
                                   icon: SvgPicture.asset('assets/icons/Trash.svg', height: 27, color: Colors.red),
                                   onPressed: (){
                                     try{
@@ -173,7 +174,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     }
                                   },
                                 ),
-                                SizedBox(
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
@@ -200,7 +201,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     },
                                   ),
                                 ),
-                                SizedBox(
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
@@ -310,7 +311,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     onPressed: ()=> Navigator.pushNamed(context, UnloadStorageScreen.routeName),
                                   ),
                                 ),
-                                SizedBox(
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
@@ -396,7 +397,7 @@ class _StorageScreenState extends State<StorageScreen> {
     return PaginatedDataTable(
       rowsPerPage: 8,
       columns: kTableColumns,
-      source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers),
+      source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers, dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? true : false),
     );
   }
 

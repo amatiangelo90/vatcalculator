@@ -2143,17 +2143,21 @@ class ClientVatService implements VatServiceInterface{
 
         valueList.forEach((workstationElement) {
 
+          double storeStock = workstationElement['storeStock'];
+          double refillStock = workstationElement['refillStock'];
+          double consumed = workstationElement['consumed'];
+
           workstationProductList.add(
               WorkstationProductModel(
                 amountHunderd: workstationElement['amountHunderd'],
-                consumed: workstationElement['consumed'],
+                consumed: double.parse(consumed.toStringAsFixed(2)),
                 fkStorProdId: workstationElement['fkStorProdId'],
                 fkSupplierId:  workstationElement['fkSupplierId'],
                 fkWorkstationId: workstationElement['fkWorkstationId'],
                 pkWorkstationStorageProductId: workstationElement['pkWorkstationStorageProductId'],
                 productName: workstationElement['productName'],
-                refillStock: workstationElement['refillStock'],
-                storeStock: workstationElement['storeStock'],
+                refillStock: double.parse(refillStock.toStringAsFixed(2)),
+                storeStock: double.parse(storeStock.toStringAsFixed(2)),
                 unitMeasure: workstationElement['unitMeasure'],
                 fkProductId: workstationElement['fkProductId'],
                 productPrice: workstationElement['productPrice'],

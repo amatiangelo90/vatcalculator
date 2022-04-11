@@ -879,13 +879,20 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                                         kCustomGreyBlue,
                                                                   ),
                                                                   onPressed:
-                                                                      () {
-                                                                    launch('https://api.whatsapp.com/send/?text=Ciao,'
-                                                                            '%0aassocia il tuo account alla '
-                                                                            'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
-                                                                            '' +
+                                                                      () async {
+                                                                    String urlString = 'https://api.whatsapp.com/send/?text=Ciao,'
+                                                                        '%0aassocia il tuo account alla '
+                                                                        'mia attivita tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                                                        '' +
                                                                         companyList[index].companyName +
-                                                                        '%0a');
+                                                                        '%0a';
+                                                                    urlString = urlString.replaceAll(' ', '%20');
+
+                                                                    if (await canLaunch(urlString)) {
+                                                                          await launch(urlString);
+                                                                        } else {
+                                                                          throw 'Could not launch $urlString';
+                                                                        }
                                                                   },
                                                                 ),
                                                               ],
@@ -904,20 +911,19 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                       Icons.share,
                                       color: kCustomOrange,
                                     ),
-                                    onPressed: () {
+                                    onPressed: () async {
 
-                                      if(canLaunch('https://api.whatsapp.com/send/?text=Ciao,'
+                                      String urlString = 'https://api.whatsapp.com/send/?text=Ciao,'
                                           '%0aassocia il tuo account alla '
-                                          'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
+                                          'mia attivita tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
                                           '' +
-                                          companyList[index].companyName) != null){
-                                        launch('https://api.whatsapp.com/send/?text=Ciao,'
-                                            '%0aassocia il tuo account alla '
-                                            'mia attività tramite il codice %0a%0a ${buildCodeForCurrentBranch(companyList[index].pkBranchId)} %0a%0a'
-                                            '' +
-                                            companyList[index].companyName);
-                                      }else{
-                                        print('rottooo');
+                                          companyList[index].companyName +
+                                          '%0a';
+                                      urlString = urlString.replaceAll(' ', '%20');
+                                      if (await canLaunch(urlString)) {
+                                      await launch(urlString);
+                                      } else {
+                                      throw 'Could not launch $urlString';
                                       }
                                     },
                                   ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -26,7 +27,7 @@ class SuppliersScreen extends StatelessWidget {
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
         bottomSheet:
-            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) :
+            dataBundleNotifier.currentBranch == null || dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(width: 0,) :
             dataBundleNotifier.currentListSuppliers.isNotEmpty ? Container(
               color: Colors.transparent,
               child: Padding(

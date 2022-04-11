@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -117,7 +119,7 @@ class OrderCard extends StatelessWidget {
                                   'assets/icons/ws.svg',
                                   height: getProportionateScreenHeight(25),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
                                   String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
                                       branchName: dataBundleNotifier.currentBranch.companyName,
                                       orderId: order.code,
@@ -132,12 +134,31 @@ class OrderCard extends StatelessWidget {
                                   SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
 
                                   message = message.replaceAll('&', '%26');
+                                  message = message.replaceAll(' ', '%20');
                                   message = message.replaceAll('#', '');
-                                  message = message.replaceAll('<br>', '\n');
+                                  message = message.replaceAll('<br>', '%0a');
                                   message = message.replaceAll('</h4>', '');
                                   message = message.replaceAll('<h4>', '');
+                                  message = message.replaceAll('à', 'a');
+                                  message = message.replaceAll('è', 'e');
+                                  message = message.replaceAll('ò', 'o');
+                                  message = message.replaceAll('ù', 'u');
+                                  message = message.replaceAll('é', 'e');
 
-                                  launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message');
+                                  print(message);
+                                  String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message';
+
+                                  if (await canLaunch(urlString)) {
+                                    await launch(urlString);
+                                  } else {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      backgroundColor: kPinaColor,
+                                      duration: Duration(milliseconds: 3000),
+                                      content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                    )));
+                                    throw 'Could not launch $urlString';
+                                  }
+
                                 }
                             ),
                             IconButton(

@@ -14,6 +14,7 @@ import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
+import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -59,7 +60,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           controllerEmail = TextEditingController(text: widget.currentSupplier.mail);
           controllerPIva = TextEditingController(text: widget.currentSupplier.piva);
           return Scaffold(
-            bottomSheet: Padding(
+            bottomSheet: dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
               padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 text: 'Crea Prodotto',
@@ -401,7 +402,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         launch(whatsappUrl)
                       }
                   ),
-                  IconButton(
+                  dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : IconButton(
                       icon: SvgPicture.asset(
                         'assets/icons/remove-icon.svg',
                         color: Colors.red,
@@ -565,8 +566,10 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
     dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
       list.add(GestureDetector(
         onTap: (){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(product: currentProduct,supplier: widget.currentSupplier,),),);
-        },
+          if(dataBundleNotifier.currentBranch.accessPrivilege != Privileges.EMPLOYEE){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(product: currentProduct,supplier: widget.currentSupplier,),),);
+          }
+          },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
           child: Row(
@@ -579,7 +582,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                    Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
                  ],
                ),
-               Text('€ ' + currentProduct.prezzo_lordo.toString()),
+               dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Text('€ ***') : Text('€ ' + currentProduct.prezzo_lordo.toString()),
              ],
           ),
         ),

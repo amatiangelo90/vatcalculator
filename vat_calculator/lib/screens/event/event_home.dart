@@ -34,7 +34,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
           builder: (context, dataBundleNotifier, child) {
             return Scaffold(
               backgroundColor: Colors.white,
-              bottomSheet: Padding(
+              bottomSheet: dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
                 padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                 child: SizedBox(
                   width: getProportionateScreenWidth(400),
@@ -94,7 +94,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                         }),
                   ),
                   const SizedBox(width: 5),
-                  Padding(
+                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: Stack(
                       children: [
