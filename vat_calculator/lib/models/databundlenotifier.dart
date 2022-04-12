@@ -1258,7 +1258,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
 
   StorageModel retrieveStorageFromStorageListByIdName(String storageIdName) {
-    print('Retrieve Storage');
     StorageModel storageModelToReturn;
 
     currentStorageList.forEach((storage) {
@@ -1705,4 +1704,10 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void cleanExtraArgsListProduct() {
+    currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+      element.extra = 0.0;
+    });
+    notifyListeners();
+  }
 }

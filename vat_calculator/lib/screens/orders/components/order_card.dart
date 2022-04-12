@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
@@ -232,7 +233,7 @@ class OrderCard extends StatelessWidget {
                                   fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
                             ),
                             Text(
-                              '€ ' +
+                              dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? ' *** ' : '€ ' +
                                   calculatePriceFromProductList(
                                       orderIdProductList),
                               style: TextStyle(

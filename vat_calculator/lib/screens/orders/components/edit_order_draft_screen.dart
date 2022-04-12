@@ -14,6 +14,7 @@ import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -256,8 +257,8 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                 Text(
                   'Bozza Ordine',
                   style: TextStyle(
-                    fontSize: getProportionateScreenWidth(10),
-                    color: kCustomGreenAccent,
+                    fontSize: getProportionateScreenWidth(13),
+                    color: Colors.green,
                   ),
                 ),
               ],
@@ -275,25 +276,31 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                       padding: const EdgeInsets.fromLTRB(15, 10, 8, 100),
                       child: Column(
                         children: [
+
                           Row(
                             children: [
                               Text('Carrello',
                                   style: TextStyle(
-                                      color: kPrimaryColor,
+                                      color: Colors.black,
                                       fontSize: getProportionateScreenHeight(20),
                                       fontWeight: FontWeight.bold)),
                             ],
                           ),
+                          Divider(
+                            height: 10,
+                            indent: 0,
+                            endIndent: 0,
+                            color: Colors.black.withOpacity(0.2),
+                          ),
                           buildProductListWidget(dataBundleNotifier),
                           const Divider(
                             height: 40,
-                            indent: 20,
-                            endIndent: 20,
+                            indent: 5,
+                            endIndent: 5,
                           ),
                         ],
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -340,7 +347,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                   child: Text(
                     element.nome,
                     overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.bold, color: kPrimaryColor),
                   ),
                 ),
                 Row(
@@ -348,7 +355,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                     Text(
                       element.unita_misura,
                       style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8), fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -358,9 +365,9 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                       ),
                     ),
                     Text(
-                      element.prezzo_lordo.toString() + ' €',
+                      dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? '' : element.prezzo_lordo.toString() + ' €',
                       style:
-                          TextStyle(fontSize: getProportionateScreenWidth(8), fontWeight: FontWeight.bold),
+                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),

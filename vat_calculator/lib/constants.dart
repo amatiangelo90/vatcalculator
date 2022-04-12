@@ -22,7 +22,7 @@ const kPrimaryLightColor = Color(0xFFFFECDF);
 const kTextColor = Color(0xFF757575);
 
 const kAnimationDuration = Duration(milliseconds: 200);
-
+const String kVersionApp = '1.0.39';
 final headingStyle = TextStyle(
   fontSize: getProportionateScreenWidth(28),
   fontWeight: FontWeight.bold,

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,6 +19,7 @@ import 'package:vat_calculator/client/vatservice/model/product_order_amount_mode
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
@@ -26,6 +28,7 @@ import 'package:vat_calculator/screens/orders/components/screens/orders_utils.da
 import 'package:vat_calculator/size_config.dart';
 
 import '../../../client/fattureICloud/model/response_fornitori.dart';
+import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../main_page.dart';
 import '../orders_screen.dart';
 
@@ -72,62 +75,68 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                               child: const Text("Ricevuto", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                               onPressed:  () async {
                                 Navigator.of(context).pop();
-
                                 context.loaderOverlay.show();
                                 StorageModel storageModel = dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id);
-                                await dataBundleNotifier.setCurrentStorage(storageModel);
+                                List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
 
-                                print('Start adding order to current storage stock');
-                                dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((element) {
-                                  widget.productList.forEach((standardElement) {
-                                    if (standardElement.pkProductId == element.fkProductId) {
-                                      element.stock = element.stock + standardElement.amount;
-                                    }
-                                  });
+                                widget.productList.forEach((element) {
+                                  if(element.amount > 0){
+                                    listMoveProductBetweenStorageModel.add(
+                                        MoveProductBetweenStorageModel(
+                                            amount: element.amount,
+                                            pkProductId: element.pkProductId,
+                                            storageIdFrom: 0,
+                                            storageIdTo: storageModel.pkStorageId
+                                        )
+                                    );
+                                  }
                                 });
-                                print('Finish uploading storage stock');
-                                ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
 
-                                //TODO aggiungere lista merce aggiunta a fronte del carico
-                                getclientServiceInstance.updateStock(
-                                    currentStorageProductListForCurrentStorageUnload: dataBundleNotifier.currentStorageProductListForCurrentStorage,
+                                Response response = await dataBundleNotifier.getclientServiceInstance()
+                                    .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
                                     actionModel: ActionModel(
                                         date: DateTime.now().millisecondsSinceEpoch,
-                                        description: 'Ha eseguito il carico nel magazzino ${storageModel.name} a fronte della ricezione dell\'ordine #${widget.orderModel.code} '
-                                            'da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}. ',
+                                        description: 'Ha effettuato carico in magazzino ${storageModel.name} a fronte della ricezione dell\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
                                         fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                         user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                         type: ActionType.STORAGE_LOAD
                                     )
                                 );
-                                dataBundleNotifier.clearUnloadProductList();
-                                dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
+                                if(response != null && response.data == 1){
+                                  dataBundleNotifier.cleanExtraArgsListProduct();
+                                  dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                  await dataBundleNotifier.getclientServiceInstance().updateOrderStatus(
+                                      orderModel: OrderModel(
+                                          pk_order_id: widget.orderModel.pk_order_id,
+                                          status: OrderState.RECEIVED_ARCHIVED,
+                                          delivery_date: DateTime.now().millisecondsSinceEpoch,
+                                          closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
+                                      ),
+                                      actionModel: ActionModel(
+                                          date: DateTime.now().millisecondsSinceEpoch,
+                                          description: 'Ha modificato in ${OrderState.RECEIVED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
+                                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                          type: ActionType.RECEIVED_ORDER
+                                      )
+                                  );
+                                  dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
+                                  dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
 
-                                await dataBundleNotifier.getclientServiceInstance().updateOrderStatus(
-                                  orderModel: OrderModel(
-                                      pk_order_id: widget.orderModel.pk_order_id,
-                                      status: OrderState.RECEIVED_ARCHIVED,
-                                      delivery_date: DateTime.now().millisecondsSinceEpoch,
-                                      closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
-                                  ),
-                                  actionModel: ActionModel(
-                                      date: DateTime.now().millisecondsSinceEpoch,
-                                      description: 'Ha modificato in ${OrderState.RECEIVED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
-                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                      type: ActionType.RECEIVED_ORDER
-                                  )
-                                );
-                                dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
-                                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                                  dataBundleNotifier.getclientMessagingFirebase().sendNotificationToUsersByTokens(dataBundleNotifier.currentBossTokenList,
+                                      '${dataBundleNotifier.userDetailsList[0].firstName} ha ricevuto l\'ordine di ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)} '
+                                          'per ${dataBundleNotifier.currentBranch.companyName}.',
+                                      'Ordine ${widget.orderModel.code} Ricevuto',DateTime.now().millisecondsSinceEpoch.toString());
 
-                                dataBundleNotifier.getclientMessagingFirebase().sendNotificationToUsersByTokens(dataBundleNotifier.currentBossTokenList,
-                                    '${dataBundleNotifier.userDetailsList[0].firstName} ha ricevuto l\'ordine di ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)} '
-                                        'per ${dataBundleNotifier.currentBranch.companyName}.',
-                                    'Ordine ${widget.orderModel.code} Ricevuto',DateTime.now().millisecondsSinceEpoch.toString());
-                                Navigator.pushNamed(context, HomeScreenMain.routeName);
-                                dataBundleNotifier.onItemTapped(2);
-
+                                  dataBundleNotifier.onItemTapped(0);
+                                  Navigator.pushNamed(context, HomeScreenMain.routeName);
+                                }else{
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                      backgroundColor: kPinaColor,
+                                      duration: Duration(milliseconds: 1200),
+                                      content: Text('Non sono riuscito a completare l\'ordine i prodotti da magazzino. Contatta il supporto')));
+                                }
                                 context.loaderOverlay.hide();
                               },
                             );
@@ -469,7 +478,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                 ),
                 Row(
                   children: [
-                    Text(currentProduct.prezzo_lordo.toStringAsFixed(2) + ' € - ' + currentProduct.unita_misura, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
+                    Text((dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? '' : currentProduct.prezzo_lordo.toStringAsFixed(2) + ' €') + '' + currentProduct.unita_misura, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent),),
 
                   ],
                 ),

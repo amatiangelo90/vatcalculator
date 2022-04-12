@@ -5,25 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
+import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
-import 'order_confirm_screen.dart';
-import 'order_create_screen.dart';
+import '../../../client/vatservice/model/branch_model.dart';
+import 'confirm_move_product_to_storage.dart';
 
-class ChoiceOrderProductScreen extends StatefulWidget {
-  const ChoiceOrderProductScreen({Key key, this.currentSupplier}) : super(key: key);
+class MoveProductToStorageScreen extends StatefulWidget {
+  const MoveProductToStorageScreen({Key key, this.currentSupplier}) : super(key: key);
 
-  static String routeName = 'addproductorder';
+  static String routeName = 'move_product_storage';
 
   final SupplierModel currentSupplier;
 
   @override
-  State<ChoiceOrderProductScreen> createState() => _ChoiceOrderProductScreenState();
+  State<MoveProductToStorageScreen> createState() => _MoveProductToStorageScreenState();
 }
 
-class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
+class _MoveProductToStorageScreenState extends State<MoveProductToStorageScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,30 +36,61 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
         builder: (context, dataBundleNotifier, child) {
 
           return Scaffold(
+            key: _scaffoldKey,
             bottomSheet: Padding(
               padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
                 textColor: Colors.white,
                 text: 'Procedi',
                 press: () async {
+                  bool canExecute = true;
 
-                  int productsAmountsDiffentThan0 = 0;
-                  dataBundleNotifier.currentProductModelListForSupplier.forEach((element) {
-                    if(element.prezzo_lordo != 0){
-                      productsAmountsDiffentThan0 = productsAmountsDiffentThan0 + 1;
+                  for(StorageProductModel storageProductModel in dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated){
+                    if(storageProductModel.extra != 0 && storageProductModel.extra > storageProductModel.stock){
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        duration: Duration(seconds: 2),
+                        content: Text(
+                            storageProductModel.productName + '. Scarico richiesto: ' + storageProductModel.extra.toStringAsFixed(2) + '. Stock: ' + storageProductModel.stock.toStringAsFixed(2)),
+                      ));
+                      canExecute = false;
+                      break;
                     }
-                  });
-                  if(productsAmountsDiffentThan0 == 0){
-                    buildSnackBar(text: 'Selezionare quantità per almeno un prodotto', color: kPinaColor);
-                  }else{
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OrderConfirmationScreen(
-                          currentSupplier: widget.currentSupplier,
+                  }
+
+                  if(canExecute){
+                    bool atLeastOneGraterThan0 = false;
+                    for(StorageProductModel storageProductModel in dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated){
+                      if(storageProductModel.extra > 0){
+                        atLeastOneGraterThan0 = true;
+                        break;
+                      }
+                    }
+                    if(atLeastOneGraterThan0){
+                      List<StorageModel> storageModelListForAllBranches = [];
+
+                      await Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (BranchModel branch) async {
+                        List<StorageModel> appoggio = await dataBundleNotifier.getclientServiceInstance().retrieveStorageListByBranch(branch);
+                        storageModelListForAllBranches.addAll(appoggio);
+                      });
+
+                      storageModelListForAllBranches.removeWhere((element) => element.pkStorageId == dataBundleNotifier.currentStorage.pkStorageId);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductMoveToOtherStorageConfirmationScreen(
+                            storageList: storageModelListForAllBranches
+                          ),
                         ),
-                      ),
-                    );
+                      );
+
+                    }else{
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        duration: Duration(seconds: 2),
+                        content: Text('Immettere quantità per almeno un prodotto',
+                      )));
+                    }
                   }
                 },
                 color: kPrimaryColor,
@@ -63,18 +99,25 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
             appBar: AppBar(
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () => {
-                    Navigator.pushNamed(context, CreateOrderScreen.routeName),
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   }),
+              actions: [
+                IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      dataBundleNotifier.cleanExtraArgsListProduct();
+                    }),
+              ],
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Column(
                 children: [
                   Text(
-                    'Crea Ordine',
+                    'Sposta prodotti da magazzino',
                     style: TextStyle(
-                      fontSize: getProportionateScreenWidth(18),
+                      fontSize: getProportionateScreenWidth(16),
                       color: Colors.white,
                     ),
                   ),
@@ -82,7 +125,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     'Immetti quantità per prodotti',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(10),
-                      color: kCustomWhite,
+                      color: Colors.green,
                     ),
                   ),
                 ],
@@ -110,7 +153,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                   ],
                 ),
               ],
-              future: buildProductPage(dataBundleNotifier, widget.currentSupplier),
+              future: buildProductPage(dataBundleNotifier),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Padding(
@@ -132,10 +175,12 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
     );
   }
 
-  Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
-    List<Widget> list = [];
+  Future buildProductPage(DataBundleNotifier dataBundleNotifier) async {
+    List<Widget> list = [
+      Center(child: Text(dataBundleNotifier.currentStorage.name, style: TextStyle(fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold)))
+    ];
 
-    if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){
+    if(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.isEmpty){
       list.add(Column(
         children: [
           SizedBox(height: MediaQuery.of(context).size.height*0.3,),
@@ -144,30 +189,33 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
       ),);
       return list;
     }
-    list.add(Center(child: Text(supplier.nome)));
     list.add(
       Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: CupertinoTextField(
-          textInputAction: TextInputAction.next,
-          restorationId: 'Ricerca prodotto',
-          keyboardType: TextInputType.text,
-          clearButtonMode: OverlayVisibilityMode.editing,
-          placeholder: 'Ricerca prodotto',
-          onChanged: (currentText) {
-            dataBundleNotifier.filterCurrentListProductByName(currentText);
-          },
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          height: getProportionateScreenHeight(40),
+          width: getProportionateScreenWidth(500),
+          child: CupertinoTextField(
+            textInputAction: TextInputAction.next,
+            restorationId: 'Ricerca per nome o fornitore',
+            keyboardType: TextInputType.text,
+            clearButtonMode: OverlayVisibilityMode.editing,
+            placeholder: 'Ricerca per nome o fornitore',
+            onChanged: (currentText) {
+              dataBundleNotifier.filterStorageProductList(currentText);
+            },
+          ),
         ),
       ),
     );
-    dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
+    dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((currentProduct) {
       TextEditingController controller;
-      if(currentProduct.prezzo_lordo != 0.0){
-        controller = TextEditingController(text: currentProduct.prezzo_lordo.toString());
+
+      if(currentProduct.extra != 0.0){
+        controller = TextEditingController(text: currentProduct.extra.toStringAsFixed(2));
       }else{
         controller = TextEditingController();
       }
-
 
       list.add(
           Padding(
@@ -178,8 +226,13 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(currentProduct.nome, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
-                    Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                    Text(currentProduct.productName, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
+                    Row(
+                      children: [
+                        Text(currentProduct.stock.toStringAsFixed(2), style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                        Text( ' x ' + currentProduct.unitMeasure, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
                   ],
                 ),
                 Row(
@@ -187,9 +240,9 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          if (currentProduct.prezzo_lordo <= 0) {
+                          if (currentProduct.extra <= 0) {
                           } else {
-                            currentProduct.prezzo_lordo--;
+                            currentProduct.extra--;
                           }
                         });
                       },
@@ -209,13 +262,13 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                         controller: controller,
                         onChanged: (text) {
                           if (double.tryParse(text) != null) {
-                            currentProduct.prezzo_lordo = double.parse(text);
+                            currentProduct.extra = double.parse(text);
                           } else {
                             Scaffold.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
                               content: Text(
                                   'Immettere un valore numerico corretto per ' +
-                                      currentProduct.nome),
+                                      currentProduct.productName),
                             ));
                           }
                         },
@@ -230,7 +283,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          currentProduct.prezzo_lordo = currentProduct.prezzo_lordo + 1;
+                          currentProduct.extra = currentProduct.extra + 1;
                         });
                       },
                       child: Padding(

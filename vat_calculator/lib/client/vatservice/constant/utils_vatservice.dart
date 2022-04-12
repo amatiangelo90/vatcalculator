@@ -102,3 +102,7 @@ const String VAT_SERVICE_URL_CREATE_EVENT_EXPENCE = 'http://$host:8080/vatservic
 const String VAT_SERVICE_URL_UPDATE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/update/eventexpence';
 const String VAT_SERVICE_URL_DELETE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/delete/eventexpence';
 const String VAT_SERVICE_URL_RETRIEVE_EVENT_EXPENCES_BY_EVENT_ID = 'http://$host:8080/vatservices/api/v1/retrieve/eventexpencelistbyeventid';
+
+//Move Product between storages
+
+const String VAT_SERVICE_URL_MOVE_PRODUCT_BETWEEN_STORAGE = 'http://$host:8080/vatservices/api/v1/editing/moveproductsbetweenstorage';

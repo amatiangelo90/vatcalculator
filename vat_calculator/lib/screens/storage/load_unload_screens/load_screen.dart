@@ -149,8 +149,14 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
 
     dataBundleNotifier.currentStorageProductListForCurrentStorageLoad
         .forEach((element) {
-      TextEditingController controller =
-          TextEditingController(text: element.stock.toString());
+      TextEditingController controller;
+
+          if(element.stock > 0){
+            controller = TextEditingController(text: element.stock.toString());
+          }else{
+            controller = TextEditingController();
+          }
+
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

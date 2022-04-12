@@ -9,6 +9,7 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/screens/storage/components/move_produt_to_storage.dart';
 import '../../client/vatservice/model/storage_product_model.dart';
 import '../../client/vatservice/model/utils/action_type.dart';
 import '../../client/vatservice/model/utils/privileges.dart';
@@ -272,6 +273,26 @@ class _StorageScreenState extends State<StorageScreen> {
                                               },
                                             ),
                                           ));
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.purple,
+                                    ),
+                                    child: Center(child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('SPOSTA PRODOTTI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                                        Text('IN ALTRO MAGAZZINO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                                      ],
+                                    )),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, MoveProductToStorageScreen.routeName);
                                     },
                                   ),
                                 ),

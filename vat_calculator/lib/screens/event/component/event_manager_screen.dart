@@ -51,8 +51,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 indicatorWeight: 2,
                 tabs: [
                   Tab(icon: SvgPicture.asset('assets/icons/party.svg', width: getProportionateScreenHeight(34),color: Colors.white,)),
-                  Tab(icon: SvgPicture.asset('assets/icons/chart.svg', width: getProportionateScreenHeight(27),)),
-                  Tab(icon: SvgPicture.asset('assets/icons/bartender.svg', width: getProportionateScreenHeight(27),color: Colors.white,)),
+                  Tab(icon: SvgPicture.asset('assets/icons/soldiout_white.svg', width: getProportionateScreenHeight(27),)),
+                  Tab(icon: SvgPicture.asset('assets/icons/soldiout_white_orange.svg', width: getProportionateScreenHeight(27),)),
                   Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white,)),
                 ],
               ),
@@ -95,144 +95,151 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
     List<Widget> listWgBar = [
-      Padding(
-        padding: const EdgeInsets.all(2.0),
+      Container(
+        color: kPrimaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(
               width: getProportionateScreenWidth(170),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: kPrimaryColor,
-                ),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [ SvgPicture.asset(
-                          'assets/icons/bartender.svg',
-                          color: kCustomOrange,
-                          width: 25,
-                        ),
-                        Positioned(
-                          top: 26.0,
-                          right: 9.0,
-                          child: Stack(
-                            children: <Widget>[
-                              const Icon(
-                                Icons.brightness_1,
-                                size: 18,
-                                color: kPrimaryColor,
-                              ),
-                              Positioned(
-                                right: 2.5,
-                                top: 2.5,
-                                child: Center(
-                                  child: Icon(Icons.add_circle_outline, size: 13, color: kCustomOrange,),
-                                ),
-                              ),
-                            ],
+              child: Card(
+                shadowColor: kCustomOrange,
+                elevation: 5,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [ SvgPicture.asset(
+                            'assets/icons/bartender.svg',
+                            color: kCustomOrange,
+                            width: 25,
                           ),
-                        ),
-                      ],
-                    ),
-                    Text('Crea postazione Bar', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(10)),)
-                  ],
+                          Positioned(
+                            top: 26.0,
+                            right: 9.0,
+                            child: Stack(
+                              children: <Widget>[
+                                const Icon(
+                                  Icons.brightness_1,
+                                  size: 18,
+                                  color: kPrimaryColor,
+                                ),
+                                Positioned(
+                                  right: 2.5,
+                                  top: 2.5,
+                                  child: Center(
+                                    child: Icon(Icons.add_circle_outline, size: 13, color: kCustomOrange,),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text('CREA BAR', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(10)),)
+                    ],
+                  ),
+                  onPressed: () async {
+                    await dataBundleNotifier.getclientServiceInstance().createWorkstations([
+                      WorkstationModel(
+                          closed: 'N',
+                          extra: '',
+                          fkEventId: widget.event.pkEventId,
+                          pkWorkstationId: 0,
+                          name: 'Nuovo Bar',
+                          responsable: '',
+                          type: WORKSTATION_TYPE_BAR
+                      )
+                    ]);
+
+                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
+
+                    setState(() {
+                      widget.workstationModelList.clear();
+                      widget.workstationModelList.addAll(workstationModelListNew);
+                    });
+
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(
+                        backgroundColor: Colors.green.withOpacity(0.8),
+                        duration: const Duration(milliseconds: 800),
+                        content: const Text('Nuova postazione Bar creata')));
+                  },
                 ),
-                onPressed: () async {
-                  await dataBundleNotifier.getclientServiceInstance().createWorkstations([
-                    WorkstationModel(
-                        closed: 'N',
-                        extra: '',
-                        fkEventId: widget.event.pkEventId,
-                        pkWorkstationId: 0,
-                        name: 'Nuovo Bar',
-                        responsable: '',
-                        type: WORKSTATION_TYPE_BAR
-                    )
-                  ]);
-
-                  List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
-
-                  setState(() {
-                    widget.workstationModelList.clear();
-                    widget.workstationModelList.addAll(workstationModelListNew);
-                  });
-
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(
-                      backgroundColor: Colors.green.withOpacity(0.8),
-                      duration: const Duration(milliseconds: 800),
-                      content: const Text('Nuova postazione Bar creata')));
-                },
               ),
             ),
-
             SizedBox(
               width: getProportionateScreenWidth(170),
-              child: TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: kPrimaryColor,
-                ),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/icons/bouvette.svg',
-                          color: kCustomEvidenziatoreGreen,
-                          width: 25,
-                        ),
-                        Positioned(
-                          top: 26.0,
-                          right: 9.0,
-                          child: Stack(
-                            children: const <Widget>[
-                              Icon(
-                                Icons.brightness_1,
-                                size: 18,
-                                color: kPrimaryColor,
-                              ),
-                              Positioned(
-                                right: 2.5,
-                                top: 2.5,
-                                child: Center(
-                                  child: Icon(Icons.add_circle_outline, size: 13, color: kCustomEvidenziatoreGreen,),
-                                ),
-                              ),
-                            ],
+              child: Card(
+                shadowColor: kCustomEvidenziatoreGreen,
+                elevation: 5,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor: kPrimaryColor,
+                  ),
+                  child: Column(
+                    children: [
+                      Stack(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/bouvette.svg',
+                            color: kCustomEvidenziatoreGreen,
+                            width: 25,
                           ),
-                        ),
-                      ],
-                    ),
-                    Text('Crea postazione Champagnerie', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(10)),)
-                  ],
+                          Positioned(
+                            top: 26.0,
+                            right: 9.0,
+                            child: Stack(
+                              children: const <Widget>[
+                                Icon(
+                                  Icons.brightness_1,
+                                  size: 18,
+                                  color: kPrimaryColor,
+                                ),
+                                Positioned(
+                                  right: 2.5,
+                                  top: 2.5,
+                                  child: Center(
+                                    child: Icon(Icons.add_circle_outline, size: 13, color: kCustomEvidenziatoreGreen,),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text('CREA CHAMPAGNERIE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(10)),)
+                    ],
+                  ),
+                  onPressed: () async {
+                    await dataBundleNotifier.getclientServiceInstance().createWorkstations([
+                      WorkstationModel(
+                          closed: 'N',
+                          extra: '',
+                          fkEventId: widget.event.pkEventId,
+                          pkWorkstationId: 0,
+                          name: 'Nuova Champagnerie',
+                          responsable: '',
+                          type: WORKSTATION_TYPE_CHAMP
+                      )
+                    ]);
+
+                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
+
+                    setState(() {
+                      widget.workstationModelList.clear();
+                      widget.workstationModelList.addAll(workstationModelListNew);
+                    });
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(SnackBar(
+                        backgroundColor: Colors.green.withOpacity(0.8),
+                        duration: Duration(milliseconds: 800),
+                        content: Text('Nuova postazione Champagnerie creata')));
+                  },
                 ),
-                onPressed: () async {
-                  await dataBundleNotifier.getclientServiceInstance().createWorkstations([
-                    WorkstationModel(
-                        closed: 'N',
-                        extra: '',
-                        fkEventId: widget.event.pkEventId,
-                        pkWorkstationId: 0,
-                        name: 'Nuova Champagnerie',
-                        responsable: '',
-                        type: WORKSTATION_TYPE_CHAMP
-                    )
-                  ]);
-
-                  List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
-
-                  setState(() {
-                    widget.workstationModelList.clear();
-                    widget.workstationModelList.addAll(workstationModelListNew);
-                  });
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(
-                      backgroundColor: Colors.green.withOpacity(0.8),
-                      duration: Duration(milliseconds: 800),
-                      content: Text('Nuova postazione Champagnerie creata')));
-                },
               ),
             ),
 
@@ -453,6 +460,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                         try{
                                           event.closed = 'Y';
                                           await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+
+
+
                                           dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
                                           Navigator.pushNamed(context, EventHomeScreen.routeName);
                                         }catch(e){
@@ -671,16 +681,16 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ) : SizedBox(height: 10),
               SizedBox(
                 width: getProportionateScreenWidth(500),
-                child: Container(color: Colors.lightBlueAccent, child: Row(
+                child: Container(color: Color(0XFFE64C3D), child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(24)),),
+                      child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(24)),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(30)),),
+                      child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(30)),),
                     ),
                   ],
                 ),),
@@ -828,16 +838,16 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ) : SizedBox(height: 10),
               SizedBox(
                 width: getProportionateScreenWidth(500),
-                child: Container(color: Colors.lightBlueAccent, child: Row(
+                child: Container(color: Color(0XFFcc8400), child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(24)),),
+                      child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(24)),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(18.0),
-                      child: Text('€ ' + totalExpenceEvent.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(30)),),
+                      child: Text('€ ' + totalExpenceEvent.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(30)),),
                     ),
                   ],
                 ),),

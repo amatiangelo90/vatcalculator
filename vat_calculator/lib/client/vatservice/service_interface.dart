@@ -7,6 +7,7 @@ import 'model/action_model.dart';
 import 'model/branch_model.dart';
 import 'model/event_model.dart';
 import 'model/expence_model.dart';
+import 'model/move_product_between_storage_model.dart';
 import 'model/order_model.dart';
 import 'model/product_model.dart';
 import 'model/product_order_amount_model.dart';
@@ -84,5 +85,5 @@ abstract class VatServiceInterface{
   Future<Response> updateEventExpenceModel(ExpenceEventModel expenceEventModel);
   Future<Response> createEventExpenceModel(ExpenceEventModel expenceEventModel);
   Future<Response> deleteEventExpenceModel(ExpenceEventModel expenceEventModel);
-
-}
+  Future<Response> moveProductBetweenStorage({List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel, ActionModel actionModel});
+  }

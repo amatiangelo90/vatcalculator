@@ -169,6 +169,72 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             Colors.black54.withOpacity(0.1),
                             kCustomWhite),
                       ),
+                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : Padding(
+                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(1),
+                            backgroundColor: Colors.black54.withOpacity(0.1),
+                          ),
+                          onPressed: (){
+                            setState((){
+                              if(showBranchStuff){
+                                showBranchStuff = false;
+                              }else{
+                                showBranchStuff = true;
+                              }
+                            });
+                          },
+                          child: Row(
+                            children: [
+                              SizedBox(width: 9,),
+                              SvgPicture.asset(
+                                'assets/icons/Shop Icon.svg',
+                                color: kCustomWhite,
+                                width: 22,
+                              ),
+                              const SizedBox(width: 20),
+                              Expanded(child: Text('Attività', style: const TextStyle(color: kCustomWhite),)),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    height: getProportionateScreenHeight(28),
+                                    width: getProportionateScreenWidth(28),
+                                    child: Card(
+                                      color: kPinaColor,
+                                      child: Center(child: dataBundleNotifier.userDetailsList.isNotEmpty
+                                          ? Text(dataBundleNotifier.userDetailsList[0].companyList.length.toString()
+                                        , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
+                                    ),
+                                  ),
+                                  showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30, color: Colors.white,) : const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      showBranchStuff ? Padding(
+                        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                        child: buildDrawerRow('','Crea',(){
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, CreationBranchScreen.routeName);
+                        }, kCustomWhite,
+                            kPrimaryColor,
+                            kCustomWhite),
+                      ) : SizedBox(width: 0,),
+                      showBranchStuff ? Padding(
+                        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
+                        child: buildDrawerRow('','Associa tramite Codice',(){
+                          dataBundleNotifier.setShowIvaButtonToFalse();
+                          Navigator.pushNamed(context, BranchJoinScreen.routeName);
+                        }, kCustomWhite,
+                            kPrimaryColor,
+                            kCustomWhite),
+                      ) : SizedBox(width: 0,),
+                      showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
+
                       dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
                           dataBundleNotifier.setShowIvaButtonToFalse();
                           switch(dataBundleNotifier.currentBranch.providerFatture){
@@ -362,74 +428,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                           ),
                         ),
                       ),
-
-
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.all(1),
-                            backgroundColor: Colors.black54.withOpacity(0.1),
-                          ),
-                          onPressed: (){
-                            setState((){
-                              if(showBranchStuff){
-                                showBranchStuff = false;
-                              }else{
-                                showBranchStuff = true;
-                              }
-                            });
-                          },
-                          child: Row(
-                            children: [
-                              SizedBox(width: 9,),
-                              SvgPicture.asset(
-                                'assets/icons/Shop Icon.svg',
-                                color: kCustomWhite,
-                                width: 22,
-                              ),
-                              const SizedBox(width: 20),
-                              Expanded(child: Text('Attività', style: const TextStyle(color: kCustomWhite),)),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(28),
-                                    width: getProportionateScreenWidth(28),
-                                    child: Card(
-                                      color: kPinaColor,
-                                      child: Center(child: dataBundleNotifier.userDetailsList.isNotEmpty
-                                          ? Text(dataBundleNotifier.userDetailsList[0].companyList.length.toString()
-                                        , style: const TextStyle(fontSize: 12.0, color: Colors.white),) : const SizedBox(width: 0,)),
-                                    ),
-                                  ),
-                                  showBranchStuff ? const Icon(Icons.keyboard_arrow_down_rounded, size: 30, color: Colors.white,) : const Icon(Icons.arrow_forward_ios, color: kCustomWhite,),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      showBranchStuff ? Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-                        child: buildDrawerRow('','Crea',(){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, CreationBranchScreen.routeName);
-                        }, kCustomWhite,
-                            kPrimaryColor,
-                            kCustomWhite),
-                      ) : SizedBox(width: 0,),
-                      showBranchStuff ? Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-                        child: buildDrawerRow('','Associa tramite Codice',(){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          Navigator.pushNamed(context, BranchJoinScreen.routeName);
-                        }, kCustomWhite,
-                            kPrimaryColor,
-                            kCustomWhite),
-                      ) : SizedBox(width: 0,),
-                      showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
-
                       dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
@@ -550,6 +548,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
     List<Widget> branchList = [];
 
     dataBundleNotifier.userDetailsList[0].companyList.forEach((branch) {
+      branchList.add(Divider(indent: 50, endIndent: 1, height: 1, color: Colors.grey.withOpacity(0.2),));
       branchList.add(
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
@@ -560,9 +559,10 @@ class _CommonDrawerState extends State<CommonDrawer> {
               Navigator.pushNamed(context, HomeScreenMain.routeName);
             }, kPrimaryColor,
                 kPrimaryColor,
-                kCustomGreenAccent),
+                kCustomEvidenziatoreGreen),
           ),
       );
+      
     });
     return Column(children: branchList,);
   }

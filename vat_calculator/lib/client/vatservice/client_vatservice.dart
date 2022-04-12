@@ -6,6 +6,7 @@ import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
+import 'package:vat_calculator/client/vatservice/model/move_product_between_storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
@@ -854,7 +855,8 @@ class ClientVatService implements VatServiceInterface{
               vatApplied : branchElement['vatApplied'],
               unitMeasure : branchElement['unitMeasure'],
               amountHundred: branchElement['amountHundred'],
-              selected: false
+              selected: false,
+              extra: 0.0
             ));
       });
       return storageProoductModelRelationList;
@@ -2798,5 +2800,37 @@ class ClientVatService implements VatServiceInterface{
       print(e);
       return null;
     }
+  }
+
+  @override
+  Future<Response> moveProductBetweenStorage({List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel, ActionModel actionModel}) async {
+
+    var dio = Dio();
+
+    String body = '[';
+    listMoveProductBetweenStorageModel.forEach((moveProductModel) {
+      body = body + json.encode(
+          moveProductModel.toMap()) + ',';
+    });
+    body = body.substring(0, body.length - 1);
+    body = body + ']';
+
+    print('Call ' + VAT_SERVICE_URL_MOVE_PRODUCT_BETWEEN_STORAGE);
+    print('Body Request: ' + body);
+    try{
+      Response post = await dio.post(
+        VAT_SERVICE_URL_MOVE_PRODUCT_BETWEEN_STORAGE,
+        data: body,
+      );
+      return post;
+    }catch(e){
+      print(e);
+      return null;
+    }
+
+
+
+
+
   }
 }

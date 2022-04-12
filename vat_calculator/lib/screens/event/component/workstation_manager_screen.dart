@@ -46,7 +46,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   TextEditingController loadPaxController = TextEditingController(text: '0');
   List<StorageProductModel> currentStorageProductModelList = [];
 
-
   @override
   Widget build(BuildContext context) {
 
@@ -147,17 +146,22 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 ),
                 Row(
                   children: [
-                    Text(
-                      '  ' + element.unitMeasure,
-                      style:
-                      TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.green),
-                    ),
                     Padding(
                       padding: const EdgeInsets.all(3.0),
                       child: Icon(
                         FontAwesomeIcons.dotCircle,
+                        color: Colors.white,
                         size: getProportionateScreenWidth(3),
                       ),
+                    ),
+                    Text(element.refillStock.toStringAsFixed(2).replaceAll('.00', '') + ' x ',
+                      style:
+                      TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.grey),
+                    ),
+
+                    Text(element.unitMeasure,
+                      style:
+                      TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.green),
                     ),
                   ],
                 ),
@@ -182,6 +186,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     ),
                   ),
                 ),
+
                 ConstrainedBox(
                   constraints: BoxConstraints.loose(
                       Size(getProportionateScreenWidth(70),
@@ -763,6 +768,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         getProportionateScreenWidth(70),
                         getProportionateScreenWidth(60))),
                     child: CupertinoTextField(
+
                       controller: controller,
                       textInputAction: TextInputAction.next,
                       keyboardType: const TextInputType.numberWithOptions(
@@ -770,7 +776,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       onChanged: (value){
                         RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
                         element.refillStock = double.parse(double.parse(value.replaceAll(',', '.')).toStringAsFixed(2).replaceAll(regex, ''));
-
                       },
                       clearButtonMode: OverlayVisibilityMode.never,
                       textAlign: TextAlign.center,

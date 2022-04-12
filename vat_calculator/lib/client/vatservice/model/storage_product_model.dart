@@ -15,6 +15,7 @@ class StorageProductModel{
   String unitMeasure;
   double amountHundred;
   bool selected;
+  double extra;
 
   StorageProductModel({
     @required this.pkStorageProductId,
@@ -30,6 +31,7 @@ class StorageProductModel{
     @required this.unitMeasure,
     @required this.amountHundred,
     @required this.selected,
+    @required this.extra,
   });
 
   toMap(){

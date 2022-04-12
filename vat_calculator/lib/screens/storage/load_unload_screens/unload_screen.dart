@@ -84,6 +84,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                     ));
                   }else{
                     Map<int, List<StorageProductModel>> recapMapForCustomer = orderedMapBySuppliers;
+
                     orderedMapBySuppliers.forEach((fkSupplierId, storageProductModelList) async {
                       String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
                       Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
@@ -112,7 +113,6 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                       );
 
                       storageProductModelList.forEach((storageProductModelItem) {
-
                         print('Create relation between ' + performSaveOrderId.data.toString() + ' and : ' + storageProductModelItem.fkProductId.toString() + ' - Stock: ' +  storageProductModelItem.stock.toString());
                         dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
                             storageProductModelItem.stock,
@@ -129,6 +129,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                             storageProductModelItem.stock = standardElement.stock - storageProductModelItem.stock;
 
                             ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
+
 
                             getclientServiceInstance.updateStock(
                               currentStorageProductListForCurrentStorageUnload: [storageProductModelItem],
@@ -177,11 +178,15 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
 
   buildCurrentListProdutctTableForStockManagmentUnload(DataBundleNotifier dataBundleNotifier, context){
     List<Widget> rows = [
-
     ];
 
     dataBundleNotifier.currentStorageProductListForCurrentStorageUnload.forEach((element) {
-      TextEditingController controller = TextEditingController(text: element.stock.toString());
+      TextEditingController controller;
+      if(element.stock > 0){
+        controller = TextEditingController(text: element.stock.toString());
+      }else{
+        controller = TextEditingController();
+      }
       rows.add(
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
