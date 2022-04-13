@@ -31,6 +31,7 @@ import 'package:vat_calculator/screens/storage/components/confirm_move_product_t
 import 'package:vat_calculator/screens/storage/components/create_product_and_add_to_storage.dart';
 import 'package:vat_calculator/screens/storage/components/move_produt_to_storage.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/load_screen.dart';
+import 'package:vat_calculator/screens/storage/orders/order_from_storage_screen.dart';
 import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
 import 'package:vat_calculator/screens/storage/load_unload_screens/unload_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
@@ -93,4 +94,5 @@ final Map<String, WidgetBuilder> routes = {
   ArchiviedEventPage.routeName: (context) => ArchiviedEventPage(),
   MoveProductToStorageScreen.routeName: (context) => MoveProductToStorageScreen(),
   ProductMoveToOtherStorageConfirmationScreen.routeName: (context) => ProductMoveToOtherStorageConfirmationScreen(),
+  OrderFromStorageScreen.routeName: (context) => OrderFromStorageScreen(),
 };

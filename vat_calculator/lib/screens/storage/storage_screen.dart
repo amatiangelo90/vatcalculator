@@ -21,6 +21,7 @@ import 'components/create_product_and_add_to_storage.dart';
 import 'components/product_datasource_storage.dart';
 import 'load_unload_screens/load_screen.dart';
 import 'load_unload_screens/unload_screen.dart';
+import 'orders/order_from_storage_screen.dart';
 
 class StorageScreen extends StatefulWidget{
 
@@ -131,6 +132,7 @@ class _StorageScreenState extends State<StorageScreen> {
 
                               alignment: MainAxisAlignment.spaceAround,
                               children: [
+
                                 dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : IconButton(
                                   icon: SvgPicture.asset('assets/icons/Trash.svg', height: 27, color: Colors.red),
                                   onPressed: (){
@@ -175,7 +177,8 @@ class _StorageScreenState extends State<StorageScreen> {
                                     }
                                   },
                                 ),
-                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
+
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Text('') : SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
@@ -202,7 +205,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     },
                                   ),
                                 ),
-                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Text('') : SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
@@ -273,6 +276,26 @@ class _StorageScreenState extends State<StorageScreen> {
                                               },
                                             ),
                                           ));
+                                    },
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: kCustomOrange,
+                                    ),
+                                    child: Center(child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('EFFETTUA', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
+                                        Text('ORDINE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold),),
+                                      ],
+                                    )),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
                                     },
                                   ),
                                 ),
@@ -416,7 +439,9 @@ class _StorageScreenState extends State<StorageScreen> {
       ),
     ];
     return PaginatedDataTable(
+      showCheckboxColumn: dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? false : true,
       rowsPerPage: 8,
+      columnSpacing: getProportionateScreenHeight(50),
       columns: kTableColumns,
       source: ProductDataSourceStorage(dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated, dataBundleNotifier.currentListSuppliers, dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? true : false),
     );
@@ -433,14 +458,6 @@ class _StorageScreenState extends State<StorageScreen> {
     });
     return currentListNameSuppliers;
   }
-
-
-
-
-
-
-
-
 }
 
 class Content extends StatefulWidget {

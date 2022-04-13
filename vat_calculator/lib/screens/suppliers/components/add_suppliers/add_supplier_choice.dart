@@ -27,6 +27,7 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
       builder: (child, dataBundleNotifier, _){
         return Scaffold(
           appBar: AppBar(
+            elevation: 5,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
@@ -37,8 +38,8 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
             centerTitle: true,
             title: Text('Registra Fornitore',
               style: TextStyle(
-                fontSize: getProportionateScreenWidth(17),
-                color: kCustomGreenAccent,
+                fontSize: getProportionateScreenWidth(19),
+                color: Colors.white,
               ),
             ),
             backgroundColor: kPrimaryColor,

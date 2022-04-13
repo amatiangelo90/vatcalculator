@@ -40,20 +40,20 @@ class _JoinSupplierAlreadyRegisteredScreenState extends State<JoinSupplierAlread
                   }
               ),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black,
+              backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Column(
                 children: [
                   Text(
                     'Associa Fornitore',
                     style: TextStyle(
-                      fontSize: getProportionateScreenWidth(17),
+                      fontSize: getProportionateScreenWidth(19),
                       color: kCustomWhite,
                     ),
                   ),
                 ],
               ),
-              elevation: 2,
+              elevation: 5,
             ),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -97,7 +97,7 @@ class _JoinSupplierAlreadyRegisteredScreenState extends State<JoinSupplierAlread
               padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: kCustomPurple,
+                color: kPrimaryColor,
               ),
               child: Container(
                 decoration: const BoxDecoration(
@@ -116,7 +116,7 @@ class _JoinSupplierAlreadyRegisteredScreenState extends State<JoinSupplierAlread
                           SizedBox(width: getProportionateScreenWidth(5)),
                           SvgPicture.asset(
                             'assets/icons/supplier.svg',
-                            color: kCustomPurple,
+                            color: kPrimaryColor,
                             width: getProportionateScreenWidth(30),
                           ),
                           SizedBox(width: getProportionateScreenWidth(20)),

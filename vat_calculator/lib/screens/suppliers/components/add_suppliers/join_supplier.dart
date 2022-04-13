@@ -36,11 +36,10 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            backgroundColor: Colors.black,
-            bottomSheet: Padding(
-              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-            ),
+            backgroundColor: kPrimaryColor,
+
             appBar: AppBar(
+
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () => {
@@ -48,16 +47,16 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                   }
               ),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black,
+              backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Text(
                 'Associa Fornitore',
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(17),
-                  color: kCustomGreenAccent,
+                  fontSize: getProportionateScreenWidth(19),
+                  color: Colors.white,
                 ),
               ),
-              elevation: 2,
+              elevation: 5,
             ),
             body: Center(
               child: Padding(
@@ -67,10 +66,10 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: <Widget>[
-                        const Text('Immetti qui il codice che ti ha fornitore il fornitore', textAlign: TextAlign.center,),
-                        SizedBox(height: getProportionateScreenHeight(10),),
+                        const Text('Immetti qui il codice che ti ha fornitore il fornitore', textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                        SizedBox(height: getProportionateScreenHeight(30),),
                         _buildInputPasswordForEventWidget(dataBundleNotifier),
-                        SizedBox(height: getProportionateScreenHeight(50),),
+                        SizedBox(height: getProportionateScreenHeight(60),),
                       ],
                     ),
                   ),
@@ -96,7 +95,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               textStyle: const TextStyle(color: Colors.black),
               pinTheme: PinTheme(
                 inactiveColor: kPrimaryColor,
-                selectedColor: kPinaColor,
+                selectedColor: Colors.lightBlueAccent,
                 activeColor: Colors.white,
                 shape: PinCodeFieldShape.box,
                 borderRadius: BorderRadius.circular(4),
@@ -351,12 +350,15 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Flexible(
-                child: CupertinoButton(
-                  color: Colors.black54.withOpacity(0.5),
-                  child: Text("Clear", style: TextStyle(color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(18)),),
-                  onPressed: () {
-                    supplierCodeControllerSearch.clear();
-                  },
+                child: Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: CupertinoButton(
+                    color: Colors.lightBlueAccent,
+                    child: Text("Clear", style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(18)),),
+                    onPressed: () {
+                      supplierCodeControllerSearch.clear();
+                    },
+                  ),
                 ),
               ),
             ],
