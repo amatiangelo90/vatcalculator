@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const String kVersionApp = '1.0.45';
+const String kVersionApp = '1.0.46';
 
 //const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
 const Color kPrimaryColor = Color(0XFF072227);

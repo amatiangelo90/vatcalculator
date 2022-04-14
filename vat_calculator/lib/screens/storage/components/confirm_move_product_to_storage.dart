@@ -85,6 +85,7 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
                           }
                         });
 
+                        //TODO popolare la action
                         Response response = await dataBundleNotifier.getclientServiceInstance()
                             .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
                           actionModel: ActionModel(

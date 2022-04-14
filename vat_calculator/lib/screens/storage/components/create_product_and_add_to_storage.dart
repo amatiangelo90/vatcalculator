@@ -38,7 +38,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
   bool _selectedValue10 = false;
   bool _selectedValue22 = false;
 
-  bool _litresUnitMeasure = false;
+  bool _bottlesUnitMeasure = false;
   bool _kgUnitMeasure = false;
   bool _packagesUnitMeasure = false;
   bool _otherUnitMeasure = false;
@@ -66,7 +66,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                       onPressed: () async {
                         if(_nameController.text.isEmpty || _nameController.text == ''){
                           buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
-                        }else if(!_litresUnitMeasure && !_otherUnitMeasure && !_kgUnitMeasure && !_packagesUnitMeasure){
+                        }else if(!_bottlesUnitMeasure && !_otherUnitMeasure && !_kgUnitMeasure && !_packagesUnitMeasure){
                           buildSnackBar(text: 'Unità di misura del prodotto obbligatoria', color: kPinaColor);
                         } else if(_otherUnitMeasure && (_unitMeasureController.text.isEmpty || _unitMeasureController.text == '')){
                           buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
@@ -86,7 +86,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                               descrizione: '',
                               iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
                               prezzo_lordo: double.parse(_priceController.text.replaceAll(",", ".")),
-                              unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
+                              unita_misura: _bottlesUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                               fkSupplierId: currentSupplierToSaveProduct.pkSupplierId
                           );
 
@@ -210,7 +210,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
       _selectedValue10 = false;
       _selectedValue22 = false;
 
-      _litresUnitMeasure = false;
+      _bottlesUnitMeasure = false;
       _kgUnitMeasure = false;
       _packagesUnitMeasure = false;
       _otherUnitMeasure = false;
@@ -285,7 +285,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                 child: GestureDetector(
                   onTap: (){
                     setState(() {
-                      _litresUnitMeasure = true;
+                      _bottlesUnitMeasure = true;
                       _kgUnitMeasure = false;
                       _packagesUnitMeasure = false;
                       _otherUnitMeasure = false;
@@ -294,14 +294,14 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                   child: Container(
                     height: MediaQuery.of(context).size.height *0.04,
                     decoration: BoxDecoration(
-                      color: _litresUnitMeasure ? kCustomGreenAccent : Colors.white,
+                      color: _bottlesUnitMeasure ? kCustomGreenAccent : Colors.white,
                       border: Border.all(
                         width: 0.2,
                         color: Colors.grey,
                       ),
                       borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                     ),
-                    child: Center(child: Text('litri', style: TextStyle(color: _litresUnitMeasure ? Colors.white : kPrimaryColor,),)),
+                    child: Center(child: Text('bottiglia', style: TextStyle(color: _bottlesUnitMeasure ? Colors.white : kPrimaryColor,),)),
                   ),
                 ),
               ),
@@ -309,7 +309,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                 child: GestureDetector(
                   onTap: (){
                     setState(() {
-                      _litresUnitMeasure = false;
+                      _bottlesUnitMeasure = false;
                       _kgUnitMeasure = true;
                       _packagesUnitMeasure = false;
                       _otherUnitMeasure = false;
@@ -332,7 +332,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                 child: GestureDetector(
                   onTap: (){
                     setState(() {
-                      _litresUnitMeasure = false;
+                      _bottlesUnitMeasure = false;
                       _kgUnitMeasure = false;
                       _packagesUnitMeasure = true;
                       _otherUnitMeasure = false;
@@ -355,7 +355,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                 child: GestureDetector(
                   onTap: (){
                     setState(() {
-                      _litresUnitMeasure = false;
+                      _bottlesUnitMeasure = false;
                       _kgUnitMeasure = false;
                       _packagesUnitMeasure = false;
                       _otherUnitMeasure = true;

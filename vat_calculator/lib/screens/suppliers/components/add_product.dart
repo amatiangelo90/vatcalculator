@@ -128,7 +128,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               ),
                               borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                             ),
-                            child: Center(child: Text('litri',
+                            child: Center(child: Text('bottiglia',
                               style: TextStyle(color: _litresUnitMeasure ?
                               Colors.white : kPrimaryColor, fontWeight: FontWeight.bold),)),
                           ),
@@ -418,7 +418,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       descrizione: _descriptionController.text,
                       iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
                       prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
-                      unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
+                      unita_misura: _litresUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                       fkSupplierId: widget.supplier.pkSupplierId
                   );
 

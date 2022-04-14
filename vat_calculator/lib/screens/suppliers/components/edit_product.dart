@@ -56,9 +56,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
       vat10: widget.product.iva_applicata == 10 ? true : false,
       vat22: widget.product.iva_applicata == 22 ? true : false,
       kg: widget.product.unita_misura == 'kg' ? true : false,
-      litres: widget.product.unita_misura == 'litri' ? true : false,
+      litres: widget.product.unita_misura == 'bottiglia' ? true : false,
       pack: widget.product.unita_misura == 'package' ? true : false,
-      other: widget.product.unita_misura != 'package' && widget.product.unita_misura != 'kg' && widget.product.unita_misura != 'litri' ? true : false,
+      other: widget.product.unita_misura != 'package' && widget.product.unita_misura != 'kg' && widget.product.unita_misura != 'bottiglia' ? true : false,
       unitMeasure: widget.product.unita_misura);
   }
 
@@ -149,7 +149,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 ),
                                 borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
                               ),
-                              child: Center(child: Text('litri', style: TextStyle(color: _litresUnitMeasure ? Colors.white : kPrimaryColor),)),
+                              child: Center(child: Text('bottiglia', style: TextStyle(color: _litresUnitMeasure ? Colors.white : kPrimaryColor),)),
                             ),
                           ),
                         ),
@@ -431,7 +431,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             descrizione: _descriptionController.text,
                             iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
                             prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
-                            unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
+                            unita_misura: _litresUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                           );
 
                           print(productModel.toMap().toString());
@@ -469,7 +469,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           descrizione: _descriptionController.text,
                           iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
                           prezzo_lordo: double.parse(_priceController.text),
-                          unita_misura: _litresUnitMeasure ? 'litri' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
+                          unita_misura: _litresUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
                         );
 
                         print(productModel.toMap().toString());

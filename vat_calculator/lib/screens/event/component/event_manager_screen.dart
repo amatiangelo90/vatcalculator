@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -12,6 +13,8 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/expence_event_reg_card.dart';
 import 'package:vat_calculator/screens/event/component/workstation_card.dart';
 import 'package:vat_calculator/size_config.dart';
+import '../../../client/vatservice/model/action_model.dart';
+import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
 import '../../main_page.dart';
@@ -34,6 +37,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   Map<int, List<WorkstationProductModel>> workstationIdProductListMap = {};
   List<WorkstationProductModel> workstationProductModel = [];
+
+  Map<int, SupportTableObj> supportTableObjList = {};
+
 
   @override
   Widget build(BuildContext context) {
@@ -430,7 +436,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     elevation: 30,
 
                     content: SizedBox(
-                      height: getProportionateScreenHeight(270),
+                      height: getProportionateScreenHeight(370),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -440,11 +446,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: EdgeInsets.all(8.0),
                                 child: Text('Chiudendo l\'evento ${event.eventName} i tuoi dipendenti non potranno più accedervi. '
-                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'. La merce residua verrà caricata nel magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
                               ),
-                              SizedBox(height: 25),
+                              SizedBox(height: 40),
                               InkWell(
                                 child: Container(
                                     padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
@@ -458,13 +464,48 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       width: getProportionateScreenWidth(300),
                                       child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
                                         try{
-                                          event.closed = 'Y';
-                                          await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+
+                                          List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
+
+                                          supportTableObjList.forEach((prodId, value) {
+                                            listMoveProductBetweenStorageModel.add(
+                                                MoveProductBetweenStorageModel(
+                                                    amount: value.amountout,
+                                                    pkProductId: prodId,
+                                                    storageIdFrom: dataBundleNotifier.currentStorage.pkStorageId,
+                                                    storageIdTo: 0
+                                                )
+                                            );
+                                          });
+                                          Response response = await dataBundleNotifier.getclientServiceInstance()
+                                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
+                                              actionModel: ActionModel(
+
+                                              )
+                                          );
+
+                                          if(response != null && response.data == 1){
+                                            event.closed = 'Y';
+                                            await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+                                            dataBundleNotifier.cleanExtraArgsListProduct();
+                                            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                              backgroundColor: Colors.redAccent,
+                                              duration: const Duration(milliseconds: 3000),
+                                              content: Text(
+                                                  'Evento ' +
+                                                      event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
+                                            ));
+                                            dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                                            Navigator.pushNamed(context, EventHomeScreen.routeName);
+                                          }else{
+                                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                backgroundColor: kPinaColor,
+                                                duration: Duration(milliseconds: 1200),
+                                                content: Text('Errore durante le chiusura dell\'evento. Contattare il supporto.')));
+                                          }
 
 
-
-                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                                          Navigator.pushNamed(context, EventHomeScreen.routeName);
                                         }catch(e){
                                           _scaffoldKey.currentState.showSnackBar(SnackBar(
                                             backgroundColor: kCustomBordeaux,
@@ -573,7 +614,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       TableRow( children: [
         Row(
           children: [
-            Text('   PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)),),
+            Text('PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)),),
           ],
         ),
         Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)),),
@@ -592,9 +633,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         });
       });
     }
-
-
-    Map<int, SupportTableObj> supportTableObjList = {};
 
     idsProductsPresent.forEach((productId) {
       map.forEach((workstationId, listProducts) {

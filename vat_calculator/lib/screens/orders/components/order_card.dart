@@ -202,7 +202,7 @@ class OrderCard extends StatelessWidget {
                       ],
                     ),
                     Divider(
-                      color: kCustomOrange,
+                      color: Colors.white,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -213,7 +213,7 @@ class OrderCard extends StatelessWidget {
                             Text(
                               'Prodotti',
                               style: TextStyle(
-                                color: kCustomOrange,
+                                color: kCustomWhite,
                                 fontSize: getProportionateScreenHeight(13),),
                             ),
                             Text(orderIdProductList == null ? '0' : orderIdProductList.length.toString(),
@@ -229,7 +229,7 @@ class OrderCard extends StatelessWidget {
                             Text(
                               'Prezzo Stimato',
                               style: TextStyle(
-                                  color: kCustomOrange,
+                                  color: kCustomWhite,
                                   fontSize: getProportionateScreenHeight(10), fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -248,12 +248,13 @@ class OrderCard extends StatelessWidget {
                     ),
 
                     Divider(
-                      color: kCustomOrange,
+                      color: Colors.white,
                     ),
                     showExpandedTile ? ExpansionTile(
                       textColor: kCustomWhite,
                       collapsedIconColor: kCustomWhite,
                       iconColor: kCustomWhite,
+
                       title: Text(
                         'Mostra Dettagli',
                         style: TextStyle(
@@ -275,7 +276,7 @@ class OrderCard extends StatelessWidget {
                               children: [
                                 Text(getUserDetailsById(order.fk_user_id, order.fk_branch_id,
                                     dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers),
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: kCustomOrange),),
+                                  style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),),
                                 SizedBox(width: getProportionateScreenWidth(10),),
                               ],
                             ),
@@ -293,7 +294,7 @@ class OrderCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(order.status,
-                                  style: TextStyle(color: kCustomOrange),),
+                                  style: TextStyle(color: Colors.green),),
                                 SizedBox(width: getProportionateScreenWidth(10),),
                               ],
                             ),
@@ -311,7 +312,7 @@ class OrderCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
-                                  style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
+                                  style: TextStyle(color: Colors.green, fontSize: getProportionateScreenHeight(14)),),
                                 SizedBox(width: getProportionateScreenWidth(10),),
                               ],
                             ),
@@ -329,7 +330,7 @@ class OrderCard extends StatelessWidget {
                             Row(
                               children: [
                                 Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
-                                  style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
+                                  style: TextStyle(color: Colors.green, fontSize: getProportionateScreenHeight(14)),),
                                 SizedBox(width: getProportionateScreenWidth(10),),
                               ],
                             ),
@@ -417,7 +418,7 @@ class OrderCard extends StatelessWidget {
                         padding: const EdgeInsets.all(3.0),
                         child: Icon(FontAwesomeIcons.dotCircle, size: getProportionateScreenWidth(3),color: kCustomOrange),
                       ),
-                      Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(9),color: kCustomGreenAccent),),
+                      Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenWidth(11),color: Colors.green),),
 
                     ],
                   ),
