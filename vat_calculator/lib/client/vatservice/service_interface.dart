@@ -87,4 +87,5 @@ abstract class VatServiceInterface{
   Future<Response> createEventExpenceModel(ExpenceEventModel expenceEventModel);
   Future<Response> deleteEventExpenceModel(ExpenceEventModel expenceEventModel);
   Future<Response> moveProductBetweenStorage({List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel, ActionModel actionModel});
-  }
+  Future<Response> performEmptyStockStorage(StorageModel currentStorage);
+}

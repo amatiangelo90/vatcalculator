@@ -1693,6 +1693,4 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
 
   }
-
-
 }

@@ -2877,12 +2877,31 @@ class ClientVatService implements VatServiceInterface{
       print(e);
       return null;
     }
+  }
 
+  Future<Response> performEmptyStockStorage(StorageModel currentStorage) async {
+    var dio = Dio();
+    String body = json.encode(
+        currentStorage.toMap());
 
+    Response post;
+    print('Empty stock storage : ' + body);
+    print('Calling empty stock storage method ' + VAT_SERVICE_URL_EMPTY_STOCK_STORAGE + ' to set at 0 all product\'s stock on storage ${currentStorage.name} with id ' + currentStorage.pkStorageId.toString());
 
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_EMPTY_STOCK_STORAGE,
+        data: body,
+      );
+      return post;
+    }catch(e){
+      print(e);
+      return Response(
+        data: 0
+      );
+    }
 
 
   }
-
 
 }

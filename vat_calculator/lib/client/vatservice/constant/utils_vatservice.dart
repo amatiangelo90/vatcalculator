@@ -106,5 +106,9 @@ const String VAT_SERVICE_URL_DELETE_EVENT_EXPENCE = 'http://$host:8080/vatservic
 const String VAT_SERVICE_URL_RETRIEVE_EVENT_EXPENCES_BY_EVENT_ID = 'http://$host:8080/vatservices/api/v1/retrieve/eventexpencelistbyeventid';
 
 //Move Product between storages
-
 const String VAT_SERVICE_URL_MOVE_PRODUCT_BETWEEN_STORAGE = 'http://$host:8080/vatservices/api/v1/editing/moveproductsbetweenstorage';
+
+
+
+//Empty stock on storage
+const String VAT_SERVICE_URL_EMPTY_STOCK_STORAGE = 'http://$host:8080/vatservices/api/v1/editstorage/emptystock';

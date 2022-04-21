@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -375,7 +376,96 @@ class _StorageScreenState extends State<StorageScreen> {
                                     },
                                   ),
                                 ),
+                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.redAccent,
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Text('SVUOTA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                                        Text('MAGAZZINO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                                      ],
+                                    ),
+                                    onPressed: () async {
+                                      showDialog(
+                                          context: context,
+                                          builder: (_) => AlertDialog(
+                                            shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                                            backgroundColor: kCustomWhite,
+                                            contentPadding: EdgeInsets.only(top: 10.0),
+                                            elevation: 30,
 
+                                            content: SizedBox(
+                                              height: getProportionateScreenHeight(240),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Text('Svuota Magazzino?', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                                                  Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                    children: [
+                                                      Padding(
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: Text('Impostare la giacenza per tutti i prodotti presenti in ${dataBundleNotifier.currentStorage.name} a 0?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                                      ),
+                                                      SizedBox(height: 40),
+                                                      InkWell(
+                                                        child: Container(
+                                                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                                            decoration: const BoxDecoration(
+                                                              color: Colors.redAccent,
+                                                              borderRadius: BorderRadius.only(
+                                                                  bottomLeft: Radius.circular(25.0),
+                                                                  bottomRight: Radius.circular(25.0)),
+                                                            ),
+                                                            child: SizedBox(
+                                                              width: getProportionateScreenWidth(300),
+                                                              child: CupertinoButton(child: const Text('SVUOTA MAGAZZINO',
+                                                                  style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent,
+                                                                  onPressed: () async {
+                                                                  try{
+                                                                    Response response = await dataBundleNotifier.getclientServiceInstance().performEmptyStockStorage(dataBundleNotifier.currentStorage);
+
+                                                                    if(response.data.toString() != '0'){
+                                                                      dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                                                      Navigator.of(context).pop();
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(const SnackBar(
+                                                                          backgroundColor: Colors.green,
+                                                                          duration: Duration(milliseconds: 1000),
+                                                                          content: Text('Magazzino svuotato')));
+                                                                    }else{
+                                                                      ScaffoldMessenger.of(context)
+                                                                          .showSnackBar(SnackBar(
+                                                                          backgroundColor: kPinaColor,
+                                                                          duration: Duration(milliseconds: 1600),
+                                                                          content: Text(response.data)));
+                                                                    }
+                                                                  } catch(e){
+                                                                    print('Errore');
+                                                                  }
+
+                                                                }
+                                                              ),
+                                                            )
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                      );
+                                    }),
+                                  ),
                             ],
                             ),
                           ),
