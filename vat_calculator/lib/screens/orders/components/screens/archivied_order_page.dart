@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -70,7 +71,6 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
               backgroundColor: kPrimaryColor,
               title: Text('Archivio Ordini', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17))),
               centerTitle: true,
-              titleTextStyle: TextStyle(color: kCustomGreenAccent, fontSize: getProportionateScreenWidth(15)),
               leading: GestureDetector( 
                 child: const Icon(Icons.arrow_back_ios, color: Colors.white),
                 onTap: (){
@@ -112,25 +112,25 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                       child: TableCalendar<OrderModel>(
                         headerStyle: HeaderStyle(
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
-                          titleTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
+                          titleTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.white),
                           formatButtonDecoration: BoxDecoration(
                             color: kCustomGreenAccent,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
                             Icons.arrow_back_ios,
-                            color: kCustomGreenAccent,
-                            size: getProportionateScreenHeight(16),
+                            color: Colors.white,
+                            size: getProportionateScreenHeight(18),
                           ),
                           rightChevronIcon: Icon(
                             Icons.arrow_forward_ios,
-                            color: kCustomGreenAccent,
-                            size: getProportionateScreenHeight(16),
+                            color: Colors.white,
+                            size: getProportionateScreenHeight(18),
                           ),
                         ),
                         daysOfWeekStyle: const DaysOfWeekStyle(
-                          weekdayStyle:  TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
-                          weekendStyle:  TextStyle(fontSize: 14.0, color: kCustomGreenAccent),
+                          weekdayStyle:  TextStyle(fontSize: 14.0, color: Colors.white),
+                          weekendStyle:  TextStyle(fontSize: 14.0, color: kPinaColor),
 
                         ),
 
@@ -153,7 +153,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                             shape: BoxShape.circle,
                           ),
                           markerDecoration: BoxDecoration(
-                            color: kPinaColor,
+                            color: Colors.lightBlueAccent,
                             borderRadius: BorderRadius.circular(3),
 
                           ),
@@ -216,7 +216,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text('  ' + dataBundleNotifier.getSupplierName(orderList[order].fk_supplier_id),
-                                              style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.red.shade700, fontWeight: FontWeight.bold),),
+                                              style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kPrimaryColor, fontWeight: FontWeight.bold),),
                                           ],
                                         ),
                                         Row(
@@ -232,9 +232,11 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             Text(
-                                              '    ' + orderList[order].status,
+                                              '  ' + orderList[order].status,
                                               style: TextStyle(
-                                                  fontSize: getProportionateScreenHeight(12)),
+                                                  fontSize: getProportionateScreenHeight(15),
+                                              fontWeight: FontWeight.bold,
+                                              color: orderList[order].status == OrderState.REFUSED_ARCHIVED ? Colors.red : Colors.green),
                                             ), ],
                                         ),
                                         Divider(
@@ -254,7 +256,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                                     .length
                                                     .toString(),
                                                   style: TextStyle(
-                                                      color: kPinaColor,
+                                                      color: kPrimaryColor,
                                                       fontSize: getProportionateScreenHeight(16)),
                                                 ),
                                               ],
@@ -272,7 +274,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                                           orderIdProductListMap[
                                                           orderList[order].pk_order_id]),
                                                   style: TextStyle(
-                                                      color: kPinaColor,
+                                                      color: kPrimaryColor,
                                                       fontSize: getProportionateScreenHeight(16)),
                                                 ),
                                               ],
@@ -406,6 +408,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
 
   LinkedHashMap<DateTime, List<OrderModel>> getKOrders(List<OrderModel> eventsList) {
 
+
     var linkedHashMap = LinkedHashMap<DateTime, List<OrderModel>>(
       equals: isSameDay,
       hashCode: getHashCode,
@@ -418,14 +421,21 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
   }
 
   Map<DateTime, List<OrderModel>> buildListEvent(List<OrderModel> eventsList) {
+
     Map<DateTime, List<OrderModel>> map1 = Map();
+
     eventsList.forEach((element) {
-      if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date))))){
-        map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))].add(element);
-      }else{
-        List<OrderModel> listToAdd = [element];
-        map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))] = listToAdd;
+      print('Codice ordinedsd: ' + element.delivery_date.toString());
+
+      if(element.delivery_date != null){
+        if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date))))){
+          map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))].add(element);
+        }else{
+          List<OrderModel> listToAdd = [element];
+          map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))] = listToAdd;
+        }
       }
+
     });
     return map1;
   }

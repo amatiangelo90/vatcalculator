@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +39,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   Map<int, List<WorkstationProductModel>> workstationIdProductListMap = {};
   List<WorkstationProductModel> workstationProductModel = [];
-
-  Map<int, SupportTableObj> supportTableObjList = {};
 
 
   @override
@@ -89,7 +89,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(widget.workstationModelList, dataBundleNotifier, widget.event),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(widget.event, dataBundleNotifier),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(widget.event, dataBundleNotifier, widget.workstationModelList),
               ],
             ),
           ),
@@ -101,7 +101,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
     List<Widget> listWgBar = [
-      Container(
+      widget.event.closed == 'Y' ? SizedBox(width: 0,) : Container(
         color: kPrimaryColor,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -248,8 +248,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 ),
               ),
             ),
-
-
           ],
         ),
       )
@@ -271,6 +269,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         workstationModel: wkStation,
         isBarType : true,
         callBackFunctionEventManager: (){
+          //do it better
           setState(() {
 
           });
@@ -284,8 +283,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         workstationModel: wkStation,
         isBarType : false,
         callBackFunctionEventManager: (){
+          //do it better
           setState(() {
-
           });
         },
       ),);
@@ -318,7 +317,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ])
     );
   }
-  buildEventSettingsScreen(EventModel event, DataBundleNotifier dataBundleNotifier) {
+  buildEventSettingsScreen(EventModel event, DataBundleNotifier dataBundleNotifier, workstationModelList) {
 
     TextEditingController controllerEventName = TextEditingController(text: event.eventName);
     TextEditingController controllerLocation = TextEditingController(text: event.location);
@@ -351,6 +350,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           controller: controllerEventName,
           clearButtonMode: OverlayVisibilityMode.editing,
           autocorrect: false,
+          enabled: widget.event.closed != 'Y' ? true : false,
           placeholder: 'Nome Evento',
         ),
       ),
@@ -371,6 +371,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           controller: controllerLocation,
           clearButtonMode: OverlayVisibilityMode.editing,
           autocorrect: false,
+          enabled: widget.event.closed != 'Y' ? true : false,
           placeholder: 'Location',
         ),
       ),
@@ -379,38 +380,40 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     widgetList.add(
       SizedBox(height: 20),
     );
-    widgetList.add(
-      SizedBox(
-        width: MediaQuery.of(context).size.width - 40,
-        child: CupertinoButton(
-            color: kCustomGreenAccent,
-            child: const Text('Salva impostazioni'),
-            onPressed: () async {
-              if(controllerEventName.text == null || controllerEventName.text == ''){
-                _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                  backgroundColor: kPinaColor,
-                  duration: Duration(milliseconds: 600),
-                  content: Text(
-                      'Il nome dell\'evento è obbligatorio'),
-                ));
-              }else if(controllerLocation.text == null || controllerLocation.text == ''){
-                _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                  backgroundColor: kPinaColor,
-                  duration: Duration(milliseconds: 600),
-                  content: Text(
-                      'La location è obbligatoria'),
-                ));
-              }else{
+    if(widget.event.closed != 'Y'){
+      widgetList.add(
+        SizedBox(
+          width: MediaQuery.of(context).size.width - 40,
+          child: CupertinoButton(
+              color: kCustomGreenAccent,
+              child: const Text('Salva impostazioni'),
+              onPressed: () async {
+                if(controllerEventName.text == null || controllerEventName.text == ''){
+                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                    backgroundColor: kPinaColor,
+                    duration: Duration(milliseconds: 600),
+                    content: Text(
+                        'Il nome dell\'evento è obbligatorio'),
+                  ));
+                }else if(controllerLocation.text == null || controllerLocation.text == ''){
+                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                    backgroundColor: kPinaColor,
+                    duration: Duration(milliseconds: 600),
+                    content: Text(
+                        'La location è obbligatoria'),
+                  ));
+                }else{
 
-                event.location = controllerLocation.text;
-                event.eventName = controllerEventName.text;
+                  event.location = controllerLocation.text;
+                  event.eventName = controllerEventName.text;
 
-                dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+                  dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
 
-              }
-            }),
-      ),
-    );
+                }
+              }),
+        ),
+      );
+    }
     widgetList.add(
       const SizedBox(height: 20),
     );
@@ -465,6 +468,62 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
                                         try{
 
+                                          Map<int, SupportTableObj> supportTableObjList = {};
+
+                                          supportTableObjList.clear();
+                                          supportTableObjList = {};
+                                          sleep(Duration(milliseconds: 300));
+
+                                          Map<int, List<WorkstationProductModel>> map = {};
+
+                                          await Future.forEach(workstationModelList,
+                                                  (WorkstationModel workstationModel) async {
+
+                                                List<WorkstationProductModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
+                                                if(map.containsKey(workstationModel.pkWorkstationId)){
+                                                  map[workstationModel.pkWorkstationId].clear();
+                                                  map[workstationModel.pkWorkstationId] = list;
+                                                }else{
+
+                                                  map[workstationModel.pkWorkstationId] = list;
+                                                }
+                                              });
+
+                                          Set<int> idsProductsPresent = Set();
+
+                                          if(map != null || map.isNotEmpty){
+                                            map.forEach((workstationId, listProducts) {
+                                              listProducts.forEach((product) {
+                                                idsProductsPresent.add(product.fkProductId);
+                                              });
+                                            });
+                                          }
+
+                                          idsProductsPresent.forEach((productId) {
+                                            map.forEach((workstationId, listProducts) {
+                                              listProducts.forEach((product) {
+                                                if(product.fkProductId == productId){
+
+                                                  if(supportTableObjList.containsKey(productId)){
+                                                    supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
+                                                    supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+
+                                                  }else{
+                                                    supportTableObjList[productId] = SupportTableObj(
+                                                        id: productId,
+                                                        amountin: product.refillStock,
+                                                        amountout: product.consumed,
+                                                        productName: product.productName,
+                                                        price: product.productPrice,
+                                                        unitMeasure: product.unitMeasure
+                                                    );
+                                                  }
+                                                }
+                                              });
+                                            });
+                                          });
+
+
                                           List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
 
                                           supportTableObjList.forEach((prodId, value) {
@@ -472,8 +531,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                 MoveProductBetweenStorageModel(
                                                     amount: value.amountout,
                                                     pkProductId: prodId,
-                                                    storageIdFrom: dataBundleNotifier.currentStorage.pkStorageId,
-                                                    storageIdTo: 0
+                                                    storageIdFrom: 0,
+                                                    storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
                                                 )
                                             );
                                           });
@@ -561,7 +620,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   }
 
-  buildResocontoScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
+  buildResocontoScreen(List<WorkstationModel> workstationModelList,
+      DataBundleNotifier dataBundleNotifier, EventModel event) {
     return FutureBuilder(
       initialData: const Center(
           child: CircularProgressIndicator(
@@ -594,6 +654,12 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       DataBundleNotifier dataBundleNotifier,
       EventModel event) async {
 
+    Map<int, SupportTableObj> supportTableObjList = {};
+
+    supportTableObjList.clear();
+    supportTableObjList = {};
+    sleep(Duration(milliseconds: 300));
+
     Map<int, List<WorkstationProductModel>> map = {};
 
     await Future.forEach(workstationModelList,
@@ -609,18 +675,17 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         });
 
     List<TableRow> rows = [];
-
     rows.add(
       TableRow( children: [
         Row(
           children: [
-            Text('PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)),),
+            Text('  PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
           ],
         ),
-        Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)),),
-        Text('SCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)),),
-        Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)),),
-        Text('COSTO (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)),),
+        Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+        Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+        Text('CONSUMO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+        Text('COSTO (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
       ]),
     );
 
@@ -769,6 +834,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 ],
               ),
               SizedBox(height: 50),
+              buildWorkstationDetailsTablesWidget(workstationModelList, map),
+              SizedBox(height: 100),
             ],
 
           ),
@@ -986,6 +1053,134 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
       ],
     ));
+  }
+
+  buildWorkstationDetailsTablesWidget(List<WorkstationModel> workstationModelList, Map<int, List<WorkstationProductModel>> map) {
+    List<Widget> tablesWidget = [];
+
+    workstationModelList.forEach((workstationItem) {
+
+
+      tablesWidget.add(Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+              width: MediaQuery.of(context).size.width - 10,
+              child: Card(
+                color: workstationItem.type == WORKSTATION_TYPE_BAR ? kCustomOrange : kCustomEvidenziatoreGreen,
+                child: Text('  Riepilogo ' + workstationItem.name,
+                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+          ),
+        ],
+      ));
+      List<TableRow> rows = [];
+      rows.add(
+        TableRow( children: [
+          Row(
+            children: [
+              Text('  PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+            ],
+          ),
+          Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+          Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+          Text('CONSUMO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+          Text('COSTO (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+        ]),
+      );
+      double totalExpenceWorkstation = 0.0;
+      map[workstationItem.pkWorkstationId].forEach((workStationProdModel) {
+
+
+        totalExpenceWorkstation = totalExpenceWorkstation + (workStationProdModel.refillStock - workStationProdModel.consumed) * workStationProdModel.productPrice;
+
+        rows.add(
+          TableRow( children: [
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(workStationProdModel.productName, textAlign: TextAlign.start, overflow: TextOverflow.visible,
+                    style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
+                  Text('€ ' + workStationProdModel.productPrice.toStringAsFixed(2) + ' / ' + workStationProdModel.unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Column(
+                children: [
+                  Text(workStationProdModel.refillStock.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Text(workStationProdModel.consumed.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Text((workStationProdModel.refillStock - workStationProdModel.consumed).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Text(((workStationProdModel.refillStock - workStationProdModel.consumed) * workStationProdModel.productPrice).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
+            ),
+          ]),
+        );
+      });
+
+
+      tablesWidget.add(Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Table(
+          columnWidths: const {
+            0: FlexColumnWidth(5),
+            1: FlexColumnWidth(2),
+            2: FlexColumnWidth(2),
+            3: FlexColumnWidth(2),
+            4: FlexColumnWidth(3),
+          },
+          border: TableBorder.all(
+              color: Colors.grey,
+              width: 0.1
+          ),
+          children: rows,
+        ),
+      ));
+
+      tablesWidget.add(
+        Card(
+          child: SizedBox(
+            width: getProportionateScreenWidth(500),
+            child: Container(color: workstationItem.type == WORKSTATION_TYPE_BAR ? Colors.yellow.shade800 : Colors.teal.shade700, child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(24)),),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Text('€ ' + totalExpenceWorkstation.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(30)),),
+                ),
+              ],
+            ),),
+          ),
+        ),
+      );
+    });
+
+
+
+    return Column(
+      children: tablesWidget,
+    );
+
   }
 }
 

@@ -314,6 +314,129 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
+                  Padding(
+                    padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 40,
+                      child: CupertinoButton(
+                          color: kPinaColor,
+                          child: const Text('ELIMINA', style: TextStyle(color: kCustomWhite),),
+                          onPressed: (){
+                            dataBundleNotifier.setEditOrderToFalse();
+                            Widget cancelButton = TextButton(
+                              child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+                              onPressed:  () {
+                                Navigator.of(context).pop();
+                              },
+                            );
+                            Widget continueButton = TextButton(
+                              child: const Text("ELIMINA", style: TextStyle(color: kPinaColor, fontWeight: FontWeight.bold)),
+                              onPressed:  () async {
+                                Navigator.of(context).pop();
+                                context.loaderOverlay.show();
+                                await dataBundleNotifier.getclientServiceInstance().updateOrderStatus(
+                                    orderModel: OrderModel(
+                                        pk_order_id: widget.orderModel.pk_order_id,
+                                        status: OrderState.REFUSED_ARCHIVED,
+                                        delivery_date: DateTime.now().millisecondsSinceEpoch,
+                                        closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
+                                    ),
+                                    actionModel: ActionModel(
+                                        date: DateTime.now().millisecondsSinceEpoch,
+                                        description: 'Ha modificato in ${OrderState.REFUSED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
+                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                        type: ActionType.ORDER_DELETE
+                                    )
+                                );
+
+                                dataBundleNotifier.cleanExtraArgsListProduct();
+                                dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, DateTime.now().millisecondsSinceEpoch, dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
+                                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+
+                                  dataBundleNotifier.getclientMessagingFirebase().sendNotificationToUsersByTokens(dataBundleNotifier.currentBossTokenList,
+                                      '${dataBundleNotifier.userDetailsList[0].firstName} ha eliminato l\'ordine di ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)} '
+                                          'per ${dataBundleNotifier.currentBranch.companyName}.',
+                                      'Ordine ${widget.orderModel.code} NON Ricevuto', DateTime.now().millisecondsSinceEpoch.toString());
+
+                                  dataBundleNotifier.onItemTapped(0);
+                                  Navigator.pushNamed(context, HomeScreenMain.routeName);
+
+                                context.loaderOverlay.hide();
+                              },
+                            );
+
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog (
+                                  actions: [
+                                    ButtonBar(
+                                      alignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        cancelButton,
+                                        continueButton,
+                                      ],
+                                    ),
+                                  ],
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var height = MediaQuery.of(context).size.height;
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        height: getProportionateScreenHeight(300),
+                                        width: width - 90,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  borderRadius: BorderRadius.only(
+                                                      topRight: Radius.circular(10.0),
+                                                      topLeft: Radius.circular(10.0) ),
+                                                  color: kPinaColor,
+                                                ),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Text('  Elimina Ordine ed Archivia',
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontSize: getProportionateScreenWidth(15),
+                                                          fontWeight: FontWeight.bold,
+                                                          color: kCustomWhite,
+                                                        )),
+                                                    IconButton(icon: const Icon(
+                                                      Icons.clear,
+                                                      color: kCustomWhite,
+                                                    ), onPressed: () { Navigator.pop(context); },),
+
+                                                  ],
+                                                ),
+                                              ),
+                                              Text(''),
+                                              Center(
+                                                child: Text('Contrassegna ordine #${widget.orderModel.code.toString()} come NON ricevuto?', textAlign: TextAlign.center,),
+                                              ),
+                                              Text(''),
+                                              Text('Nota: L\'ordine verrà spostato in archivio ma la merce non sarà caricata nel magazzino' , style: TextStyle(fontSize: getProportionateScreenHeight(12)), textAlign: TextAlign.center,),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                            );
+                          }),
+                    ),
+                  ),
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

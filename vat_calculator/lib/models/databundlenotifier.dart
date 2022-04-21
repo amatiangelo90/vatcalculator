@@ -26,6 +26,7 @@ import 'package:vat_calculator/components/vat_data.dart';
 import '../client/fattureICloud/model/response_info_company.dart';
 import '../client/firebase_service/firebase_messaging_service_impl.dart';
 import '../client/vatservice/model/expence_event_model.dart';
+import '../client/vatservice/model/utils/privileges.dart';
 import '../constants.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
@@ -84,10 +85,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<OrderModel> currentDraftOrdersList = [];
 
-  List<OrderModel> currentArchiviedWorkingOrdersList = [];
-
-  List<ActionModel> currentBranchActionsList = [
-  ];
+  List<ActionModel> currentBranchActionsList = [];
 
   List<String> currentBossTokenList = [];
 
@@ -104,8 +102,6 @@ class DataBundleNotifier extends ChangeNotifier {
   FirebaseMessagingService clientMessagingFirebase = FirebaseMessagingService();
   FattureInCloudClient iCloudClient = FattureInCloudClient();
   EmailSenderService emailService = EmailSenderService();
-
-  bool isSpecialUser = false;
 
   BranchModel currentBranch;
   StorageModel currentStorage;
@@ -193,11 +189,6 @@ class DataBundleNotifier extends ChangeNotifier {
     }else{
       return emailService;
     }
-  }
-
-  void enableSpecialUser(){
-    isSpecialUser = true;
-    notifyListeners();
   }
 
   void addAllCurrentProductSupplierList(List<ProductModel> listProduct){
@@ -384,6 +375,7 @@ class DataBundleNotifier extends ChangeNotifier {
     userDetailsList[0].companyList = branchList;
 
     if(userDetailsList[0].companyList.isNotEmpty){
+
       currentBranch = userDetailsList[0].companyList[0];
       initializeCurrentDateTimeRange3Months();
       setCurrentPrivilegeType(currentBranch.accessPrivilege);
@@ -395,7 +387,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
       currentDraftOrdersList.clear();
       orderIdProductListMap.clear();
-      currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
 
       currentOrdersForCurrentBranch.forEach((orderItem) async {
@@ -411,11 +402,6 @@ class DataBundleNotifier extends ChangeNotifier {
             );
             orderIdProductListMap[element.pk_order_id] = list;
           });
-        }else if (orderItem.status == OrderState.ARCHIVED
-            || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED
-            || orderItem.status == OrderState.RECEIVED_ARCHIVED
-            || orderItem.status == OrderState.REFUSED_ARCHIVED){
-          currentArchiviedWorkingOrdersList.add(orderItem);
         }else{
           currentUnderWorkingOrdersList.add(orderItem);
           if(
@@ -431,10 +417,10 @@ class DataBundleNotifier extends ChangeNotifier {
 
     }
 
-    currentBranchActionsList.clear();
-    if(currentBranch != null){
-      currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
-    }
+    //currentBranchActionsList.clear();
+    //if(currentBranch != null){
+    //  currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
+    //}
 
     clearAndUpdateMapBundle();
     notifyListeners();
@@ -446,26 +432,28 @@ class DataBundleNotifier extends ChangeNotifier {
     initializeCurrentDateTimeRange3Months();
     setCurrentPrivilegeType(currentBranch.accessPrivilege);
 
-    currentListCashRegister.clear();
-    currentListRecessed.clear();
 
-    List<RecessedModel> _recessedModelList = [];
-    currentListCashRegister = await clientService.retrieveCashRegistersByBranchId(currentBranch);
 
-    if(currentListCashRegister.isNotEmpty){
-      await Future.forEach(currentListCashRegister,
-              (CashRegisterModel cashRegisterModel) async {
-        List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
-        _recessedModelList.addAll(list);
-      });
-      currentCashRegisterModel = currentListCashRegister.first;
-      currentListRecessed.addAll(_recessedModelList);
+    if(branchModel.accessPrivilege != Privileges.EMPLOYEE){
+      currentListCashRegister.clear();
+      currentListRecessed.clear();
+      List<RecessedModel> _recessedModelList = [];
+      currentListCashRegister = await clientService.retrieveCashRegistersByBranchId(currentBranch);
+
+      if(currentListCashRegister.isNotEmpty){
+        await Future.forEach(currentListCashRegister,
+                (CashRegisterModel cashRegisterModel) async {
+              List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
+              _recessedModelList.addAll(list);
+            });
+        currentCashRegisterModel = currentListCashRegister.first;
+        currentListRecessed.addAll(_recessedModelList);
+      }
+
+      List<ExpenceModel> _expenceModelList = await clientService.retrieveExpencesListByBranch(currentBranch);
+      currentListExpences.clear();
+      currentListExpences.addAll(_expenceModelList);
     }
-
-    List<ExpenceModel> _expenceModelList = await clientService.retrieveExpencesListByBranch(currentBranch);
-    currentListExpences.clear();
-    currentListExpences.addAll(_expenceModelList);
-
 
     List<EventModel> _eventModelList = await clientService.retrieveEventsListByBranchId(currentBranch);
 
@@ -543,7 +531,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentDraftOrdersList.clear();
     orderIdProductListMap.clear();
-    currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
 
     currentOrdersForCurrentBranch.forEach((orderItem) async {
@@ -560,12 +547,6 @@ class DataBundleNotifier extends ChangeNotifier {
           orderIdProductListMap[element.pk_order_id] = list;
         });
 
-      }else if (orderItem.status == OrderState.ARCHIVED
-          || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED
-          || orderItem.status == OrderState.RECEIVED_ARCHIVED
-          || orderItem.status == OrderState.REFUSED_ARCHIVED){
-
-        currentArchiviedWorkingOrdersList.add(orderItem);
       }else {
         currentUnderWorkingOrdersList.add(orderItem);
         if(
@@ -579,8 +560,8 @@ class DataBundleNotifier extends ChangeNotifier {
       }
     });
 
-    currentBranchActionsList.clear();
-    currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
+    //currentBranchActionsList.clear();
+    //currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
 
     clearAndUpdateMapBundle();
 
@@ -638,7 +619,6 @@ class DataBundleNotifier extends ChangeNotifier {
       currentOrdersForCurrentBranch.clear();
       currentDraftOrdersList.clear();
       orderIdProductListMap.clear();
-      currentArchiviedWorkingOrdersList.clear();
       currentUnderWorkingOrdersList.clear();
       currentTodayOrdersForCurrentBranch.clear();
 
@@ -654,14 +634,6 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentStorageList != null && currentStorageList.isNotEmpty){
       currentStorageList.clear();
     }
-
-    if(currentBranchActionsList != null && currentBranchActionsList.isNotEmpty){
-      currentBranchActionsList.clear();
-    }
-    if(currentArchiviedWorkingOrdersList != null && currentArchiviedWorkingOrdersList.isNotEmpty){
-      currentArchiviedWorkingOrdersList.clear();
-    }
-
     if(currentDraftOrdersList != null && currentDraftOrdersList.isNotEmpty){
       currentDraftOrdersList.clear();
       orderIdProductListMap.clear();
@@ -671,9 +643,6 @@ class DataBundleNotifier extends ChangeNotifier {
     }
     if(currentTodayOrdersForCurrentBranch != null && currentTodayOrdersForCurrentBranch.isNotEmpty){
       currentTodayOrdersForCurrentBranch.clear();
-    }
-    if(currentBranchActionsList != null && currentBranchActionsList.isNotEmpty){
-      currentBranchActionsList.clear();
     }
 
     setShowIvaButtonToFalse();
@@ -853,7 +822,6 @@ class DataBundleNotifier extends ChangeNotifier {
     currentOrdersForCurrentBranch.addAll(orderModelList);
     currentDraftOrdersList.clear();
     orderIdProductListMap.clear();
-    currentArchiviedWorkingOrdersList.clear();
     currentUnderWorkingOrdersList.clear();
 
     currentOrdersForCurrentBranch.forEach((orderItem) async {
@@ -869,11 +837,6 @@ class DataBundleNotifier extends ChangeNotifier {
           );
           orderIdProductListMap[element.pk_order_id] = list;
         });
-      }else if (orderItem.status == OrderState.ARCHIVED
-              || orderItem.status == OrderState.REFUSED_ARCHIVED
-              || orderItem.status == OrderState.RECEIVED_ARCHIVED
-              || orderItem.status == OrderState.NOT_RECEIVED_ARCHIVED){
-        currentArchiviedWorkingOrdersList.add(orderItem);
       }else{
         currentUnderWorkingOrdersList.add(orderItem);
         if(
@@ -1145,16 +1108,15 @@ class DataBundleNotifier extends ChangeNotifier {
     List<OrderModel> orderModelToRemove = [];
 
     currentUnderWorkingOrdersList.forEach((currentUnderWorkingOrderItem) {
+
       if(currentUnderWorkingOrderItem.pk_order_id == pk_order_id){
         orderModelToRemove.add(currentUnderWorkingOrderItem);
         currentUnderWorkingOrderItem.delivery_date = millisecondsSinceEpoch;
         currentUnderWorkingOrderItem.status = received_archived;
         currentUnderWorkingOrderItem.closedby = closedByUser;
-        currentArchiviedWorkingOrdersList.add(
-            currentUnderWorkingOrderItem
-        );
       }
     });
+
     currentUnderWorkingOrdersList.removeWhere((element) => element.pk_order_id == pk_order_id);
     notifyListeners();
   }
@@ -1710,4 +1672,27 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     notifyListeners();
   }
+
+  bool isLandingButtonPressed = false;
+
+  void switchLandingButton(){
+    if(isLandingButtonPressed){
+      isLandingButtonPressed = false;
+    }else{
+      isLandingButtonPressed = true;
+    }
+    notifyListeners();
+  }
+
+
+  List<OrderModel> currentArchiviedWorkingOrdersList = [];
+
+  void setCurrentArchiviedWorkingOrdersList(List<OrderModel> orderList){
+    currentArchiviedWorkingOrdersList.clear();
+    currentArchiviedWorkingOrdersList.addAll(orderList);
+    notifyListeners();
+
+  }
+
+
 }

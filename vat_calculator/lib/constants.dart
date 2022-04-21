@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const String kVersionApp = '1.0.46';
-
-//const Color kPrimaryColor = Color.fromRGBO(51, 51, 51, 1);
-const Color kPrimaryColor = Color(0XFF072227);
+const String kVersionApp = '1.0.53';
+const Color kPrimaryColor = Color(0XFF0A2227);
 
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
@@ -15,7 +13,6 @@ const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF235789);
 const Color kCustomGreenAccent = Color(0xFF187436);
 const Color kCustomPinkAccent = Color(0xFFe8175d);
-//const Color kCustomGreenAccent = Color(0xE11f8d2e);
 Color kCustomOrange = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomPurple = Color(0xFF9924ff);
 const Color kCustomEvidenziatoreGreen = Color(0xFF0ABB9C);

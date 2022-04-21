@@ -1005,6 +1005,56 @@ class ClientVatService implements VatServiceInterface{
       rethrow;
     }
   }
+
+  @override
+  Future<List<OrderModel>> retrieveArchiviedOrdersByBranch(BranchModel currentBranch) async {
+    var dio = Dio();
+
+    List<OrderModel> ordersList = [];
+
+
+    String body = json.encode(
+        currentBranch.toMap());
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_ARCHIVIE_ORDERS_BY_BRANCHES,
+        data: body,
+      );
+
+      print('Request body for Vat Service (Retrieve archivied order by branch id): ' + body);
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_ARCHIVIE_ORDERS_BY_BRANCHES + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((orderElement) {
+        ordersList.add(
+            OrderModel(
+                pk_order_id: orderElement['pk_order_id'],
+                code: orderElement['code'],
+                total: orderElement['total'],
+                delivery_date: orderElement['delivery_date'],
+                creation_date: orderElement['creation_date'],
+                fk_supplier_id: orderElement['fk_supplier_id'],
+                fk_user_id: orderElement['fk_user_id'],
+                fk_storage_id: orderElement['fk_storage_id'],
+                fk_branch_id: orderElement['fk_branch_id'],
+                details: orderElement['details'],
+                status: orderElement['status'],
+                closedby: orderElement['closedby']
+            ));
+      });
+      return ordersList;
+    }catch(e){
+      print('Errore retrieving recessed : ');
+      print(e);
+      rethrow;
+    }
+  }
+
+
   @override
   Future<List<SupplierModel>> retrieveSuppliersListByBranch(BranchModel currentBranch) async {
     var dio = Dio();
@@ -2833,4 +2883,6 @@ class ClientVatService implements VatServiceInterface{
 
 
   }
+
+
 }

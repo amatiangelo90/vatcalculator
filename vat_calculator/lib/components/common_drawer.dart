@@ -101,13 +101,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                         const SizedBox(width: 0,),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        dataBundleNotifier.isSpecialUser ? Icon(Icons.star_border, size:20, color: kCustomGreenAccent,
-                                        ) : const SizedBox(width: 0,),
-                                        const SizedBox(width: 20,),
-                                      ],
-                                    ),
                                   ],
                                 ),
                               ],

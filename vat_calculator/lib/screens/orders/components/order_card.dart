@@ -72,7 +72,7 @@ class OrderCard extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(dataBundleNotifier.getSupplierName(order.fk_supplier_id),
-                                      style: TextStyle(fontSize: getProportionateScreenHeight(15), color: Colors.white, fontWeight: FontWeight.bold),),
+                                      style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.white, overflow: TextOverflow.clip,fontWeight: FontWeight.bold),),
                                     Text(
                                       '#' + order.code,
                                       style: TextStyle(fontSize: getProportionateScreenHeight(11), color: Colors.white, fontWeight: FontWeight.bold),),

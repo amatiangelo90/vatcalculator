@@ -6,8 +6,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/screens/main_page.dart';
+import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import 'package:vat_calculator/size_config.dart';
 
+import '../../../../../client/fattureICloud/model/response_fornitori.dart';
 import '../../../../home/home_screen.dart';
 
 class OrderSentDetailsScreen extends StatelessWidget {
@@ -21,12 +23,11 @@ class OrderSentDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    String messageToSend;
-    messageToSend = message.replaceAll('&', '%26');
-    messageToSend = message.replaceAll('#', '');
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return SafeArea(
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -80,8 +81,34 @@ class OrderSentDetailsScreen extends StatelessWidget {
                 child: Text('-- inoltra tramite --' , textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
               ),
               GestureDetector(
-                onTap: (){
-                  launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend');
+                onTap: () async {
+                  String messageToSend = message;
+
+                  messageToSend = messageToSend.replaceAll('&', '%26');
+                  messageToSend = messageToSend.replaceAll(' ', '%20');
+                  messageToSend = messageToSend.replaceAll('#', '');
+                  messageToSend = messageToSend.replaceAll('<br>', '%0a');
+                  messageToSend = messageToSend.replaceAll('</h4>', '');
+                  messageToSend = messageToSend.replaceAll('<h4>', '');
+                  messageToSend = messageToSend.replaceAll('à', 'a');
+                  messageToSend = messageToSend.replaceAll('è', 'e');
+                  messageToSend = messageToSend.replaceAll('ò', 'o');
+                  messageToSend = messageToSend.replaceAll('ù', 'u');
+                  messageToSend = messageToSend.replaceAll('é', 'e');
+
+                  print(messageToSend);
+                  String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
+
+                  if (await canLaunch(urlString)) {
+                    await launch(urlString);
+                  } else {
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  backgroundColor: kPinaColor,
+                  duration: Duration(milliseconds: 3000),
+                  content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                  )));
+                  throw 'Could not launch $urlString';
+                  }
                 },
                 child: Card(
                   elevation: 5,
@@ -92,8 +119,37 @@ class OrderSentDetailsScreen extends StatelessWidget {
                       Text(''),
                       Text('INOLTRA CON WHAT\'S APP', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                       IconButton(
-                        onPressed: (){
-                          launch('https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend');
+                        onPressed: () async {
+                          String messageToSend = message;
+
+                          messageToSend = messageToSend.replaceAll('&', '%26');
+                          messageToSend = messageToSend.replaceAll(' ', '%20');
+                          messageToSend = messageToSend.replaceAll('#', '');
+                          messageToSend = messageToSend.replaceAll('<br>', '%0a');
+                          messageToSend = messageToSend.replaceAll('</h4>', '');
+                          messageToSend = messageToSend.replaceAll('<h4>', '');
+                          messageToSend = messageToSend.replaceAll('à', 'a');
+                          messageToSend = messageToSend.replaceAll('è', 'e');
+                          messageToSend = messageToSend.replaceAll('ò', 'o');
+                          messageToSend = messageToSend.replaceAll('ù', 'u');
+                          messageToSend = messageToSend.replaceAll('é', 'e');
+
+                          print(messageToSend);
+                          String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
+
+                          print(urlString);
+                          if (await canLaunch(urlString)) {
+                            await launch(urlString);
+                          } else {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                backgroundColor: kPinaColor,
+                                duration: Duration(milliseconds: 3000),
+                                content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                )));
+                            throw 'Could not launch $urlString';
+                          }
+
+
                         }, icon: SvgPicture.asset(
                         'assets/icons/ws.svg',
 
@@ -105,7 +161,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: (){
-                  launch('sms:${refactorNumber(number)}?body=$messageToSend');
+                  launch('sms:${refactorNumber(number)}?body=$message');
                 },
                 child: Card(
                   color: kPrimaryColor,
@@ -116,7 +172,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                       Text('INOLTRA CON SMS', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                       IconButton(
                         onPressed: (){
-                          launch('sms:${refactorNumber(number)}?body=$messageToSend');
+                          launch('sms:${refactorNumber(number)}?body=$message');
                         }, icon: SvgPicture.asset(
                         'assets/icons/textmessage.svg',
 

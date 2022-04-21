@@ -79,7 +79,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
 
                 dataBundleNotifier.clearUnloadProductList();
                 dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                refreshPage(dataBundleNotifier);
+                dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
               }
             },
           ),
@@ -254,9 +254,5 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
     return Column(
       children: rows,
     );
-  }
-
-  refreshPage(DataBundleNotifier dataBundleNotifier) {
-    dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
   }
 }

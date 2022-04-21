@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -37,14 +36,6 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   int currentOrderIndex = 0;
   int currentEventIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(milliseconds: 1500), () {
-      setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -386,8 +377,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                                   top: 26.0,
                                   right: 9.0,
                                   child: Stack(
-                                    children: <Widget>[
-                                      const Icon(
+                                    children: const <Widget>[
+                                      Icon(
                                         Icons.brightness_1,
                                         size: 18,
                                         color: kPrimaryColor,

@@ -32,14 +32,13 @@ class OrderErrorDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    String messageToSend;
-    messageToSend = message.replaceAll('&', '%26');
-    messageToSend = message.replaceAll('#', '');
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier,_){
         return SafeArea(
           child: Scaffold(
+            key: _scaffoldKey,
             backgroundColor: Colors.white,
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -100,10 +99,37 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                           ),
                         ),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async {
+                            String messageToSend = message;
+
+                            messageToSend = messageToSend.replaceAll('&', '%26');
+                            messageToSend = messageToSend.replaceAll(' ', '%20');
+                            messageToSend = messageToSend.replaceAll('#', '');
+                            messageToSend = messageToSend.replaceAll('<br>', '%0a');
+                            messageToSend = messageToSend.replaceAll('</h4>', '');
+                            messageToSend = messageToSend.replaceAll('<h4>', '');
+                            messageToSend = messageToSend.replaceAll('à', 'a');
+                            messageToSend = messageToSend.replaceAll('è', 'e');
+                            messageToSend = messageToSend.replaceAll('ò', 'o');
+                            messageToSend = messageToSend.replaceAll('ù', 'u');
+                            messageToSend = messageToSend.replaceAll('é', 'e');
+
+                            print(messageToSend);
+                            String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
+
+                            if (await canLaunch(urlString)) {
+                            await launch(urlString);
                             sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                            launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplier.tel)}&text=$messageToSend');
                             performFinalAction(dataBundleNotifier, context);
+                            } else {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
+                            duration: Duration(milliseconds: 3000),
+                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                            )));
+                            throw 'Could not launch $urlString';
+                            }
+
                           },
                           child: Card(
                             elevation: 5,
@@ -119,11 +145,37 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                   ],
                                 ),
                                 IconButton(
-                                  onPressed: (){
+                                  onPressed: () async {
 
+                                    String messageToSend = message;
+
+                                    messageToSend = messageToSend.replaceAll('&', '%26');
+                                    messageToSend = messageToSend.replaceAll(' ', '%20');
+                                    messageToSend = messageToSend.replaceAll('#', '');
+                                    messageToSend = messageToSend.replaceAll('<br>', '%0a');
+                                    messageToSend = messageToSend.replaceAll('</h4>', '');
+                                    messageToSend = messageToSend.replaceAll('<h4>', '');
+                                    messageToSend = messageToSend.replaceAll('à', 'a');
+                                    messageToSend = messageToSend.replaceAll('è', 'e');
+                                    messageToSend = messageToSend.replaceAll('ò', 'o');
+                                    messageToSend = messageToSend.replaceAll('ù', 'u');
+                                    messageToSend = messageToSend.replaceAll('é', 'e');
+
+                                    print(messageToSend);
+                                    String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
+
+                                    if (await canLaunch(urlString)) {
+                                    await launch(urlString);
                                     sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                                    launch('https://api.whatsapp.com/send/?phone=${refactorNumber(supplier.tel)}&text=$messageToSend');
                                     performFinalAction(dataBundleNotifier, context);
+                                    } else {
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    backgroundColor: kPinaColor,
+                                    duration: Duration(milliseconds: 3000),
+                                    content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                    )));
+                                    throw 'Could not launch $urlString';
+                                    }
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/ws.svg',
                                 ),),
@@ -135,9 +187,14 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: (){
 
-                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                            launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
-                            performFinalAction(dataBundleNotifier, context);
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                backgroundColor: kPinaColor,
+                                duration: Duration(milliseconds: 3000),
+                                content: Text('Funzione non ancora implementata'
+                                )));
+                            //sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                            //launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
+                            //performFinalAction(dataBundleNotifier, context);
                           },
                           child: Card(
                             color: kPrimaryColor,
@@ -154,9 +211,14 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 IconButton(
                                   onPressed: (){
 
-                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                                    launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
-                                    performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        backgroundColor: kPinaColor,
+                                        duration: Duration(milliseconds: 3000),
+                                        content: Text('Funzione non ancora implementata'
+                                        )));
+                                    //sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                                    //launch('sms:${refactorNumber(supplier.tel)}?body=$messageToSend');
+                                    //performFinishOrderAndSaveInSentBySmsOrWhatappState(dataBundleNotifier, performSaveOrderId);
 
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/textmessage.svg',
@@ -170,10 +232,36 @@ class OrderErrorDetailsScreen extends StatelessWidget {
 
                         const Text('oppure, se il numero configurato è sbagliato invia l\'ordine selezionando un numero dalla tua lista di contatti' , textAlign: TextAlign.center,),
                         GestureDetector(
-                          onTap: (){
+                          onTap: () async {
+                            String messageToSend = message;
+
+                            messageToSend = messageToSend.replaceAll('&', '%26');
+                            messageToSend = messageToSend.replaceAll(' ', '%20');
+                            messageToSend = messageToSend.replaceAll('#', '');
+                            messageToSend = messageToSend.replaceAll('<br>', '%0a');
+                            messageToSend = messageToSend.replaceAll('</h4>', '');
+                            messageToSend = messageToSend.replaceAll('<h4>', '');
+                            messageToSend = messageToSend.replaceAll('à', 'a');
+                            messageToSend = messageToSend.replaceAll('è', 'e');
+                            messageToSend = messageToSend.replaceAll('ò', 'o');
+                            messageToSend = messageToSend.replaceAll('ù', 'u');
+                            messageToSend = messageToSend.replaceAll('é', 'e');
+
+                            print(messageToSend);
+                            String urlString = 'https://api.whatsapp.com/send/?text=$messageToSend';
+
+                            if (await canLaunch(urlString)) {
+                            await launch(urlString);
                             sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                            launch('https://api.whatsapp.com/send/?text=$messageToSend');
                             performFinalAction(dataBundleNotifier, context);
+                            } else {
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
+                            duration: Duration(milliseconds: 3000),
+                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                            )));
+                            throw 'Could not launch $urlString';
+                            }
                           },
                           child: Card(
                             elevation: 5,
@@ -189,10 +277,36 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                   ],
                                 ),
                                 IconButton(
-                                  onPressed: (){
+                                  onPressed: () async {
+                                    String messageToSend = message;
+
+                                    messageToSend = messageToSend.replaceAll('&', '%26');
+                                    messageToSend = messageToSend.replaceAll(' ', '%20');
+                                    messageToSend = messageToSend.replaceAll('#', '');
+                                    messageToSend = messageToSend.replaceAll('<br>', '%0a');
+                                    messageToSend = messageToSend.replaceAll('</h4>', '');
+                                    messageToSend = messageToSend.replaceAll('<h4>', '');
+                                    messageToSend = messageToSend.replaceAll('à', 'a');
+                                    messageToSend = messageToSend.replaceAll('è', 'e');
+                                    messageToSend = messageToSend.replaceAll('ò', 'o');
+                                    messageToSend = messageToSend.replaceAll('ù', 'u');
+                                    messageToSend = messageToSend.replaceAll('é', 'e');
+
+                                    print(messageToSend);
+                                    String urlString = 'https://api.whatsapp.com/send/?text=$messageToSend';
+
+                                    if (await canLaunch(urlString)) {
+                                    await launch(urlString);
                                     sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                                    launch('https://api.whatsapp.com/send/?text=$messageToSend');
                                     performFinalAction(dataBundleNotifier, context);
+                                    } else {
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    backgroundColor: kPinaColor,
+                                    duration: Duration(milliseconds: 3000),
+                                    content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                    )));
+                                    throw 'Could not launch $urlString';
+                                    }
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/ws.svg',
                                 ),),
@@ -203,9 +317,14 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (){
-                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                            launch('sms:?body=$messageToSend');
-                            performFinalAction(dataBundleNotifier, context);
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                backgroundColor: kPinaColor,
+                                duration: Duration(milliseconds: 3000),
+                                content: Text('Funzione non ancora implementata'
+                                )));
+                            //sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                            //launch('sms:?body=$messageToSend');
+                            //performFinalAction(dataBundleNotifier, context);
                           },
                           child: Card(
                             color: kPrimaryColor,
@@ -220,9 +339,14 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
-                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                                    launch('sms:?body=$messageToSend');
-                                    performFinalAction(dataBundleNotifier, context);
+                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        backgroundColor: kPinaColor,
+                                        duration: Duration(milliseconds: 3000),
+                                        content: Text('Funzione non ancora implementata'
+                                        )));
+                                    //sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                                    //launch('sms:?body=$messageToSend');
+                                    //performFinalAction(dataBundleNotifier, context);
 
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/textmessage.svg',

@@ -99,7 +99,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                     'Responsabile: ',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                   Text(
-                                    widget.workstationModel.responsable == '' ? '-' : widget.workstationModel.responsable,
+                                    widget.workstationModel.responsable == '' ? widget.workstationModel.pkWorkstationId.toString() : '',
                                     style: TextStyle(fontSize: getProportionateScreenHeight(13), color: widget.isBarType ? kCustomOrange : kCustomEvidenziatoreGreen, fontWeight: FontWeight.bold),),
                                 ],
                               ),
@@ -177,6 +177,26 @@ class _WorkstationCardState extends State<WorkstationCard> {
                       onPressed: () async {
                         List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
 
+                        List<WorkstationProductModel> backup = [];
+
+                        workStationProdModelList.forEach((element) {
+                          backup.add(
+                              WorkstationProductModel(
+                                unitMeasure: element.unitMeasure,
+                                productName: element.productName,
+                                productPrice: element.productPrice,
+                                amountHunderd: element.amountHunderd,
+                                consumed: element.consumed,
+                                fkProductId: element.fkProductId,
+                                fkStorProdId: element.fkStorProdId,
+                                fkSupplierId: element.fkSupplierId,
+                                fkWorkstationId: element.fkWorkstationId,
+                                pkWorkstationStorageProductId: element.pkWorkstationStorageProductId,
+                                refillStock: element.refillStock,
+                                storeStock: element.storeStock
+                              ),
+                          );
+                        });
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -184,6 +204,7 @@ class _WorkstationCardState extends State<WorkstationCard> {
                                 eventModel: widget.eventModel,
                                 workstationModel: widget.workstationModel,
                                 workStationProdModelList: workStationProdModelList,
+                                workStationProdModelListBackUp: backup,
                                 callbackFuntion: callbackFuntion,
                                 callBackFunctionEventManager: widget.callBackFunctionEventManager
                             ),
@@ -217,19 +238,31 @@ class _WorkstationCardState extends State<WorkstationCard> {
       )
     ];
 
+    print(DateTime.now().millisecondsSinceEpoch.toString());
     List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
 
     workStationProdModelList.forEach((workstationProd) {
         list.add(TableRow(
           children: [
-            Column(children:[Row(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(workstationProd.productName, style: TextStyle(fontSize: 15.0, color: Colors.white)),
-                Text(' (${workstationProd.unitMeasure})', style: TextStyle(fontSize: 11.0)),
+            Text(workstationProd.productName, style: TextStyle(fontSize: 15.0, color: Colors.white)),
+            Text('(${workstationProd.unitMeasure})', style: TextStyle(fontSize: 11.0)),
               ],
-            )]),
-            Column(children:[Text(workstationProd.refillStock.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: 14.0, color: Colors.greenAccent.shade700))]),
-            Column(children:[Text(workstationProd.consumed.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: 14.0, color: Colors.redAccent.shade400))]),
+            ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children:[
+              Text(workstationProd.refillStock.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: 16.0, color: Colors.greenAccent.shade700)),
+              ]
+            ),
+            Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children:[Text(workstationProd.consumed.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: 16.0, color: Colors.redAccent.shade400))]),
           ]
         ));
       });

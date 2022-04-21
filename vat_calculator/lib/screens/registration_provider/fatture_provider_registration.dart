@@ -54,7 +54,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                Padding(
                  padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                  child: SizedBox(
-                   width: MediaQuery.of(context).size.width - 30,
+                   width: MediaQuery.of(context).size.width - 50,
                    child: CupertinoButton(
                        color: Colors.green.shade900.withOpacity(0.8),
                        child: const Text('Imposta Provider'),
@@ -227,7 +227,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
              ],
            ),
            appBar: AppBar(
-             iconTheme: IconThemeData(color: kCustomOrange),
+             iconTheme: IconThemeData(color: Colors.white),
              backgroundColor: kPrimaryColor,
              leading: GestureDetector(
                child: const Icon(Icons.arrow_back_ios),
@@ -240,7 +240,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                GestureDetector(
                  child: SvgPicture.asset(
                    'assets/icons/question-mark.svg',
-                   color: kCustomOrange,
+                   color: Colors.white,
                    width: 25,
                  ),
                  onTap: (){
@@ -336,13 +336,13 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                  Text(
                    'Fatturazione Elettronica',
                    style: TextStyle(
-                     fontSize: getProportionateScreenWidth(16),
-                     color: kCustomOrange,
+                     fontSize: getProportionateScreenWidth(17),
+                     color: Colors.white,
                    ),
                  ),
                ],
              ),
-             elevation: 0,
+             elevation: 5,
            ),
            body: Form(
              key: formKey,

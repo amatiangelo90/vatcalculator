@@ -15,6 +15,7 @@ import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.da
 import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import 'package:vat_calculator/screens/warnings/warning_screen.dart';
 
+import '../client/vatservice/model/order_model.dart';
 import '../client/vatservice/model/utils/privileges.dart';
 import '../components/common_drawer.dart';
 import '../models/databundlenotifier.dart';
@@ -158,7 +159,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
             child: BottomNavigationBar(
-
               type: BottomNavigationBarType.fixed,
               items: <BottomNavigationBarItem>[
                 BottomNavigationBarItem(
@@ -484,7 +484,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
           actions: [
             dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
               children: [
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
+                Padding(
                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   child: IconButton(
                       icon: SvgPicture.asset(
@@ -492,42 +492,18 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                         width: 25,
                         color: kCustomWhite,
                       ),
-                      onPressed: () {
-                        dataBundleNotifier.setShowIvaButtonToFalse();
+                      onPressed: () async {
+                        List<OrderModel> _orderModelList = [];
+
+                        if(dataBundleNotifier.currentBranch != null){
+                          _orderModelList = await dataBundleNotifier.getclientServiceInstance().retrieveArchiviedOrdersByBranch(dataBundleNotifier.currentBranch);
+                        }
+
+                        dataBundleNotifier.setCurrentArchiviedWorkingOrdersList(_orderModelList);
+
                         Navigator.pushNamed(
                             context, ArchiviedOrderPage.routeName);
                       }),
-                ),
-                Positioned(
-                  top: 13.0,
-                  right: dataBundleNotifier.currentArchiviedWorkingOrdersList.length > 9
-                      ? 5.0
-                      : 8.0,
-                  child: Stack(
-                    children: <Widget>[
-                      const Icon(
-                        Icons.brightness_1,
-                        size: 16,
-                        color: Colors.redAccent,
-                      ),
-                      Positioned(
-                        right:
-                        dataBundleNotifier.currentArchiviedWorkingOrdersList.length > 9 ? 3.0 : 5.0,
-                        top: 2,
-                        child: Center(
-                          child: Text(
-                            dataBundleNotifier.currentArchiviedWorkingOrdersList.length
-                                .toString(),
-                            style: const TextStyle(
-                                fontSize: 8.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

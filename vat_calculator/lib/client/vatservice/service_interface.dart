@@ -39,12 +39,13 @@ abstract class VatServiceInterface{
   Future<Response> removeProductFromStorage({StorageProductModel storageProductModel, ActionModel actionModel});
   Future<UserModel> retrieveUserByEmail(String eMail);
   Future<List<BranchModel>> retrieveBranchesByUserId(int id);
-  Future<List<ActionModel>> retrieveActionsByBranchId(int branchId);
-  Future<List<ActionModel>> retrieveLastWeekActionsByBranchId(int branchId);
+  //Future<List<ActionModel>> retrieveActionsByBranchId(int branchId);
+  //Future<List<ActionModel>> retrieveLastWeekActionsByBranchId(int branchId);
   Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(int pkStorageId);
   Future<List<RecessedModel>> retrieveRecessedListByCashRegister(CashRegisterModel currentBranch);
   Future<List<ExpenceModel>> retrieveExpencesListByBranch(BranchModel currentBranch);
   Future<List<OrderModel>> retrieveOrdersByBranch(BranchModel currentBranch);
+  Future<List<OrderModel>> retrieveArchiviedOrdersByBranch(BranchModel currentBranch);
   Future<List<SupplierModel>> retrieveSuppliersListByBranch(BranchModel currentBranch);
   Future<List<ProductModel>> retrieveProductsBySupplier(SupplierModel currentSupplier);
   Future<List<ProductModel>> retrieveProductsByBranch(BranchModel branchModel);

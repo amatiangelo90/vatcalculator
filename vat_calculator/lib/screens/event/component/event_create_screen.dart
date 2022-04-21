@@ -19,7 +19,6 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/main_page.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
@@ -63,6 +62,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
   Future<void> setCurrentStorage(String storage, DataBundleNotifier dataBundleNotifier) async {
     setState(() {
       _selectedStorage = storage;
+      _barPositionCounter = 0;
+      _champagneriePositionCounter = 0;
     });
     currentStorageProductModelListChampagnerie.clear();
     currentStorageProductModelListBar.clear();
@@ -216,7 +217,6 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           ),
                         ),
                       ),
-                      _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : const Divider(height: 25, endIndent: 50, indent: 50,),
                       _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -291,7 +291,6 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         columns: kTableColumns,
                         source: ProductDataSourceEvents(currentStorageProductModelListBar),
                       ),
-                      _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : const Divider(height: 25, endIndent: 50, indent: 50,),
                       _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(

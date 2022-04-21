@@ -38,6 +38,7 @@ class CreateOrderScreen extends StatelessWidget {
               iconTheme: const IconThemeData(color: Colors.white),
               backgroundColor: kPrimaryColor,
               centerTitle: true,
+
               title: Column(
                 children: [
                   Column(
@@ -52,15 +53,15 @@ class CreateOrderScreen extends StatelessWidget {
                       Text(
                         'Seleziona Fornitore',
                         style: TextStyle(
-                          fontSize: getProportionateScreenWidth(10),
-                          color: kCustomGreenAccent,
+                          fontSize: getProportionateScreenWidth(11),
+                          color: Colors.green,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              elevation: 2,
+              elevation: 5,
             ),
             body: Container(
               color: kCustomWhite,

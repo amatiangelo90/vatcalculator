@@ -19,6 +19,8 @@ const String VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_BRANCH_ID = 'http://$host:8080
 const String VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/recessed';
 const String VAT_SERVICE_URL_RETRIEVE_EXPENCE_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/expences';
 const String VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/orders';
+
+const String VAT_SERVICE_URL_RETRIEVE_ARCHIVIE_ORDERS_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/archiviedorders';
 const String VAT_SERVICE_URL_RETRIEVE_SUPPLIER_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/suppliers';
 const String VAT_SERVICE_URL_RETRIEVE_SUPPLIER_BY_CODE_ALIAS_EXTRA = 'http://$host:8080/vatservices/api/v1/retrieve/suppliersbycode';
 const String VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_SUPPLIER = 'http://$host:8080/vatservices/api/v1/retrieve/products';

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
+import 'package:vat_calculator/client/vatservice/model/move_product_between_storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
@@ -27,12 +27,14 @@ class WorkstationManagerScreen extends StatefulWidget {
     this.eventModel,
     this.workstationModel,
     this.workStationProdModelList,
+    this.workStationProdModelListBackUp,
     this.callbackFuntion,
     this.callBackFunctionEventManager}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
   final List<WorkstationProductModel> workStationProdModelList;
+  final List<WorkstationProductModel> workStationProdModelListBackUp;
   final Function callbackFuntion;
   final Function callBackFunctionEventManager;
 
@@ -58,8 +60,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             key: _scaffoldKey,
             appBar: AppBar(
               bottom: TabBar(
-                indicatorColor: kCustomOrange,
-                indicatorWeight: 4,
+                indicatorColor: Colors.lightBlueAccent,
+                indicatorWeight: 2,
                 tabs: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -97,7 +99,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             ),
             body: TabBarView(
               children: [
-                buildRefillWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
+                buildRefillWorkstationProductsPage(widget.workStationProdModelList, widget.workStationProdModelListBackUp, dataBundleNotifier),
                 buildUnloadWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
                 buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
               ],
@@ -291,9 +293,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           try{
                             bool isValid = true;
                             for(WorkstationProductModel workProd in widget.workStationProdModelList){
-                              print('PRoduct: '+ workProd.productName);
-                              print('refillStock: '+ workProd.refillStock.toString());
-                              print('consumed: ' + workProd.consumed.toString());
+
                               if(workProd.refillStock < workProd.consumed){
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
                                   backgroundColor: kPinaColor,
@@ -346,7 +346,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       ),
     );
   }
-  buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
+  buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, List<WorkstationProductModel> workStationProdModelListBackup, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> rows = [
       widget.eventModel.closed == 'Y' ? Container(
@@ -466,6 +466,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                           .getclientServiceInstance()
                                           .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
 
+                                      print('COGLIONE');
                                       List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
 
                                       setState(() {
@@ -715,19 +716,19 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       child: Text(
                         element.productName,
                         overflow: TextOverflow.clip,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16), color: kCustomOrange),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(15), color: Colors.white),
                       ),
                     ),
                     Row(
                       children: [
                         Text(
                           element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''),
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(11), color: Colors.green),
+                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(11), color: Colors.lightBlueAccent),
                         ),
                         Text(
                           ' ' + element.unitMeasure + ' x 100/pax' ,
                           style:
-                          TextStyle(fontSize: getProportionateScreenWidth(11), color: Colors.white),
+                          TextStyle(fontSize: getProportionateScreenWidth(11), color: Colors.grey.shade50),
                         ),
                       ],
                     ),
@@ -742,18 +743,36 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         if (element.refillStock <= 1) {
                           dataBundleNotifier.getclientServiceInstance().removeProductFromWorkstation(element);
                           workStationProdModelList.remove(element);
+
+                          widget.workStationProdModelListBackUp.forEach((backupProd) async {
+                            if(element.fkProductId == backupProd.fkProductId && backupProd.refillStock != 0){
+                              await dataBundleNotifier.getclientServiceInstance()
+                                  .moveProductBetweenStorage(listMoveProductBetweenStorageModel: [
+                                  MoveProductBetweenStorageModel(
+                                  pkProductId: backupProd.fkProductId,
+                                  storageIdFrom: 0,
+                                  storageIdTo: widget.eventModel.fkStorageId,
+                                  amount: backupProd.refillStock)
+                              ],
+                                  actionModel: ActionModel(
+
+                                  )
+                              );
+                            }
+                          });
                           _scaffoldKey.currentState.showSnackBar(SnackBar(
                             backgroundColor: Colors.redAccent.withOpacity(0.9),
                             duration: Duration(milliseconds: 1000),
                             content: Text(
                                 'Prodotto ${element.productName} eliminato'),
                           ));
+                          widget.callbackFuntion();
+                          widget.callBackFunctionEventManager();
                         } else {
                           element.refillStock--;
                         }
                       });
-                      widget.callbackFuntion();
-                      widget.callBackFunctionEventManager();
+
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(8.0),
@@ -836,7 +855,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       ));
                     }else{
                       try{
-
                         bool isEverthingOk = true;
                         String productWrong = '';
                         widget.workStationProdModelList.forEach((prodModel) {
@@ -849,6 +867,46 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         });
 
                         if(isEverthingOk){
+
+                          List<MoveProductBetweenStorageModel> unloadProdList = [];
+                          widget.workStationProdModelListBackUp.forEach((element) {
+                            unloadProdList.add(
+                                MoveProductBetweenStorageModel(
+                                  storageIdTo: widget.eventModel.fkStorageId,
+                                  storageIdFrom: 0,
+                                  pkProductId: element.fkProductId,
+                                  amount: element.refillStock
+                                )
+                            );
+                          });
+
+                          List<MoveProductBetweenStorageModel> loadProdList = [];
+                          widget.workStationProdModelList.forEach((element) {
+                            loadProdList.add(
+                                MoveProductBetweenStorageModel(
+                                    storageIdTo: 0,
+                                    storageIdFrom: widget.eventModel.fkStorageId,
+                                    pkProductId: element.fkProductId,
+                                    amount: element.refillStock
+                                )
+                            );
+                          });
+
+                          await dataBundleNotifier.getclientServiceInstance()
+                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: unloadProdList,
+                              actionModel: ActionModel(
+                              )
+                          );
+
+                          await dataBundleNotifier.getclientServiceInstance()
+                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: loadProdList,
+                              actionModel: ActionModel(
+
+                              )
+                          );
+
+                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+
                           await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
                               widget.workStationProdModelList,
                               ActionModel(

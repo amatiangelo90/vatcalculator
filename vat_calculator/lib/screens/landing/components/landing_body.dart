@@ -17,6 +17,7 @@ import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
+import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -33,7 +34,7 @@ class LandingBody extends StatefulWidget {
 
 class _LandingBodyState extends State<LandingBody> {
 
-  bool isButtonPressed = false;
+
   int _currentValue = 0;
 
   @override
@@ -82,15 +83,15 @@ class _LandingBodyState extends State<LandingBody> {
               SizedBox(height: getProportionateScreenHeight(110),),
               Text(kVersionApp, style: TextStyle(fontSize: getProportionateScreenHeight(12))),
 
-              isButtonPressed ? Padding(
+              dataBundleNotifier.isLandingButtonPressed ? Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
                 child: FAProgressBar(
-                    size: 20,
-                    progressColor: Colors.green,
-                    backgroundColor: Colors.white,
-                    currentValue: _currentValue,
-                    displayText: '%',
-                    ),
+                  size: 20,
+                  progressColor: Colors.green,
+                  backgroundColor: Colors.white,
+                  currentValue: _currentValue,
+                  displayText: '%',
+                ),
               ) : Padding(
                 padding: EdgeInsets.all(Platform.isAndroid ? 10.0 : 30.0),
                 child: SizedBox(
@@ -99,22 +100,11 @@ class _LandingBodyState extends State<LandingBody> {
                     child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
                     color: kCustomGreenAccent,
                     onPressed: () async {
-                      setState(() {
-                        isButtonPressed = true;
-                      });
-
+                      dataBundleNotifier.switchLandingButton();
 
                       ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
                       UserModel userModelRetrieved = await clientService.retrieveUserByEmail(widget.email);
-                      if(userModelRetrieved != null){
-                        Response response = await clientService.checkSpecialUser(userModelRetrieved);
-                        if(response != null && response.statusCode != null && response.statusCode == 200){
-                          if(response.data){
-                            print('Enable special user');
-                            dataBundleNotifier.enableSpecialUser();
-                          }
-                        }
-                      }
+
                       UserDetailsModel dataBundle = UserDetailsModel(
                           userModelRetrieved.id,
                           userModelRetrieved.mail,
@@ -129,29 +119,31 @@ class _LandingBodyState extends State<LandingBody> {
                       dataBundleNotifier.addDataBundle(dataBundle);
                       dataBundleNotifier.addBranches(_branchList);
                       _currentValue = 100;
-                      List<RecessedModel> _recessedModelList = [];
-                      List<CashRegisterModel> _cashRegisterModelList = [];
 
-                      if(dataBundleNotifier.currentBranch != null){
-                        _cashRegisterModelList = await clientService.retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+                      if(userModelRetrieved.privilege != Privileges.EMPLOYEE){
+                        List<RecessedModel> _recessedModelList = [];
+                        List<CashRegisterModel> _cashRegisterModelList = [];
 
-                        if(_cashRegisterModelList.isNotEmpty){
-                          await Future.forEach(_cashRegisterModelList,
-                                  (CashRegisterModel cashRegisterModel) async {
-                                List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
-                                _recessedModelList.addAll(list);
-                              });
+                        if(dataBundleNotifier.currentBranch != null){
+                          _cashRegisterModelList = await clientService.retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
+
+                          if(_cashRegisterModelList.isNotEmpty){
+                            await Future.forEach(_cashRegisterModelList,
+                                    (CashRegisterModel cashRegisterModel) async {
+                                  List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
+                                  _recessedModelList.addAll(list);
+                                });
+                          }
+                          dataBundleNotifier.setCashRegisterList(_cashRegisterModelList);
+                          dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
                         }
 
-                        dataBundleNotifier.setCashRegisterList(_cashRegisterModelList);
-                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                      }
+                        List<ExpenceModel> _expenceModelList = [];
 
-                      List<ExpenceModel> _expenceModelList = [];
-
-                      if(dataBundleNotifier.currentBranch != null){
-                        _expenceModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.addCurrentExpencesList(_expenceModelList);
+                        if(dataBundleNotifier.currentBranch != null){
+                          _expenceModelList = await clientService.retrieveExpencesListByBranch(dataBundleNotifier.currentBranch);
+                          dataBundleNotifier.addCurrentExpencesList(_expenceModelList);
+                        }
                       }
 
                       if(dataBundleNotifier.currentBranch != null){
@@ -190,9 +182,8 @@ class _LandingBodyState extends State<LandingBody> {
                         FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
                       });
                       _currentValue = 100;
-                      setState(() {
-                        isButtonPressed = false;
-                      });
+
+                      dataBundleNotifier.switchLandingButton();
                       dataBundleNotifier.onItemTapped(0);
                       Navigator.pushNamed(context, HomeScreenMain.routeName);
                     },
