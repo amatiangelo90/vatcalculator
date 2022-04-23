@@ -856,7 +856,8 @@ class ClientVatService implements VatServiceInterface{
               unitMeasure : branchElement['unitMeasure'],
               amountHundred: branchElement['amountHundred'],
               selected: false,
-              extra: 0.0
+              extra: 0.0,
+              loadUnloadAmount: 0.0
             ));
       });
       return storageProoductModelRelationList;
@@ -1140,7 +1141,9 @@ class ClientVatService implements VatServiceInterface{
                 prezzo_lordo: product['price'],
                 descrizione: product['description'],
                 categoria: product['category'],
-                fkSupplierId: product['fkSupplierId']));
+                fkSupplierId: product['fkSupplierId'],
+                orderItems: 0.0
+            ));
       });
       return productsList;
     }catch(e){
@@ -2235,6 +2238,7 @@ class ClientVatService implements VatServiceInterface{
   @override
   Future<void> updateStock({List<StorageProductModel> currentStorageProductListForCurrentStorageUnload, ActionModel actionModel}) async {
     var dio = Dio();
+    print('Upload on storage. Call $VAT_SERVICE_URL_UPDATE_STOCK...');
     String body = '[';
     currentStorageProductListForCurrentStorageUnload.forEach((currentStorageProductElement) {
       body = body + json.encode(

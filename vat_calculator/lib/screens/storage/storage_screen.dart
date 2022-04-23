@@ -336,7 +336,10 @@ class _StorageScreenState extends State<StorageScreen> {
                                         Text('CARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
                                       ],
                                     ),
-                                    onPressed: ()=> Navigator.pushNamed(context, LoadStorageScreen.routeName),
+                                    onPressed: (){
+                                        dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
+                                        Navigator.pushNamed(context, LoadStorageScreen.routeName);
+                                    }
                                   ),
                                 ),
                                 SizedBox(
@@ -353,7 +356,10 @@ class _StorageScreenState extends State<StorageScreen> {
                                         Text('SCARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
                                       ],
                                     ),
-                                    onPressed: ()=> Navigator.pushNamed(context, UnloadStorageScreen.routeName),
+                                    onPressed: (){
+                                      dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
+                                      Navigator.pushNamed(context, UnloadStorageScreen.routeName);
+                                    }
                                   ),
                                 ),
                                 dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(

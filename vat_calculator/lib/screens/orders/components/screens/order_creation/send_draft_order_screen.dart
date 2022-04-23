@@ -193,7 +193,7 @@ class _DraftOrderConfirmationScreenState extends State<DraftOrderConfirmationScr
                 'Conferma Ordine',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(17),
-                  color: kCustomWhite,
+                  color: Colors.white,
                 ),
               ),
               elevation: 2,

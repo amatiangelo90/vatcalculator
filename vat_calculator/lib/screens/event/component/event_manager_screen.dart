@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +6,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
-import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/expence_event_reg_card.dart';
+import 'package:vat_calculator/screens/event/component/recap_workstations_expences_widget.dart';
 import 'package:vat_calculator/screens/event/component/workstation_card.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../client/vatservice/model/action_model.dart';
@@ -23,37 +22,24 @@ import '../../main_page.dart';
 import '../event_home.dart';
 import 'expence_event_edit_card.dart';
 
-class EventManagerScreen extends StatefulWidget {
-  const EventManagerScreen({Key key, this.event, this.workstationModelList}) : super(key: key);
+class EventManagerScreen extends StatelessWidget {
 
-  final EventModel event;
-  final List<WorkstationModel> workstationModelList;
-
-  @override
-  _EventManagerScreenState createState() => _EventManagerScreenState();
-}
-
-class _EventManagerScreenState extends State<EventManagerScreen> {
-
+  static String routeName = 'eventmanagerscreen';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  Map<int, List<WorkstationProductModel>> workstationIdProductListMap = {};
-  List<WorkstationProductModel> workstationProductModel = [];
-
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
         return DefaultTabController(
           length: 4,
-
           child: Scaffold(
             key: _scaffoldKey,
             appBar: AppBar(
 
               bottom: TabBar(
-                indicatorColor: Colors.red,
+                indicatorColor: Colors.white,
                 indicatorWeight: 2,
                 tabs: [
                   Tab(icon: SvgPicture.asset('assets/icons/party.svg', width: getProportionateScreenHeight(34),color: Colors.white,)),
@@ -74,10 +60,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(widget.event.eventName,
+                  Text(dataBundleNotifier.currentEventModel.eventName,
                     style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white, fontWeight: FontWeight.bold),),
                   Text(
-                    'Creato da: ' + widget.event.owner,
+                    'Creato da: ' + dataBundleNotifier.currentEventModel.owner,
                     style: TextStyle(fontSize: getProportionateScreenHeight(11), color: Colors.white, fontWeight: FontWeight.bold),),
                 ],
               ),
@@ -86,10 +72,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             backgroundColor: Colors.white,
             body: TabBarView(
               children: [
-                buildWorkstationsManagmentScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreen(widget.workstationModelList, dataBundleNotifier, widget.event),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(widget.workstationModelList, dataBundleNotifier, widget.event),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(widget.event, dataBundleNotifier, widget.workstationModelList),
+                buildWorkstationsManagmentScreen(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : RecapWorkstationsWidget(),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(dataBundleNotifier.currentEventModel, dataBundleNotifier, dataBundleNotifier.currentWorkstationModelList),
               ],
             ),
           ),
@@ -101,13 +87,13 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
     List<Widget> listWgBar = [
-      widget.event.closed == 'Y' ? SizedBox(width: 0,) : Container(
-        color: kPrimaryColor,
+      dataBundleNotifier.currentEventModel.closed == 'Y' ? SizedBox(width: 0,) : Container(
+        color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SizedBox(
-              width: getProportionateScreenWidth(170),
+              width: getProportionateScreenWidth(180),
               child: Card(
                 shadowColor: kCustomOrange,
                 elevation: 5,
@@ -153,7 +139,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       WorkstationModel(
                           closed: 'N',
                           extra: '',
-                          fkEventId: widget.event.pkEventId,
+                          fkEventId: dataBundleNotifier.currentEventModel.pkEventId,
                           pkWorkstationId: 0,
                           name: 'Nuovo Bar',
                           responsable: '',
@@ -161,14 +147,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       )
                     ]);
 
-                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
+                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(dataBundleNotifier.currentEventModel);
 
-                    setState(() {
-                      widget.workstationModelList.clear();
-                      widget.workstationModelList.addAll(workstationModelListNew);
-                    });
-
-                    ScaffoldMessenger.of(context)
+                    dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
+                    dataBundleNotifier.workstationsProductsMapCalculate();
+                    _scaffoldKey.currentState
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: const Duration(milliseconds: 800),
@@ -178,7 +161,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ),
             ),
             SizedBox(
-              width: getProportionateScreenWidth(170),
+              width: getProportionateScreenWidth(190),
               child: Card(
                 shadowColor: kCustomEvidenziatoreGreen,
                 elevation: 5,
@@ -225,7 +208,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       WorkstationModel(
                           closed: 'N',
                           extra: '',
-                          fkEventId: widget.event.pkEventId,
+                          fkEventId: dataBundleNotifier.currentEventModel.pkEventId,
                           pkWorkstationId: 0,
                           name: 'Nuova Champagnerie',
                           responsable: '',
@@ -233,13 +216,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       )
                     ]);
 
-                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.event);
+                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(dataBundleNotifier.currentEventModel);
 
-                    setState(() {
-                      widget.workstationModelList.clear();
-                      widget.workstationModelList.addAll(workstationModelListNew);
-                    });
-                    ScaffoldMessenger.of(context)
+                    dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
+                    dataBundleNotifier.workstationsProductsMapCalculate();
+                    _scaffoldKey.currentState
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: Duration(milliseconds: 800),
@@ -265,28 +246,17 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     }
     workstationModelList.where((element) => element.type == WORKSTATION_TYPE_BAR).forEach((wkStation) {
       listWgBar.add(WorkstationCard(
-        eventModel: widget.event,
+        eventModel: dataBundleNotifier.currentEventModel,
         workstationModel: wkStation,
         isBarType : true,
-        callBackFunctionEventManager: (){
-          //do it better
-          setState(() {
-
-          });
-        },
       ),);
     });
     List<Widget> listWgChamp = [];
     workstationModelList.where((element) => element.type == WORKSTATION_TYPE_CHAMP).forEach((wkStation) {
       listWgChamp.add(WorkstationCard(
-        eventModel: widget.event,
+        eventModel: dataBundleNotifier.currentEventModel,
         workstationModel: wkStation,
         isBarType : false,
-        callBackFunctionEventManager: (){
-          //do it better
-          setState(() {
-          });
-        },
       ),);
     });
 
@@ -295,24 +265,33 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         child: Column(children: [
           Column(
             children: listWgBar.isNotEmpty ? listWgBar : [
-              Container(
-                color: kPrimaryColor,
-                child: Center(
-                  child: Text('Nessuna postazione Bar presente', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16))),
+              Padding(
+                padding: const EdgeInsets.all(38.0),
+                child: Column(
+                  children: listWgChamp.isNotEmpty ? listWgChamp : [
+                    Center(
+                      child: Text('Nessuna postazione Bar presente',textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenHeight(16))),
+                    )
+                  ],
                 ),
-              )
+              ),
             ],
           ),
           Column(
             children: listWgChamp.isNotEmpty ? listWgChamp : [
-              Container(
-                color: kPrimaryColor,
-                child: Center(
-                  child: Text('Nessuna postazione Champagnerie presente', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16))),
+              Padding(
+                padding: const EdgeInsets.all(38.0),
+                child: Column(
+                  children: listWgChamp.isNotEmpty ? listWgChamp : [
+                    Center(
+                      child: Text('Nessuna postazione Champagnerie presente',textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenHeight(16))),
+                    )
+                  ],
                 ),
-              )
+              ),
             ],
           ),
+
           SizedBox(height: 50),
         ])
     );
@@ -350,7 +329,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           controller: controllerEventName,
           clearButtonMode: OverlayVisibilityMode.editing,
           autocorrect: false,
-          enabled: widget.event.closed != 'Y' ? true : false,
+          enabled: dataBundleNotifier.currentEventModel.closed != 'Y' ? true : false,
           placeholder: 'Nome Evento',
         ),
       ),
@@ -371,7 +350,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           controller: controllerLocation,
           clearButtonMode: OverlayVisibilityMode.editing,
           autocorrect: false,
-          enabled: widget.event.closed != 'Y' ? true : false,
+          enabled: dataBundleNotifier.currentEventModel.closed != 'Y' ? true : false,
           placeholder: 'Location',
         ),
       ),
@@ -380,10 +359,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     widgetList.add(
       SizedBox(height: 20),
     );
-    if(widget.event.closed != 'Y'){
+    if(dataBundleNotifier.currentEventModel.closed != 'Y'){
       widgetList.add(
         SizedBox(
-          width: MediaQuery.of(context).size.width - 40,
+          width: getProportionateScreenWidth(300),
           child: CupertinoButton(
               color: kCustomGreenAccent,
               child: const Text('Salva impostazioni'),
@@ -424,13 +403,12 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
     List<Widget> widgetListButtons = [
       event.closed == 'N' ? SizedBox(
-        width: MediaQuery.of(context).size.width - 40,
+        width: getProportionateScreenWidth(300),
         child: CupertinoButton(
             color: Colors.redAccent,
             child: const Text('Chiudi evento'),
             onPressed: () async {
               showDialog(
-                  context: context,
                   builder: (_) => AlertDialog(
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(25.0))),
@@ -467,12 +445,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       width: getProportionateScreenWidth(300),
                                       child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
                                         try{
-
                                           Map<int, SupportTableObj> supportTableObjList = {};
 
                                           supportTableObjList.clear();
                                           supportTableObjList = {};
-                                          sleep(Duration(milliseconds: 300));
+                                          sleep(const Duration(milliseconds: 300));
 
                                           Map<int, List<WorkstationProductModel>> map = {};
 
@@ -556,7 +533,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                       event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
                                             ));
                                             dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                                            Navigator.pushNamed(context, EventHomeScreen.routeName);
+
+                                            EventHomeScreen();
                                           }else{
                                             _scaffoldKey.currentState.showSnackBar(const SnackBar(
                                                 backgroundColor: kPinaColor,
@@ -590,7 +568,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       ) : SizedBox(height: 0),
       SizedBox(height: 20),
       SizedBox(
-        width: MediaQuery.of(context).size.width - 40,
+        width: getProportionateScreenWidth(300),
         child: CupertinoButton(
             color: kCustomBordeaux,
             child: const Text('Elimina evento'),
@@ -617,23 +595,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             ]),
       ),
     );
-
   }
-
-  buildResocontoScreen(List<WorkstationModel> workstationModelList,
-      DataBundleNotifier dataBundleNotifier, EventModel event) {
-    return FutureBuilder(
-      initialData: const Center(
-          child: CircularProgressIndicator(
-            color: kPinaColor,
-          )),
-      builder: (context, snapshot){
-        return snapshot.data;
-      },
-      future: retrieveDataToBuildRecapWidget(workstationModelList, dataBundleNotifier, event),
-    );
-  }
-
 
   buildResocontoScreenExtraExpences(List<WorkstationModel> workstationModelList,
       DataBundleNotifier dataBundleNotifier, EventModel event) {
@@ -650,199 +612,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   }
 
 
-  Future<Widget> retrieveDataToBuildRecapWidget(List<WorkstationModel> workstationModelList,
-      DataBundleNotifier dataBundleNotifier,
-      EventModel event) async {
 
-    Map<int, SupportTableObj> supportTableObjList = {};
-
-    supportTableObjList.clear();
-    supportTableObjList = {};
-    sleep(Duration(milliseconds: 300));
-
-    Map<int, List<WorkstationProductModel>> map = {};
-
-    await Future.forEach(workstationModelList,
-            (WorkstationModel workstationModel) async {
-
-          List<WorkstationProductModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
-          if(map.containsKey(workstationModel.pkWorkstationId)){
-            map[workstationModel.pkWorkstationId].clear();
-            map[workstationModel.pkWorkstationId] = list;
-          }else{
-            map[workstationModel.pkWorkstationId] = list;
-          }
-        });
-
-    List<TableRow> rows = [];
-    rows.add(
-      TableRow( children: [
-        Row(
-          children: [
-            Text('  PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-          ],
-        ),
-        Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-        Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-        Text('CONSUMO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-        Text('COSTO (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-      ]),
-    );
-
-    Set<int> idsProductsPresent = Set();
-
-    if(map != null || map.isNotEmpty){
-      map.forEach((workstationId, listProducts) {
-        listProducts.forEach((product) {
-          idsProductsPresent.add(product.fkProductId);
-        });
-      });
-    }
-
-    idsProductsPresent.forEach((productId) {
-      map.forEach((workstationId, listProducts) {
-        listProducts.forEach((product) {
-          if(product.fkProductId == productId){
-
-            if(supportTableObjList.containsKey(productId)){
-              supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
-              supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
-
-            }else{
-              supportTableObjList[productId] = SupportTableObj(
-                  id: productId,
-                  amountin: product.refillStock,
-                  amountout: product.consumed,
-                  productName: product.productName,
-                  price: product.productPrice,
-                  unitMeasure: product.unitMeasure
-              );
-            }
-          }
-        });
-      });
-    });
-
-    double totalExpence = 0.0;
-
-    idsProductsPresent.forEach((id) {
-      totalExpence = totalExpence + ((supportTableObjList[id].amountin - supportTableObjList[id].amountout) * supportTableObjList[id].price);
-      rows.add(TableRow( children: [
-        Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(supportTableObjList[id].productName, textAlign: TextAlign.start, overflow: TextOverflow.visible,
-                style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-              Text('€ ' + supportTableObjList[id].price.toStringAsFixed(2) + ' / ' + supportTableObjList[id].unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Column(
-            children: [
-              Text(supportTableObjList[id].amountin.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Text(supportTableObjList[id].amountout.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Text((supportTableObjList[id].amountin - supportTableObjList[id].amountout).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
-        ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Text(((supportTableObjList[id].amountin - supportTableObjList[id].amountout) * supportTableObjList[id].price).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
-        ),
-      ]),);
-    });
-
-
-    return Container(
-      color: kPrimaryColor,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              event.closed == 'Y' ? SizedBox(
-                width: getProportionateScreenWidth(500),
-                child: Container(color: kCustomBordeaux, child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Center(child: Text('EVENTO CHIUSO', style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white),)),
-                )),
-              ) : SizedBox(height: 10),
-              SizedBox(
-                width: getProportionateScreenWidth(500),
-                child: Container(color: Color(0XFFE64C3D), child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(24)),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(18.0),
-                      child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(30)),),
-                    ),
-                  ],
-                ),),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Riepilogo Costi Workstations', style: TextStyle(fontSize: getProportionateScreenHeight(18), color: Colors.white), ),
-                    Text(''),
-                  ],
-                ),
-              ),
-              Table(
-                columnWidths: const {
-                  0: FlexColumnWidth(5),
-                  1: FlexColumnWidth(2),
-                  2: FlexColumnWidth(2),
-                  3: FlexColumnWidth(2),
-                  4: FlexColumnWidth(3),
-                },
-                border: TableBorder.all(
-                    color: Colors.grey,
-                    width: 0.1
-                ),
-                children: rows,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(18)),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Text('€ ' + totalExpence.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite, fontSize: getProportionateScreenHeight(20)),),
-                  ),
-
-                ],
-              ),
-              SizedBox(height: 50),
-              buildWorkstationDetailsTablesWidget(workstationModelList, map),
-              SizedBox(height: 100),
-            ],
-
-          ),
-        ),
-      ),
-    );
-  }
 
   Future<Widget> retrieveDataToBuildRecapWidgetExtraExpences(List<WorkstationModel> workstationModelList,
       DataBundleNotifier dataBundleNotifier,
@@ -871,7 +641,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       rowsExpenceEvent.add(TableRow( children: [
         GestureDetector(
           onTap: (){
-            _openEditingExpenceCard(expence);
+            AlertDialog(
+              backgroundColor: Colors.transparent,
+              actions: [
+                EditingExpenceEventCard(
+                  expenceEventModel: expence,
+                ),
+              ],
+            );
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -886,7 +663,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
         GestureDetector(
           onTap: (){
-            _openEditingExpenceCard(expence);
+            AlertDialog(
+              backgroundColor: Colors.transparent,
+              actions: [
+                EditingExpenceEventCard(
+                  expenceEventModel: expence,
+                ),
+              ],
+            );
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -895,7 +679,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
         GestureDetector(
           onTap: (){
-            _openEditingExpenceCard(expence);
+            AlertDialog(
+              backgroundColor: Colors.transparent,
+              actions: [
+                EditingExpenceEventCard(
+                  expenceEventModel: expence,
+                ),
+              ],
+            );
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
@@ -904,7 +695,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
         GestureDetector(
           onTap: (){
-            _openEditingExpenceCard(expence);
+            AlertDialog(
+              backgroundColor: Colors.transparent,
+              actions: [
+                EditingExpenceEventCard(
+                  expenceEventModel: expence,
+                ),
+              ],
+            );
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -913,7 +711,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
         GestureDetector(
           onTap: (){
-            _openEditingExpenceCard(expence);
+            AlertDialog(
+              backgroundColor: Colors.transparent,
+              actions: [
+                EditingExpenceEventCard(
+                  expenceEventModel: expence,
+                ),
+              ],
+            );
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -966,14 +771,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       child: IconButton(
                           icon: Icon(Icons.add_circle, size: getProportionateScreenHeight(40), color: Colors.green),
                           onPressed: () {
-                            showDialog(context: context, builder: (_) => AlertDialog(
+                            AlertDialog(
                               backgroundColor: Colors.transparent,
                               actions: [
                                 ExpenceEventCard(
-                                  eventModel: widget.event,
+                                  eventModel: dataBundleNotifier.currentEventModel,
                                 ),
                               ],
-                            ));
+                            );
                           }
                       ),
                     ),
@@ -1033,8 +838,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kCustomOrange)),                        ],
           ),
           Center(child: SizedBox(
-              width: MediaQuery.of(context).size.width / 2,
-              height: MediaQuery.of(context).size.height / 5,
+              width: getProportionateScreenWidth(350),
+              height: getProportionateScreenHeight(150),
               child: const Padding(
                 padding: EdgeInsets.all(8.0),
                 child: Center(child: Text('Utente non abilitato alla visualizzazione ed all\'utilizzo di questa sezione', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15),)),
@@ -1042,145 +847,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ],
       ),
     );
-  }
-
-  void _openEditingExpenceCard(ExpenceEventModel expence) {
-    showDialog(context: context, builder: (_) => AlertDialog(
-      backgroundColor: Colors.transparent,
-      actions: [
-        EditingExpenceEventCard(
-          expenceEventModel: expence,
-        ),
-      ],
-    ));
-  }
-
-  buildWorkstationDetailsTablesWidget(List<WorkstationModel> workstationModelList, Map<int, List<WorkstationProductModel>> map) {
-    List<Widget> tablesWidget = [];
-
-    workstationModelList.forEach((workstationItem) {
-
-
-      tablesWidget.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-              width: MediaQuery.of(context).size.width - 10,
-              child: Card(
-                color: workstationItem.type == WORKSTATION_TYPE_BAR ? kCustomOrange : kCustomEvidenziatoreGreen,
-                child: Text('  Riepilogo ' + workstationItem.name,
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                ),
-              ),
-          ),
-        ],
-      ));
-      List<TableRow> rows = [];
-      rows.add(
-        TableRow( children: [
-          Row(
-            children: [
-              Text('  PRODOTTO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-            ],
-          ),
-          Text('CARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-          Text('RESIDUO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-          Text('CONSUMO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-          Text('COSTO (€)', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
-        ]),
-      );
-      double totalExpenceWorkstation = 0.0;
-      map[workstationItem.pkWorkstationId].forEach((workStationProdModel) {
-
-
-        totalExpenceWorkstation = totalExpenceWorkstation + (workStationProdModel.refillStock - workStationProdModel.consumed) * workStationProdModel.productPrice;
-
-        rows.add(
-          TableRow( children: [
-            Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(workStationProdModel.productName, textAlign: TextAlign.start, overflow: TextOverflow.visible,
-                    style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-                  Text('€ ' + workStationProdModel.productPrice.toStringAsFixed(2) + ' / ' + workStationProdModel.unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Column(
-                children: [
-                  Text(workStationProdModel.refillStock.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Text(workStationProdModel.consumed.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Text((workStationProdModel.refillStock - workStationProdModel.consumed).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Text(((workStationProdModel.refillStock - workStationProdModel.consumed) * workStationProdModel.productPrice).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
-            ),
-          ]),
-        );
-      });
-
-
-      tablesWidget.add(Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Table(
-          columnWidths: const {
-            0: FlexColumnWidth(5),
-            1: FlexColumnWidth(2),
-            2: FlexColumnWidth(2),
-            3: FlexColumnWidth(2),
-            4: FlexColumnWidth(3),
-          },
-          border: TableBorder.all(
-              color: Colors.grey,
-              width: 0.1
-          ),
-          children: rows,
-        ),
-      ));
-
-      tablesWidget.add(
-        Card(
-          child: SizedBox(
-            width: getProportionateScreenWidth(500),
-            child: Container(color: workstationItem.type == WORKSTATION_TYPE_BAR ? Colors.yellow.shade800 : Colors.teal.shade700, child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(24)),),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Text('€ ' + totalExpenceWorkstation.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(30)),),
-                ),
-              ],
-            ),),
-          ),
-        ),
-      );
-    });
-
-
-
-    return Column(
-      children: tablesWidget,
-    );
-
   }
 }
 

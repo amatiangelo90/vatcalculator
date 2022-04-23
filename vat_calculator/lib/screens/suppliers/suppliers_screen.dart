@@ -11,6 +11,7 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
+import '../../client/fattureICloud/model/response_fornitori.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../main_page.dart';
@@ -38,7 +39,7 @@ class SuppliersScreen extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 40,
                       child: CupertinoButton(
-                        color: kCustomGreenAccent,
+                        color: Colors.lightBlueAccent,
                           child: const Text('Aggiungi nuovo fornitore'), onPressed: () {
                         Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                       }),
@@ -72,7 +73,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Pagina gestione fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: Colors.green,
+                  color: Colors.lightBlueAccent,
                 ),
               ),
             ],
@@ -159,34 +160,6 @@ class SuppliersScreen extends StatelessWidget {
       ),
     );
     listout.add(
-      Padding(
-        padding: const EdgeInsets.all(2.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Row(
-              children: const [
-                Icon(
-                  Icons.circle,
-                  color: Colors.blueAccent,
-                ),
-                Text(' Importati', style: TextStyle(color: kPrimaryColor),),
-              ],
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.circle,
-                  color: kCustomGreenAccent,
-                ),
-                const Text(' Creati dall\'utente', style: TextStyle(color: kPrimaryColor),),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-    listout.add(
         Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
     );
     dataBundleNotifier.currentListSuppliersDuplicated.forEach((supplier) {
@@ -209,69 +182,8 @@ class SuppliersScreen extends StatelessWidget {
               ),
             );
           },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(2, 0, 10, 0),
-            child: Container(
-              padding: const EdgeInsets.only(left: 12.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: dataBundleNotifier.userDetailsList[0].id.toString() ==
-                        supplier.id
-                    ? kCustomGreenAccent
-                    :  Colors.blueAccent,
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0)),
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          SizedBox(width: getProportionateScreenWidth(5)),
-                          SvgPicture.asset(
-                            'assets/icons/supplier.svg',
-                            color: kPrimaryColor,
-                            width: getProportionateScreenWidth(30),
-                          ),
-                          SizedBox(width: getProportionateScreenWidth(20)),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                supplier.nome,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: kPrimaryColor,
-                                    fontSize: getProportionateScreenWidth(15)),
-                              ),
-                              Text('#' + supplier.extra,
-                                  style: TextStyle(
-                                    color: kCustomBordeaux,
-                                    fontSize: getProportionateScreenWidth(12),
-                                  )),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const Icon(Icons.arrow_forward_ios, color: Colors.white),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
+          child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
         ),
-      );
-      listout.add(
-        Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
       );
     });
 
@@ -282,6 +194,72 @@ class SuppliersScreen extends StatelessWidget {
       scrollDirection: Axis.vertical,
       child: Column(
         children: listout,
+      ),
+    );
+  }
+
+
+  buildSupplierRow(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, Color color) {
+    return Padding(
+      padding: const EdgeInsets.all(3.0),
+      child: Container(
+        padding: const EdgeInsets.only(left: 12.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+          color: kPrimaryColor,
+        ),
+        child: Container(
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(10.0),
+                bottomRight: Radius.circular(10.0)),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: getProportionateScreenWidth(10)),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        supplier.nome,
+                        style: TextStyle(
+                            color: kPrimaryColor,
+                            fontSize: getProportionateScreenWidth(17),
+                            overflow: TextOverflow.fade,
+                            fontWeight: FontWeight.bold
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/supplier.svg',
+                            color: color,
+                            width: getProportionateScreenWidth(20),
+                          ),
+                          Text('  #' + supplier.extra,
+                              style: TextStyle(
+                                  color: color,
+                                  fontSize: getProportionateScreenWidth(12),
+                                  fontWeight: FontWeight.bold
+                              )),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(0, 25, 10, 25),
+                child: Icon(Icons.arrow_forward_ios, size: getProportionateScreenHeight(25), color: kPrimaryColor),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

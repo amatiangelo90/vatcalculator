@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
@@ -16,7 +15,6 @@ import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../components/unload_comunication_page.dart';
 import 'order_from_storage_comunication_page.dart';
 
 class OrderFromStorageScreen extends StatefulWidget {
@@ -42,7 +40,7 @@ class _OrderFromStorageScreenState extends State<OrderFromStorageScreen> {
             appBar: AppBar(
               actions: [
                 IconButton(onPressed: (){
-                  dataBundleNotifier.clearUnloadProductList();
+                  //dataBundleNotifier.clearUnloadProductList();
                 }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
               ],
               leading: IconButton(

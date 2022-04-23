@@ -10,7 +10,7 @@ class ProductModel {
   String descrizione;
   String categoria;
   int fkSupplierId;
-
+  double orderItems;
 
   ProductModel({
     @required this.pkProductId,
@@ -21,7 +21,8 @@ class ProductModel {
     @required this.prezzo_lordo,
     @required this.descrizione,
     @required this.categoria,
-    @required this.fkSupplierId
+    @required this.fkSupplierId,
+    @required this.orderItems
 });
 
   toMap(){
@@ -34,7 +35,7 @@ class ProductModel {
       'price': prezzo_lordo,
       'description': descrizione,
       'category': categoria,
-      'fkSupplierId': fkSupplierId,
+      'fkSupplierId': fkSupplierId
     };
   }
 

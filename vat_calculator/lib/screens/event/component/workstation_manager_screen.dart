@@ -17,6 +17,7 @@ import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
 import '../../../client/vatservice/client_vatservice.dart';
+import '../../../client/vatservice/model/expence_event_model.dart';
 import '../../../client/vatservice/model/storage_product_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -27,16 +28,12 @@ class WorkstationManagerScreen extends StatefulWidget {
     this.eventModel,
     this.workstationModel,
     this.workStationProdModelList,
-    this.workStationProdModelListBackUp,
-    this.callbackFuntion,
-    this.callBackFunctionEventManager}) : super(key: key);
+    this.workStationProdModelListBackUp}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
   final List<WorkstationProductModel> workStationProdModelList;
   final List<WorkstationProductModel> workStationProdModelListBackUp;
-  final Function callbackFuntion;
-  final Function callBackFunctionEventManager;
 
   @override
   State<WorkstationManagerScreen> createState() => _WorkstationManagerScreenState();
@@ -45,68 +42,73 @@ class WorkstationManagerScreen extends StatefulWidget {
 class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  TextEditingController loadPaxController = TextEditingController(text: '0');
+  TextEditingController loadPaxController = TextEditingController(text: '');
   List<StorageProductModel> currentStorageProductModelList = [];
 
   @override
   Widget build(BuildContext context) {
 
-    return Consumer<DataBundleNotifier>(
-      builder: (child, dataBundleNotifier, _){
-        return DefaultTabController(
-          length: 3,
-          child: Scaffold(
-            backgroundColor: kPrimaryColor,
-            key: _scaffoldKey,
-            appBar: AppBar(
-              bottom: TabBar(
-                indicatorColor: Colors.lightBlueAccent,
-                indicatorWeight: 2,
-                tabs: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('CARICO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text('SCARICO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset('assets/icons/Settings.svg', color:Colors.white, height: getProportionateScreenHeight(25),)
-                  ),
-                ],
-              ),
-              leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () => {
-                    Navigator.of(context).pop(),
-                  }),
-              iconTheme: const IconThemeData(color: Colors.white),
-              centerTitle: true,
-              backgroundColor: kPrimaryColor,
-              elevation: 5,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(widget.workstationModel.name,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
-                  Text(
-                    'Tipo workstation: ' + widget.workstationModel.type,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(10), color: Colors.green, fontWeight: FontWeight.bold),),
-                ],
-              ),
-            ),
-            body: TabBarView(
-              children: [
-                buildRefillWorkstationProductsPage(widget.workStationProdModelList, widget.workStationProdModelListBackUp, dataBundleNotifier),
-                buildUnloadWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
-                buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
-              ],
-            ),
-          ),
-        );
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).requestFocus(FocusNode());
       },
+      child: Consumer<DataBundleNotifier>(
+        builder: (child, dataBundleNotifier, _){
+          return DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              backgroundColor: kPrimaryColor,
+              key: _scaffoldKey,
+              appBar: AppBar(
+                bottom: TabBar(
+                  indicatorColor: Colors.lightBlueAccent,
+                  indicatorWeight: 2,
+                  tabs: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('CARICO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('SCARICO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset('assets/icons/Settings.svg', color:Colors.white, height: getProportionateScreenHeight(25),)
+                    ),
+                  ],
+                ),
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () => {
+                      Navigator.of(context).pop(),
+                    }),
+                iconTheme: const IconThemeData(color: Colors.white),
+                centerTitle: true,
+                backgroundColor: kPrimaryColor,
+                elevation: 5,
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(widget.workstationModel.name,
+                      style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
+                    Text(
+                      'Tipo workstation: ' + widget.workstationModel.type,
+                      style: TextStyle(fontSize: getProportionateScreenHeight(10), color: Colors.green, fontWeight: FontWeight.bold),),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                children: [
+                  buildRefillWorkstationProductsPage(widget.workStationProdModelList, widget.workStationProdModelListBackUp, dataBundleNotifier),
+                  buildUnloadWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
+                  buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -202,29 +204,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       color: Colors.white
                     ),
                     controller: controller,
-                    onSubmitted: (text){
-                      RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-                      if(double.tryParse(text.replaceAll(',', '.')) != null){
-                        element.consumed = double.parse(text.replaceAll(',', '.').replaceAll(regex, ''));
-                      }else{
-                        controller.clear();
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                          backgroundColor: kPinaColor,
-                          duration: Duration(milliseconds: 600),
-                          content: Text(
-                              'Immettere un valore numerico corretto per effettuare il carico'),
-                        ));
-                      }
-                    },
                     onChanged: (text){
-                      RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
+
                       if(double.tryParse(text.replaceAll(',', '.')) != null){
-                        element.consumed = double.parse(text.replaceAll(',', '.').replaceAll(regex, ''));
+                        element.consumed = double.parse(text.replaceAll(',', '.'));
                       }
                     },
                     textInputAction: TextInputAction.next,
                     keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
+                        decimal: true, signed: false),
                     clearButtonMode: OverlayVisibilityMode.never,
                     textAlign: TextAlign.center,
                     autocorrect: false,
@@ -316,8 +304,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                       type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
                                   )
                               );
-                              widget.callbackFuntion();
-                              widget.callBackFunctionEventManager();
+                              dataBundleNotifier.workstationsProductsMapCalculate();
                               _scaffoldKey.currentState.showSnackBar(SnackBar(
                                 backgroundColor: Colors.green.withOpacity(0.8),
                                 duration: Duration(milliseconds: 600),
@@ -465,8 +452,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                       await dataBundleNotifier
                                           .getclientServiceInstance()
                                           .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
-
-                                      print('COGLIONE');
                                       List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
 
                                       setState(() {
@@ -474,6 +459,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                         widget.workStationProdModelList.addAll(workStationProdModelList);
                                       });
 
+                                      dataBundleNotifier.workstationsProductsMapCalculate();
                                       Navigator.of(context).pop();
 
                                     },
@@ -519,7 +505,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(Radius.circular(25.0))),
                         backgroundColor: kCustomWhite,
-                        contentPadding: EdgeInsets.only(top: 10.0),
+                        contentPadding: const EdgeInsets.only(top: 10.0),
                         elevation: 30,
 
                         content: SizedBox(
@@ -629,7 +615,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   if(dataBundleNotifier.currentBranch.accessPrivilege != Privileges.EMPLOYEE){
                     TextEditingController amountController;
                     if(element.amountHunderd != 0){
-                      amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2));
+                      amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''));
                     }else{
                       amountController = TextEditingController();
                     }
@@ -637,68 +623,91 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     showDialog(
                         context: context,
                         builder: (_) => AlertDialog(
-                          content: SizedBox(
-                            height: getProportionateScreenHeight(200),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text('Q/100 per ${element.productName}'),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    children: [
-                                      ConstrainedBox(
-                                        constraints: BoxConstraints.loose(Size(
-                                            getProportionateScreenWidth(150),
-                                            getProportionateScreenWidth(60))),
-                                        child: CupertinoTextField(
-                                          controller: amountController,
-                                          textInputAction: TextInputAction.next,
-                                          keyboardType: const TextInputType.numberWithOptions(
-                                              decimal: true, signed: true),
-                                          clearButtonMode: OverlayVisibilityMode.never,
-                                          textAlign: TextAlign.center,
-                                          autocorrect: false,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: CupertinoButton(child: const Text('Configura'), color: Colors.green, onPressed: (){
+                          shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                          backgroundColor: kCustomWhite,
+                          contentPadding: const EdgeInsets.only(top: 10.0),
+                          elevation: 30,
 
-                                          if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
-                                            try{
-                                              double currentValue = double.parse(amountController.text.replaceAll(",", "."));
-                                              dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
-                                              setState(() {
-                                                element.amountHunderd = currentValue;
-                                              });
-                                            }catch(e){
-                                              _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                                backgroundColor: kPinaColor,
-                                                duration: Duration(milliseconds: 600),
-                                                content: Text(
-                                                    'Errore configurazione Q/100. ' + e),
-                                              ));
+                          content: SizedBox(
+                            height: getProportionateScreenHeight(250),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text('Configura Q/100 per ${element.productName}', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints.loose(Size(
+                                              getProportionateScreenWidth(250),
+                                              getProportionateScreenWidth(60))),
+                                          child: CupertinoTextField(
+                                            controller: amountController,
+                                            textInputAction: TextInputAction.next,
+                                            keyboardType: const TextInputType.numberWithOptions(
+                                                decimal: true, signed: false),
+                                            clearButtonMode: OverlayVisibilityMode.never,
+                                            textAlign: TextAlign.center,
+                                            autocorrect: false,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: getProportionateScreenHeight(25),
+                                    ),
+                                    InkWell(
+                                      child: Container(
+                                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                          decoration: const BoxDecoration(
+                                            color: Colors.lightBlue,
+                                            borderRadius: BorderRadius.only(
+                                                bottomLeft: Radius.circular(25.0),
+                                                bottomRight: Radius.circular(25.0)),
+                                          ),
+                                          child: SizedBox(
+                                            width: getProportionateScreenWidth(500),
+                                            child: CupertinoButton(child: const Text('Configura Q/100', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.lightBlue, onPressed: () async {
+                                              if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
+                                                try{
+                                                  double currentValue = double.parse(amountController.text.replaceAll(",", "."));
+                                                  dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
+                                                  setState(() {
+                                                    element.amountHunderd = currentValue;
+                                                  });
+                                                }catch(e){
+                                                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                    backgroundColor: kPinaColor,
+                                                    duration: Duration(milliseconds: 600),
+                                                    content: Text(
+                                                        'Errore configurazione Q/100. ' + e),
+                                                  ));
+                                                }
+                                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                  backgroundColor: Colors.green.withOpacity(0.9),
+                                                  duration: Duration(milliseconds: 1600),
+                                                  content: Text(
+                                                      'Configurato Q/100 ${amountController.text} per ${element.productName}'),
+                                                ));
+                                              } else {
+                                                _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                  backgroundColor: kPinaColor,
+                                                  duration: Duration(milliseconds: 1600),
+                                                  content: Text(
+                                                      'Immettere un valore numerico corretto per effettuare il carico'),
+                                                ));
+                                              }
+                                              Navigator.of(context).pop();
                                             }
-                                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                              backgroundColor: Colors.green.withOpacity(0.9),
-                                              duration: Duration(milliseconds: 1600),
-                                              content: Text(
-                                                  'Configurato Q/100 ${amountController.text} per ${element.productName}'),
-                                            ));
-                                          } else {
-                                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                              backgroundColor: kPinaColor,
-                                              duration: Duration(milliseconds: 1600),
-                                              content: Text(
-                                                  'Immettere un valore numerico corretto per effettuare il carico'),
-                                            ));
-                                          }
-                                          Navigator.of(context).pop();
-                                        }),
-                                      )
-                                    ],
-                                  ),
+                                            ),
+                                          )
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -766,8 +775,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             content: Text(
                                 'Prodotto ${element.productName} eliminato'),
                           ));
-                          widget.callbackFuntion();
-                          widget.callBackFunctionEventManager();
                         } else {
                           element.refillStock--;
                         }
@@ -787,14 +794,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         getProportionateScreenWidth(70),
                         getProportionateScreenWidth(60))),
                     child: CupertinoTextField(
-
                       controller: controller,
                       textInputAction: TextInputAction.next,
                       keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true, signed: true),
+                          decimal: true, signed: false),
                       onChanged: (value){
-                        RegExp regex = RegExp(r'([.]*0)(?!.*\d)');
-                        element.refillStock = double.parse(double.parse(value.replaceAll(',', '.')).toStringAsFixed(2).replaceAll(regex, ''));
+                        if(double.tryParse(value.replaceAll(',', '.')) != null){
+                          element.refillStock = double.parse(double.parse(value.replaceAll(',', '.')).toStringAsFixed(2));
+                        }
                       },
                       clearButtonMode: OverlayVisibilityMode.never,
                       textAlign: TextAlign.center,
@@ -918,9 +925,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                               )
                           );
 
-                          widget.callbackFuntion();
-                          widget.callBackFunctionEventManager();
-
+                          dataBundleNotifier.workstationsProductsMapCalculate();
                           _scaffoldKey.currentState.showSnackBar(SnackBar(
                             backgroundColor: Colors.green.withOpacity(0.8),
                             duration: Duration(milliseconds: 600),
@@ -1022,8 +1027,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                               workstationModel.responsable = controllerResponsible.text;
 
                               await dataBundleNotifier.getclientServiceInstance().updateWorkstationDetails(workstationModel);
-                              widget.callbackFuntion();
-                              widget.callBackFunctionEventManager();
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
                                   duration: const Duration(milliseconds: 5000),
@@ -1066,13 +1069,15 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             ));
                           }else{
                             try{
-                              await dataBundleNotifier.getclientServiceInstance().removeWorkstation(widget.workstationModel);
                               List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
+                              List<ExpenceEventModel> listExpenceEvent = await dataBundleNotifier.getclientServiceInstance().retrieveEventExpencesByEventId(widget.eventModel);
 
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => EventManagerScreen(
-                                event: widget.eventModel,
-                                workstationModelList: workstationModelList,
-                              ),),);
+                              dataBundleNotifier.setCurrentExpenceEventList(listExpenceEvent);
+                              dataBundleNotifier.setCurrentWorkstationModelList(workstationModelList);
+                              dataBundleNotifier.setCurrentEventModel(widget.eventModel);
+
+                              sleep(const Duration(milliseconds: 200));
+                              Navigator.pushNamed(context, EventManagerScreen.routeName);
 
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(

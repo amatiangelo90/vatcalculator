@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const String kVersionApp = '1.0.53';
+const String kVersionApp = '1.0.54';
 const Color kPrimaryColor = Color(0XFF0A2227);
 
 const Color kCustomGreyBlue = Color(0XFF41414A);

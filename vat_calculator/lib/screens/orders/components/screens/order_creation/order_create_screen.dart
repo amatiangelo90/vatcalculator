@@ -53,8 +53,8 @@ class CreateOrderScreen extends StatelessWidget {
                       Text(
                         'Seleziona Fornitore',
                         style: TextStyle(
-                          fontSize: getProportionateScreenWidth(11),
-                          color: Colors.green,
+                          fontSize: getProportionateScreenWidth(12),
+                          color: Colors.lightBlueAccent,
                         ),
                       ),
                     ],
@@ -148,10 +148,9 @@ class CreateOrderScreen extends StatelessWidget {
             List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
                 .getclientServiceInstance()
                 .retrieveProductsBySupplier(supplier);
-            for (var element in retrieveProductsBySupplier) {
-              element.prezzo_lordo = 0.0;
-            }
+
             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+
             if(draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)){
               OrderModel order = dataBundleNotifier.getDraftOrderFromListBySupplierId(supplier.pkSupplierId);
               Navigator.push(
@@ -165,6 +164,7 @@ class CreateOrderScreen extends StatelessWidget {
                 ),
               );
             }else{
+              dataBundleNotifier.clearOrdersDetailsObject();
               Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -49,7 +49,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 35,
+                      width: MediaQuery.of(context).size.width - 50,
                       child: CupertinoButton(
                           color: kCustomGreenAccent,
                           child: const Text('Salva Fornitore'),
@@ -109,8 +109,8 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                   Text(
                     'Crea Nuovo Fornitore',
                     style: TextStyle(
-                      fontSize: getProportionateScreenWidth(17),
-                      color: kCustomGreenAccent,
+                      fontSize: getProportionateScreenWidth(19),
+                      color: Colors.white,
                     ),
                   ),
                 ],

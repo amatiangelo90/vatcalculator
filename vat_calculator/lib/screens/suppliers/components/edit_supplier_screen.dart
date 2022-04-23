@@ -128,7 +128,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                     element.prezzo_lordo = 0.0;
                   });
                   dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-
+                  dataBundleNotifier.clearOrdersDetailsObject();
                   Navigator.push(
                     context,
                     MaterialPageRoute(

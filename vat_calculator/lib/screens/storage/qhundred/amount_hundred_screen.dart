@@ -27,11 +27,6 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
             appBar: AppBar(
-              actions: [
-                IconButton(onPressed: (){
-                  dataBundleNotifier.clearUnloadProductList();
-                }, icon: const Icon(Icons.clear, color: kPinaColor,))
-              ],
               leading: IconButton(
                 onPressed: () {
                   Navigator.of(context).pop();

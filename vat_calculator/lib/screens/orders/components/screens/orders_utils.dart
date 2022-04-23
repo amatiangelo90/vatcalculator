@@ -15,10 +15,10 @@ class OrderUtils{
   }) {
     String orderString = 'Ciao $supplierName,<br><br><br>Ordine #$orderId<br><br><h4>Carrello<br>-------------------------------------<br>';
     productList.forEach((currentProductOrderAmount) {
-      if(currentProductOrderAmount.prezzo_lordo != 0){
+      if(currentProductOrderAmount.orderItems != 0){
 
         orderString = orderString + currentProductOrderAmount.nome +
-            ' x ' + currentProductOrderAmount.prezzo_lordo.toString() + ' ${currentProductOrderAmount.unita_misura} <br>';
+            ' x ' + currentProductOrderAmount.orderItems.toString() + ' ${currentProductOrderAmount.unita_misura} <br>';
       }
     });
     orderString = orderString + '-------------------------------------</h4>';
@@ -39,10 +39,10 @@ class OrderUtils{
   }) {
     String orderString = 'Ciao $supplierName,%0a%0aOrdine #$orderId%0a%0aCarrello%0a----------------%0a';
     productList.forEach((currentProductOrderAmount) {
-      if(currentProductOrderAmount.prezzo_lordo != 0){
+      if(currentProductOrderAmount.orderItems != 0){
 
         orderString = orderString + currentProductOrderAmount.nome +
-            ' x ' + currentProductOrderAmount.prezzo_lordo.toString() + ' ${currentProductOrderAmount.unita_misura} %0a';
+            ' x ' + currentProductOrderAmount.orderItems.toString() + ' ${currentProductOrderAmount.unita_misura} %0a';
       }
     });
     orderString = orderString + '----------------';

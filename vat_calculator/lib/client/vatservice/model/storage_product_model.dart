@@ -16,6 +16,7 @@ class StorageProductModel{
   double amountHundred;
   bool selected;
   double extra;
+  double loadUnloadAmount;
 
   StorageProductModel({
     @required this.pkStorageProductId,
@@ -32,6 +33,7 @@ class StorageProductModel{
     @required this.amountHundred,
     @required this.selected,
     @required this.extra,
+    @required this.loadUnloadAmount
   });
 
   toMap(){

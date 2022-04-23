@@ -29,133 +29,125 @@ class EventCard extends StatelessWidget {
           ),
           color: kPrimaryColor,
           elevation: 5,
-          child: GestureDetector(
-            onTap: () {
-
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              showArrow ? IconButton(
-                                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white,),
-                                  onPressed: () => {
-                                      Navigator.of(context).pop(),
-                                    }
-                                  ) : const SizedBox(width: 0,),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
-                                child: ClipRect(
-                                  child: SvgPicture.asset(
-                                    'assets/icons/party.svg',
-                                    height: getProportionateScreenHeight(45),
-                                    color: kCustomOrange,
-                                  ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            showArrow ? IconButton(
+                                icon: const Icon(Icons.arrow_back_ios, color: Colors.white,),
+                                onPressed: () => {
+                                    Navigator.of(context).pop(),
+                                  }
+                                ) : const SizedBox(width: 0,),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 5, 6, 0),
+                              child: ClipRect(
+                                child: SvgPicture.asset(
+                                  'assets/icons/party.svg',
+                                  height: getProportionateScreenHeight(45),
+                                  color: Colors.lightBlueAccent,
                                 ),
                               ),
-                            ],
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(eventModel.eventName,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
-
-                              Row(
-                                children: [
-                                  Text(
-                                    'Location: ',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
-                                  Text(
-                                    eventModel.location,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: kCustomOrange, fontWeight: FontWeight.bold),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Magazzino: ',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
-                                  Text(
-                                    dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
-                                    textAlign: TextAlign.justify,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: kCustomOrange, fontWeight: FontWeight.bold),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Data Evento: ',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
-                                  Text(
-                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
-                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
-                                    DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: kCustomOrange, fontWeight: FontWeight.bold),),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Evento Aperto: ',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
-                                  Text(
-                                    eventModel.closed == 'N' ? 'SI' : 'NO',
-                                    style: TextStyle(fontSize: getProportionateScreenHeight(13), color: eventModel.closed == 'N' ? Colors.greenAccent : kPinaColor, fontWeight: FontWeight.bold),),
-                                ],
-                              ),
-                              Text(
-                                'Creato da: ' + eventModel.owner,
-                                style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    indent: 20,
-                    endIndent: 20,
-                    color: kCustomOrange,
-                    height: getProportionateScreenHeight(49),
-                  ),
-                  showButton ? SizedBox(
-                    width: getProportionateScreenWidth(400),
-                    child: CupertinoButton(
-                      color: kCustomOrange,
-                      onPressed: () async {
-                        List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
-                        List<ExpenceEventModel> listExpenceEvent = await dataBundleNotifier.getclientServiceInstance().retrieveEventExpencesByEventId(eventModel);
-
-                        dataBundleNotifier.setCurrentExpenceEventList(listExpenceEvent);
-
-                        sleep(const Duration(milliseconds: 200));
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EventManagerScreen(
-                              event: eventModel,
-                              workstationModelList: workstationModelList,
                             ),
-                          ),
-                        );
-                      },
-                      child: Text('Accedi a ' + eventModel.eventName),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(eventModel.eventName,
+                              style: TextStyle(fontSize: getProportionateScreenHeight(19), color: Colors.white, fontWeight: FontWeight.bold),),
+
+                            Row(
+                              children: [
+                                Text(
+                                  'Location: ',
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                                Text(
+                                  eventModel.location,
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Magazzino: ',
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                                Text(
+                                  dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
+                                  textAlign: TextAlign.justify,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Data Evento: ',
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                                Text(
+                                  DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
+                                  DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
+                                  DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Evento Aperto: ',
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                                Text(
+                                  eventModel.closed == 'N' ? 'SI' : 'NO',
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: eventModel.closed == 'N' ? Colors.deepOrangeAccent.shade100 : kPinaColor, fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Text(
+                              'Creato da: ' + eventModel.owner,
+                              style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                          ],
+                        ),
+                      ],
                     ),
-                  ) : SizedBox(width: 0,)
-                ],
-              ),
+                  ],
+                ),
+                Divider(
+                  indent: 20,
+                  endIndent: 20,
+                  color: Colors.lightBlueAccent,
+                  height: getProportionateScreenHeight(49),
+                ),
+                showButton ? SizedBox(
+                  width: getProportionateScreenWidth(400),
+                  child: CupertinoButton(
+                    color: Colors.lightBlue,
+                    onPressed: () async {
+
+                      List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
+                      List<ExpenceEventModel> listExpenceEvent = await dataBundleNotifier.getclientServiceInstance().retrieveEventExpencesByEventId(eventModel);
+
+                      dataBundleNotifier.setCurrentExpenceEventList(listExpenceEvent);
+                      dataBundleNotifier.setCurrentWorkstationModelList(workstationModelList);
+                      dataBundleNotifier.setCurrentEventModel(eventModel);
+                      dataBundleNotifier.workstationsProductsMapCalculate();
+
+                      sleep(const Duration(milliseconds: 200));
+
+                      Navigator.pushNamed(context, EventManagerScreen.routeName);
+                    },
+                    child: Text('Accedi a ' + eventModel.eventName),
+                  ),
+                ) : SizedBox(width: 0,)
+              ],
             ),
           ),
         );

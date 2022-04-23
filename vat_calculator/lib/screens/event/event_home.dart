@@ -15,15 +15,10 @@ import 'component/archivied_events_screen.dart';
 import 'component/event_body.dart';
 import 'component/event_create_screen.dart';
 
-class EventHomeScreen extends StatefulWidget {
+class EventHomeScreen extends StatelessWidget {
   const EventHomeScreen({Key key}) : super(key: key);
   static String routeName = "/eventscreen";
 
-  @override
-  _EventHomeScreenState createState() => _EventHomeScreenState();
-}
-
-class _EventHomeScreenState extends State<EventHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return LoaderOverlay(
@@ -65,15 +60,15 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                         Text(
                           'Area Eventi',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(17),
+                            fontSize: getProportionateScreenWidth(19),
                             color: Colors.white,
                           ),
                         ),
                         Text(
                           dataBundleNotifier.currentBranch.companyName,
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(11),
-                            color: kCustomGreenAccent,
+                            fontSize: getProportionateScreenWidth(13),
+                            color: Colors.green,
                           ),
                         ),
                       ],
@@ -128,7 +123,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                                         .add_circle_outline,
                                     size: 13,
                                     color:
-                                    kCustomGreenAccent,
+                                    Colors.green,
                                   ),
                                 ),
                               ),
@@ -142,7 +137,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                 ],
                 elevation: 2,
               ),
-              body: const EventsBodyWidget(),
+              body: EventsBodyWidget(),
             );
           }),
     );

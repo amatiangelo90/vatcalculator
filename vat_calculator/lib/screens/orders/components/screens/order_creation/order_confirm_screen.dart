@@ -107,9 +107,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     );
 
                     if(performSaveOrderId != null){
-                      dataBundleNotifier.currentProductModelListForSupplier.forEach((element) async {
+                      dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((element) async {
                         await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
-                            element.prezzo_lordo,
+                            element.orderItems,
                             element.pkProductId,
                             performSaveOrderId.data
                         );
@@ -123,7 +123,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           message: OrderUtils.buildMessageFromCurrentOrderList(
                             branchName: dataBundleNotifier.currentBranch.companyName,
                               orderId: code,
-                              productList: dataBundleNotifier.currentProductModelListForSupplier,
+                              productList: dataBundleNotifier.currentProductModelListForSupplierDuplicated,
                               deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
                               supplierName: widget.currentSupplier.nome,
                               currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
@@ -241,13 +241,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                     Navigator.of(context).pop(),
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black54.withOpacity(0.8),
+              backgroundColor: kPrimaryColor,
               centerTitle: true,
               title: Text(
                 'Conferma Ordine',
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(17),
-                  color: kCustomGreenAccent,
+                  fontSize: getProportionateScreenWidth(19),
+                  color: Colors.white,
                 ),
               ),
               elevation: 2,
@@ -456,9 +456,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
       ),
     ));
     dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
-      TextEditingController controller = TextEditingController(text: currentProduct.prezzo_lordo.toString());
+      TextEditingController controller = TextEditingController(text: currentProduct.orderItems.toString());
 
-      if(currentProduct.prezzo_lordo != 0){
+      if(currentProduct.orderItems != 0){
         list.add(
             Padding(
               padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),

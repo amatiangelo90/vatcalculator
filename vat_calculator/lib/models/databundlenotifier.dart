@@ -22,11 +22,13 @@ import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
+import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/components/vat_data.dart';
 import '../client/fattureICloud/model/response_info_company.dart';
 import '../client/firebase_service/firebase_messaging_service_impl.dart';
 import '../client/vatservice/model/expence_event_model.dart';
 import '../client/vatservice/model/utils/privileges.dart';
+import '../client/vatservice/model/workstation_product_model.dart';
 import '../constants.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
@@ -68,11 +70,6 @@ class DataBundleNotifier extends ChangeNotifier {
   ];
 
   List<StorageProductModel> currentStorageProductListForCurrentStorageDuplicated = [];
-
-  List<StorageProductModel> currentStorageProductListForCurrentStorageUnload = [
-  ];
-
-  List<StorageProductModel> currentStorageProductListForCurrentStorageLoad = [];
 
   List<ProductModel> productToAddToStorage = [];
   List<ProductModel> productToAddToStorageDuplicated = [];
@@ -197,7 +194,7 @@ class DataBundleNotifier extends ChangeNotifier {
     currentProductModelListForSupplier.addAll(listProduct);
     currentProductModelListForSupplierDuplicated.clear();
     currentProductModelListForSupplierDuplicated.addAll(listProduct);
-    clearAndUpdateMapBundle();
+    //clearAndUpdateMapBundle();
     notifyListeners();
   }
 
@@ -487,40 +484,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
       currentStorageProductListForCurrentStorageDuplicated.clear();
       currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
-
-      currentStorageProductListForCurrentStorageUnload.clear();
-      currentStorageProductListForCurrentStorageUnload = [];
-      currentStorageProductListForCurrentStorage.forEach((element) {
-        currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
-            pkStorageProductId: element.pkStorageProductId,
-            fkStorageId: element.fkStorageId,
-            fkProductId: element.fkProductId,
-            supplierId: element.supplierId,
-            productName: element.productName,
-            stock: 0.0,
-            available: element.available,
-            supplierName: element.supplierName,
-            price: element.price,
-            vatApplied: element.vatApplied,
-            unitMeasure: element.unitMeasure));
-      });
-
-      currentStorageProductListForCurrentStorageLoad.clear();
-      currentStorageProductListForCurrentStorageLoad = [];
-      currentStorageProductListForCurrentStorage.forEach((element) {
-        currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
-            pkStorageProductId: element.pkStorageProductId,
-            fkStorageId: element.fkStorageId,
-            fkProductId: element.fkProductId,
-            supplierId: element.supplierId,
-            productName: element.productName,
-            stock: 0.0,
-            available: element.available,
-            supplierName: element.supplierName,
-            price: element.price,
-            vatApplied: element.vatApplied,
-            unitMeasure: element.unitMeasure));
-      });
     }
 
     List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
@@ -715,47 +678,11 @@ class DataBundleNotifier extends ChangeNotifier {
     currentStorageProductListForCurrentStorageDuplicated.clear();
     currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
 
-    currentStorageProductListForCurrentStorageUnload.clear();
-    currentStorageProductListForCurrentStorageUnload = [];
-    currentStorageProductListForCurrentStorage.forEach((element) {
-      currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
-          pkStorageProductId: element.pkStorageProductId,
-          fkStorageId: element.fkStorageId,
-          fkProductId: element.fkProductId,
-          supplierId: element.supplierId,
-          productName: element.productName,
-          stock: 0.0,
-          available: element.available,
-          supplierName: element.supplierName,
-          price: element.price,
-          vatApplied: element.vatApplied,
-          unitMeasure: element.unitMeasure));
-    });
-
-    currentStorageProductListForCurrentStorageLoad.clear();
-    currentStorageProductListForCurrentStorageLoad = [];
-    currentStorageProductListForCurrentStorage.forEach((element) {
-      currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
-          pkStorageProductId: element.pkStorageProductId,
-          fkStorageId: element.fkStorageId,
-          fkProductId: element.fkProductId,
-          supplierId: element.supplierId,
-          productName: element.productName,
-          stock: 0.0,
-          available: element.available,
-          supplierName: element.supplierName,
-          price: element.price,
-          vatApplied: element.vatApplied,
-          unitMeasure: element.unitMeasure));
-    });
-
-
     List<ProductModel> retrieveProductsByBranch = await getclientServiceInstance().retrieveProductsByBranch(currentBranch);
 
     storageTempListProduct.addAll(retrieveProductsByBranch);
 
     List<int> listProductIdsToRemove = [];
-    print('coming list size ' + retrieveProductsByBranch.length.toString());
     currentStorageProductListForCurrentStorage.forEach((currentProductAlreadyPresent) {
       listProductIdsToRemove.add(currentProductAlreadyPresent.fkProductId);
     });
@@ -763,7 +690,7 @@ class DataBundleNotifier extends ChangeNotifier {
     retrieveProductsByBranch.removeWhere((element) =>
         listProductIdsToRemove.contains(element.pkProductId),
     );
-    print('coming list size ' + retrieveProductsByBranch.length.toString());
+
     addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
     notifyListeners();
   }
@@ -777,41 +704,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentStorageProductListForCurrentStorageDuplicated.clear();
     currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
-
-    currentStorageProductListForCurrentStorageUnload.clear();
-    currentStorageProductListForCurrentStorageUnload = [];
-
-    currentStorageProductListForCurrentStorage.forEach((element) {
-      currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
-          pkStorageProductId: element.pkStorageProductId,
-          fkStorageId: element.fkStorageId,
-          fkProductId: element.fkProductId,
-          supplierId: element.supplierId,
-          productName: element.productName,
-          stock: 0.0,
-          available: element.available,
-          supplierName: element.supplierName,
-          price: element.price,
-          vatApplied: element.vatApplied,
-          unitMeasure: element.unitMeasure));
-    });
-
-    currentStorageProductListForCurrentStorageLoad.clear();
-    currentStorageProductListForCurrentStorageLoad = [];
-    currentStorageProductListForCurrentStorage.forEach((element) {
-      currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
-          pkStorageProductId: element.pkStorageProductId,
-          fkStorageId: element.fkStorageId,
-          fkProductId: element.fkProductId,
-          supplierId: element.supplierId,
-          productName: element.productName,
-          stock: 0.0,
-          available: element.available,
-          supplierName: element.supplierName,
-          price: element.price,
-          vatApplied: element.vatApplied,
-          unitMeasure: element.unitMeasure));
-    });
 
     notifyListeners();
   }
@@ -887,47 +779,17 @@ class DataBundleNotifier extends ChangeNotifier {
       addAllCurrentListProductToProductListToAddToStorage(retrieveProductsByBranch);
     }
 
-    if(currentStorageList.isNotEmpty){
-      List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorageList[0].pkStorageId);
+    if(currentStorageList.isNotEmpty) {
+      List<StorageProductModel> storageProductModelList = await clientService
+          .retrieveRelationalModelProductsStorage(
+          currentStorageList[0].pkStorageId);
       currentStorageProductListForCurrentStorage.clear();
-      currentStorageProductListForCurrentStorage.addAll(storageProductModelList);
+      currentStorageProductListForCurrentStorage.addAll(
+          storageProductModelList);
 
       currentStorageProductListForCurrentStorageDuplicated.clear();
-      currentStorageProductListForCurrentStorageDuplicated.addAll(storageProductModelList);
-
-      currentStorageProductListForCurrentStorageUnload.clear();
-      currentStorageProductListForCurrentStorageUnload = [];
-      currentStorageProductListForCurrentStorage.forEach((element) {
-        currentStorageProductListForCurrentStorageUnload.add(StorageProductModel(
-            pkStorageProductId: element.pkStorageProductId,
-            fkStorageId: element.fkStorageId,
-            fkProductId: element.fkProductId,
-            supplierId: element.supplierId,
-            productName: element.productName,
-            stock: 0.0,
-            available: element.available,
-            supplierName: element.supplierName,
-            price: element.price,
-            vatApplied: element.vatApplied,
-            unitMeasure: element.unitMeasure));
-      });
-
-      currentStorageProductListForCurrentStorageLoad.clear();
-      currentStorageProductListForCurrentStorageLoad = [];
-      currentStorageProductListForCurrentStorage.forEach((element) {
-        currentStorageProductListForCurrentStorageLoad.add(StorageProductModel(
-            pkStorageProductId: element.pkStorageProductId,
-            fkStorageId: element.fkStorageId,
-            fkProductId: element.fkProductId,
-            supplierId: element.supplierId,
-            productName: element.productName,
-            stock: 0.0,
-            available: element.available,
-            supplierName: element.supplierName,
-            price: element.price,
-            vatApplied: element.vatApplied,
-            unitMeasure: element.unitMeasure));
-      });
+      currentStorageProductListForCurrentStorageDuplicated.addAll(
+          storageProductModelList);
     }
     clearAndUpdateMapBundle();
     notifyListeners();
@@ -953,19 +815,13 @@ class DataBundleNotifier extends ChangeNotifier {
     return currentSupplier;
   }
 
-  void clearUnloadProductList() {
-    currentStorageProductListForCurrentStorageUnload.forEach((element) {
-      element.stock = 0.0;
+  void clearLoadUnloadParameterOnEachProductForCurrentStorage() {
+    currentStorageProductListForCurrentStorage.forEach((element) {
+      element.loadUnloadAmount = 0.0;
     });
     notifyListeners();
   }
 
-  void clearLoadProductList() {
-    currentStorageProductListForCurrentStorageLoad.forEach((element) {
-      element.stock = 0.0;
-    });
-    notifyListeners();
-  }
 
   void addProviderFattureDetailsToCurrentBranch({String providerFatture, String apiKeyOrUser, String apiUidOrPassword}) {
     currentBranch.providerFatture = providerFatture;
@@ -1006,9 +862,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
       List<ProductModel> listTemp = [];
       currentProductModelListForSupplier.forEach((element) {
-        print(currentText + ' on ' + element.nome);
-
-
         if(element.nome.toLowerCase().contains(currentText.toLowerCase())){
           listTemp.add(element);
         }
@@ -1637,12 +1490,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<ExpenceEventModel> listExpenceEvent = [];
 
-  void setCurrentExpenceEventList(List<ExpenceEventModel> list){
-    listExpenceEvent.clear();
-    listExpenceEvent.addAll(list);
-    notifyListeners();
-  }
-
   void addExpenceEventItem(ExpenceEventModel expenceEventModel) {
     listExpenceEvent.add(expenceEventModel);
     notifyListeners();
@@ -1693,4 +1540,78 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
 
   }
+
+  // orders details
+  Set<int> setProducts = Set();
+  double totalPriceOrder = 0.0;
+
+  void clearOrdersDetailsObject() {
+    setProducts.clear();
+    totalPriceOrder = 0.0;
+    notifyListeners();
+  }
+
+  void calculatePrice() {
+    totalPriceOrder = 0.0;
+
+    currentProductModelListForSupplierDuplicated.forEach((prod) {
+      if(prod.orderItems > 0){
+        totalPriceOrder = double.parse((totalPriceOrder + (prod.orderItems * prod.prezzo_lordo)).toStringAsFixed(2));
+      }
+    });
+    notifyListeners();
+  }
+
+  void addProdToSetProduct(int pkProductId) {
+    setProducts.add(pkProductId);
+    notifyListeners();
+  }
+
+  List<WorkstationModel> currentWorkstationModelList = [];
+  void setCurrentWorkstationModelList(List<WorkstationModel> workstationModelList) {
+    currentWorkstationModelList.clear();
+    currentWorkstationModelList.addAll(workstationModelList);
+    notifyListeners();
+  }
+
+  EventModel currentEventModel;
+  void setCurrentEventModel(EventModel eventModel) {
+    currentEventModel = null;
+    currentEventModel = eventModel;
+    notifyListeners();
+  }
+
+  void setCurrentExpenceEventList(List<ExpenceEventModel> list){
+    listExpenceEvent.clear();
+    listExpenceEvent.addAll(list);
+    notifyListeners();
+  }
+
+  Map<int, List<WorkstationProductModel>> workstationsProductsMap = {};
+
+  Future<void> workstationsProductsMapCalculate() async {
+    await Future.forEach(currentWorkstationModelList,
+            (WorkstationModel workstationModel) async {
+
+          List<WorkstationProductModel> list = await getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
+          if(workstationsProductsMap.containsKey(workstationModel.pkWorkstationId)){
+            workstationsProductsMap[workstationModel.pkWorkstationId].clear();
+            workstationsProductsMap[workstationModel.pkWorkstationId] = list;
+          }else{
+            workstationsProductsMap[workstationModel.pkWorkstationId] = list;
+          }
+        });
+    notifyListeners();
+  }
+
+  DateTime currentDateEvent = DateTime.now();
+
+  void setEventDateTime(DateTime date){
+    currentDateEvent = date;
+    notifyListeners();
+
+  }
+
+
+
 }

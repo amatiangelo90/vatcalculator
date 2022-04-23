@@ -8,15 +8,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'event_card.dart';
 
-class EventsBodyWidget extends StatefulWidget {
-  const EventsBodyWidget({Key key}) : super(key: key);
-
-  @override
-  _EventsBodyWidgetState createState() => _EventsBodyWidgetState();
-}
-
-class _EventsBodyWidgetState extends State<EventsBodyWidget> {
-  DateTime dateTime = DateTime.now();
+class EventsBodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +19,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
-                children: buildEventsWidgetByCurrentDate(dataBundleNotifier, dateTime),
+                children: buildEventsWidgetByCurrentDate(dataBundleNotifier, dataBundleNotifier.currentDateEvent),
               ),
             ),
             Container(
@@ -39,7 +31,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
                   child: DatePickerEvents(
                     DateTime.now().subtract(Duration(days: 4)),
                     initialSelectedDate: DateTime.now(),
-                    selectionColor: kCustomOrange,
+                    selectionColor: Colors.blue ,
                     selectedTextColor: Colors.white,
                     width: getProportionateScreenHeight(50),
                     daysCount: 13,
@@ -47,9 +39,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
                     dateTextStyle: TextStyle(fontSize: 15),
                     monthTextStyle: TextStyle(fontSize: 10),
                     onDateChange: (date) {
-                      setState(() {
-                        dateTime = date;
-                      });
+                      dataBundleNotifier.setEventDateTime(date);
                     },
                   ),
                 ),
@@ -67,17 +57,14 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
     ];
 
     dataBundleNotifier.eventModelList.forEach((eventItem) {
-      print(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).toString());
+      print('Cazzo: ' + DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).toString());
       if(DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).day == dateTime.day &&
           DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).month == dateTime.month &&
           DateTime.fromMillisecondsSinceEpoch(eventItem.eventDate).year == dateTime.year){
-        eventList.add(Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: EventCard(
-            eventModel: eventItem,
-            showButton: true,
-            showArrow: false,
-          ),
+        eventList.add(EventCard(
+          eventModel: eventItem,
+          showButton: true,
+          showArrow: false,
         ),);
       }
     });

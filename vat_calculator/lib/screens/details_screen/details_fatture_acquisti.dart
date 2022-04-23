@@ -278,10 +278,6 @@ class _FattureAcquistiDetailsPageState
         resultMap[element.nome] = double.parse(element.importo_totale);
       }
     });
-
-    print('@@@@@@@@@@@@@@@');
-    print(resultMap.length.toString());
-    print('@@@@@@@@@@@@@@@');
     List<ChartData> chartData = [];
     resultMap.forEach((key, value) {
       chartData.add(ChartData(key, double.parse(value.toStringAsFixed(2))));

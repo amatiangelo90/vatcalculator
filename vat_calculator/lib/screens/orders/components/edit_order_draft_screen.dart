@@ -305,7 +305,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.fromLTRB(2, 0, 2, getProportionateScreenHeight(50)),
+                padding: EdgeInsets.fromLTRB(2, 0, 2, getProportionateScreenHeight(60)),
                 child: SlidingUpPanel(
                   maxHeight: _panelHeightOpen,
                   minHeight: _panelHeightClosed,
@@ -329,117 +329,118 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
   }
 
   buildProductListWidget(DataBundleNotifier dataBundleNotifier) {
-    List<Row> rows = [];
+    List<Widget> rows = [];
     widget.productList.forEach((element) {
 
       TextEditingController controller =
           TextEditingController(text: element.amount.toString());
       rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(200),
-                  child: Text(
-                    element.nome,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.bold, color: kPrimaryColor),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      element.unita_misura,
-                      style:
-                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: getProportionateScreenWidth(200),
+                    child: Text(
+                      element.nome,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(16), fontWeight: FontWeight.bold)
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        element.unita_misura,
+                        style:
+                            TextStyle(fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(4.0),
+                        child: Icon(Icons.circle, size: 4, color: Colors.grey),
+                      ),
+                      Text(
+                        dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? '' : element.prezzo_lordo.toString() + ' €',
+                        style:
+                            TextStyle(fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (element.amount < 0) {
+                        } else if(element.amount == 1 || element.amount == 0) {
+                          if(element.pkOrderProductId != 0){
+                            dataBundleNotifier.getclientServiceInstance().removeProductFromOrder(element);
+                          }
+                          widget.productList.remove(element);
+                        }else {
+                          element.amount--;
+                        }
+                      });
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Icon(
-                        FontAwesomeIcons.dotCircle,
-                        size: getProportionateScreenWidth(3),
+                        FontAwesomeIcons.minus,
+                        color: kPinaColor,
                       ),
                     ),
-                    Text(
-                      dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? '' : element.prezzo_lordo.toString() + ' €',
-                      style:
-                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (element.amount < 0) {
-                      } else if(element.amount == 1 || element.amount == 0) {
-                        if(element.pkOrderProductId != 0){
-                          dataBundleNotifier.getclientServiceInstance().removeProductFromOrder(element);
+                  ),
+                  ConstrainedBox(
+                    constraints: BoxConstraints.loose(Size(
+                        getProportionateScreenWidth(70),
+                        getProportionateScreenWidth(60))),
+                    child: CupertinoTextField(
+                      controller: controller,
+                      onChanged: (text) {
+                        if (double.tryParse(text) != null) {
+                          element.amount = double.parse(text);
+                        } else {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
+                            content: Text(
+                                'Immettere un valore numerico corretto per ' +
+                                    element.nome),
+                          ));
                         }
-                        widget.productList.remove(element);
-                      }else {
-                        element.amount--;
-                      }
-                    });
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      FontAwesomeIcons.minus,
-                      color: kPinaColor,
+                      },
+                      textInputAction: TextInputAction.next,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true, signed: true),
+                      clearButtonMode: OverlayVisibilityMode.never,
+                      textAlign: TextAlign.center,
+                      autocorrect: false,
                     ),
                   ),
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints.loose(Size(
-                      getProportionateScreenWidth(70),
-                      getProportionateScreenWidth(60))),
-                  child: CupertinoTextField(
-                    controller: controller,
-                    onChanged: (text) {
-                      if (double.tryParse(text) != null) {
-                        element.amount = double.parse(text);
-                      } else {
-                        Scaffold.of(context).showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
-                          content: Text(
-                              'Immettere un valore numerico corretto per ' +
-                                  element.nome),
-                        ));
-                      }
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        element.amount = element.amount + 1;
+                      });
                     },
-                    textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
-                    clearButtonMode: OverlayVisibilityMode.never,
-                    textAlign: TextAlign.center,
-                    autocorrect: false,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(FontAwesomeIcons.plus,
+                          color: Colors.green.shade900),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      element.amount = element.amount + 1;
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.plus,
-                        color: Colors.green.shade900),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       );
+      rows.add(Divider(color: Colors.grey.shade400, indent: 10, height: 1,));
     });
 
     return Column(
@@ -480,7 +481,7 @@ class _EditDraftOrderScreenState extends State<EditDraftOrderScreen> {
             ],
           ),
           const SizedBox(
-            height: 8.0,
+            height: 4.0,
           ),
           SingleChildScrollView(
             scrollDirection: Axis.vertical,

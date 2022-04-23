@@ -118,7 +118,7 @@ class ComunicationUnloadStorageScreen extends StatelessWidget {
             children: [
               Text(element.supplierName),
               Text(element.productName),
-              Text(element.stock.toString()),
+              Text(element.loadUnloadAmount.toString()),
             ]
         ));
 

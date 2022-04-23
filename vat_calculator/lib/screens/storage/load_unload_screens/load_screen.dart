@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -11,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
+import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -33,58 +35,83 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
+        backgroundColor: kPrimaryColor,
         key: _scaffoldKey,
-        bottomSheet: Padding(
-          padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-          child: DefaultButton(
-            color: Colors.green.shade700,
-            text: 'Effettua Carico',
-            press: () {
+        bottomSheet: Container(
+          color: kPrimaryColor,
+          child: Padding(
+            padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
+            child: DefaultButton(
+              color: Colors.green,
+              text: 'Effettua Carico',
+              press: () async {
 
-              int currentProductWithMorethan0Amount = 0;
+                int currentProductWithMorethan0Amount = 0;
 
-              dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
-                if (element.stock != 0) {
-                  currentProductWithMorethan0Amount = currentProductWithMorethan0Amount + 1;
-                }
-              });
-
-              if (currentProductWithMorethan0Amount == 0) {
-                _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                  backgroundColor: kPinaColor,
-                  content: Text(
-                      'Immettere la quantità di carico per almeno un prodotto'),
-                ));
-              } else {
-                dataBundleNotifier.currentStorageProductListForCurrentStorageLoad.forEach((element) {
-                  dataBundleNotifier.currentStorageProductListForCurrentStorage.forEach((standardElement) {
-                    if (standardElement.pkStorageProductId == element.pkStorageProductId) {
-                      element.stock = standardElement.stock + element.stock;
-                    }
-                  });
+                dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                  if (element.loadUnloadAmount != 0) {
+                    currentProductWithMorethan0Amount = currentProductWithMorethan0Amount + 1;
+                  }
                 });
-                ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
 
-                //TODO aggiungere lista merce aggiunta a fronte del carico
-                getclientServiceInstance.updateStock(
-                  currentStorageProductListForCurrentStorageUnload: dataBundleNotifier.currentStorageProductListForCurrentStorageLoad,
-                    actionModel: ActionModel(
-                        date: DateTime.now().millisecondsSinceEpoch,
-                        description: 'Ha eseguito carico merce nel magazzino ${dataBundleNotifier.currentStorage.name}. ',
-                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                        type: ActionType.STORAGE_LOAD
-                    )
-                );
+                if (currentProductWithMorethan0Amount == 0) {
+                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                    backgroundColor: kPinaColor,
+                    content: Text(
+                        'Immettere la quantità di carico per almeno un prodotto'),
+                  ));
 
-                dataBundleNotifier.clearUnloadProductList();
-                dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-              }
-            },
+                } else {
+
+                  List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
+
+                  dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                      if (element.loadUnloadAmount > 0) {
+                        element.loadUnloadAmount = element.stock + element.loadUnloadAmount;
+                        listMoveProductBetweenStorageModel.add(
+                            MoveProductBetweenStorageModel(
+                                amount: element.loadUnloadAmount,
+                                pkProductId: element.fkProductId,
+                                storageIdFrom: 0,
+                                storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
+                            )
+                        );
+                      }
+                  });
+
+                  Response response = await dataBundleNotifier.getclientServiceInstance()
+                      .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
+                      actionModel: ActionModel(
+                          date: DateTime.now().millisecondsSinceEpoch,
+                          description: 'Ha effettuato carico in magazzino ${dataBundleNotifier.currentStorage.pkStorageId}',
+                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                          type: ActionType.STORAGE_LOAD
+                      )
+                  );
+                  if(response != null && response.data == 1){
+                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text(
+                          'Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
+                    ));
+                  }else{
+                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      backgroundColor: kPinaColor,
+                      content: Text(
+                          'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
+                    ));
+                  }
+
+
+                }
+              },
+            ),
           ),
         ),
         appBar: AppBar(
+          elevation: 5,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -97,7 +124,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
           ),
           actions: [
             IconButton(onPressed: (){
-              dataBundleNotifier.clearLoadProductList();
+              dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
             }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
           ],
           centerTitle: true,
@@ -110,31 +137,42 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                     color: Colors.white,
                     fontSize: getProportionateScreenHeight(17)),
               ),
-              Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreenAccent, fontSize: getProportionateScreenHeight(11)),),
+              Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(12)),),
             ],
           ),
         ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
-            color: Colors.white,
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: buildCurrentListProdutctTableForStockManagmentLoad(
-                        dataBundleNotifier, context),
+            color: kPrimaryColor,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: getProportionateScreenHeight(40),
+                    width: getProportionateScreenWidth(500),
+                    child: CupertinoTextField(
+                      textInputAction: TextInputAction.next,
+                      restorationId: 'Ricerca per nome o fornitore',
+                      keyboardType: TextInputType.text,
+                      clearButtonMode: OverlayVisibilityMode.editing,
+                      placeholder: 'Ricerca per nome o fornitore',
+                      onChanged: (currentText) {
+                        dataBundleNotifier.filterStorageProductList(currentText);
+                      },
+                    ),
                   ),
-                  const SizedBox(
-                    height: 80,
-                  ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: buildCurrentListProdutctTableForStockManagmentLoad(
+                      dataBundleNotifier, context),
+                ),
+                const SizedBox(
+                  height: 80,
+                ),
+              ],
             ),
           ),
         ),
@@ -147,106 +185,109 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
     List<Widget> rows = [
     ];
 
-    dataBundleNotifier.currentStorageProductListForCurrentStorageLoad
+    dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated
         .forEach((element) {
       TextEditingController controller;
 
-          if(element.stock > 0){
-            controller = TextEditingController(text: element.stock.toString());
+          if(element.loadUnloadAmount > 0){
+            controller = TextEditingController(text: element.loadUnloadAmount.toString());
           }else{
             controller = TextEditingController();
           }
 
       rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(200),
-                  child: Text(
-                    element.productName,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenWidth(18)),
-                  ),
-                ),
-                Row(
-                  children: [
-                    Text(
-                      element.unitMeasure,
-                        style: TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kCustomGreenAccent),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: getProportionateScreenWidth(200),
+                    child: Text(
+                      element.productName,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenWidth(18)),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        element.unitMeasure,
+                          style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold, color: Colors.green),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          FontAwesomeIcons.dotCircle,
+                          size: getProportionateScreenWidth(3),
+                        ),
+                      ),
+                      dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
+                      TextStyle(fontSize: getProportionateScreenWidth(10))) : Text(
+                        element.price.toString() + ' €',
+                        style:
+                            TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (element.loadUnloadAmount <= 0) {
+                        } else {
+                          element.loadUnloadAmount--;
+                        }
+                      });
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Icon(
-                        FontAwesomeIcons.dotCircle,
-                        size: getProportionateScreenWidth(3),
+                        FontAwesomeIcons.minus,
+                        color: kPinaColor,
                       ),
                     ),
-                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
-                    TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
-                      element.price.toString() + ' €',
-                      style:
-                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (element.stock <= 0) {
-                      } else {
-                        element.stock--;
-                      }
-                    });
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      FontAwesomeIcons.minus,
-                      color: kPinaColor,
+                  ),
+                  ConstrainedBox(
+                    constraints: BoxConstraints.loose(Size(
+                        getProportionateScreenWidth(70),
+                        getProportionateScreenWidth(60))),
+                    child: CupertinoTextField(
+                      controller: controller,
+                      onChanged: (text) {
+                          element.loadUnloadAmount = double.parse(text.replaceAll(',', '.'));
+                      },
+                      textInputAction: TextInputAction.next,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true, signed: true),
+                      clearButtonMode: OverlayVisibilityMode.never,
+                      textAlign: TextAlign.center,
+                      autocorrect: false,
                     ),
                   ),
-                ),
-                ConstrainedBox(
-                  constraints: BoxConstraints.loose(Size(
-                      getProportionateScreenWidth(70),
-                      getProportionateScreenWidth(60))),
-                  child: CupertinoTextField(
-                    controller: controller,
-                    onChanged: (text) {
-                        element.stock = double.parse(text.replaceAll(',', '.'));
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        element.loadUnloadAmount = element.loadUnloadAmount + 1;
+                      });
                     },
-                    textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: true),
-                    clearButtonMode: OverlayVisibilityMode.never,
-                    textAlign: TextAlign.center,
-                    autocorrect: false,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(FontAwesomeIcons.plus,
+                          color: Colors.green),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      element.stock = element.stock + 1;
-                    });
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.plus,
-                        color: Colors.green.shade900),
-                  ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       );
       rows.add(Divider(height: 0.3, color: Colors.grey.withOpacity(0.2),));
