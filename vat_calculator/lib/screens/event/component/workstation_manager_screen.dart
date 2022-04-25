@@ -46,6 +46,11 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   List<StorageProductModel> currentStorageProductModelList = [];
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     return GestureDetector(
@@ -1069,6 +1074,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             ));
                           }else{
                             try{
+                              await dataBundleNotifier.getclientServiceInstance().removeWorkstation(workstationModel);
+
                               List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(widget.eventModel);
                               List<ExpenceEventModel> listExpenceEvent = await dataBundleNotifier.getclientServiceInstance().retrieveEventExpencesByEventId(widget.eventModel);
 

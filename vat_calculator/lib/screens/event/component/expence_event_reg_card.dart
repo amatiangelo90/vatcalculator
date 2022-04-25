@@ -23,6 +23,10 @@ class _ExpenceEventCardState extends State<ExpenceEventCard> {
   TextEditingController casualeExpenceController = TextEditingController();
   TextEditingController amountController = TextEditingController();
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,7 @@ class _ExpenceEventCardState extends State<ExpenceEventCard> {
           width: MediaQuery.of(context).size.width,
           child: Column(
             children: [
+
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
@@ -277,4 +282,6 @@ class _ExpenceEventCardState extends State<ExpenceEventCard> {
       },
     );
   }
+
+
 }

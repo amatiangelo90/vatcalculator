@@ -22,9 +22,15 @@ import '../../main_page.dart';
 import '../event_home.dart';
 import 'expence_event_edit_card.dart';
 
-class EventManagerScreen extends StatelessWidget {
+class EventManagerScreen extends StatefulWidget {
 
   static String routeName = 'eventmanagerscreen';
+
+  @override
+  State<EventManagerScreen> createState() => _EventManagerScreenState();
+}
+
+class _EventManagerScreenState extends State<EventManagerScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -74,7 +80,7 @@ class EventManagerScreen extends StatelessWidget {
               children: [
                 buildWorkstationsManagmentScreen(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : RecapWorkstationsWidget(),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel),
+                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel, context),
                 dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(dataBundleNotifier.currentEventModel, dataBundleNotifier, dataBundleNotifier.currentWorkstationModelList),
               ],
             ),
@@ -83,7 +89,6 @@ class EventManagerScreen extends StatelessWidget {
       },
     );
   }
-
 
   buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
     List<Widget> listWgBar = [
@@ -296,6 +301,7 @@ class EventManagerScreen extends StatelessWidget {
         ])
     );
   }
+
   buildEventSettingsScreen(EventModel event, DataBundleNotifier dataBundleNotifier, workstationModelList) {
 
     TextEditingController controllerEventName = TextEditingController(text: event.eventName);
@@ -574,7 +580,7 @@ class EventManagerScreen extends StatelessWidget {
             child: const Text('Elimina evento'),
             onPressed: () async {
 
-              
+
 
             }),
       ),
@@ -598,7 +604,7 @@ class EventManagerScreen extends StatelessWidget {
   }
 
   buildResocontoScreenExtraExpences(List<WorkstationModel> workstationModelList,
-      DataBundleNotifier dataBundleNotifier, EventModel event) {
+      DataBundleNotifier dataBundleNotifier, EventModel event, context) {
     return FutureBuilder(
       initialData: const Center(
           child: CircularProgressIndicator(
@@ -607,16 +613,13 @@ class EventManagerScreen extends StatelessWidget {
       builder: (context, snapshot){
         return snapshot.data;
       },
-      future: retrieveDataToBuildRecapWidgetExtraExpences(workstationModelList, dataBundleNotifier, event),
+      future: retrieveDataToBuildRecapWidgetExtraExpences(workstationModelList, dataBundleNotifier, event, context),
     );
   }
 
-
-
-
   Future<Widget> retrieveDataToBuildRecapWidgetExtraExpences(List<WorkstationModel> workstationModelList,
       DataBundleNotifier dataBundleNotifier,
-      EventModel event) async {
+      EventModel event, context) async {
 
     double totalExpenceEvent = 0.0;
 
@@ -641,14 +644,19 @@ class EventManagerScreen extends StatelessWidget {
       rowsExpenceEvent.add(TableRow( children: [
         GestureDetector(
           onTap: (){
-            AlertDialog(
-              backgroundColor: Colors.transparent,
-              actions: [
-                EditingExpenceEventCard(
-                  expenceEventModel: expence,
-                ),
-              ],
-            );
+
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  scrollable: true,
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: EditingExpenceEventCard(
+                    expenceEventModel: expence,
+                  ),
+                ));
+
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -663,14 +671,18 @@ class EventManagerScreen extends StatelessWidget {
         ),
         GestureDetector(
           onTap: (){
-            AlertDialog(
-              backgroundColor: Colors.transparent,
-              actions: [
-                EditingExpenceEventCard(
-                  expenceEventModel: expence,
-                ),
-              ],
-            );
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  scrollable: true,
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: EditingExpenceEventCard(
+                    expenceEventModel: expence,
+                  ),
+                ));
+
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
@@ -679,14 +691,17 @@ class EventManagerScreen extends StatelessWidget {
         ),
         GestureDetector(
           onTap: (){
-            AlertDialog(
-              backgroundColor: Colors.transparent,
-              actions: [
-                EditingExpenceEventCard(
-                  expenceEventModel: expence,
-                ),
-              ],
-            );
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  scrollable: true,
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: EditingExpenceEventCard(
+                    expenceEventModel: expence,
+                  ),
+                ));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
@@ -695,14 +710,17 @@ class EventManagerScreen extends StatelessWidget {
         ),
         GestureDetector(
           onTap: (){
-            AlertDialog(
-              backgroundColor: Colors.transparent,
-              actions: [
-                EditingExpenceEventCard(
-                  expenceEventModel: expence,
-                ),
-              ],
-            );
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  scrollable: true,
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: EditingExpenceEventCard(
+                    expenceEventModel: expence,
+                  ),
+                ));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -711,14 +729,17 @@ class EventManagerScreen extends StatelessWidget {
         ),
         GestureDetector(
           onTap: (){
-            AlertDialog(
-              backgroundColor: Colors.transparent,
-              actions: [
-                EditingExpenceEventCard(
-                  expenceEventModel: expence,
-                ),
-              ],
-            );
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  scrollable: true,
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                  content: EditingExpenceEventCard(
+                    expenceEventModel: expence,
+                  ),
+                ));
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -771,14 +792,20 @@ class EventManagerScreen extends StatelessWidget {
                       child: IconButton(
                           icon: Icon(Icons.add_circle, size: getProportionateScreenHeight(40), color: Colors.green),
                           onPressed: () {
-                            AlertDialog(
-                              backgroundColor: Colors.transparent,
-                              actions: [
-                                ExpenceEventCard(
-                                  eventModel: dataBundleNotifier.currentEventModel,
-                                ),
-                              ],
-                            );
+
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  scrollable: true,
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
+                                  content: ExpenceEventCard(
+                                    eventModel: dataBundleNotifier.currentEventModel,
+                                  ),
+                                ));
+
+
                           }
                       ),
                     ),

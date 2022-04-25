@@ -8,7 +8,13 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'event_card.dart';
 
-class EventsBodyWidget extends StatelessWidget {
+class EventsBodyWidget extends StatefulWidget {
+
+  @override
+  State<EventsBodyWidget> createState() => _EventsBodyWidgetState();
+}
+
+class _EventsBodyWidgetState extends State<EventsBodyWidget> {
 
   @override
   Widget build(BuildContext context) {
@@ -70,5 +76,10 @@ class EventsBodyWidget extends StatelessWidget {
     });
     eventList.add(SizedBox(height: getProportionateScreenHeight(100),));
     return eventList;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

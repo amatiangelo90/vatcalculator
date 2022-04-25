@@ -13,7 +13,6 @@ import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/screens/event/component/event_card.dart';
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
-import 'package:vat_calculator/screens/event/event_home.dart';
 import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
@@ -23,6 +22,7 @@ import 'package:vat_calculator/screens/orders/components/screens/order_creation/
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../branch_registration/branch_update.dart';
+import '../../event/event_home.dart';
 import '../../recessed_manager/components/recessed_reg_card.dart';
 
 class HomePageBody extends StatefulWidget {

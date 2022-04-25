@@ -59,6 +59,11 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     currentDate = null;
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future<void> setCurrentStorage(String storage, DataBundleNotifier dataBundleNotifier) async {
     setState(() {
       _selectedStorage = storage;

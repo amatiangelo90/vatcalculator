@@ -15,9 +15,16 @@ import 'component/archivied_events_screen.dart';
 import 'component/event_body.dart';
 import 'component/event_create_screen.dart';
 
-class EventHomeScreen extends StatelessWidget {
+class EventHomeScreen extends StatefulWidget {
   const EventHomeScreen({Key key}) : super(key: key);
   static String routeName = "/eventscreen";
+
+  @override
+  _EventHomeScreenState createState() => _EventHomeScreenState();
+}
+
+class _EventHomeScreenState extends State<EventHomeScreen> {
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,8 +54,8 @@ class EventHomeScreen extends StatelessWidget {
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
-                    dataBundleNotifier.onItemTapped(0);
-                    Navigator.pushNamed(context, HomeScreenMain.routeName);
+                      dataBundleNotifier.onItemTapped(0);
+                      Navigator.pushNamed(context, HomeScreenMain.routeName);
                     }),
                 iconTheme: const IconThemeData(color: Colors.white),
                 backgroundColor: kPrimaryColor,
@@ -60,15 +67,15 @@ class EventHomeScreen extends StatelessWidget {
                         Text(
                           'Area Eventi',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(19),
+                            fontSize: getProportionateScreenWidth(17),
                             color: Colors.white,
                           ),
                         ),
                         Text(
                           dataBundleNotifier.currentBranch.companyName,
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(13),
-                            color: Colors.green,
+                            fontSize: getProportionateScreenWidth(11),
+                            color: kCustomGreenAccent,
                           ),
                         ),
                       ],
@@ -123,7 +130,7 @@ class EventHomeScreen extends StatelessWidget {
                                         .add_circle_outline,
                                     size: 13,
                                     color:
-                                    Colors.green,
+                                    kCustomGreenAccent,
                                   ),
                                 ),
                               ),
@@ -141,5 +148,10 @@ class EventHomeScreen extends StatelessWidget {
             );
           }),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
