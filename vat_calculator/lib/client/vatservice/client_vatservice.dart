@@ -2175,7 +2175,7 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future<List<WorkstationProductModel>> retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation) async {
+  Future<List<WorkstationProductModel>>retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation) async {
     if(workstation != null || workstation.pkWorkstationId > 0){
       var dio = Dio();
       Response post;
@@ -2216,6 +2216,7 @@ class ClientVatService implements VatServiceInterface{
                 unitMeasure: workstationElement['unitMeasure'],
                 fkProductId: workstationElement['fkProductId'],
                 productPrice: workstationElement['productPrice'],
+                backupRefillStock: double.parse(refillStock.toStringAsFixed(2)),
               )
           );
         });

@@ -14,6 +14,7 @@ class WorkstationProductModel{
   double storeStock;
   double amountHunderd;
   double productPrice;
+  double backupRefillStock;
 
 
   WorkstationProductModel(
@@ -30,6 +31,7 @@ class WorkstationProductModel{
         @required this.storeStock,
         @required this.amountHunderd,
         @required this.productPrice,
+        @required this.backupRefillStock,
       });
 
   toMap(){

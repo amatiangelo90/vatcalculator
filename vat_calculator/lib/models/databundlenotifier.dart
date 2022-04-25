@@ -1590,6 +1590,9 @@ class DataBundleNotifier extends ChangeNotifier {
   Map<int, List<WorkstationProductModel>> workstationsProductsMap = {};
 
   Future<void> workstationsProductsMapCalculate() async {
+
+    workstationsProductsMap.clear();
+
     await Future.forEach(currentWorkstationModelList,
             (WorkstationModel workstationModel) async {
 
@@ -1601,6 +1604,7 @@ class DataBundleNotifier extends ChangeNotifier {
             workstationsProductsMap[workstationModel.pkWorkstationId] = list;
           }
         });
+
     notifyListeners();
   }
 

@@ -138,6 +138,7 @@ class EventCard extends StatelessWidget {
                       dataBundleNotifier.setCurrentExpenceEventList(listExpenceEvent);
                       dataBundleNotifier.setCurrentWorkstationModelList(workstationModelList);
                       dataBundleNotifier.setCurrentEventModel(eventModel);
+
                       dataBundleNotifier.workstationsProductsMapCalculate();
 
                       sleep(const Duration(milliseconds: 200));

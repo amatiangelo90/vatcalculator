@@ -132,9 +132,16 @@ class WorkstationCard extends StatelessWidget {
                     FutureBuilder(
                         future: buildProductPage(dataBundleNotifier, workstationModel),
                         builder: (context, snapshot) {
-                          return Column(
-                            children: snapshot.data,
-                          );
+                          if(snapshot != null && snapshot.data != null){
+                            return Column(
+                              children: snapshot != null ? snapshot.data : [Text('Caricamento')],
+                            );
+                          }else{
+                            return Column(
+                              children:  [Text('Caricamento')],
+                            );
+                          }
+
                         },
                         initialData: <Widget>[
                         const Center(
@@ -165,36 +172,13 @@ class WorkstationCard extends StatelessWidget {
                   child: CupertinoButton(
                     color: isBarType ? kCustomOrange : kCustomEvidenziatoreGreen,
                     onPressed: () async {
-                      List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
-
-                      List<WorkstationProductModel> backup = [];
-                      workStationProdModelList.forEach((element) {
-                        backup.add(
-                            WorkstationProductModel(
-                              unitMeasure: element.unitMeasure,
-                              productName: element.productName,
-                              productPrice: element.productPrice,
-                              amountHunderd: element.amountHunderd,
-                              consumed: element.consumed,
-                              fkProductId: element.fkProductId,
-                              fkStorProdId: element.fkStorProdId,
-                              fkSupplierId: element.fkSupplierId,
-                              fkWorkstationId: element.fkWorkstationId,
-                              pkWorkstationStorageProductId: element.pkWorkstationStorageProductId,
-                              refillStock: element.refillStock,
-                              storeStock: element.storeStock
-                            ),
-                        );
-                      });
 
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => WorkstationManagerScreen(
                               eventModel: eventModel,
-                              workstationModel: workstationModel,
-                              workStationProdModelList: workStationProdModelList,
-                              workStationProdModelListBackUp: backup,
+                              workstationModel: workstationModel
                           ),
                         ),
                       );

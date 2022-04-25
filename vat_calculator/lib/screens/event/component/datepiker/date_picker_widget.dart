@@ -90,6 +90,12 @@ class _DatePickerEventsState extends State<DatePickerEvents> {
   TextStyle deactivatedMonthStyle;
   TextStyle deactivatedDayStyle;
 
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   void initState() {
     // Init the calendar locale

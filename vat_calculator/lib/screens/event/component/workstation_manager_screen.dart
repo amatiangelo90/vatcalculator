@@ -26,14 +26,10 @@ import 'event_manager_screen.dart';
 class WorkstationManagerScreen extends StatefulWidget {
   const WorkstationManagerScreen({Key key,
     this.eventModel,
-    this.workstationModel,
-    this.workStationProdModelList,
-    this.workStationProdModelListBackUp}) : super(key: key);
+    this.workstationModel}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
-  final List<WorkstationProductModel> workStationProdModelList;
-  final List<WorkstationProductModel> workStationProdModelListBackUp;
 
   @override
   State<WorkstationManagerScreen> createState() => _WorkstationManagerScreenState();
@@ -105,8 +101,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               ),
               body: TabBarView(
                 children: [
-                  buildRefillWorkstationProductsPage(widget.workStationProdModelList, widget.workStationProdModelListBackUp, dataBundleNotifier),
-                  buildUnloadWorkstationProductsPage(widget.workStationProdModelList, dataBundleNotifier),
+                  buildRefillWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId], dataBundleNotifier),
+                  buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId], dataBundleNotifier),
                   buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
                 ],
               ),
@@ -129,128 +125,131 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
         ),
       ) : SizedBox(width: 0,),
     ];
-    workStationProdModelList.forEach((element) {
-      TextEditingController controller;
-      bool isError = false;
-      if(element.consumed == 0){
-        controller = TextEditingController();
-      }else{
-        controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', ''));
-      }
-      rows.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(200),
-                  child: Text(
-                    ' ' + element.productName,
-                    overflow: TextOverflow.clip,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18), color: Colors.white),
+    if(workStationProdModelList != null){
+      workStationProdModelList.forEach((element) {
+        TextEditingController controller;
+        bool isError = false;
+        if(element.consumed == 0){
+          controller = TextEditingController();
+        }else{
+          controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', ''));
+        }
+        rows.add(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: getProportionateScreenWidth(200),
+                    child: Text(
+                      ' ' + element.productName,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18), color: Colors.white),
+                    ),
                   ),
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(3.0),
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(3.0),
+                        child: Icon(
+                          FontAwesomeIcons.dotCircle,
+                          color: Colors.white,
+                          size: getProportionateScreenWidth(3),
+                        ),
+                      ),
+                      Text(element.refillStock.toStringAsFixed(2).replaceAll('.00', '') + ' x ',
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.grey),
+                      ),
+
+                      Text(element.unitMeasure,
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.green),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (element.consumed <= 0) {
+                        } else {
+                          element.consumed--;
+                        }
+                      });
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Icon(
-                        FontAwesomeIcons.dotCircle,
-                        color: Colors.white,
-                        size: getProportionateScreenWidth(3),
+                        FontAwesomeIcons.minus,
+                        color: Colors.redAccent,
                       ),
                     ),
-                    Text(element.refillStock.toStringAsFixed(2).replaceAll('.00', '') + ' x ',
-                      style:
-                      TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.grey),
-                    ),
-
-                    Text(element.unitMeasure,
-                      style:
-                      TextStyle(fontSize: getProportionateScreenWidth(10), color: Colors.green),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (element.consumed <= 0) {
-                      } else {
-                        element.consumed--;
-                      }
-                    });
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(
-                      FontAwesomeIcons.minus,
-                      color: Colors.redAccent,
-                    ),
                   ),
-                ),
 
-                ConstrainedBox(
-                  constraints: BoxConstraints.loose(
+                  ConstrainedBox(
+                    constraints: BoxConstraints.loose(
                       Size(getProportionateScreenWidth(70),
-                      getProportionateScreenWidth(60),),
+                        getProportionateScreenWidth(60),),
 
-                  ),
-                  child: CupertinoTextField(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0),),
-                      border: Border.all(color: isError ? Colors.red : Colors.transparent),
-                      color: Colors.white
                     ),
-                    controller: controller,
-                    onChanged: (text){
+                    child: CupertinoTextField(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5.0),),
+                          border: Border.all(color: isError ? Colors.red : Colors.transparent),
+                          color: Colors.white
+                      ),
+                      controller: controller,
+                      onChanged: (text){
 
-                      if(double.tryParse(text.replaceAll(',', '.')) != null){
-                        element.consumed = double.parse(text.replaceAll(',', '.'));
+                        if(double.tryParse(text.replaceAll(',', '.')) != null){
+                          element.consumed = double.parse(text.replaceAll(',', '.'));
+                        }
+                      },
+                      textInputAction: TextInputAction.next,
+                      keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true, signed: false),
+                      clearButtonMode: OverlayVisibilityMode.never,
+                      textAlign: TextAlign.center,
+                      autocorrect: false,
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      if(element.consumed + 1 > element.refillStock){
+                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          duration: Duration(milliseconds: 2000),
+                          content: Text(
+                              'Non puoi sforare la quantità di carico di [${element.refillStock.toStringAsFixed(2)} ${element.unitMeasure}] configurata per ${element.productName}'),
+                        ));
+                      }else{
+                        setState(() {
+                          element.consumed = element.consumed + 1;
+                        });
                       }
                     },
-                    textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true, signed: false),
-                    clearButtonMode: OverlayVisibilityMode.never,
-                    textAlign: TextAlign.center,
-                    autocorrect: false,
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(FontAwesomeIcons.plus,
+                          color: Colors.lightGreenAccent),
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    if(element.consumed + 1 > element.refillStock){
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        backgroundColor: kPinaColor,
-                        duration: Duration(milliseconds: 2000),
-                        content: Text(
-                            'Non puoi sforare la quantità di carico di [${element.refillStock.toStringAsFixed(2)} ${element.unitMeasure}] configurata per ${element.productName}'),
-                      ));
-                    }else{
-                      setState(() {
-                        element.consumed = element.consumed + 1;
-                      });
-                    }
-                  },
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Icon(FontAwesomeIcons.plus,
-                        color: Colors.lightGreenAccent),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-      rows.add(Divider(color: Colors.grey.withOpacity(0.2), indent: 5, endIndent: 10, height: 10,));
-    });
+                ],
+              ),
+            ],
+          ),
+        );
+        rows.add(Divider(color: Colors.grey.withOpacity(0.2), indent: 5, endIndent: 10, height: 10,));
+      });
+    }
+
     rows.add(Divider(height: getProportionateScreenHeight(100), indent: 30, endIndent: 30,));
 
     return Padding(
@@ -285,7 +284,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         }else{
                           try{
                             bool isValid = true;
-                            for(WorkstationProductModel workProd in widget.workStationProdModelList){
+                            for(WorkstationProductModel workProd in dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]){
 
                               if(workProd.refillStock < workProd.consumed){
                                 _scaffoldKey.currentState.showSnackBar(SnackBar(
@@ -300,7 +299,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             }
                             if(isValid){
                               await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                                  widget.workStationProdModelList,
+                                  dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId],
                                   ActionModel(
                                       date: DateTime.now().millisecondsSinceEpoch,
                                       description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
@@ -338,7 +337,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       ),
     );
   }
-  buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, List<WorkstationProductModel> workStationProdModelListBackup, DataBundleNotifier dataBundleNotifier) {
+  buildRefillWorkstationProductsPage(List<WorkstationProductModel> workStationProdModelList, DataBundleNotifier dataBundleNotifier) {
 
     List<Widget> rows = [
       widget.eventModel.closed == 'Y' ? Container(
@@ -457,12 +456,13 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                       await dataBundleNotifier
                                           .getclientServiceInstance()
                                           .createRelationBetweenWorkstationsAndProductStorage([widget.workstationModel.pkWorkstationId], getIdsListFromCurrentStorageProductList(currentStorageProductModelList));
+
                                       List<WorkstationProductModel> workStationProdModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(widget.workstationModel);
 
-                                      setState(() {
-                                        widget.workStationProdModelList.clear();
-                                        widget.workStationProdModelList.addAll(workStationProdModelList);
-                                      });
+                                      //setState(() {
+                                      //  dataBundleNotifier.workStationProdModelList.clear();
+                                      //  dataBundleNotifier.workStationProdModelList.addAll(workStationProdModelList);
+                                      //});
 
                                       dataBundleNotifier.workstationsProductsMapCalculate();
                                       Navigator.of(context).pop();
@@ -602,237 +602,249 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
       ),
     ];
 
-    workStationProdModelList.forEach((element) {
-      TextEditingController controller;
-      if(element.refillStock == 0){
-        controller = TextEditingController();
-      }else{
-        controller = TextEditingController(text: element.refillStock.toStringAsFixed(2).replaceAll('.00', ''));
-      }
-      rows.add(
-        Padding(
-          padding: const EdgeInsets.fromLTRB(5, 1, 8, 1),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: (){
-                  if(dataBundleNotifier.currentBranch.accessPrivilege != Privileges.EMPLOYEE){
-                    TextEditingController amountController;
-                    if(element.amountHunderd != 0){
-                      amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''));
-                    }else{
-                      amountController = TextEditingController();
-                    }
+    if(workStationProdModelList != null){
+      workStationProdModelList.forEach((element) {
+        TextEditingController controller;
+        if(element.refillStock == 0){
+          controller = TextEditingController();
+        }else{
+          controller = TextEditingController(text: element.refillStock.toStringAsFixed(2).replaceAll('.00', ''));
+        }
+        rows.add(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 1, 8, 1),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: (){
+                    if(dataBundleNotifier.currentBranch.accessPrivilege != Privileges.EMPLOYEE){
+                      TextEditingController amountController;
+                      if(element.amountHunderd != 0){
+                        amountController = TextEditingController(text: element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''));
+                      }else{
+                        amountController = TextEditingController();
+                      }
 
-                    showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                          backgroundColor: kCustomWhite,
-                          contentPadding: const EdgeInsets.only(top: 10.0),
-                          elevation: 30,
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                            backgroundColor: kCustomWhite,
+                            contentPadding: const EdgeInsets.only(top: 10.0),
+                            elevation: 30,
 
-                          content: SizedBox(
-                            height: getProportionateScreenHeight(250),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('Configura Q/100 per ${element.productName}', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        ConstrainedBox(
-                                          constraints: BoxConstraints.loose(Size(
-                                              getProportionateScreenWidth(250),
-                                              getProportionateScreenWidth(60))),
-                                          child: CupertinoTextField(
-                                            controller: amountController,
-                                            textInputAction: TextInputAction.next,
-                                            keyboardType: const TextInputType.numberWithOptions(
-                                                decimal: true, signed: false),
-                                            clearButtonMode: OverlayVisibilityMode.never,
-                                            textAlign: TextAlign.center,
-                                            autocorrect: false,
+                            content: SizedBox(
+                              height: getProportionateScreenHeight(250),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('Configura Q/100 per ${element.productName}', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          ConstrainedBox(
+                                            constraints: BoxConstraints.loose(Size(
+                                                getProportionateScreenWidth(250),
+                                                getProportionateScreenWidth(60))),
+                                            child: CupertinoTextField(
+                                              controller: amountController,
+                                              textInputAction: TextInputAction.next,
+                                              keyboardType: const TextInputType.numberWithOptions(
+                                                  decimal: true, signed: false),
+                                              clearButtonMode: OverlayVisibilityMode.never,
+                                              textAlign: TextAlign.center,
+                                              autocorrect: false,
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: getProportionateScreenHeight(25),
-                                    ),
-                                    InkWell(
-                                      child: Container(
-                                          padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                          decoration: const BoxDecoration(
-                                            color: Colors.lightBlue,
-                                            borderRadius: BorderRadius.only(
-                                                bottomLeft: Radius.circular(25.0),
-                                                bottomRight: Radius.circular(25.0)),
-                                          ),
-                                          child: SizedBox(
-                                            width: getProportionateScreenWidth(500),
-                                            child: CupertinoButton(child: const Text('Configura Q/100', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.lightBlue, onPressed: () async {
-                                              if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
-                                                try{
-                                                  double currentValue = double.parse(amountController.text.replaceAll(",", "."));
-                                                  dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
-                                                  setState(() {
-                                                    element.amountHunderd = currentValue;
-                                                  });
-                                                }catch(e){
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: getProportionateScreenHeight(25),
+                                      ),
+                                      InkWell(
+                                        child: Container(
+                                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.lightBlue,
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(25.0),
+                                                  bottomRight: Radius.circular(25.0)),
+                                            ),
+                                            child: SizedBox(
+                                              width: getProportionateScreenWidth(500),
+                                              child: CupertinoButton(child: const Text('Configura Q/100', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.lightBlue, onPressed: () async {
+                                                if (double.tryParse(amountController.text.replaceAll(",", ".")) != null) {
+                                                  try{
+                                                    double currentValue = double.parse(amountController.text.replaceAll(",", "."));
+                                                    dataBundleNotifier.getclientServiceInstance().updateAmountHundredIntoStorage(currentValue, element.fkStorProdId);
+                                                    setState(() {
+                                                      element.amountHunderd = currentValue;
+                                                    });
+                                                  }catch(e){
+                                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                      backgroundColor: kPinaColor,
+                                                      duration: Duration(milliseconds: 600),
+                                                      content: Text(
+                                                          'Errore configurazione Q/100. ' + e),
+                                                    ));
+                                                  }
                                                   _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                                    backgroundColor: kPinaColor,
-                                                    duration: Duration(milliseconds: 600),
+                                                    backgroundColor: Colors.green.withOpacity(0.9),
+                                                    duration: Duration(milliseconds: 1600),
                                                     content: Text(
-                                                        'Errore configurazione Q/100. ' + e),
+                                                        'Configurato Q/100 ${amountController.text} per ${element.productName}'),
+                                                  ));
+                                                } else {
+                                                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                    backgroundColor: kPinaColor,
+                                                    duration: Duration(milliseconds: 1600),
+                                                    content: Text(
+                                                        'Immettere un valore numerico corretto per effettuare il carico'),
                                                   ));
                                                 }
-                                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                                  backgroundColor: Colors.green.withOpacity(0.9),
-                                                  duration: Duration(milliseconds: 1600),
-                                                  content: Text(
-                                                      'Configurato Q/100 ${amountController.text} per ${element.productName}'),
-                                                ));
-                                              } else {
-                                                _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                                  backgroundColor: kPinaColor,
-                                                  duration: Duration(milliseconds: 1600),
-                                                  content: Text(
-                                                      'Immettere un valore numerico corretto per effettuare il carico'),
-                                                ));
+                                                Navigator.of(context).pop();
                                               }
-                                              Navigator.of(context).pop();
-                                            }
-                                            ),
-                                          )
+                                              ),
+                                            )
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
+                          )
+                      );
+                    }
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: getProportionateScreenWidth(200),
+                        child: Text(
+                          element.productName,
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(15), color: Colors.white),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''),
+                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(11), color: Colors.lightBlueAccent),
                           ),
-                        )
-                    );
-                  }
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                          Text(
+                            ' ' + element.unitMeasure + ' x 100/pax' ,
+                            style:
+                            TextStyle(fontSize: getProportionateScreenWidth(11), color: Colors.grey.shade50),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'Stock Magazzino: ',
+                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(11), color: Colors.grey),
+                          ),
+                          Text(
+                            ' ' + element.storeStock.toStringAsFixed(2),
+                            style:
+                            TextStyle(fontSize: getProportionateScreenWidth(11), color: element.storeStock > 0  ? Colors.green : Colors.red),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Row(
                   children: [
-                    SizedBox(
-                      width: getProportionateScreenWidth(200),
-                      child: Text(
-                        element.productName,
-                        overflow: TextOverflow.clip,
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(15), color: Colors.white),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if (element.refillStock <= 1) {
+                            dataBundleNotifier.getclientServiceInstance().removeProductFromWorkstation(element);
+                            workStationProdModelList.remove(element);
+
+                            dataBundleNotifier.getclientServiceInstance()
+                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: [
+                              MoveProductBetweenStorageModel(
+                                  pkProductId: element.fkProductId,
+                                  storageIdFrom: 0,
+                                  storageIdTo: widget.eventModel.fkStorageId,
+                                  amount: element.backupRefillStock)
+                            ],
+                                actionModel: ActionModel(
+                                )
+                            );
+                            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              backgroundColor: Colors.redAccent.withOpacity(0.9),
+                              duration: Duration(milliseconds: 1000),
+                              content: Text(
+                                  'Prodotto ${element.productName} eliminato'),
+                            ));
+                          } else {
+                            element.refillStock--;
+                          }
+                        });
+
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          FontAwesomeIcons.minus,
+                          color: Colors.red,
+                        ),
                       ),
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          element.amountHunderd.toStringAsFixed(2).replaceAll('.00', ''),
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenWidth(11), color: Colors.lightBlueAccent),
-                        ),
-                        Text(
-                          ' ' + element.unitMeasure + ' x 100/pax' ,
-                          style:
-                          TextStyle(fontSize: getProportionateScreenWidth(11), color: Colors.grey.shade50),
-                        ),
-                      ],
+                    ConstrainedBox(
+                      constraints: BoxConstraints.loose(Size(
+                          getProportionateScreenWidth(70),
+                          getProportionateScreenWidth(60))),
+                      child: CupertinoTextField(
+                        controller: controller,
+                        textInputAction: TextInputAction.next,
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true, signed: false),
+                        onChanged: (value){
+                          if(double.tryParse(value.replaceAll(',', '.')) != null){
+                            element.refillStock = double.parse(double.parse(value.replaceAll(',', '.')).toStringAsFixed(2));
+                          }
+                        },
+                        clearButtonMode: OverlayVisibilityMode.never,
+                        textAlign: TextAlign.center,
+                        autocorrect: false,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          element.refillStock = element.refillStock + 1;
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(FontAwesomeIcons.plus,
+                            color: Colors.green),
+                      ),
                     ),
                   ],
                 ),
-              ),
-              Row(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        if (element.refillStock <= 1) {
-                          dataBundleNotifier.getclientServiceInstance().removeProductFromWorkstation(element);
-                          workStationProdModelList.remove(element);
-
-                          widget.workStationProdModelListBackUp.forEach((backupProd) async {
-                            if(element.fkProductId == backupProd.fkProductId && backupProd.refillStock != 0){
-                              await dataBundleNotifier.getclientServiceInstance()
-                                  .moveProductBetweenStorage(listMoveProductBetweenStorageModel: [
-                                  MoveProductBetweenStorageModel(
-                                  pkProductId: backupProd.fkProductId,
-                                  storageIdFrom: 0,
-                                  storageIdTo: widget.eventModel.fkStorageId,
-                                  amount: backupProd.refillStock)
-                              ],
-                                  actionModel: ActionModel(
-
-                                  )
-                              );
-                            }
-                          });
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            backgroundColor: Colors.redAccent.withOpacity(0.9),
-                            duration: Duration(milliseconds: 1000),
-                            content: Text(
-                                'Prodotto ${element.productName} eliminato'),
-                          ));
-                        } else {
-                          element.refillStock--;
-                        }
-                      });
-
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        FontAwesomeIcons.minus,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                  ConstrainedBox(
-                    constraints: BoxConstraints.loose(Size(
-                        getProportionateScreenWidth(70),
-                        getProportionateScreenWidth(60))),
-                    child: CupertinoTextField(
-                      controller: controller,
-                      textInputAction: TextInputAction.next,
-                      keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true, signed: false),
-                      onChanged: (value){
-                        if(double.tryParse(value.replaceAll(',', '.')) != null){
-                          element.refillStock = double.parse(double.parse(value.replaceAll(',', '.')).toStringAsFixed(2));
-                        }
-                      },
-                      clearButtonMode: OverlayVisibilityMode.never,
-                      textAlign: TextAlign.center,
-                      autocorrect: false,
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        element.refillStock = element.refillStock + 1;
-                      });
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(FontAwesomeIcons.plus,
-                          color: Colors.green),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-      rows.add(Divider(color: Colors.grey.withOpacity(0.3), height: 12, indent: 7,));
-    });
+        );
+        rows.add(Divider(color: Colors.grey.withOpacity(0.3), height: 12, indent: 7,));
+      });
+    }
+
 
     rows.add(Divider(color: Colors.black.withOpacity(0.3), height: 132, indent: 7,));
     return Container(
@@ -869,7 +881,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       try{
                         bool isEverthingOk = true;
                         String productWrong = '';
-                        widget.workStationProdModelList.forEach((prodModel) {
+
+                        dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId].forEach((prodModel) {
                           if(double.tryParse(prodModel.refillStock.toString()) != null){
                             print(prodModel.productName + ' ok as refillStock value');
                           }else{
@@ -879,29 +892,22 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         });
 
                         if(isEverthingOk){
-
                           List<MoveProductBetweenStorageModel> unloadProdList = [];
-                          widget.workStationProdModelListBackUp.forEach((element) {
-                            unloadProdList.add(
-                                MoveProductBetweenStorageModel(
-                                  storageIdTo: widget.eventModel.fkStorageId,
-                                  storageIdFrom: 0,
-                                  pkProductId: element.fkProductId,
-                                  amount: element.refillStock
-                                )
-                            );
-                          });
 
-                          List<MoveProductBetweenStorageModel> loadProdList = [];
-                          widget.workStationProdModelList.forEach((element) {
-                            loadProdList.add(
-                                MoveProductBetweenStorageModel(
-                                    storageIdTo: 0,
-                                    storageIdFrom: widget.eventModel.fkStorageId,
-                                    pkProductId: element.fkProductId,
-                                    amount: element.refillStock
-                                )
-                            );
+
+                          dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId].forEach((element) {
+
+
+                              if(element.refillStock != element.backupRefillStock){
+                                unloadProdList.add(
+                                    MoveProductBetweenStorageModel(
+                                        storageIdTo: widget.eventModel.fkStorageId,
+                                        storageIdFrom: 0,
+                                        pkProductId: element.fkProductId,
+                                        amount: element.backupRefillStock - element.refillStock
+                                    )
+                                );
+                              }
                           });
 
                           await dataBundleNotifier.getclientServiceInstance()
@@ -910,17 +916,10 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                               )
                           );
 
-                          await dataBundleNotifier.getclientServiceInstance()
-                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: loadProdList,
-                              actionModel: ActionModel(
-
-                              )
-                          );
-
                           dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
 
                           await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                              widget.workStationProdModelList,
+                              dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId],
                               ActionModel(
                                   date: DateTime.now().millisecondsSinceEpoch,
                                   description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
@@ -931,6 +930,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           );
 
                           dataBundleNotifier.workstationsProductsMapCalculate();
+
                           _scaffoldKey.currentState.showSnackBar(SnackBar(
                             backgroundColor: Colors.green.withOpacity(0.8),
                             duration: Duration(milliseconds: 600),
