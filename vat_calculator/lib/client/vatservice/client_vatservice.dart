@@ -2216,7 +2216,8 @@ class ClientVatService implements VatServiceInterface{
                 unitMeasure: workstationElement['unitMeasure'],
                 fkProductId: workstationElement['fkProductId'],
                 productPrice: workstationElement['productPrice'],
-                backupRefillStock: double.parse(refillStock.toStringAsFixed(2)),
+                backupRefillStock: double.parse(refillStock.toStringAsFixed(2),
+                ),
               )
           );
         });
@@ -2907,6 +2908,49 @@ class ClientVatService implements VatServiceInterface{
     }
 
 
+  }
+
+  Future<Response> deleteEventModel(EventModel event) async {
+
+    var dio = Dio();
+    String body = json.encode(
+        event.toMap());
+    print('Calling ' + VAT_SERVICE_URL_DELETE_EVENT + 'to delete event...');
+    print('Body Request delete event: ' + body);
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_EVENT,
+        data: body,
+      );
+      return post;
+    }catch(e){
+      rethrow;
+    }
+  }
+
+  Future<Response> performSetNullAllProductsWithNegativeValueForStockStorage(StorageModel currentStorage) async {
+    var dio = Dio();
+    String body = json.encode(
+        currentStorage.toMap());
+
+    Response post;
+    print('Empty stock storage : ' + body);
+    print('Calling method to set stock storage on 0 where value is negative ' + VAT_SERVICE_URL_SET_0_WHERE_IS_NEGATIVE_STOCK_STORAGE + ' for storage ${currentStorage.name} with id ' + currentStorage.pkStorageId.toString());
+
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_SET_0_WHERE_IS_NEGATIVE_STOCK_STORAGE,
+        data: body,
+      );
+      return post;
+    }catch(e){
+      print(e);
+      return Response(
+          data: 0
+      );
+    }
   }
 
 }

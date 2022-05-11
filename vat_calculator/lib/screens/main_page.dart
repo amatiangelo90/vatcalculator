@@ -97,7 +97,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 ),
               ],
             ),
-          ) : dataBundleNotifier.selectedIndex == 0
+          ) : dataBundleNotifier.currentPrivilegeType != Privileges.EMPLOYEE && dataBundleNotifier.selectedIndex == 0
                 && dataBundleNotifier.areEventsOrOrderOlderThanTodayPresent() != 0
                 && DateTime.now().hour > 5 ? FloatingActionButton(
               elevation: 7,
@@ -471,8 +471,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
               Text(
               'Area gestione magazzini',
                 style: TextStyle(
-                  fontSize: getProportionateScreenWidth(8),
-                  color: kCustomEvidenziatoreGreen,
+                  fontSize: getProportionateScreenWidth(11),
+                  color: Colors.lightBlueAccent,
                 ),
               ),
             ],

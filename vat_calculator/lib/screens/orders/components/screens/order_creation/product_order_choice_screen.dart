@@ -61,7 +61,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                                 Text(dataBundleNotifier.setProducts.length.toString(), textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
                               ],
                             ),
-                            Row(
+                              dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Row(
                               children: [
                                 Text('Prezzo stimato: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
                                 Text(dataBundleNotifier.totalPriceOrder.toStringAsFixed(2) + ' €', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),

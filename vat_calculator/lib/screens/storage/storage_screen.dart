@@ -382,7 +382,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     },
                                   ),
                                 ),
-                                dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : SizedBox(
+                                SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
                                   child: TextButton(
@@ -472,7 +472,197 @@ class _StorageScreenState extends State<StorageScreen> {
                                       );
                                     }),
                                   ),
-                            ],
+                                SizedBox(
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+                                  child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.red.shade700,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text('IMPOSTA GIACENZA 0',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
+                                          Text('I PRODOTTI IN NEGATIVO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
+                                        ],
+                                      ),
+                                      onPressed: () async {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                                              backgroundColor: kCustomWhite,
+                                              contentPadding: EdgeInsets.only(top: 10.0),
+                                              elevation: 30,
+
+                                              content: SizedBox(
+                                                height: getProportionateScreenHeight(270),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: const Text('', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                                                    ),
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                      children: [
+                                                        Padding(
+                                                          padding: EdgeInsets.all(8.0),
+                                                          child: Text('Impostare la giacenza a 0 per tutti i prodotti presenti in ${dataBundleNotifier.currentStorage.name} che abbiamo un valore per la giacenza in negativo?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                                        ),
+                                                        SizedBox(height: 40),
+                                                        InkWell(
+                                                          child: Container(
+                                                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.red.shade700,
+                                                                borderRadius: BorderRadius.only(
+                                                                    bottomLeft: Radius.circular(25.0),
+                                                                    bottomRight: Radius.circular(25.0)),
+                                                              ),
+                                                              child: SizedBox(
+                                                                width: getProportionateScreenWidth(300),
+                                                                child: CupertinoButton(child: const Text('PROCEDI',
+                                                                    style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.red.shade700,
+                                                                    onPressed: () async {
+                                                                      try{
+                                                                        Response response = await dataBundleNotifier.getclientServiceInstance().performSetNullAllProductsWithNegativeValueForStockStorage(dataBundleNotifier.currentStorage);
+
+                                                                        if(response.data.toString() != '0'){
+                                                                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                                                          Navigator.of(context).pop();
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(const SnackBar(
+                                                                              backgroundColor: Colors.green,
+                                                                              duration: Duration(milliseconds: 1000),
+                                                                              content: Text('Magazzino svuotato')));
+                                                                        }else{
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(SnackBar(
+                                                                              backgroundColor: kPinaColor,
+                                                                              duration: Duration(milliseconds: 1600),
+                                                                              content: Text(response.data)));
+                                                                        }
+                                                                      } catch(e){
+                                                                        print('Errore');
+                                                                      }
+
+                                                                    }
+                                                                ),
+                                                              )
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                        );
+                                      }),
+                                ),
+                                SizedBox(
+                                  width: getProportionateScreenWidth(170),
+                                  height: getProportionateScreenHeight(60),
+                                  child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.deepOrange.shade700,
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Text('IMPOSTA GIACENZA 0',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
+                                          Text('X PRODOTTI SELEZIONATI',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
+                                        ],
+                                      ),
+                                      onPressed: () async {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              shape: const RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                                              backgroundColor: kCustomWhite,
+                                              contentPadding: EdgeInsets.only(top: 10.0),
+                                              elevation: 30,
+
+                                              content: SizedBox(
+                                                height: getProportionateScreenHeight(270),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8.0),
+                                                      child: const Text('', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                                                    ),
+                                                    Column(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                      children: [
+                                                        Padding(
+                                                          padding: EdgeInsets.all(8.0),
+                                                          child: Text('Impostare la giacenza a 0 per tutti i prodotti selezionati in ${dataBundleNotifier.currentStorage.name}?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                                        ),
+                                                        SizedBox(height: 40),
+                                                        InkWell(
+                                                          child: Container(
+                                                              padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.red.shade700,
+                                                                borderRadius: BorderRadius.only(
+                                                                    bottomLeft: Radius.circular(25.0),
+                                                                    bottomRight: Radius.circular(25.0)),
+                                                              ),
+                                                              child: SizedBox(
+                                                                width: getProportionateScreenWidth(300),
+                                                                child: CupertinoButton(child: const Text('PROCEDI',
+                                                                    style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.red.shade700,
+                                                                    onPressed: () async {
+                                                                      try{
+                                                                        List<StorageProductModel> productToRemove = [];
+                                                                        dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                                                                          if(element.selected){
+                                                                            productToRemove.add(element);
+                                                                          }
+                                                                        });
+                                                                        if(productToRemove.isEmpty){
+                                                                          ScaffoldMessenger.of(context)
+                                                                              .showSnackBar(const SnackBar(
+                                                                              backgroundColor: kPinaColor,
+                                                                              duration: Duration(milliseconds: 600),
+                                                                              content: Text('Nessun prodotto selezionato')));
+                                                                        }else{
+                                                                          productToRemove.forEach((productStorageElementToRemove) async {
+                                                                            //TODO finire la questione set a 0 dei prodotti selezionati
+                                                                          });
+                                                                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                                                        }
+                                                                      }catch(e){
+                                                                        ScaffoldMessenger.of(context)
+                                                                            .showSnackBar(SnackBar(
+                                                                            duration: const Duration(milliseconds: 400),
+                                                                            content: Text('Impossibile completare operazione. Riprovare fra un paio di minuti. Exception: ' + e)));
+                                                                      }
+
+                                                                    }
+                                                                ),
+                                                              )
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                        );
+                                      }),
+                                ),
+                              ],
                             ),
                           ),
                         ),

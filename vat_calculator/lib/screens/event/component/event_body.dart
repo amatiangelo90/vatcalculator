@@ -8,13 +8,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 import 'event_card.dart';
 
-class EventsBodyWidget extends StatefulWidget {
-
-  @override
-  State<EventsBodyWidget> createState() => _EventsBodyWidgetState();
-}
-
-class _EventsBodyWidgetState extends State<EventsBodyWidget> {
+class EventsBodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +29,7 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height * 1/10,
                   child: DatePickerEvents(
-                    DateTime.now().subtract(Duration(days: 4)),
+                    DateTime.now().subtract(const Duration(days: 4)),
                     initialSelectedDate: DateTime.now(),
                     selectionColor: Colors.blue ,
                     selectedTextColor: Colors.white,
@@ -76,10 +70,5 @@ class _EventsBodyWidgetState extends State<EventsBodyWidget> {
     });
     eventList.add(SizedBox(height: getProportionateScreenHeight(100),));
     return eventList;
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 }

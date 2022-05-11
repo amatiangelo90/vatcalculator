@@ -188,7 +188,7 @@ class SuppliersScreen extends StatelessWidget {
     });
 
     listout.add(SizedBox(
-      height: getProportionateScreenHeight(50),
+      height: getProportionateScreenHeight(100),
     ));
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,

@@ -91,8 +91,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   }
 
   buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
-    List<Widget> listWgBar = [
-      dataBundleNotifier.currentEventModel.closed == 'Y' ? SizedBox(width: 0,) : Container(
+    List<Widget> listWgBar = [];
+
+    if(dataBundleNotifier.currentPrivilegeType != Privileges.EMPLOYEE){
+      listWgBar.add(dataBundleNotifier.currentEventModel.closed == 'Y' ? SizedBox(width: 0,) : Container(
         color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -110,10 +112,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     children: [
                       Stack(
                         children: [ SvgPicture.asset(
-                            'assets/icons/bartender.svg',
-                            color: kCustomOrange,
-                            width: 25,
-                          ),
+                          'assets/icons/bartender.svg',
+                          color: kCustomOrange,
+                          width: 25,
+                        ),
                           Positioned(
                             top: 26.0,
                             right: 9.0,
@@ -236,8 +238,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             ),
           ],
         ),
-      )
-    ];
+      ),);
+    }
+
+
+
     if(event.closed == 'Y'){
       listWgBar.add(
         SizedBox(
@@ -415,6 +420,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             child: const Text('Chiudi evento'),
             onPressed: () async {
               showDialog(
+                context: context,
                   builder: (_) => AlertDialog(
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(25.0))),
@@ -451,104 +457,87 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       width: getProportionateScreenWidth(300),
                                       child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
                                         try{
+                                          await dataBundleNotifier.getclientServiceInstance().performSetNullAllProductsWithNegativeValueForStockStorage(dataBundleNotifier.getStorageModelById(dataBundleNotifier.currentEventModel.fkStorageId));
+
                                           Map<int, SupportTableObj> supportTableObjList = {};
 
                                           supportTableObjList.clear();
                                           supportTableObjList = {};
-                                          sleep(const Duration(milliseconds: 300));
-
-                                          Map<int, List<WorkstationProductModel>> map = {};
-
-                                          await Future.forEach(workstationModelList,
-                                                  (WorkstationModel workstationModel) async {
-
-                                                List<WorkstationProductModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
-                                                if(map.containsKey(workstationModel.pkWorkstationId)){
-                                                  map[workstationModel.pkWorkstationId].clear();
-                                                  map[workstationModel.pkWorkstationId] = list;
-                                                }else{
-
-                                                  map[workstationModel.pkWorkstationId] = list;
-                                                }
-                                              });
 
                                           Set<int> idsProductsPresent = Set();
 
-                                          if(map != null || map.isNotEmpty){
-                                            map.forEach((workstationId, listProducts) {
+                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
+                                            dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
                                               listProducts.forEach((product) {
                                                 idsProductsPresent.add(product.fkProductId);
                                               });
                                             });
                                           }
 
-                                          idsProductsPresent.forEach((productId) {
-                                            map.forEach((workstationId, listProducts) {
-                                              listProducts.forEach((product) {
-                                                if(product.fkProductId == productId){
+                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
+                                            idsProductsPresent.forEach((productId) {
 
-                                                  if(supportTableObjList.containsKey(productId)){
-                                                    supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
-                                                    supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+                                              dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
+                                                listProducts.forEach((product) {
 
-                                                  }else{
-                                                    supportTableObjList[productId] = SupportTableObj(
-                                                        id: productId,
-                                                        amountin: product.refillStock,
-                                                        amountout: product.consumed,
-                                                        productName: product.productName,
-                                                        price: product.productPrice,
-                                                        unitMeasure: product.unitMeasure
-                                                    );
+                                                  if(product.fkProductId == productId){
+
+                                                    if(supportTableObjList.containsKey(productId)){
+                                                      supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
+                                                      supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+
+                                                    }else{
+                                                      supportTableObjList[productId] = SupportTableObj(
+                                                          id: productId,
+                                                          amountin: product.refillStock,
+                                                          amountout: product.consumed,
+                                                          productName: product.productName,
+                                                          price: product.productPrice,
+                                                          unitMeasure: product.unitMeasure
+                                                      );
+                                                    }
                                                   }
-                                                }
+                                                });
                                               });
                                             });
-                                          });
+                                          }
+                                          
+                                          
+                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
+                                            List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
 
+                                            supportTableObjList.forEach((prodId, value) {
+                                              listMoveProductBetweenStorageModel.add(
+                                                  MoveProductBetweenStorageModel(
+                                                      amount: value.amountout,
+                                                      pkProductId: prodId,
+                                                      storageIdFrom: 0,
+                                                      storageIdTo: dataBundleNotifier.currentEventModel.fkStorageId
+                                                  )
+                                              );
+                                            });
+                                            await dataBundleNotifier.getclientServiceInstance()
+                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
+                                                actionModel: ActionModel(
 
-                                          List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
-
-                                          supportTableObjList.forEach((prodId, value) {
-                                            listMoveProductBetweenStorageModel.add(
-                                                MoveProductBetweenStorageModel(
-                                                    amount: value.amountout,
-                                                    pkProductId: prodId,
-                                                    storageIdFrom: 0,
-                                                    storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
                                                 )
                                             );
-                                          });
-                                          Response response = await dataBundleNotifier.getclientServiceInstance()
-                                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                                              actionModel: ActionModel(
-
-                                              )
-                                          );
-
-                                          if(response != null && response.data == 1){
-                                            event.closed = 'Y';
-                                            await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
-                                            dataBundleNotifier.cleanExtraArgsListProduct();
-                                            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                              backgroundColor: Colors.redAccent,
-                                              duration: const Duration(milliseconds: 3000),
-                                              content: Text(
-                                                  'Evento ' +
-                                                      event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
-                                            ));
-                                            dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-
-                                            EventHomeScreen();
-                                          }else{
-                                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                                                backgroundColor: kPinaColor,
-                                                duration: Duration(milliseconds: 1200),
-                                                content: Text('Errore durante le chiusura dell\'evento. Contattare il supporto.')));
                                           }
 
+                                          event.closed = 'Y';
+                                          await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+                                          dataBundleNotifier.cleanExtraArgsListProduct();
+                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
 
+                                          dataBundleNotifier.onItemTapped(0);
+                                          Navigator.pushNamed(context, HomeScreenMain.routeName);
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: Colors.redAccent,
+                                            duration: const Duration(milliseconds: 3000),
+                                            content: Text(
+                                                'Evento ' +
+                                                    event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
+                                          ));
                                         }catch(e){
                                           _scaffoldKey.currentState.showSnackBar(SnackBar(
                                             backgroundColor: kCustomBordeaux,
@@ -579,7 +568,146 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             color: kCustomBordeaux,
             child: const Text('Elimina evento'),
             onPressed: () async {
+              showDialog(
+                  context: context,
+                  builder: (_) => AlertDialog(
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                    backgroundColor: kCustomWhite,
+                    contentPadding: EdgeInsets.only(top: 10.0),
+                    elevation: 30,
 
+                    content: SizedBox(
+                      height: getProportionateScreenHeight(370),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('Elimina Evento?', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text('Eliminando l\'evento ${event.eventName} tutta la merce caricata nelle postazioni lavorative verrà reinserita nel magazzino di riferimento  '
+                                    '${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                              ),
+                              SizedBox(height: 60),
+                              InkWell(
+                                child: Container(
+                                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                    decoration: const BoxDecoration(
+                                      color: kCustomBordeaux,
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(25.0),
+                                          bottomRight: Radius.circular(25.0)),
+                                    ),
+                                    child: SizedBox(
+                                      width: getProportionateScreenWidth(300),
+                                      child: CupertinoButton(child: const Text('ELIMINA EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomBordeaux, onPressed: () async {
+                                        try{
+
+                                          Map<int, SupportTableObj> supportTableObjList = {};
+
+                                          supportTableObjList.clear();
+                                          supportTableObjList = {};
+
+                                          Set<int> idsProductsPresent = Set();
+
+                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
+                                            dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
+                                              listProducts.forEach((product) {
+                                                idsProductsPresent.add(product.fkProductId);
+                                              });
+                                            });
+                                          }
+
+                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
+                                            idsProductsPresent.forEach((productId) {
+
+                                              dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
+                                                listProducts.forEach((product) {
+
+                                                  if(product.fkProductId == productId){
+
+                                                    if(supportTableObjList.containsKey(productId)){
+                                                      supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
+                                                      supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+
+                                                    }else{
+                                                      supportTableObjList[productId] = SupportTableObj(
+                                                          id: productId,
+                                                          amountin: product.refillStock,
+                                                          amountout: product.consumed,
+                                                          productName: product.productName,
+                                                          price: product.productPrice,
+                                                          unitMeasure: product.unitMeasure
+                                                      );
+                                                    }
+                                                  }
+                                                });
+                                              });
+                                            });
+                                          }
+
+                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
+                                            List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
+
+                                            supportTableObjList.forEach((prodId, value) {
+                                              listMoveProductBetweenStorageModel.add(
+                                                  MoveProductBetweenStorageModel(
+                                                      amount: value.amountin,
+                                                      pkProductId: prodId,
+                                                      storageIdFrom: 0,
+                                                      storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
+                                                  )
+                                              );
+                                            });
+                                            await dataBundleNotifier.getclientServiceInstance()
+                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
+                                                actionModel: ActionModel(
+
+                                                )
+                                            );
+                                          }
+
+
+
+                                          await dataBundleNotifier.getclientServiceInstance().deleteEventModel(event);
+                                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: Colors.redAccent,
+                                            duration: const Duration(milliseconds: 3000),
+                                            content: Text(
+                                                'Evento ' +
+                                                    event.eventName + ' Eliminato. Merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
+                                          ));
+
+                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                                          dataBundleNotifier.onItemTapped(0);
+                                          Navigator.pushNamed(context, HomeScreenMain.routeName);
+
+                                        }catch(e){
+                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: kCustomBordeaux,
+                                            duration: const Duration(milliseconds: 3000),
+                                            content: Text(
+                                                'Impossibile eliminare evento ' +
+                                                    event.eventName + '. ' + e.toString()),
+                                          ));
+                                        }
+                                      }
+                                      ),
+                                    )
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+              );
 
 
             }),

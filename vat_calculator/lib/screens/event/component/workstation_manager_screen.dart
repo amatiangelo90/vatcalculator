@@ -103,7 +103,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                 children: [
                   buildRefillWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId], dataBundleNotifier),
                   buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId], dataBundleNotifier),
-                  buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
+                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
                 ],
               ),
             ),
@@ -967,7 +967,32 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     );
   }
 
+  getPriviledgeWarningContainer() {
+    return Container(
+      color: kPrimaryColor,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Column(
+            children: [
+              SvgPicture.asset('assets/icons/warning.svg', color: kCustomOrange, height: 100,),
+              Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kCustomOrange)),                        ],
+          ),
+          Center(child: SizedBox(
+              width: getProportionateScreenWidth(350),
+              height: getProportionateScreenHeight(150),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Center(child: Text('Utente non abilitato alla visualizzazione ed all\'utilizzo di questa sezione', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: 15),)),
+              )),),
+        ],
+      ),
+    );
+  }
+
   buildConfigurationWorkstationPage(WorkstationModel workstationModel, DataBundleNotifier dataBundleNotifier) {
+
     TextEditingController controllerWorkStationName = TextEditingController(text: workstationModel.name);
     TextEditingController controllerResponsible = TextEditingController(text: workstationModel.responsable);
 

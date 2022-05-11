@@ -542,6 +542,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               ),
               Row(
                 children: [
+                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) :
                   Padding(
                     padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
                     child: IconButton(

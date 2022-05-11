@@ -100,6 +100,8 @@ const String VAT_SERVICE_URL_DELETE_CASH_REGISTER = 'http://$host:8080/vatservic
 
 //Expence Event api
 
+const String VAT_SERVICE_URL_DELETE_EVENT = 'http://$host:8080/vatservices/api/v1/delete/event';
+
 const String VAT_SERVICE_URL_CREATE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/create/eventexpence';
 const String VAT_SERVICE_URL_UPDATE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/update/eventexpence';
 const String VAT_SERVICE_URL_DELETE_EVENT_EXPENCE = 'http://$host:8080/vatservices/api/v1/delete/eventexpence';
@@ -112,3 +114,4 @@ const String VAT_SERVICE_URL_MOVE_PRODUCT_BETWEEN_STORAGE = 'http://$host:8080/v
 
 //Empty stock on storage
 const String VAT_SERVICE_URL_EMPTY_STOCK_STORAGE = 'http://$host:8080/vatservices/api/v1/editstorage/emptystock';
+const String VAT_SERVICE_URL_SET_0_WHERE_IS_NEGATIVE_STOCK_STORAGE = 'http://$host:8080/vatservices/api/v1/editstorage/resetstockwherenegative';

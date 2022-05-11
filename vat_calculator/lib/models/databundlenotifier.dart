@@ -429,8 +429,6 @@ class DataBundleNotifier extends ChangeNotifier {
     initializeCurrentDateTimeRange3Months();
     setCurrentPrivilegeType(currentBranch.accessPrivilege);
 
-
-
     if(branchModel.accessPrivilege != Privileges.EMPLOYEE){
       currentListCashRegister.clear();
       currentListRecessed.clear();
@@ -475,6 +473,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
     if(currentStorageList.isNotEmpty){
       currentStorage = currentStorageList[0];
+      setCurrentStorage(currentStorageList[0]);
     }
     if(currentStorageList.isNotEmpty){
       List<StorageProductModel> storageProductModelList = await clientService.retrieveRelationalModelProductsStorage(currentStorage.pkStorageId);
@@ -1596,12 +1595,11 @@ class DataBundleNotifier extends ChangeNotifier {
     await Future.forEach(currentWorkstationModelList,
             (WorkstationModel workstationModel) async {
 
-          List<WorkstationProductModel> list = await getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
           if(workstationsProductsMap.containsKey(workstationModel.pkWorkstationId)){
             workstationsProductsMap[workstationModel.pkWorkstationId].clear();
-            workstationsProductsMap[workstationModel.pkWorkstationId] = list;
+            workstationsProductsMap[workstationModel.pkWorkstationId] = await getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
           }else{
-            workstationsProductsMap[workstationModel.pkWorkstationId] = list;
+            workstationsProductsMap[workstationModel.pkWorkstationId] = await getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
           }
         });
 

@@ -34,145 +34,151 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-      return Scaffold(
-        backgroundColor: kPrimaryColor,
-        key: _scaffoldKey,
-        bottomSheet: Container(
-          color: kPrimaryColor,
-          child: Padding(
-            padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-            child: DefaultButton(
-              color: Colors.green,
-              text: 'Effettua Carico',
-              press: () async {
+      return GestureDetector(
+        onTap: (){
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Scaffold(
+          backgroundColor: kPrimaryColor,
+          key: _scaffoldKey,
+          bottomSheet: Container(
+            color: kPrimaryColor,
+            child: Padding(
+              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
+              child: DefaultButton(
+                color: Colors.green,
+                text: 'Effettua Carico',
+                press: () async {
 
-                int currentProductWithMorethan0Amount = 0;
-
-                dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
-                  if (element.loadUnloadAmount != 0) {
-                    currentProductWithMorethan0Amount = currentProductWithMorethan0Amount + 1;
-                  }
-                });
-
-                if (currentProductWithMorethan0Amount == 0) {
-                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
-                    backgroundColor: kPinaColor,
-                    content: Text(
-                        'Immettere la quantità di carico per almeno un prodotto'),
-                  ));
-
-                } else {
-
-                  List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
+                  int currentProductWithMorethan0Amount = 0;
 
                   dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
-                      if (element.loadUnloadAmount > 0) {
-                        element.loadUnloadAmount = element.stock + element.loadUnloadAmount;
-                        listMoveProductBetweenStorageModel.add(
-                            MoveProductBetweenStorageModel(
-                                amount: element.loadUnloadAmount,
-                                pkProductId: element.fkProductId,
-                                storageIdFrom: 0,
-                                storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
-                            )
-                        );
-                      }
+                    if (element.loadUnloadAmount != 0) {
+                      currentProductWithMorethan0Amount = currentProductWithMorethan0Amount + 1;
+                    }
                   });
 
-                  Response response = await dataBundleNotifier.getclientServiceInstance()
-                      .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                      actionModel: ActionModel(
-                          date: DateTime.now().millisecondsSinceEpoch,
-                          description: 'Ha effettuato carico in magazzino ${dataBundleNotifier.currentStorage.pkStorageId}',
-                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                          type: ActionType.STORAGE_LOAD
-                      )
-                  );
-                  if(response != null && response.data == 1){
-                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                      backgroundColor: Colors.green,
-                      content: Text(
-                          'Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
-                    ));
-                  }else{
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  if (currentProductWithMorethan0Amount == 0) {
+                    _scaffoldKey.currentState.showSnackBar(const SnackBar(
                       backgroundColor: kPinaColor,
                       content: Text(
-                          'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
+                          'Immettere la quantità di carico per almeno un prodotto'),
                     ));
+
+                  } else {
+
+                    List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
+
+                    dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+                        if (element.loadUnloadAmount > 0) {
+
+
+                          listMoveProductBetweenStorageModel.add(
+                              MoveProductBetweenStorageModel(
+                                  amount: element.loadUnloadAmount,
+                                  pkProductId: element.fkProductId,
+                                  storageIdFrom: 0,
+                                  storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
+                              )
+                          );
+                        }
+                    });
+
+                    Response response = await dataBundleNotifier.getclientServiceInstance()
+                        .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
+                        actionModel: ActionModel(
+                            date: DateTime.now().millisecondsSinceEpoch,
+                            description: 'Ha effettuato carico in magazzino ${dataBundleNotifier.currentStorage.pkStorageId}',
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                            type: ActionType.STORAGE_LOAD
+                        )
+                    );
+                    if(response != null && response.data == 1){
+                      dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor: Colors.green,
+                        content: Text(
+                            'Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
+                      ));
+                    }else{
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        content: Text(
+                            'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
+                      ));
+                    }
+
+
                   }
-
-
-                }
-              },
-            ),
-          ),
-        ),
-        appBar: AppBar(
-          elevation: 5,
-          leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: Colors.white,
-              size: getProportionateScreenHeight(20),
-            ),
-          ),
-          actions: [
-            IconButton(onPressed: (){
-              dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
-            }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
-          ],
-          centerTitle: true,
-          backgroundColor: kPrimaryColor,
-          title: Column(
-            children: [
-              Text(
-                dataBundleNotifier.currentStorage.name,
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: getProportionateScreenHeight(17)),
+                },
               ),
-              Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(12)),),
-            ],
+            ),
           ),
-        ),
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Container(
-            color: kPrimaryColor,
-            child: Column(
+          appBar: AppBar(
+            elevation: 5,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.white,
+                size: getProportionateScreenHeight(20),
+              ),
+            ),
+            actions: [
+              IconButton(onPressed: (){
+                dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
+              }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
+            ],
+            centerTitle: true,
+            backgroundColor: kPrimaryColor,
+            title: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: getProportionateScreenHeight(40),
-                    width: getProportionateScreenWidth(500),
-                    child: CupertinoTextField(
-                      textInputAction: TextInputAction.next,
-                      restorationId: 'Ricerca per nome o fornitore',
-                      keyboardType: TextInputType.text,
-                      clearButtonMode: OverlayVisibilityMode.editing,
-                      placeholder: 'Ricerca per nome o fornitore',
-                      onChanged: (currentText) {
-                        dataBundleNotifier.filterStorageProductList(currentText);
-                      },
+                Text(
+                  dataBundleNotifier.currentStorage.name,
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: getProportionateScreenHeight(17)),
+                ),
+                Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(12)),),
+              ],
+            ),
+          ),
+          body: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
+              color: kPrimaryColor,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: getProportionateScreenHeight(40),
+                      width: getProportionateScreenWidth(500),
+                      child: CupertinoTextField(
+                        textInputAction: TextInputAction.next,
+                        restorationId: 'Ricerca per nome o fornitore',
+                        keyboardType: TextInputType.text,
+                        clearButtonMode: OverlayVisibilityMode.editing,
+                        placeholder: 'Ricerca per nome o fornitore',
+                        onChanged: (currentText) {
+                          dataBundleNotifier.filterStorageProductList(currentText);
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: buildCurrentListProdutctTableForStockManagmentLoad(
-                      dataBundleNotifier, context),
-                ),
-                const SizedBox(
-                  height: 80,
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: buildCurrentListProdutctTableForStockManagmentLoad(
+                        dataBundleNotifier, context),
+                  ),
+                  const SizedBox(
+                    height: 80,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -217,7 +223,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                     children: [
                       Text(
                         element.unitMeasure,
-                          style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold, color: Colors.green),
+                        style: TextStyle(fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold, color: Colors.lightBlueAccent),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(3.0),
@@ -228,12 +234,30 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                       ),
                       dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
                       TextStyle(fontSize: getProportionateScreenWidth(10))) : Text(
-                        element.price.toString() + ' €',
-                        style:
-                            TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
+                          element.price.toString() + ' €',
+                          style:
+                          TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
                       ),
                     ],
                   ),
+                  SizedBox(
+                    width: getProportionateScreenWidth(200),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Giacenza: ',
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenWidth(12)),
+                        ),
+                        Text(
+                          element.stock.toString(),
+                          overflow: TextOverflow.clip,
+                          style: TextStyle(fontWeight: FontWeight.bold, color: element.stock > 0 ? Colors.green : Colors.red, fontSize: getProportionateScreenWidth(12)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 5),
                 ],
               ),
               Row(
@@ -266,7 +290,7 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                       },
                       textInputAction: TextInputAction.next,
                       keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true, signed: true),
+                          decimal: true, signed: false),
                       clearButtonMode: OverlayVisibilityMode.never,
                       textAlign: TextAlign.center,
                       autocorrect: false,
