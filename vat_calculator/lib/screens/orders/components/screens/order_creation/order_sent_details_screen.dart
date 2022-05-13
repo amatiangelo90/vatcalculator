@@ -99,15 +99,19 @@ class OrderSentDetailsScreen extends StatelessWidget {
                   print(messageToSend);
                   String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
 
-                  if (await canLaunch(urlString)) {
+                  if(Platform.isIOS){
+                    if (await canLaunch(urlString)) {
+                      await launch(urlString);
+                    } else {
+                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          backgroundColor: kPinaColor,
+                          duration: Duration(milliseconds: 3000),
+                          content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                          )));
+                      throw 'Could not launch $urlString';
+                    }
+                  }else{
                     await launch(urlString);
-                  } else {
-                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                  backgroundColor: kPinaColor,
-                  duration: Duration(milliseconds: 3000),
-                  content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                  )));
-                  throw 'Could not launch $urlString';
                   }
                 },
                 child: Card(
@@ -134,19 +138,21 @@ class OrderSentDetailsScreen extends StatelessWidget {
                           messageToSend = messageToSend.replaceAll('ù', 'u');
                           messageToSend = messageToSend.replaceAll('é', 'e');
 
-                          print(messageToSend);
                           String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
 
-                          print(urlString);
-                          if (await canLaunch(urlString)) {
+                          if(Platform.isIOS){
+                            if (await canLaunch(urlString)) {
+                              await launch(urlString);
+                            } else {
+                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                  backgroundColor: kPinaColor,
+                                  duration: Duration(milliseconds: 3000),
+                                  content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                  )));
+                              throw 'Could not launch $urlString';
+                            }
+                          }else{
                             await launch(urlString);
-                          } else {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                backgroundColor: kPinaColor,
-                                duration: Duration(milliseconds: 3000),
-                                content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                                )));
-                            throw 'Could not launch $urlString';
                           }
 
 

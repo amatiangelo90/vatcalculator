@@ -117,19 +117,20 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                             print(messageToSend);
                             String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
 
-                            if (await canLaunch(urlString)) {
-                            await launch(urlString);
-                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                            performFinalAction(dataBundleNotifier, context);
-                            } else {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            backgroundColor: kPinaColor,
-                            duration: Duration(milliseconds: 3000),
-                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                            )));
-                            throw 'Could not launch $urlString';
+                            if(Platform.isIOS){
+                              if (await canLaunch(urlString)) {
+                                await launch(urlString);
+                              } else {
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    backgroundColor: kPinaColor,
+                                    duration: Duration(milliseconds: 3000),
+                                    content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                    )));
+                                throw 'Could not launch $urlString';
+                              }
+                            }else{
+                              await launch(urlString);
                             }
-
                           },
                           child: Card(
                             elevation: 5,
@@ -164,17 +165,19 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                     print(messageToSend);
                                     String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(number)}&text=$messageToSend';
 
-                                    if (await canLaunch(urlString)) {
-                                    await launch(urlString);
-                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                                    performFinalAction(dataBundleNotifier, context);
-                                    } else {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    backgroundColor: kPinaColor,
-                                    duration: Duration(milliseconds: 3000),
-                                    content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                                    )));
-                                    throw 'Could not launch $urlString';
+                                    if(Platform.isIOS){
+                                      if (await canLaunch(urlString)) {
+                                        await launch(urlString);
+                                      } else {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: kPinaColor,
+                                            duration: Duration(milliseconds: 3000),
+                                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                            )));
+                                        throw 'Could not launch $urlString';
+                                      }
+                                    }else{
+                                      await launch(urlString);
                                     }
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/ws.svg',
@@ -250,17 +253,23 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                             print(messageToSend);
                             String urlString = 'https://api.whatsapp.com/send/?text=$messageToSend';
 
-                            if (await canLaunch(urlString)) {
-                            await launch(urlString);
-                            sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                            performFinalAction(dataBundleNotifier, context);
-                            } else {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                            backgroundColor: kPinaColor,
-                            duration: Duration(milliseconds: 3000),
-                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                            )));
-                            throw 'Could not launch $urlString';
+                            if(Platform.isIOS){
+                              if (await canLaunch(urlString)) {
+                                await launch(urlString);
+                                sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                                performFinalAction(dataBundleNotifier, context);
+                              } else {
+                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    backgroundColor: kPinaColor,
+                                    duration: Duration(milliseconds: 3000),
+                                    content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                    )));
+                                throw 'Could not launch $urlString';
+                              }
+                            }else{
+                              await launch(urlString);
+                              sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                              performFinalAction(dataBundleNotifier, context);
                             }
                           },
                           child: Card(
@@ -295,17 +304,23 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                     print(messageToSend);
                                     String urlString = 'https://api.whatsapp.com/send/?text=$messageToSend';
 
-                                    if (await canLaunch(urlString)) {
-                                    await launch(urlString);
-                                    sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
-                                    performFinalAction(dataBundleNotifier, context);
-                                    } else {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    backgroundColor: kPinaColor,
-                                    duration: Duration(milliseconds: 3000),
-                                    content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                                    )));
-                                    throw 'Could not launch $urlString';
+                                    if(Platform.isIOS){
+                                      if (await canLaunch(urlString)) {
+                                        await launch(urlString);
+                                        sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                                        performFinalAction(dataBundleNotifier, context);
+                                      } else {
+                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                            backgroundColor: kPinaColor,
+                                            duration: Duration(milliseconds: 3000),
+                                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                            )));
+                                        throw 'Could not launch $urlString';
+                                      }
+                                    }else{
+                                      await launch(urlString);
+                                      sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
+                                      performFinalAction(dataBundleNotifier, context);
                                     }
                                   }, icon: SvgPicture.asset(
                                   'assets/icons/ws.svg',

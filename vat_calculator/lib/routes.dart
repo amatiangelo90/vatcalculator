@@ -6,6 +6,7 @@ import 'package:vat_calculator/screens/branch_registration/branch_update.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
 import 'package:vat_calculator/screens/details_screen/detailis_ndc_emesse.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti.dart';
+import 'package:vat_calculator/screens/details_screen/details_fatture_acquisti_single_supplier.dart';
 import 'package:vat_calculator/screens/details_screen/details_fatture_vendite.dart';
 import 'package:vat_calculator/screens/details_screen/details_ndc_received.dart';
 import 'package:vat_calculator/screens/event/component/archivied_events_screen.dart';
@@ -97,4 +98,5 @@ final Map<String, WidgetBuilder> routes = {
   ProductMoveToOtherStorageConfirmationScreen.routeName: (context) => ProductMoveToOtherStorageConfirmationScreen(),
   OrderFromStorageScreen.routeName: (context) => OrderFromStorageScreen(),
   EventManagerScreen.routeName: (context) => EventManagerScreen(),
+  DetailsFattureAcquistiSingleSupplier.routeName: (context) => DetailsFattureAcquistiSingleSupplier(),
 };

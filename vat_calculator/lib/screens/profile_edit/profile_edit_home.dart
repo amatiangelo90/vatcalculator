@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -888,11 +890,21 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                                         '%0a';
                                                                     urlString = urlString.replaceAll(' ', '%20');
 
-                                                                    if (await canLaunch(urlString)) {
-                                                                          await launch(urlString);
-                                                                        } else {
-                                                                          throw 'Could not launch $urlString';
-                                                                        }
+                                                                    if(Platform.isIOS){
+                                                                      if (await canLaunch(urlString)) {
+                                                                        await launch(urlString);
+                                                                      } else {
+                                                                        Scaffold.of(context).showSnackBar(SnackBar(
+                                                                            backgroundColor: kPinaColor,
+                                                                            duration: Duration(milliseconds: 3000),
+                                                                            content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                                                            )));
+                                                                        throw 'Could not launch $urlString';
+                                                                      }
+                                                                    }else{
+                                                                      await launch(urlString);
+                                                                    }
+
                                                                   },
                                                                 ),
                                                               ],
@@ -920,10 +932,15 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                           companyList[index].companyName +
                                           '%0a';
                                       urlString = urlString.replaceAll(' ', '%20');
-                                      if (await canLaunch(urlString)) {
-                                      await launch(urlString);
-                                      } else {
-                                      throw 'Could not launch $urlString';
+
+                                      if(Platform.isIOS){
+                                        if (await canLaunch(urlString)) {
+                                          await launch(urlString);
+                                        } else {
+                                          throw 'Could not launch $urlString';
+                                        }
+                                      }else{
+                                        await launch(urlString);
                                       }
                                     },
                                   ),

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -399,12 +401,16 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                           height: getProportionateScreenHeight(25),
                                         ),
                                         onPressed: () {
-                                          if(canLaunch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}') != null){
-                                            print('dentro');
-                                            launch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}');
+                                          if(Platform.isIOS){
+                                            if(canLaunch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}') != null){
+                                              launch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}');
+                                            }else{
+
+                                            }
                                           }else{
-                                            print('rottooo');
+                                            launch('https://api.whatsapp.com/send/?phone=${getRefactoredNumber(listUserModel[index].phone)}');
                                           }
+
                                         }
                                     ),
                                     SizedBox(width: 10,),

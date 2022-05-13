@@ -56,7 +56,6 @@ class FattureInCloudCalculatorScreen extends StatelessWidget {
                     ),
                     onPressed: () {
                       _selectDateTimeRange(context, dataBundleNotifier);
-
                     }),
               ],
               leading: IconButton(

@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -425,9 +427,19 @@ class DataBundleNotifier extends ChangeNotifier {
 
   Future<void> setCurrentBranch(BranchModel branchModel) async {
 
+    currentOrdersForCurrentBranch.clear();
+    currentDraftOrdersList.clear();
+    currentStorageList.clear();
+    currentDraftOrdersList.clear();
+    orderIdProductListMap.clear();
+    currentUnderWorkingOrdersList.clear();
+    sleep(Duration(milliseconds: 500));
+
     currentBranch = branchModel;
+
     initializeCurrentDateTimeRange3Months();
     setCurrentPrivilegeType(currentBranch.accessPrivilege);
+
 
     if(branchModel.accessPrivilege != Privileges.EMPLOYEE){
       currentListCashRegister.clear();
@@ -453,7 +465,6 @@ class DataBundleNotifier extends ChangeNotifier {
     List<EventModel> _eventModelList = await clientService.retrieveEventsListByBranchId(currentBranch);
 
     addCurrentEventsList(_eventModelList);
-
 
     totalFiscalExpences = 0.0;
     totalNotFiscalExpences = 0.0;

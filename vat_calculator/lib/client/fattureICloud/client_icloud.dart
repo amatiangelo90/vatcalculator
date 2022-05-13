@@ -36,7 +36,7 @@ class FattureInCloudClient {
       );
 
       print('Request to retrieve info company: ' + body);
-      print('Response From Icloud (' + URL_FATTURE_ICLOUD_REQUEST_INFO_ACCOUNT + '): ' + post.data.toString());
+      print('Response From Icloud - Get company info (' + URL_FATTURE_ICLOUD_REQUEST_INFO_ACCOUNT + '): ' + post.data.toString());
 
       String encode = json.encode(post.data);
 
@@ -81,7 +81,7 @@ class FattureInCloudClient {
         data: body,
       );
 
-      print('Request' + body);
+      print('Request RichiestaInfo: ' + body);
       print('Response From Icloud (' + URL_FATTURE_ICLOUD_REQUEST_INFO + '): ' + post.data.toString());
 
     }catch(e){
@@ -156,7 +156,7 @@ class FattureInCloudClient {
         data: body,
       );
 
-      print('Request' + body);
+      print('Request (ResponseAcquistiApi expected as output)' + body);
       print('Response From Icloud (' + URL_FATTURE_ICLOUD_ACQUISTI_LISTA + '): ' + post.data.toString());
 
     }catch(e){
@@ -197,7 +197,7 @@ class FattureInCloudClient {
         data: body,
       );
       print('Request' + body);
-      print('Response From Icloud (' + URL_FATTURE_ICLOUD_FATTURE_LISTA + '): ' + post.data.toString());
+      print('Response From Icloud fatture (' + URL_FATTURE_ICLOUD_FATTURE_LISTA + '): ' + post.data.toString());
 
     }catch(e){
       print(e);

@@ -290,11 +290,19 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
 
                       String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message';
 
-
-                      if (await canLaunch(urlString)) {
+                      if(Platform.isIOS){
+                        if (await canLaunch(urlString)) {
+                          await launch(urlString);
+                        } else {
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                              backgroundColor: kPinaColor,
+                              duration: Duration(milliseconds: 3000),
+                              content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                              )));
+                          throw 'Could not launch $urlString';
+                        }
+                      }else{
                         await launch(urlString);
-                      } else {
-                        throw 'Could not launch $urlString';
                       }
                     }
                 ),
@@ -320,7 +328,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                       width: MediaQuery.of(context).size.width - 40,
                       child: CupertinoButton(
                           color: kPinaColor,
-                          child: const Text('ELIMINA', style: TextStyle(color: kCustomWhite),),
+                          child: const Text('NON RICEVUTO', style: TextStyle(color: kCustomWhite),),
                           onPressed: (){
                             dataBundleNotifier.setEditOrderToFalse();
                             Widget cancelButton = TextButton(

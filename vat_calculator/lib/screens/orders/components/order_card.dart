@@ -148,18 +148,20 @@ class OrderCard extends StatelessWidget {
 
                                   print(message);
                                   String urlString = 'https://api.whatsapp.com/send/?phone=${refactorNumber(supplierNumber.tel)}&text=$message';
-
-                                  if (await canLaunch(urlString)) {
+                                  if(Platform.isIOS){
+                                    if (await canLaunch(urlString)) {
+                                      await launch(urlString);
+                                    } else {
+                                      Scaffold.of(context).showSnackBar(SnackBar(
+                                          backgroundColor: kPinaColor,
+                                          duration: Duration(milliseconds: 3000),
+                                          content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
+                                          )));
+                                      throw 'Could not launch $urlString';
+                                    }
+                                  }else{
                                     await launch(urlString);
-                                  } else {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      backgroundColor: kPinaColor,
-                                      duration: Duration(milliseconds: 3000),
-                                      content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
-                                    )));
-                                    throw 'Could not launch $urlString';
                                   }
-
                                 }
                             ),
                             IconButton(
