@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
+import 'package:vat_calculator/client/vatservice/model/deposit_order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/move_product_between_storage_model.dart';
@@ -13,6 +14,7 @@ import 'package:vat_calculator/client/vatservice/model/workstation_product_model
 import 'package:vat_calculator/client/vatservice/service_interface.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'constant/utils_vatservice.dart';
+import 'model/archivied_not_paid_request.dart';
 import 'model/branch_model.dart';
 import 'model/expence_model.dart';
 import 'model/order_model.dart';
@@ -996,7 +998,8 @@ class ClientVatService implements VatServiceInterface{
                 fk_branch_id: orderElement['fk_branch_id'],
                 details: orderElement['details'],
                 status: orderElement['status'],
-                closedby: orderElement['closedby']
+                closedby: orderElement['closedby'],
+                paid: orderElement['paid']
             ));
       });
       return ordersList;
@@ -1044,7 +1047,8 @@ class ClientVatService implements VatServiceInterface{
                 fk_branch_id: orderElement['fk_branch_id'],
                 details: orderElement['details'],
                 status: orderElement['status'],
-                closedby: orderElement['closedby']
+                closedby: orderElement['closedby'],
+                paid: orderElement['paid'],
             ));
       });
       return ordersList;
@@ -2950,6 +2954,168 @@ class ClientVatService implements VatServiceInterface{
       return Response(
           data: 0
       );
+    }
+  }
+
+  @override
+  Future<Response> performDeleteDepositOrder(DepositOrder depositOrder) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        depositOrder.toMap());
+
+    Response post;
+    print('Delete deposit order request body: ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_DELETE_ORDER_DEPOSIT,
+        data: body,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> performInsertDepositOrder(DepositOrder depositOrder) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        depositOrder.toMap());
+
+    Response post;
+    print('Save deposit order request body: ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_INSERT_ORDER_DEPOSIT,
+        data: body,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<DepositOrder>> performRetrieveDepositOrderByOrderId(OrderModel orderModel) async {
+    var dio = Dio();
+
+    List<DepositOrder> depositOrderList = [];
+    String body = json.encode(
+        orderModel.toMap());
+
+    Response post;
+    print('Retrieve deposit by order id: ' + orderModel.pk_order_id.toString());
+    print('Calling retrieve method to get deposit by order id ' + VAT_SERVICE_URL_RETRIEVE_ORDER_DEPOSITS_BY_ORDER_ID);
+
+
+    print('Get deposit by order id body: ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_ORDER_DEPOSITS_BY_ORDER_ID,
+        data: body,
+      );
+
+
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((depositOrderElement) {
+        depositOrderList.add(
+            DepositOrder(
+              amount: depositOrderElement['amount'],
+              creationDate: depositOrderElement['creation_date'],
+              fkOrderId: depositOrderElement['fk_order_id'],
+              pkDepositOrderId: depositOrderElement['pk_deposit_order_id'],
+              user: depositOrderElement['user'],
+            )
+        );
+      });
+
+      print('Response from service to retrieve deposit order ($VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID): ' + depositOrderList.toString());
+
+      return depositOrderList;
+
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Response> performUpdateDepositOrder(DepositOrder depositOrder) async {
+    var dio = Dio();
+
+    String body = json.encode(
+        depositOrder.toMap());
+
+    Response post;
+    print('Update deposit order request body: ' + body);
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_UPDATE_ORDER_DEPOSIT,
+        data: body,
+      );
+
+      return post;
+    }catch(e){
+      print(e);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<OrderModel>> retrieveOrderModelBySupplierIdAndBranchIdWhereStatusIsReceivedAndPaidIsFalse(int supplierId, int branchId) async {
+    var dio = Dio();
+
+    List<OrderModel> ordersList = [];
+
+    Response post;
+    try{
+      post = await dio.post(
+        VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCH_ID_SUPPLIER_ID_WITH_STATUS_ARCHIVIED_NOT_PAID,
+        data: ArchiviedNotPaidRequest(
+          pkBranchId: branchId,
+          pkSupplierId: supplierId
+        ).toMap(),
+      );
+
+      print('Request body for Vat Service (Retrieve orders list by branch id and supplier id where status is RICEVUTO E ARCHIVIATO e NON PAGATO). BranchId: ' + branchId.toString() + ', SupplierId: ' + supplierId.toString());
+      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCH_ID_SUPPLIER_ID_WITH_STATUS_ARCHIVIED_NOT_PAID + '): ' + post.data.toString());
+      String encode = json.encode(post.data);
+
+      List<dynamic> valueList = jsonDecode(encode);
+
+      valueList.forEach((orderElement) {
+
+        ordersList.add(
+            OrderModel(
+                pk_order_id: orderElement['pk_order_id'],
+                code: orderElement['code'],
+                total: orderElement['total'],
+                delivery_date: orderElement['delivery_date'],
+                creation_date: orderElement['creation_date'],
+                fk_supplier_id: orderElement['fk_supplier_id'],
+                fk_user_id: orderElement['fk_user_id'],
+                fk_storage_id: orderElement['fk_storage_id'],
+                fk_branch_id: orderElement['fk_branch_id'],
+                details: orderElement['details'],
+                status: orderElement['status'],
+                closedby: orderElement['closedby'],
+                paid: orderElement['paid']
+            ));
+      });
+      return ordersList;
+    }catch(e){
+      print('Errore retrieving orders : ');
+      print(e);
+      rethrow;
     }
   }
 

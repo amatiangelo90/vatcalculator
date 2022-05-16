@@ -14,6 +14,7 @@ class OrderModel{
   int fk_branch_id;
   int fk_storage_id;
   String closedby;
+  String paid;
 
   OrderModel({
     @required this.pk_order_id,
@@ -27,7 +28,8 @@ class OrderModel{
     this.fk_supplier_id,
     this.fk_branch_id,
     this.fk_storage_id,
-    this.closedby
+    this.closedby,
+    this.paid
   });
 
   toMap(){
@@ -43,7 +45,8 @@ class OrderModel{
       'fk_supplier_id' : fk_supplier_id,
       'fk_branch_id' : fk_branch_id,
       'fk_storage_id' : fk_storage_id,
-      'closedby' : closedby
+      'closedby' : closedby,
+      'paid': paid
 
 
     };

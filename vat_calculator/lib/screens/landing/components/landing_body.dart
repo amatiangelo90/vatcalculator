@@ -18,6 +18,7 @@ import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
+import 'package:vat_calculator/components/light_colors.dart';
 import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -87,7 +88,7 @@ class _LandingBodyState extends State<LandingBody> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
                 child: FAProgressBar(
                   size: 20,
-                  progressColor: Colors.green,
+                  progressColor: LightColors.kRed,
                   backgroundColor: Colors.white,
                   currentValue: _currentValue,
                   displayText: '%',
@@ -98,7 +99,7 @@ class _LandingBodyState extends State<LandingBody> {
                   width: getProportionateScreenWidth(500),
                   child: CupertinoButton(
                     child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                    color: kCustomGreenAccent,
+                    color: LightColors.kRed,
                     onPressed: () async {
                       dataBundleNotifier.switchLandingButton();
 

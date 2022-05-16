@@ -19,6 +19,8 @@ const String VAT_SERVICE_URL_RETRIEVE_BRANCHES_BY_BRANCH_ID = 'http://$host:8080
 const String VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/recessed';
 const String VAT_SERVICE_URL_RETRIEVE_EXPENCE_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/expences';
 const String VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/orders';
+const String VAT_SERVICE_URL_RETRIEVE_ORDERS_BY_BRANCH_ID_SUPPLIER_ID_WITH_STATUS_ARCHIVIED_NOT_PAID
+= 'http://$host:8080/vatservices/api/v1/retrieve/ordersbybranchidsupplieridwithstatusarchivied';
 
 const String VAT_SERVICE_URL_RETRIEVE_ARCHIVIE_ORDERS_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/archiviedorders';
 const String VAT_SERVICE_URL_RETRIEVE_SUPPLIER_BY_BRANCHES = 'http://$host:8080/vatservices/api/v1/retrieve/suppliers';
@@ -115,3 +117,12 @@ const String VAT_SERVICE_URL_MOVE_PRODUCT_BETWEEN_STORAGE = 'http://$host:8080/v
 //Empty stock on storage
 const String VAT_SERVICE_URL_EMPTY_STOCK_STORAGE = 'http://$host:8080/vatservices/api/v1/editstorage/emptystock';
 const String VAT_SERVICE_URL_SET_0_WHERE_IS_NEGATIVE_STOCK_STORAGE = 'http://$host:8080/vatservices/api/v1/editstorage/resetstockwherenegative';
+
+// order deposit
+
+const String VAT_SERVICE_URL_RETRIEVE_ORDER_DEPOSITS_BY_ORDER_ID = 'http://$host:8080/vatservices/api/v1/orderdeposit/retrievebyorderid';
+const String VAT_SERVICE_URL_INSERT_ORDER_DEPOSIT = 'http://$host:8080/vatservices/api/v1/orderdeposit/insert';
+const String VAT_SERVICE_URL_UPDATE_ORDER_DEPOSIT = 'http://$host:8080/vatservices/api/v1/orderdeposit/update';
+const String VAT_SERVICE_URL_DELETE_ORDER_DEPOSIT = 'http://$host:8080/vatservices/api/v1/orderdeposit/delete';
+
+

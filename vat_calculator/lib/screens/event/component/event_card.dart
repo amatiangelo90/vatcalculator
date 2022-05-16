@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
+import 'package:vat_calculator/components/light_colors.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../client/vatservice/model/expence_event_model.dart';
 import '../../../constants.dart';
@@ -54,7 +55,7 @@ class EventCard extends StatelessWidget {
                                 child: SvgPicture.asset(
                                   'assets/icons/party.svg',
                                   height: getProportionateScreenHeight(45),
-                                  color: Colors.lightBlueAccent,
+                                  color: LightColors.kLightYellow,
                                 ),
                               ),
                             ),
@@ -74,7 +75,7 @@ class EventCard extends StatelessWidget {
                                   style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                 Text(
                                   eventModel.location,
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kRed, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -86,7 +87,7 @@ class EventCard extends StatelessWidget {
                                   dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
                                   textAlign: TextAlign.justify,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: LightColors.kRed, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -98,7 +99,7 @@ class EventCard extends StatelessWidget {
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kRed, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -108,7 +109,7 @@ class EventCard extends StatelessWidget {
                                   style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                 Text(
                                   eventModel.closed == 'N' ? 'SI' : 'NO',
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: eventModel.closed == 'N' ? Colors.deepOrangeAccent.shade100 : kPinaColor, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: eventModel.closed == 'N' ? Colors.lightGreenAccent : kPinaColor, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Text(
@@ -123,7 +124,7 @@ class EventCard extends StatelessWidget {
                 Divider(
                   indent: 20,
                   endIndent: 20,
-                  color: Colors.lightBlueAccent,
+                  color: LightColors.kRed,
                   height: getProportionateScreenHeight(49),
                 ),
                 showButton ? SizedBox(
@@ -145,7 +146,7 @@ class EventCard extends StatelessWidget {
 
                       Navigator.pushNamed(context, EventManagerScreen.routeName);
                     },
-                    child: Text('Accedi a ' + eventModel.eventName),
+                    child: Text('Accedi a ' + eventModel.eventName, style: TextStyle(fontWeight: FontWeight.w600)),
                   ),
                 ) : SizedBox(width: 0,)
               ],

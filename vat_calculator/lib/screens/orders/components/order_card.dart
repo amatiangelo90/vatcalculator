@@ -16,6 +16,7 @@ import 'package:vat_calculator/screens/orders/components/edit_order_underworking
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import '../../../client/pdf/pdf_service.dart';
 import '../../../client/vatservice/model/utils/order_state.dart';
+import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -63,7 +64,7 @@ class OrderCard extends StatelessWidget {
                                     child: SvgPicture.asset(
                                       'assets/icons/receipt.svg',
                                       height: getProportionateScreenHeight(40),
-                                      color: kCustomBlue,
+                                      color: LightColors.kDarkYellow,
                                     ),
                                   ),
                                 ),
@@ -201,6 +202,16 @@ class OrderCard extends StatelessWidget {
                         Text(
                           order.status,
                           style: TextStyle(fontSize: getProportionateScreenHeight(13), color: OrderState.getStatusOrderColor(order.status), fontWeight: FontWeight.bold),),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          '  Pagato: ',
+                          style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
+                        Text(
+                          order.paid == 'false' ? 'NO' : 'SI',
+                          style: TextStyle(fontSize: getProportionateScreenHeight(13), color: order.paid == 'false' ? LightColors.kRed : LightColors.kLightGreen, fontWeight: FontWeight.w800),),
                       ],
                     ),
                     Divider(
@@ -352,7 +363,7 @@ class OrderCard extends StatelessWidget {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
                             productList: orderIdProductList,),),);
                         },
-                        child: Text('Completa Ordine'),
+                        child: Text('COMPLETA ORDINE', style: TextStyle(fontWeight: FontWeight.w700)),
                       ),
                     ),
                   ],

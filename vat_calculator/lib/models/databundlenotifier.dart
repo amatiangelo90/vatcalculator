@@ -14,6 +14,7 @@ import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
+import 'package:vat_calculator/client/vatservice/model/deposit_order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -1625,6 +1626,19 @@ class DataBundleNotifier extends ChangeNotifier {
 
   }
 
+  List<OrderModel> retrievedOrderModelArchiviedNotPaid = [];
+  Map<int, List<DepositOrder>> mapOrderIdDepositOrderList = {};
 
+  Future<void> addAllCurrentOrdersArchiviedAndNotPaidForCurrentBranchAndSupplier(List<OrderModel> retrievedOrderModelArchiviedNotPaidIcoming) async {
+    retrievedOrderModelArchiviedNotPaid.clear();
+    mapOrderIdDepositOrderList.clear();
 
+    await Future.forEach(retrievedOrderModelArchiviedNotPaidIcoming, (OrderModel orderElement) async {
+      mapOrderIdDepositOrderList[orderElement.pk_order_id] = await getclientServiceInstance().performRetrieveDepositOrderByOrderId(orderElement);
+    });
+
+    retrievedOrderModelArchiviedNotPaid.addAll(retrievedOrderModelArchiviedNotPaidIcoming);
+
+    notifyListeners();
+  }
 }

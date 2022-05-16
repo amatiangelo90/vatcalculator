@@ -3,7 +3,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
 import 'package:vat_calculator/size_config.dart';
 
-class ActiveProjectsCard extends StatelessWidget {
+class FatturazioneDetailsSupplierCard extends StatelessWidget {
   final Color cardColor;
   final double loadingPercent;
   final double loadingPercentIva;
@@ -11,7 +11,7 @@ class ActiveProjectsCard extends StatelessWidget {
   final List<ResponseAcquistiApi> listFatture;
   final Function function;
 
-  ActiveProjectsCard({
+  FatturazioneDetailsSupplierCard({
     this.cardColor,
     this.loadingPercent,
     this.loadingPercentIva,

@@ -5,6 +5,7 @@ import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart'
 import 'package:vat_calculator/models/databundle.dart';
 import 'model/action_model.dart';
 import 'model/branch_model.dart';
+import 'model/deposit_order_model.dart';
 import 'model/event_model.dart';
 import 'model/expence_model.dart';
 import 'model/move_product_between_storage_model.dart';
@@ -45,6 +46,7 @@ abstract class VatServiceInterface{
   Future<List<RecessedModel>> retrieveRecessedListByCashRegister(CashRegisterModel currentBranch);
   Future<List<ExpenceModel>> retrieveExpencesListByBranch(BranchModel currentBranch);
   Future<List<OrderModel>> retrieveOrdersByBranch(BranchModel currentBranch);
+  Future<List<OrderModel>> retrieveOrderModelBySupplierIdAndBranchIdWhereStatusIsReceivedAndPaidIsFalse(int supplierId, int branchId);
   Future<List<OrderModel>> retrieveArchiviedOrdersByBranch(BranchModel currentBranch);
   Future<List<SupplierModel>> retrieveSuppliersListByBranch(BranchModel currentBranch);
   Future<List<ProductModel>> retrieveProductsBySupplier(SupplierModel currentSupplier);
@@ -88,4 +90,10 @@ abstract class VatServiceInterface{
   Future<Response> deleteEventExpenceModel(ExpenceEventModel expenceEventModel);
   Future<Response> moveProductBetweenStorage({List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel, ActionModel actionModel});
   Future<Response> performEmptyStockStorage(StorageModel currentStorage);
+
+  //Deposit order
+  Future<Response> performInsertDepositOrder(DepositOrder depositOrder);
+  Future<Response> performDeleteDepositOrder(DepositOrder depositOrder);
+  Future<Response> performUpdateDepositOrder(DepositOrder depositOrder);
+  Future<List<DepositOrder>> performRetrieveDepositOrderByOrderId(OrderModel orderModel);
 }

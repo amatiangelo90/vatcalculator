@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
@@ -173,6 +174,13 @@ class SuppliersScreen extends StatelessWidget {
                     .retrieveProductsBySupplier(supplier);
 
             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+
+            List<OrderModel> retrievedOrderModelArchiviedNotPaid = await dataBundleNotifier
+                .getclientServiceInstance()
+                .retrieveOrderModelBySupplierIdAndBranchIdWhereStatusIsReceivedAndPaidIsFalse(supplier.pkSupplierId, dataBundleNotifier.currentBranch.pkBranchId);
+
+            dataBundleNotifier.addAllCurrentOrdersArchiviedAndNotPaidForCurrentBranchAndSupplier(retrievedOrderModelArchiviedNotPaid);
+
             Navigator.push(
               context,
               MaterialPageRoute(

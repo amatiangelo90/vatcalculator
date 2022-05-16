@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/deposit_order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -15,9 +16,11 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
+import '../../orders/components/unpaidmanager/order_unpaid_card.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
+import '../../orders/components/unpaidmanager/unpaid_order_manager_screen.dart';
 import '../suppliers_screen.dart';
 import 'edit_product.dart';
 
@@ -46,8 +49,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
   Widget build(BuildContext context) {
 
     String whatsappUrl = 'https://api.whatsapp.com/send/?phone=${getRefactoredNumber(widget.currentSupplier.tel)}';
-
-
 
     final kPages = <Widget>[
       Consumer<DataBundleNotifier>(
@@ -145,6 +146,23 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           );
         },
       ),
+
+      Consumer<DataBundleNotifier>(
+        builder: (context, dataBundleNotifier, _){
+          return Container(
+            color: Color(0XD00A2227),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  buildUnpaidOrderScreen(dataBundleNotifier),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
@@ -356,6 +374,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
     final kTab = <Tab>[
       const Tab(child: Text('Catalogo'),),
       const Tab(child: Text('Ordini')),
+      const Tab(child: Text('Fatture')),
       const Tab(child: Text('Dettagli')),
     ];
 
@@ -398,8 +417,11 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         'assets/icons/ws.svg',
                         height: getProportionateScreenHeight(25),
                       ),
-                      onPressed: () => {
-                        launch(whatsappUrl)
+                      onPressed: () {
+                        print(whatsappUrl);
+                          launch(whatsappUrl);
+
+
                       }
                   ),
                   dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(height: 0,) : IconButton(
@@ -578,11 +600,11 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                Column(
                  crossAxisAlignment: CrossAxisAlignment.start,
                  children: [
-                   Text(currentProduct.nome, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
-                   Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                   Text(currentProduct.nome, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(17), fontWeight: FontWeight.w800),),
+                   Text(currentProduct.unita_misura, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.w800)),
                  ],
                ),
-               dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Text('€ ***') : Text('€ ' + currentProduct.prezzo_lordo.toString()),
+               dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? Text('€ ***') : Text('€ ' + currentProduct.prezzo_lordo.toString(), style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800)),
              ],
           ),
         ),
@@ -604,10 +626,13 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
   }
 
   getRefactoredNumber(String tel) {
-    if(tel.contains('+39') || tel.contains('0039')){
+    if(tel.contains('+39')){
+      return tel.replaceAll('+39', '');
+    }else if(tel.contains('0039')){
+      return tel.replaceAll('0039', '');
+    }else{
       return tel;
     }
-    return '+39' + tel;
   }
   void buildShowErrorDialog(String text) {
     Widget cancelButton = TextButton(
@@ -707,5 +732,53 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
     if(controllerPIva != null){
       controllerPIva.clear();
     }
+  }
+
+  Widget buildUnpaidOrderScreen(DataBundleNotifier databundle) {
+    List<Widget> list = [];
+    databundle.retrievedOrderModelArchiviedNotPaid.forEach((unpaidOrder) {
+      list.add(
+          Row(
+            children: [
+              OrderUnpaidCard(
+                supplierName: widget.currentSupplier.nome,
+                code: unpaidOrder.code.toString(),
+                total: unpaidOrder.total.toStringAsFixed(2),
+                cardColor: kPrimaryColor,
+                function: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => UnpaidOrderManagerScreen(
+                    supplierName: widget.currentSupplier.nome,
+                    orderModel: unpaidOrder,
+                  ),),);
+                },
+                orderStatus: unpaidOrder.status,
+                paidPercent: calculatePercentagePaid(databundle.mapOrderIdDepositOrderList[unpaidOrder.pk_order_id], unpaidOrder.total),
+                depositList: databundle.mapOrderIdDepositOrderList[unpaidOrder.pk_order_id],
+                order: unpaidOrder,
+                mapBundleUserStorageSupplier: databundle.currentMapBranchIdBundleSupplierStorageUsers
+              ),
+            ],
+          ),
+      );
+    });
+
+    return Column(
+      children: list,
+    );
+  }
+
+  double calculatePercentagePaid(List<DepositOrder> mapOrderIdDepositOrderList, double total) {
+    if(total == 0.0 || total == null){
+      return 0.0;
+    }else{
+      double totalPaid = 0.0;
+
+      mapOrderIdDepositOrderList.forEach((element) {
+        totalPaid = totalPaid + element.amount;
+      });
+
+      return totalPaid/total;
+    }
+
   }
 }

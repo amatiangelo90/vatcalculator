@@ -103,7 +103,8 @@ class _OrderFromStorageScreenState extends State<OrderFromStorageScreen> {
                                 fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
                                 fk_user_id: dataBundleNotifier.userDetailsList[0].id,
                                 pk_order_id: 0,
-                                fk_supplier_id: fkSupplierId
+                                fk_supplier_id: fkSupplierId,
+                                paid: 'false'
                             ),
                             actionModel: ActionModel(
                                 date: DateTime.now().millisecondsSinceEpoch,

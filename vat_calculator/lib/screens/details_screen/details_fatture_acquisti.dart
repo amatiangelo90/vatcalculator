@@ -8,7 +8,7 @@ import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
-import '../../components/active_project_card.dart';
+import '../../components/fatt_suppl_details_card.dart';
 import '../../components/light_colors.dart';
 import '../../components/top_container.dart';
 import '../../size_config.dart';
@@ -203,7 +203,7 @@ class _FattureAcquistiDetailsPageState
       suppliers.add(fattura.nome);
     });
 
-    List<ActiveProjectsCard> supplierCardList = [];
+    List<FatturazioneDetailsSupplierCard> supplierCardList = [];
 
     Map<String, List<ResponseAcquistiApi>> mapRecpSuppliersFatture = {};
     suppliers.forEach((supplierName) {
@@ -211,7 +211,7 @@ class _FattureAcquistiDetailsPageState
     });
 
     suppliers.forEach((supplierName) {
-      supplierCardList.add(ActiveProjectsCard(
+      supplierCardList.add(FatturazioneDetailsSupplierCard(
         cardColor: LightColors.getRandomColor(),
         loadingPercent: calculatePercentageNetOnTotalFromFattureList(mapRecpSuppliersFatture[supplierName]),
         loadingPercentIva: calculatePercentageIvaOnTotalFromFattureList(mapRecpSuppliersFatture[supplierName]),
