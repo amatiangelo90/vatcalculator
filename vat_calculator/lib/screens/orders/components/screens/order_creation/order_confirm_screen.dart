@@ -81,43 +81,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         duration: Duration(milliseconds: 800),
                         content: Text('Selezionare la data di consegna')));
                   }else{
-                    Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
-                        orderModel: OrderModel(
-                            code: code,
-                            details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
-                                dataBundleNotifier.userDetailsList[0].lastName + ' per ' +
-                                dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
-                            total: 0.0,
-                            status: OrderState.DRAFT,
-                            creation_date: DateTime.now().millisecondsSinceEpoch,
-                            delivery_date: null,
-                            fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
-                            fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                            fk_user_id: dataBundleNotifier.userDetailsList[0].id,
-                            pk_order_id: 0,
-                            fk_supplier_id: widget.currentSupplier.pkSupplierId,
-                            paid: 'false'
-                        ),
-                        actionModel: ActionModel(
-                            date: DateTime.now().millisecondsSinceEpoch,
-                            description: 'Ha creato l\'ordine #$code per il fornitore ${widget.currentSupplier.nome} per conto di ' + dataBundleNotifier.currentBranch.companyName,
-                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                            type: ActionType.DRAFT_ORDER_CREATION, pkActionId: 0
-                        )
-                    );
 
-                    if(performSaveOrderId != null){
-                      dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((element) async {
-                        await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
-                            element.orderItems,
-                            element.pkProductId,
-                            performSaveOrderId.data
-                        );
-                      });
-                    }
-
-                    if(performSaveOrderId != null){
                       Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailServiceApi(
                           supplierName: widget.currentSupplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
@@ -145,65 +109,67 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       print('Response from email service ' + sendEmailResponse.data.toString());
 
                       if (sendEmailResponse.statusCode == 200) {
-                        print('Save order as SENT. OrderId: ' + performSaveOrderId.data.toString() );
-                        await dataBundleNotifier
-                            .getclientServiceInstance()
-                            .updateOrderStatus(
+                        Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
                             orderModel: OrderModel(
-                                pk_order_id: performSaveOrderId.data,
+                                code: code,
+                                details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
+                                    dataBundleNotifier.userDetailsList[0].lastName + ' per ' +
+                                    dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
+                                total: 0.0,
                                 status: OrderState.SENT,
-                                delivery_date:
-                                currentDate.millisecondsSinceEpoch,
-                                closedby: dataBundleNotifier
-                                    .retrieveNameLastNameCurrentUser()),
-                            actionModel: ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description:
-                                'Ha inviato l\'ordine #${code} '
-                                    'al fornitore ${widget.currentSupplier.nome}. ',
-                                fkBranchId: dataBundleNotifier
-                                    .currentBranch.pkBranchId,
-                                user: dataBundleNotifier
-                                    .retrieveNameLastNameCurrentUser(),
-                                type: ActionType.SENT_ORDER));
-
-                        dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.onItemTapped(0);
-                        Navigator.pushNamed(context, HomeScreenMain.routeName);
-
-                        context.loaderOverlay.hide();
-
-
-                        String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
-
-                        dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
-                            'Ordine per fornitore ${widget.currentSupplier.nome} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
-
-
-
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
-                          mail: widget.currentSupplier.mail,
-                          supplierName: widget.currentSupplier.nome,
-                          number: widget.currentSupplier.tel,
-                          message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
-                            branchName: dataBundleNotifier.currentBranch.companyName,
-                            orderId: code,
-                            productList: dataBundleNotifier.currentProductModelListForSupplier,
-                            deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                            supplierName: widget.currentSupplier.nome,
-                            currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                            storageAddress: currentStorageModel.address,
-                            storageCap: currentStorageModel.cap,
-                            storageCity: currentStorageModel.city,
-                          )),
-                        ),
+                                creation_date: dateFormat.format(DateTime.now()),
+                                delivery_date: dateFormat.format(currentDate),
+                                fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
+                                fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
+                                fk_user_id: dataBundleNotifier.userDetailsList[0].id,
+                                pk_order_id: 0,
+                                fk_supplier_id: widget.currentSupplier.pkSupplierId,
+                                paid: 'false'
+                            ),
                         );
 
+                        print('Save product for order with id: ' + performSaveOrderId.toString());
 
-                      } else {
-                        context.loaderOverlay.hide();
+                        if(performSaveOrderId != null){
+                          dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((element) async {
+                            await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
+                                element.orderItems,
+                                element.pkProductId,
+                                performSaveOrderId.data
+                            );
+                          });
+                        }
+                        if(performSaveOrderId != null){
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => OrderErrorDetailsScreen(
+                          context.loaderOverlay.hide();
+                          dataBundleNotifier.onItemTapped(0);
+                          Navigator.pushNamed(context, HomeScreenMain.routeName);
+
+                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                          String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
+
+                          dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
+                              'Ordine per fornitore ${widget.currentSupplier.nome} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
+                              mail: widget.currentSupplier.mail,
+                              supplierName: widget.currentSupplier.nome,
+                              number: widget.currentSupplier.tel,
+                              message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                                branchName: dataBundleNotifier.currentBranch.companyName,
+                                orderId: code,
+                                productList: dataBundleNotifier.currentProductModelListForSupplier,
+                                deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                                supplierName: widget.currentSupplier.nome,
+                                currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                                storageAddress: currentStorageModel.address,
+                                storageCap: currentStorageModel.cap,
+                                storageCity: currentStorageModel.city,
+                              )),
+                          ),
+                          );
+                        }else{
+                          context.loaderOverlay.hide();
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderErrorDetailsScreen(
                             mail: widget.currentSupplier.mail,
                             supplier: widget.currentSupplier,
                             number: widget.currentSupplier.tel,
@@ -223,13 +189,11 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               storageCity: currentStorageModel.city,
                             ),
 
-                        ),
-                        ),
-                        );
-
-
+                          ),
+                          ),
+                          );
+                        }
                       }
-                    }
                   }
                 },
                 color: kCustomGreenAccent,
@@ -407,8 +371,8 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           children: [
                             CupertinoButton(
                               child:
-                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.green),),
-                              color: Colors.black.withOpacity(0.8),
+                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                              color: kPrimaryColor,
                               onPressed: () => _selectDate(context),
                             )
                           ],

@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
@@ -10,6 +12,7 @@ import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
@@ -26,15 +29,8 @@ class EditProductScreen extends StatefulWidget {
 
 class _EditProductScreenState extends State<EditProductScreen> {
 
-  bool _selectedValue4 = false;
-  bool _selectedValue5 = false;
-  bool _selectedValue10 = false;
-  bool _selectedValue22 = false;
-
-  bool _litresUnitMeasure = false;
-  bool _kgUnitMeasure = false;
-  bool _packagesUnitMeasure = false;
-  bool _otherUnitMeasure = false;
+  String _currentIva = '0';
+  String _currentUnitMeasure = 'Seleziona unità di misura';
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _unitMeasureController = TextEditingController();
@@ -51,14 +47,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
       category: widget.product.categoria,
       descr: widget.product.descrizione,
       price: widget.product.prezzo_lordo,
-      vat4: widget.product.iva_applicata == 4 ? true : false,
-      vat5: widget.product.iva_applicata == 5 ? true : false,
-      vat10: widget.product.iva_applicata == 10 ? true : false,
-      vat22: widget.product.iva_applicata == 22 ? true : false,
-      kg: widget.product.unita_misura == 'kg' ? true : false,
-      litres: widget.product.unita_misura == 'bottiglia' ? true : false,
-      pack: widget.product.unita_misura == 'package' ? true : false,
-      other: widget.product.unita_misura != 'package' && widget.product.unita_misura != 'kg' && widget.product.unita_misura != 'bottiglia' ? true : false,
+      currentIva : widget.product.iva_applicata.toString(),
       unitMeasure: widget.product.unita_misura);
   }
 
@@ -66,410 +55,93 @@ class _EditProductScreenState extends State<EditProductScreen> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child){
-          return Scaffold(
-            backgroundColor: kCustomWhite,
-            appBar: AppBar(
-              leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () => {
-                    Navigator.of(context).pop(),
-                  }
-              ),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
-              centerTitle: true,
-              title: Column(
-                children: [
-                  Text(
-                    'Modifica prodotto',
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(17),
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-              elevation: 2,
-              actions: [
-              ],
-            ),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 20,),
-                  Row(
-                    children: [
-                      const SizedBox(width: 11,),
-                      Text('   Nome', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height *0.05,
-                      child: CupertinoTextField(
-                        controller: _nameController,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 11,),
-                      Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),
+          return GestureDetector(
+            onTap: FocusScope.of(context).unfocus,
+            child: Scaffold(
 
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _litresUnitMeasure = true;
-                                _kgUnitMeasure = false;
-                                _packagesUnitMeasure = false;
-                                _otherUnitMeasure = false;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                color: _litresUnitMeasure ? kCustomGreenAccent : Colors.white,
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
-                              ),
-                              child: Center(child: Text('bottiglia', style: TextStyle(color: _litresUnitMeasure ? Colors.white : kPrimaryColor),)),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _litresUnitMeasure = false;
-                                _kgUnitMeasure = true;
-                                _packagesUnitMeasure = false;
-                                _otherUnitMeasure = false;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                                color: _kgUnitMeasure ? kCustomGreenAccent : Colors.white,
-                              ),
-                              child: Center(child: Text('kg', style: TextStyle(color: _kgUnitMeasure ? Colors.white : kPrimaryColor))),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _litresUnitMeasure = false;
-                                _kgUnitMeasure = false;
-                                _packagesUnitMeasure = true;
-                                _otherUnitMeasure = false;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                color: _packagesUnitMeasure ? kCustomGreenAccent : Colors.white,
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              child: Center(child: Text('Pacchi', style: TextStyle(color:_packagesUnitMeasure ? Colors.white : kPrimaryColor))),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _litresUnitMeasure = false;
-                                _kgUnitMeasure = false;
-                                _packagesUnitMeasure = false;
-                                _otherUnitMeasure = true;
-                                // _unitMeasureController.clear();
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                                color: _otherUnitMeasure ? kCustomGreenAccent : Colors.white,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
-                              ),
-                              child: Center(child: Text('Altro', style: TextStyle(color:_otherUnitMeasure ? Colors.white : kPrimaryColor),)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  _otherUnitMeasure ? Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height *0.05,
-                      child: CupertinoTextField(
-                        controller: _unitMeasureController,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
-                      ),
-                    ),
-                  ) : const SizedBox(width: 0,),
-                  Row(
-                    children: [
-                      const SizedBox(width: 11,),
-                      Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height *0.05,
-                      child: CupertinoTextField(
-                        controller: _priceController,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
-                      ),
-                    ),
-                  ),
+              backgroundColor: kCustomWhite,
+              bottomSheet: Padding(
+                  padding: const EdgeInsets.fromLTRB(15, 4, 15, 20),
+                  child: DefaultButton(color: LightColors.kGreen,
+                    press: () async {
+                      if(_nameController.text.isEmpty || _nameController.text == ''){
+                        buildSnackBar(text: 'Inserire il nome del prodotto', color: LightColors.kRed);
+                      }else if(_currentUnitMeasure == 'Seleziona unità di misura'){
+                        buildSnackBar(text: 'Selezionare unità di misura valida', color: LightColors.kRed);
+                      }else if(_currentUnitMeasure == 'Altro' && (_unitMeasureController.text == '' || _unitMeasureController.text.isEmpty)){
+                        buildSnackBar(text: 'Specificare unità di misura', color: LightColors.kRed);
+                      }else if(_priceController.text.isEmpty || _priceController.text == ''){
+                        buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text, color: LightColors.kRed);
+                      }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
+                        buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: LightColors.kRed);
+                      } else{
 
-                  Row(
-                    children: [
-                      const SizedBox(width: 11,),
-                      Text('   Iva Applicata', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _selectedValue4 = true;
-                                _selectedValue5 = false;
-                                _selectedValue10 = false;
-                                _selectedValue22 = false;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                color: _selectedValue4 ? kCustomGreenAccent : Colors.white,
-                                border: Border.all(
-                                  width: 0.2,
-                                  color: Colors.grey,
-                                ),
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
-                              ),
-                              child: Center(child: Text('4%', style: TextStyle(color: _selectedValue4 ? Colors.white : kPrimaryColor),)),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _selectedValue4 = false;
-                                _selectedValue5 = true;
-                                _selectedValue10 = false;
-                                _selectedValue22 = false;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                                color: _selectedValue5 ? kCustomGreenAccent : Colors.white,
-                              ),
-                              child: Center(child: Text('5%', style: TextStyle(color:_selectedValue5 ? Colors.white : kPrimaryColor))),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _selectedValue4 = false;
-                                _selectedValue5 = false;
-                                _selectedValue10 = true;
-                                _selectedValue22 = false;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                color: _selectedValue10 ? kCustomGreenAccent : Colors.white,
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              child: Center(child: Text('10%', style: TextStyle(color:_selectedValue10 ? Colors.white : kPrimaryColor))),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: GestureDetector(
-                            onTap: (){
-                              setState(() {
-                                _selectedValue4 = false;
-                                _selectedValue5 = false;
-                                _selectedValue10 = false;
-                                _selectedValue22 = true;
-                              });
-                            },
-                            child: Container(
-                              height: MediaQuery.of(context).size.height *0.05,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 0.1,
-                                  color: Colors.grey,
-                                ),
-                                color: _selectedValue22 ? kCustomGreenAccent : Colors.white,
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: const Radius.circular(3)),
-                              ),
-                              child: Center(child: Text('22%', style: TextStyle(color:_selectedValue22 ? Colors.white : kPrimaryColor),)),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 11,),
-                      Text('   Categoria', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height *0.05,
-                      child: CupertinoTextField(
-                        controller: _categoryController,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 11,),
-                      Text('   Descrizione', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height *0.05,
-                      child: CupertinoTextField(
-                        controller: _descriptionController,
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        clearButtonMode: OverlayVisibilityMode.editing,
-                        autocorrect: false,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 4, 30, 0),
-                    child: DefaultButton(color: Colors.green.shade700,
-                      press: () async {
-                        if(_nameController.text.isEmpty || _nameController.text == ''){
-                          buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
-                        }else if(!_litresUnitMeasure && !_otherUnitMeasure && !_kgUnitMeasure && !_packagesUnitMeasure){
-                          buildSnackBar(text: 'Unità di misura del prodotto obbligatoria', color: kPinaColor);
-                        } else if(_otherUnitMeasure && (_unitMeasureController.text.isEmpty || _unitMeasureController.text == '')){
-                          buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
-                        }else if(_priceController.text.isEmpty || _priceController.text == ''){
-                          buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
-                        }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
-                          buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
-                        } else{
-
-                          ProductModel productModel = ProductModel(
-                            pkProductId: widget.product.pkProductId,
-                            nome: _nameController.text,
-                            categoria: _categoryController.text,
-                            codice: const Uuid().v1(),
-                            descrizione: _descriptionController.text,
-                            iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
-                            prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
-                            unita_misura: _litresUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
-                          );
-
-                          print(productModel.toMap().toString());
-
-                          ClientVatService vatService = ClientVatService();
-                          Response performUpdateProduct = await vatService.performUpdateProduct(
-                              product: productModel
-                          );
-                          if(performUpdateProduct != null && performUpdateProduct.statusCode == 200){
-                            List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
-                            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                            //EasyLoading.dismiss();
-                            buildSnackBar(text: 'Prodotto ' + productModel.nome + ' aggiornato correttamente', color: Colors.green.shade700);
-                            Navigator.of(context).pop();
-                          }else{
-                            //EasyLoading.dismiss();
-                            buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: kPinaColor);
-                          }
-                        }
-                      },
-                      text: 'Modifica',
-                    ),
-                  ),
-                  const SizedBox(height: 10,),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 4, 30, 0),
-                    child: DefaultButton(color: kPinaColor,
-                      press: () async {
-                        //EasyLoading.show();
                         ProductModel productModel = ProductModel(
                           pkProductId: widget.product.pkProductId,
                           nome: _nameController.text,
                           categoria: _categoryController.text,
                           codice: const Uuid().v1(),
                           descrizione: _descriptionController.text,
-                          iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
+                          iva_applicata: int.parse(_currentIva),
+                          prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
+                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure,
+                        );
+
+                        ClientVatService vatService = ClientVatService();
+                        Response performUpdateProduct = await vatService.performUpdateProduct(
+                            product: productModel
+                        );
+                        if(performUpdateProduct != null && performUpdateProduct.statusCode == 200){
+                          List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
+                          dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+                          buildSnackBar(text: 'Prodotto ' + productModel.nome + ' aggiornato correttamente', color: Colors.green.shade700);
+                          Navigator.of(context).pop();
+                        }else{
+                          buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: kPinaColor);
+                        }
+                      }
+                    },
+                    text: 'Modifica',
+                  ),
+                ),
+              appBar: AppBar(
+                leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () => {
+                      Navigator.of(context).pop(),
+                    }
+                ),
+
+                iconTheme: const IconThemeData(color: Colors.white),
+                backgroundColor: kPrimaryColor,
+                centerTitle: true,
+                title: Column(
+                  children: [
+                    Text(
+                      'Modifica prodotto',
+                      style: TextStyle(
+                        fontSize: getProportionateScreenWidth(17),
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800
+                      ),
+                    ),
+                  ],
+                ),
+                elevation: 2,
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                    child: IconButton(
+                      onPressed: () async {
+                        ProductModel productModel = ProductModel(
+                          pkProductId: widget.product.pkProductId,
+                          nome: _nameController.text,
+                          categoria: _categoryController.text,
+                          codice: const Uuid().v1(),
+                          descrizione: _descriptionController.text,
+                          iva_applicata: int.parse(_currentIva),
                           prezzo_lordo: double.parse(_priceController.text),
-                          unita_misura: _litresUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
+                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure,
                         );
 
                         print(productModel.toMap().toString());
@@ -482,24 +154,300 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                 description: 'Ha eliminato il prodotto ${productModel.nome} dal catalogo del fornitore ${widget.supplier.nome}',
                                 fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                 user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                              type: ActionType.PRODUCT_DELETE
+                                type: ActionType.PRODUCT_DELETE
                             )
                         );
                         if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
                           List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
                           dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                          //EasyLoading.dismiss();
                           buildSnackBar(text: 'Prodotto eliminato correttamente', color: Colors.green.shade700);
                           Navigator.of(context).pop();
                         }else{
-                          //EasyLoading.dismiss();
-                          buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: kPinaColor);
+                          buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: LightColors.kRed);
                         }
                       },
-                      text: 'Elimina',
+                      icon: SvgPicture.asset('assets/icons/Trash.svg', color: LightColors.kRed, height: getProportionateScreenHeight(29)),
                     ),
                   ),
                 ],
+              ),
+              body: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20,),
+                    Row(
+                      children: [
+                        const SizedBox(width: 11,),
+                        Text('   Nome', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        child: CupertinoTextField(
+                          controller: _nameController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          autocorrect: false,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 11,),
+                        Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        width: MediaQuery.of(context).size.width - 7,
+                        child: ElevatedButton(
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.white),),
+                            onPressed: (){
+                              showModalBottomSheet(
+                                  shape: const RoundedRectangleBorder( // <-- SEE HERE
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(25.0),
+                                    ),
+                                  ),
+                                  context: context,
+                                  builder: (context) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.weightHanging, color: kPrimaryColor),
+                                          title: Text('Kg', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentUnitMeasure = 'Kg';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.box, color: kPrimaryColor),
+                                          title: Text('Pezzi', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentUnitMeasure = 'Pezzi';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.boxes, color: kPrimaryColor),
+                                          title: Text('Cartoni', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentUnitMeasure = 'Cartoni';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(FontAwesomeIcons.wineBottle, color: kPrimaryColor),
+                                          title: const Text('Bottiglia', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentUnitMeasure = 'Bottiglia';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
+                                          title: const Text('Unità', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentUnitMeasure = 'Unità';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.adn, color: kPrimaryColor),
+                                          title: Text('Altro', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentUnitMeasure = 'Altro';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        SizedBox(height: 30,)
+                                      ],
+                                    );
+                                  });
+
+                            }, child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                            Text(_currentUnitMeasure, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                            Icon(Icons.keyboard_arrow_down_sharp, color: kPrimaryColor,)
+                          ],
+                        )),
+                      ),
+                    ),
+                    _currentUnitMeasure == 'Altro' ? Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        child: CupertinoTextField(
+                          controller: _unitMeasureController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          autocorrect: false,
+                        ),
+                      ),
+                    ) : const SizedBox(width: 0,),
+                    Row(
+                      children: [
+                        const SizedBox(width: 11,),
+                        Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        child: CupertinoTextField(
+                          controller: _priceController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          autocorrect: false,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 11,),
+                        Text('   Iva Applicata', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        width: MediaQuery.of(context).size.width - 7,
+                        child: ElevatedButton(
+                            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(
+                                Colors.white),),
+                            onPressed: (){
+                              showModalBottomSheet(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(25.0),
+                                    ),
+                                  ),
+                                  context: context,
+                                  builder: (context) {
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        ListTile(
+                                          leading: Text('4%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          title: Text(''),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentIva = '4';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Text('5%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          title: Text(''),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentIva = '5';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Text('10%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          title: Text(''),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentIva = '10';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Text('22%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          title: Text(''),
+                                          onTap: () {
+                                            setState(() {
+                                              _currentIva = '22';
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        SizedBox(height: 30,)
+                                      ],
+                                    );
+                                  });
+
+                            }, child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                            Text(_currentIva, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                            Icon(Icons.keyboard_arrow_down_sharp, color: kPrimaryColor,)
+                          ],
+                        )),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 11,),
+                        Text('   Categoria', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        child: CupertinoTextField(
+                          controller: _categoryController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          autocorrect: false,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        const SizedBox(width: 11,),
+                        Text('   Descrizione', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height *0.05,
+                        child: CupertinoTextField(
+                          controller: _descriptionController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.text,
+                          clearButtonMode: OverlayVisibilityMode.editing,
+                          autocorrect: false,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -516,32 +464,25 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void setInitialState({
-    @required bool vat4,
-    @required bool vat5,
-    @required bool vat10,
-    @required bool vat22,
-    @required bool litres,
-    @required bool kg,
-    @required bool pack,
-    @required bool other,
+    @required String currentIva,
     @required String name,
     @required double price,
     @required String unitMeasure,
     @required String category,
     @required String descr}) {
+
     setState((){
-      _selectedValue4 = vat4;
-      _selectedValue5 = vat5;
-      _selectedValue10 = vat10;
-      _selectedValue22 = vat22;
 
-      _litresUnitMeasure = litres;
-      _kgUnitMeasure = kg;
-      _packagesUnitMeasure = pack;
-      _otherUnitMeasure = other;
-
+      if(['Kg', 'Pezzi', 'Cartoni', 'Bottiglia', 'Unità'].contains(unitMeasure)){
+        _currentUnitMeasure = unitMeasure;
+      }else{
+        _currentUnitMeasure = 'Altro';
+        _unitMeasureController.text = unitMeasure;
+      }
+      _currentUnitMeasure = unitMeasure;
+      _currentIva = currentIva;
       _nameController.text = name;
-      _unitMeasureController.text = unitMeasure;
+
       _priceController.text = price.toString();
       _categoryController.text = category;
       _descriptionController.text = descr;

@@ -42,7 +42,7 @@ class ProductModel {
 
   @override
   String toString() {
-    return nome.toString() + ' --> Prezzo lordo: ' + prezzo_lordo.toStringAsFixed(2) + " - Iva Applicata: " + iva_applicata.toStringAsFixed(2);
+    return nome.toString() + ' --> Prezzo lordo: ' + prezzo_lordo.toStringAsFixed(2) + " - Order Items: " + orderItems.toString();
   }
 
 }

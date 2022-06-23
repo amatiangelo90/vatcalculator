@@ -222,13 +222,15 @@ class _StorageScreenState extends State<StorageScreen> {
                                       ],
                                     )),
                                     onPressed: () async {
-                                      showDialog(
+                                      showModalBottomSheet(
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.vertical(
+                                              top: Radius.circular(25.0),
+                                            ),
+                                          ),
                                           context: context,
-                                          builder: (_) => AlertDialog(
-                                            contentPadding: EdgeInsets.zero,
-                                            shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                                            content: Builder(
+                                          builder: (context) {
+                                            return Builder(
                                               builder: (context) {
 
                                                 return SizedBox(
@@ -269,37 +271,38 @@ class _StorageScreenState extends State<StorageScreen> {
                                                             ],
                                                           ),
                                                         ),
-                                                        AddElementWidget()
+                                                        AddElementWidget(),
+                                                        SizedBox(height: 40),
                                                       ],
                                                     ),
                                                   ),
                                                 );
                                               },
-                                            ),
-                                          ));
+                                            );
+                                          });
                                     },
                                   ),
                                 ),
                                 SizedBox(
-                                  width: getProportionateScreenWidth(170),
-                                  height: getProportionateScreenHeight(60),
-                                  child: TextButton(
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: kCustomOrange,
-                                    ),
-                                    child: Center(child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Text('EFFETTUA', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
-                                        Text('ORDINE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold),),
-                                      ],
-                                    )),
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
-                                    },
+                                width: getProportionateScreenWidth(170),
+                                height: getProportionateScreenHeight(60),
+                                child: TextButton(
+                                 style: TextButton.styleFrom(
+                                    backgroundColor: kCustomOrange,
                                   ),
-                                ),
+                                 child: Center(child: Column(
+                                   mainAxisAlignment: MainAxisAlignment.center,
+                                   crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                     Text('EFFETTUA', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
+                                     Text('ORDINE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold),),
+                      ],
+                                   )),
+                                onPressed: () {
+                                    Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
+                                                      },
+                                  ),
+                        ),
                                 SizedBox(
                                   width: getProportionateScreenWidth(170),
                                   height: getProportionateScreenHeight(60),
@@ -550,7 +553,6 @@ class _StorageScreenState extends State<StorageScreen> {
                                                                       } catch(e){
                                                                         print('Errore');
                                                                       }
-
                                                                     }
                                                                 ),
                                                               )

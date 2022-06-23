@@ -133,6 +133,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           controller = TextEditingController();
         }else{
           controller = TextEditingController(text: element.consumed.toStringAsFixed(2).replaceAll('.00', ''));
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
         }
         rows.add(
           Row(
@@ -609,6 +610,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           controller = TextEditingController();
         }else{
           controller = TextEditingController(text: element.refillStock.toStringAsFixed(2).replaceAll('.00', ''));
+          controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
         }
         rows.add(
           Padding(

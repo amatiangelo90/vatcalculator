@@ -21,7 +21,6 @@ import 'package:vat_calculator/screens/orders/components/screens/order_creation/
 import 'package:vat_calculator/screens/forgot_password/forgot_password_screen.dart';
 import 'package:vat_calculator/screens/landing/landing_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/archivied_order_page.dart';
-import 'package:vat_calculator/screens/orders/components/screens/draft_order_page.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
 import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
@@ -76,7 +75,6 @@ final Map<String, WidgetBuilder> routes = {
   UnloadStorageScreen.routeName: (context) => UnloadStorageScreen(),
   CreationBranchScreen.routeName: (context) => CreationBranchScreen(),
   BranchJoinScreen.routeName: (context) => BranchJoinScreen(),
-  DraftOrderPage.routeName: (context) => DraftOrderPage(),
   ArchiviedOrderPage.routeName: (context) => ArchiviedOrderPage(),
   ActionsDetailsScreen.routeName: (context) => ActionsDetailsScreen(),
   SupplierChoiceCreationEnjoy.routeName: (context) => SupplierChoiceCreationEnjoy(),

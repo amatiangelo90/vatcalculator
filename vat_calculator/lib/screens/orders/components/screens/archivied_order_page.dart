@@ -356,7 +356,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].creation_date)),
+                                                    Text(orderList[order].creation_date,
                                                       style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
                                                     SizedBox(width: getProportionateScreenWidth(10),),
                                                   ],
@@ -374,7 +374,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                                 ),
                                                 Row(
                                                   children: [
-                                                    Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(orderList[order].delivery_date)),
+                                                    Text(orderList[order].delivery_date,
                                                       style: TextStyle(color: Colors.green.shade900, fontSize: getProportionateScreenHeight(14)),),
                                                     SizedBox(width: getProportionateScreenWidth(10),),
                                                   ],
@@ -428,11 +428,11 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
       print('Codice ordinedsd: ' + element.delivery_date.toString());
 
       if(element.delivery_date != null){
-        if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date))))){
-          map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))].add(element);
+        if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date))))){
+          map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))].add(element);
         }else{
           List<OrderModel> listToAdd = [element];
-          map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))] = listToAdd;
+          map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))] = listToAdd;
         }
       }
 

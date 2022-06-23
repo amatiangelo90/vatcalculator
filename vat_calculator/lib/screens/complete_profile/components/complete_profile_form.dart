@@ -62,14 +62,12 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           DefaultButton(
             text: "Crea Profilo ed Accedi",
             press: () async {
-              print('XXX');
               if (_formKey.currentState.validate()) {
                 _formKey.currentState.save();
                 KeyboardUtil.hideKeyboard(context);
                 try{
                   final _auth = FirebaseAuth.instance;
                   final newUser = await _auth.createUserWithEmailAndPassword(email: widget.email, password: widget.password);
-
 
                   if(newUser != null){
 

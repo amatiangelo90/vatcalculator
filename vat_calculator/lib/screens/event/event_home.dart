@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import '../../components/light_colors.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../main_page.dart';
@@ -67,15 +68,15 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                         Text(
                           'Area Eventi',
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(17),
+                            fontSize: getProportionateScreenWidth(18),
                             color: Colors.white,
                           ),
                         ),
                         Text(
                           dataBundleNotifier.currentBranch.companyName,
                           style: TextStyle(
-                            fontSize: getProportionateScreenWidth(11),
-                            color: kCustomGreenAccent,
+                            fontSize: getProportionateScreenWidth(13),
+                            color: LightColors.kPalePink,
                           ),
                         ),
                       ],

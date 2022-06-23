@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../client/vatservice/model/utils/privileges.dart';
@@ -219,7 +218,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(currentProduct.nome, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(16), fontWeight: FontWeight.bold),),
+                    Text(currentProduct.nome, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.w700),),
                     Row(
                       children: [
                         Text(
@@ -309,6 +308,11 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
 
                         },
                         textInputAction: TextInputAction.next,
+                        style: TextStyle(
+                          color: kPrimaryColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: getProportionateScreenHeight(22),
+                        ),
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: true, signed: false),
                         clearButtonMode: OverlayVisibilityMode.never,

@@ -27,7 +27,7 @@ abstract class VatServiceInterface{
   Future<Response> performSaveRecessed(double amountF, double amountNF, double amountCash, double amountPos, String description, int iva, int dateTimeRecessed, int pkBranchId, ActionModel actionModel);
   Future<Response> performSaveExpence(double amount, String description, int iva, int dateTimeExpence, int pkBranchId, String fiscal, ActionModel actionModel);
   Future<Response> performSaveStorage({StorageModel storageModel, ActionModel actionModel});
-  Future<Response> performSaveOrder({OrderModel orderModel, ActionModel actionModel});
+  Future<Response> performSaveOrder({OrderModel orderModel});
   Future<List<ProductOrderAmountModel>> retrieveProductByOrderId(OrderModel orderModel);
   Future<Response> performSaveSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel});
   Future<Response> performSaveBranch(BranchModel company, ActionModel actionModel);

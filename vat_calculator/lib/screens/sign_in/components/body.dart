@@ -55,6 +55,7 @@ class Body extends StatelessWidget {
                           accessToken: googleAuth.accessToken,
                           idToken: googleAuth.idToken,
                         );
+
                         UserCredential signInCredential = await FirebaseAuth.instance.signInWithCredential(credential);
                         if(signInCredential != null){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen(email: signInCredential.user.email,),),);

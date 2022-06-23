@@ -28,6 +28,7 @@ Future<void> main() async {
   FirebaseMessaging.onMessage.listen((event) {
     _firebasePushHandler;
   });
+
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
     _firebasePushHandler;
   });

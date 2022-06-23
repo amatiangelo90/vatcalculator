@@ -4,10 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
-import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/orders/components/screens/draft_order_page.dart';
-import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
 import '../../main_page.dart';
@@ -54,24 +51,6 @@ class ComunicationUnloadStorageScreen extends StatelessWidget {
                     'Nota: Per il presente scarico sono state create delle bozze di ordini da poter modificare o inviare al tuo fornitore',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: getProportionateScreenHeight(10)),
-                  ),
-                ),
-                SizedBox(height: 50,),
-                SizedBox(
-                  width: getProportionateScreenWidth(300),
-                  child: CupertinoButton(
-                    color: Colors.deepOrangeAccent.withOpacity(0.7),
-                    child: Text('Vai a Bozze Ordini',),
-                    onPressed: () {
-                      dataBundleNotifier
-                          .setCurrentBranch(dataBundleNotifier.currentBranch);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const DraftOrderPage(),
-                        ),
-                      );
-                    },
                   ),
                 ),
                 SizedBox(height: 10,),

@@ -3,8 +3,6 @@ import 'package:vat_calculator/components/custom_surfix_icon.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/screens/complete_profile/complete_profile_screen.dart';
-
-
 import '../../../constants.dart';
 import '../../../size_config.dart';
 

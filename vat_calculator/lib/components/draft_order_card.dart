@@ -211,7 +211,7 @@ class DraftOrderCard extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
+                                  Text(order.creation_date,
                                     style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
                                   SizedBox(width: getProportionateScreenWidth(10),),
                                 ],
@@ -229,7 +229,7 @@ class DraftOrderCard extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
+                                  Text(order.delivery_date,
                                     style: TextStyle(color: kCustomOrange, fontSize: getProportionateScreenHeight(14)),),
                                   SizedBox(width: getProportionateScreenWidth(10),),
                                 ],

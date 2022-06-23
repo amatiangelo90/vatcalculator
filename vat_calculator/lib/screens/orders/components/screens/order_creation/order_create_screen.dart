@@ -3,18 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
-import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../../main_page.dart';
-import '../../edit_order_draft_screen.dart';
 import 'product_order_choice_screen.dart';
 
 class CreateOrderScreen extends StatelessWidget {
@@ -150,20 +146,6 @@ class CreateOrderScreen extends StatelessWidget {
                 .retrieveProductsBySupplier(supplier);
 
             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-
-            if(draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier)){
-              OrderModel order = dataBundleNotifier.getDraftOrderFromListBySupplierId(supplier.pkSupplierId);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditDraftOrderScreen(
-                    orderModel: order,
-                    productList: dataBundleNotifier.orderIdProductListMap[
-                    order.pk_order_id],
-                  ),
-                ),
-              );
-            }else{
               dataBundleNotifier.clearOrdersDetailsObject();
               Navigator.push(
                 context,
@@ -173,7 +155,7 @@ class CreateOrderScreen extends StatelessWidget {
                   ),
                 ),
               );
-            }
+
           },
           child: Padding(
             padding: const EdgeInsets.fromLTRB(10, 5, 10, 2),
@@ -183,14 +165,7 @@ class CreateOrderScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10.0),
                 color: kPrimaryColor,
               ),
-              child: draftOrderListContainsOrderForCurrentSupplier(supplier.pkSupplierId, dataBundleNotifier) ? ClipRect(
-                child: Banner(
-                  message: 'BOZZA',
-                  color: kCustomGreenAccent,
-                  location: BannerLocation.topEnd,
-                  child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
-                ),
-              ) : buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
+              child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
             ),
           ),
         ),
@@ -206,17 +181,6 @@ class CreateOrderScreen extends StatelessWidget {
         children: listout,
       ),
     );
-  }
-
-  bool draftOrderListContainsOrderForCurrentSupplier(int id, DataBundleNotifier dataBundleNotifier) {
-    bool result = false;
-
-    dataBundleNotifier.currentDraftOrdersList.forEach((draftElement) {
-      if(draftElement.fk_supplier_id == id){
-        result = true;
-      }
-    });
-    return result;
   }
 
   buildSupplierRow(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, Color color) {

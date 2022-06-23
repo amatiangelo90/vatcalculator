@@ -11,7 +11,6 @@ import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -95,23 +94,24 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                         Map<int, List<StorageProductModel>> recapMapForCustomer = orderedMapBySuppliers;
 
                         orderedMapBySuppliers.forEach((fkSupplierId, storageProductModelList) async {
-                          String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
-                          Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
+                         /* String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);*/
+                          /*Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
                               orderModel: OrderModel(
-                              code: code,
-                              details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
+                                paid: 'false',
+                                code: code,
+                                details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
                                   dataBundleNotifier.userDetailsList[0].lastName + ' per ' +
                                   dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
-                              total: 0.0,
-                              status: OrderState.DRAFT,
-                              creation_date: DateTime.now().millisecondsSinceEpoch,
-                              delivery_date: null,
-                              fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
-                              fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                              fk_user_id: dataBundleNotifier.userDetailsList[0].id,
-                              pk_order_id: 0,
-                              fk_supplier_id: fkSupplierId
-                          ),
+                                total: 0.0,
+                                status: OrderState.DRAFT,
+                                creation_date: DateTime.now().millisecondsSinceEpoch,
+                                delivery_date: null,
+                                fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
+                                fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
+                                fk_user_id: dataBundleNotifier.userDetailsList[0].id,
+                                pk_order_id: 0,
+                                fk_supplier_id: fkSupplierId
+                              ),
                               actionModel: ActionModel(
                                   date: DateTime.now().millisecondsSinceEpoch,
                                   description: 'Ha creato l\'ordine bozza #$code per il fornitore ${dataBundleNotifier.getSupplierName(fkSupplierId)} per conto di ' + dataBundleNotifier.currentBranch.companyName + ' a fronte dello scarico da magazzino ${dataBundleNotifier.currentStorage.name}.',
@@ -119,16 +119,16 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                                   user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
                                   type: ActionType.DRAFT_ORDER_CREATION
                               )
-                          );
+                          );*/
 
                           storageProductModelList.forEach((storageProductModelItem) {
-                            print('Create relation between ' + performSaveOrderId.data.toString() + ' and : ' + storageProductModelItem.fkProductId.toString() + ' - Stock: ' +  storageProductModelItem.loadUnloadAmount.toString());
-
-                            dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
+                            /*print('Create relation between ' + performSaveOrderId.data.toString() + ' and : ' + storageProductModelItem.fkProductId.toString() + ' - Stock: ' +  storageProductModelItem.loadUnloadAmount.toString());
+*/
+                            /*dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
                                 storageProductModelItem.loadUnloadAmount,
                                 storageProductModelItem.fkProductId,
                                 performSaveOrderId.data
-                            );
+                            );*/
 
                               if(storageProductModelItem.loadUnloadAmount > 0){
 

@@ -50,7 +50,7 @@ class DateWidget extends StatelessWidget {
                         style: dateTextStyle),
                     Text(getMonthFromMonthNumber(date.month), // WeekDay
                         style: dayTextStyle),
-                    isToday(date.millisecondsSinceEpoch) ? Text('OGGI', // WeekDay
+                    isToday(date) ? Text('OGGI', // WeekDay
                         style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(10))) : Text(' ', style: dayTextStyle),
                   ],
                 ),

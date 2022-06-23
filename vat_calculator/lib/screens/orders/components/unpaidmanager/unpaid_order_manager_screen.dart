@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +10,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 
 import '../../../../client/vatservice/model/deposit_order_model.dart';
 import '../../../../client/vatservice/model/product_order_amount_model.dart';
+import '../../../../components/default_button.dart';
 import '../../../../components/light_colors.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
@@ -25,7 +28,7 @@ class UnpaidOrderManagerScreen extends StatefulWidget {
 
 class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  TextEditingController textDepositController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
@@ -137,7 +140,7 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                               ),
                             ),
                             Text(
-                              buildDateFromMilliseconds(widget.orderModel.creation_date),
+                              widget.orderModel.creation_date,
                               style: TextStyle(
                                 fontSize: getProportionateScreenHeight(12),
                                 color: LightColors.kLightYellow2,
@@ -145,7 +148,7 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                               ),
                             ),
                             Text(
-                              buildDateFromMilliseconds(widget.orderModel.delivery_date),
+                              widget.orderModel.delivery_date,
                               style: TextStyle(
                                 fontSize: getProportionateScreenHeight(12),
                                 color: LightColors.kLightYellow2,
@@ -158,70 +161,143 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                     ),
 
                     Divider(color: Colors.grey),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        const Text('', style: TextStyle(
-                            fontWeight: FontWeight.w700, color: Colors.white, fontSize: 10),),
-                        const Text('', style: TextStyle(
-                            fontWeight: FontWeight.w700, color: Colors.white, fontSize: 10),),
-                      ],
+                    const Text('Stato Saldo Fattura ', style: TextStyle(
+                        fontWeight: FontWeight.w700, color: LightColors.kRed, fontSize: 20),),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularPercentIndicator(
+                        animation: true,
+                        radius: 150.0,
+                        percent: calculatePercentagePaid(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id], widget.orderModel.total),
+                        lineWidth: 5.0,
+                        circularStrokeCap: CircularStrokeCap.round,
+                        backgroundColor: Colors.white10,
+                        progressColor: Colors.lightGreenAccent,
+                        center: Text(
+                          '${(calculatePercentagePaid(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id], widget.orderModel.total)*100).round()}%',
+                          style: const TextStyle(
+                              fontWeight: FontWeight.w700, color: Colors.white),
+                        ),
+                      ),
                     ),
+
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const Text('Stato Saldo Fattura ', style: TextStyle(
-                                fontWeight: FontWeight.w700, color: Colors.white, fontSize: 10),),
-                            SizedBox(height: 10),
-                            CircularPercentIndicator(
-                              animation: true,
-                              radius: 100.0,
-                              percent: calculatePercentagePaid(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id], widget.orderModel.total),
-                              lineWidth: 5.0,
-                              circularStrokeCap: CircularStrokeCap.round,
-                              backgroundColor: Colors.white10,
-                              progressColor: Colors.lightGreenAccent,
-                              center: Text(
-                                '${(calculatePercentagePaid(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id], widget.orderModel.total)*100).round()}%',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w700, color: Colors.white),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(3, 11, 10, 11),
-                              child: Text(
-                                ' € ' + widget.orderModel.total.toString().replaceAll('.00', ''),
-                                style: const TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w700,
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(3, 11, 10, 11),
+                                  child: Text(
+                                    ' € ' + widget.orderModel.total.toString().replaceAll('.00', '') + ' /',
+                                    style: const TextStyle(
+                                      fontSize: 25.0,
+                                      color: LightColors.kLightYellow,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(3, 11, 10, 11),
+                                  child: Text(
+                                    '€ ' + calculateDepositTotal(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id]).toStringAsFixed(2),
+                                    style: const TextStyle(
+                                      fontSize: 25.0,
+                                      color: Colors.lightGreenAccent,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                          buildListDeposit(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id]),
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children:
-                          buildListDepositDates(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id]),
-                        ),
                       ],
                     ),
-                    Divider(
-                      height: 14,
+                    const Text('  Inserisci Acconto ', style: TextStyle(
+                        fontWeight: FontWeight.w700, color: LightColors.kGreen, fontSize: 15),),
+                    Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: TextField(
+                        controller: textDepositController,
+                        cursorColor: Colors.white,
+                        style: const TextStyle(fontSize: 18.0,color: Colors.white, fontWeight: FontWeight.w700),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+                        decoration: const InputDecoration(
+                          focusedBorder: OutlineInputBorder (
+                            borderSide: BorderSide(color: LightColors.kLightYellow, width: 1.0),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: LightColors.kLightYellow, width: 1.0),
+                          ),
+                          labelText: '€',
+                          labelStyle: TextStyle(fontSize: 16.0,color: LightColors.kLightYellow),
+                        ),
+                      ),
                     ),
-                    buildDepositListWidget(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id]),
-                    Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: DefaultButton(
+                        text: 'Salva Acconto',
+                        press: () async {
+                          if(double.tryParse(textDepositController.value.text.replaceAll(',', '.')) != null){
+
+                            if((calculateDepositTotal(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id])
+                                + double.parse(textDepositController.value.text.replaceAll(',', '.'))) > widget.orderModel.total){
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                  duration: Duration(milliseconds: 3000),
+                                  backgroundColor: LightColors.kRed,
+                                  content: Text('Errore. L\'importo dell\'acconto(o la somme degli importi degli acconti) non può eccedere il totale dell\'ordine.')));
+                            }else{
+                              await dataBundleNotification.getclientServiceInstance().performInsertDepositOrder(
+                                  DepositOrder(pkDepositOrderId: 0,
+                                      creationDate: null,
+                                      amount: double.parse(textDepositController.value.text.replaceAll(',', '.')),
+                                      fkOrderId: widget.orderModel.pk_order_id,
+                                      user: dataBundleNotification.userDetailsList[0].firstName + ' ' + dataBundleNotification.userDetailsList[0].lastName)
+                              );
+                              setState(() {
+                                textDepositController.clear();
+                              });
+                              dataBundleNotification.updateMapOrderIdDepositOrderListByOrderId(widget.orderModel);
+                              FocusScope.of(context).requestFocus(FocusNode());
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(
+                                  duration: Duration(milliseconds: 1600),
+                                  backgroundColor: Colors.green,
+                                  content: Text('Acconto inserito')));
+                            }
+                          }else{
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                duration: Duration(milliseconds: 1600),
+                                backgroundColor: LightColors.kRed,
+                                content: Text('Inserisci un numero corretto')));
+                          }
+
+                        },
+                        color: LightColors.kGreen,
+                      ),
+                    ),
+                    const Divider(
+                      height: 20,
+                      color: Colors.grey,
+                    ),
+                    const Text('Acconti: ', style: TextStyle(
+                        fontWeight: FontWeight.w700, color: LightColors.kRed, fontSize: 20),),
+                    buildDepositListWidget(dataBundleNotification.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id], dataBundleNotification),
+                    const Divider(
+                      height: 25,
+                      color: Colors.grey,
+                    ),
+                    const Text('Prodotti Acquistati: ', style: TextStyle(
+                        fontWeight: FontWeight.w700, color: LightColors.kRed, fontSize: 20),),
                     FutureBuilder(
                       builder: (context, snap){
                         return snap.data;
@@ -248,7 +324,31 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                       ,
                       future: buildProductsList(widget.orderModel, dataBundleNotification),
                     ),
-                    SizedBox(height: 150),
+                    SizedBox(height: 30),
+                    Container(
+                      height: 50.0,
+
+                      decoration: BoxDecoration(
+                        color: LightColors.kRed,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: FlatButton(
+
+                        onPressed: () {
+
+                        },
+                        child: const Center(
+                          child: Text(
+                            'SEGNA COME PAGATA',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -262,30 +362,6 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
   String buildDateFromMilliseconds(int date) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
     return getDayFromWeekDayTrim(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
-  }
-
-  buildListDeposit(List<DepositOrder> depositList) {
-    List<Widget> listOut = [];
-
-    depositList.forEach((element) {
-      listOut.add(
-        Text(' - € ' + element.amount.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white, fontSize: getProportionateScreenHeight(12)),),
-      );
-    });
-
-    return listOut;
-  }
-
-  buildListDepositDates(List<DepositOrder> depositList) {
-    List<Widget> listOut = [];
-
-    depositList.forEach((element) {
-      listOut.add(
-        Text(buildDateFromMilliseconds(element.creationDate), style: TextStyle(fontWeight: FontWeight.w100, color: Colors.grey, fontSize: getProportionateScreenHeight(12)),),
-      );
-    });
-
-    return listOut;
   }
 
   double calculatePercentagePaid(List<DepositOrder> mapOrderIdDepositOrderList, double total) {
@@ -372,11 +448,11 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
     );
   }
 
-  buildDepositListWidget(List<DepositOrder> depositList) {
+  buildDepositListWidget(List<DepositOrder> depositList, DataBundleNotifier dataBundleNotifier) {
     List<Widget> dismissableDepositList = [];
 
     depositList.forEach((deposit) {
-      TextEditingController _textEditingController = TextEditingController(text: deposit.amount.toStringAsFixed(2));
+      TextEditingController _textEditingController = TextEditingController(text: deposit.amount.toStringAsFixed(2).replaceAll('.00', '').replaceAll('.0', ''));
       dismissableDepositList.add(
         Dismissible(
           key: Key(deposit.pkDepositOrderId.toStringAsFixed(2)),
@@ -405,7 +481,7 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                   Expanded(
                     flex: 2,
                     child: Text(
-                      '€ ' + deposit.amount.toString(),
+                      '€ ' + deposit.amount.toStringAsFixed(2).replaceAll('.00', '').replaceAll('.0', ''),
                       style: TextStyle(fontSize: 14.0,color: Colors.white),
                     ),
                   ),
@@ -459,14 +535,40 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                       ),
                       color: Colors.blueGrey.shade700,
                       elevation: 19.0,
-                      child: Text('Aggiorna', style: TextStyle(fontSize: 18.0,color: Colors.white, fontFamily: 'LoraFont'),),
+                      child: Text('Aggiorna', style: const TextStyle(fontSize: 18.0,color: Colors.white, fontFamily: 'LoraFont'),),
                       onPressed: () async {
 
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(
-                            duration: Duration(milliseconds: 500),
-                            backgroundColor: Colors.green,
-                            content: Text('Aggiornamento eseguito')));
+                        if(double.tryParse(_textEditingController.value.text.replaceAll(',', '.')) != null){
+
+                          if((calculateDepositTotal(dataBundleNotifier.mapOrderIdDepositOrderList[widget.orderModel.pk_order_id])
+                          + double.parse(_textEditingController.value.text.replaceAll(',', '.'))) > widget.orderModel.total){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                          duration: Duration(milliseconds: 3000),
+                          backgroundColor: LightColors.kRed,
+                          content: Text('Errore. L\'importo dell\'acconto(o la somme degli importi degli acconti) non può eccedere il totale dell\'ordine.')));
+                          }else{
+                            await dataBundleNotifier.getclientServiceInstance().performUpdateDepositOrder(
+                                DepositOrder(pkDepositOrderId: deposit.pkDepositOrderId,
+                                    amount: double.parse(_textEditingController.value.text.replaceAll(',', '.')),
+                                    fkOrderId: widget.orderModel.pk_order_id)
+                            );
+                            FocusScope.of(context).requestFocus(FocusNode());
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                duration: Duration(milliseconds: 1600),
+                                backgroundColor: Colors.green,
+                                content: Text('Acconto aggiornato')));
+                            dataBundleNotifier.updateMapOrderIdDepositOrderListByOrderId(widget.orderModel);
+                          }
+
+                        }else{
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                              duration: Duration(milliseconds: 1600),
+                              backgroundColor: LightColors.kRed,
+                              content: Text('Inserisci un numero corretto')));
+                        }
                       },
                     ),
                   ),
@@ -474,11 +576,20 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
               ],
             ),
           ),
-          confirmDismiss: (direction) async {
-
-          },
           onDismissed: (direction) async {
-
+            await dataBundleNotifier.getclientServiceInstance().performDeleteDepositOrder(
+                DepositOrder(pkDepositOrderId: deposit.pkDepositOrderId,
+                    amount: double.parse(_textEditingController.value.text.replaceAll(',', '.')),
+                    fkOrderId: widget.orderModel.pk_order_id)
+            );
+            sleep(Duration(milliseconds: 300));
+            FocusScope.of(context).requestFocus(FocusNode());
+            dataBundleNotifier.updateMapOrderIdDepositOrderListByOrderId(widget.orderModel);
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(
+                duration: Duration(milliseconds: 1600),
+                backgroundColor: Colors.green,
+                content: Text('Acconto eliminato')));
           },
         ),
       );
@@ -487,6 +598,14 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
     return Column(
       children: dismissableDepositList,
     );
+  }
+
+  double calculateDepositTotal(List<DepositOrder> depositList) {
+    double total = 0.0;
+    depositList.forEach((element) {
+      total = total + element.amount;
+    });
+    return total;
   }
 
 }

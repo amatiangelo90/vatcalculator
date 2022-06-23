@@ -414,7 +414,8 @@ class OrderErrorDetailsScreen extends StatelessWidget {
         orderModel: OrderModel(
             pk_order_id: performSaveOrderId,
             status: OrderState.SENT_BY_MESSAGE,
-            delivery_date: deliveryDate.millisecondsSinceEpoch,
+            paid: 'false',
+            delivery_date: dateFormat.format(deliveryDate),
             closedby: dataBundleNotifier
                 .retrieveNameLastNameCurrentUser()),
         actionModel: ActionModel(

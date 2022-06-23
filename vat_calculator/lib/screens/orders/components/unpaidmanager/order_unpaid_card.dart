@@ -130,7 +130,7 @@ class OrderUnpaidCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      buildDateFromMilliseconds(order.creation_date),
+                      order.creation_date,
                       style: TextStyle(
                         fontSize: getProportionateScreenHeight(12),
                         color: LightColors.kLightYellow2,
@@ -138,7 +138,7 @@ class OrderUnpaidCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      buildDateFromMilliseconds(order.delivery_date),
+                      order.delivery_date,
                       style: TextStyle(
                         fontSize: getProportionateScreenHeight(12),
                         color: LightColors.kLightYellow2,

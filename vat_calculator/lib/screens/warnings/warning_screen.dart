@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
@@ -7,7 +8,11 @@ import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
+import '../../client/vatservice/model/action_model.dart';
 import '../../client/vatservice/model/product_order_amount_model.dart';
+import '../../client/vatservice/model/utils/action_type.dart';
+import '../../client/vatservice/model/utils/order_state.dart';
+import '../../components/light_colors.dart';
 import '../event/component/event_card.dart';
 import '../main_page.dart';
 import '../orders/components/order_card.dart';
@@ -112,6 +117,8 @@ class WarningScreen extends StatelessWidget {
   Future retrieveEventsNotClosed(DataBundleNotifier dataBundleNotifier) async {
     List<EventModel> eventsList = dataBundleNotifier.getEventsOlderThanTodayNotClosed();
 
+    print(eventsList.toString());
+
     List<Widget> eventWidget = [
       SizedBox(
         width: getProportionateScreenWidth(500),
@@ -132,16 +139,50 @@ class WarningScreen extends StatelessWidget {
   Future retrieveOrdersNotCompleted(DataBundleNotifier dataBundleNotifier) async {
     List<OrderModel> ordersList = dataBundleNotifier.getOrdersOlderThanTodayUnderWorking();
 
-
-
     List<Widget> orderListWidget = [
       SizedBox(
         width: getProportionateScreenWidth(500),
 
-        child: Container(color: kCustomBordeaux, child: Padding(
-          padding: const EdgeInsets.all(1.0),
-          child: Center(child: Text('ORDINI DA COMPLETARE', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white),)),
-        )),
+        child: Column(
+          children: [
+            Container(color: kCustomBordeaux, child: Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: Center(child: Text('ORDINI DA COMPLETARE', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white),)),
+            )),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: getProportionateScreenWidth(400),
+                child: CupertinoButton(
+                  color: LightColors.kPalePink,
+                  onPressed: () async {
+                    ordersList.forEach((order) async {
+                      await dataBundleNotifier.getclientServiceInstance().updateOrderStatus(
+                          orderModel: OrderModel(
+                              pk_order_id: order.pk_order_id,
+                              status: OrderState.RECEIVED_ARCHIVED,
+                              paid: 'NO',
+                              total: order.total,
+                              delivery_date: dateFormat.format(DateTime.now()),
+                              closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
+                          ),
+                          actionModel: ActionModel(
+                              date: DateTime.now().millisecondsSinceEpoch,
+                              description: 'Ha modificato in ${OrderState.RECEIVED_ARCHIVED} l\'ordine #${order.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(order.fk_supplier_id)}.',
+                              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                              type: ActionType.RECEIVED_ORDER
+                          )
+                      );
+                    });
+                    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                  },
+                  child: Text('Segna tutti come completati', style: TextStyle(fontWeight: FontWeight.w500, fontSize: getProportionateScreenWidth(15))),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     ];
     await Future.forEach(ordersList, (OrderModel orderItem) async {

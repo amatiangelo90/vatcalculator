@@ -7,8 +7,8 @@ class OrderModel{
   double total;
   String status;
   String details;
-  int creation_date;
-  int delivery_date;
+  String creation_date;
+  String delivery_date;
   int fk_user_id;
   int fk_supplier_id;
   int fk_branch_id;
@@ -29,7 +29,7 @@ class OrderModel{
     this.fk_branch_id,
     this.fk_storage_id,
     this.closedby,
-    this.paid
+    @required this.paid
   });
 
   toMap(){
@@ -47,8 +47,6 @@ class OrderModel{
       'fk_storage_id' : fk_storage_id,
       'closedby' : closedby,
       'paid': paid
-
-
     };
   }
 }

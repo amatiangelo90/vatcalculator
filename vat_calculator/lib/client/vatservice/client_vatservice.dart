@@ -215,7 +215,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performSaveOrder({OrderModel orderModel, ActionModel actionModel}) async {
+  Future<Response> performSaveOrder({OrderModel orderModel}) async {
 
     var dio = Dio();
     String body = json.encode(
@@ -231,16 +231,7 @@ class ClientVatService implements VatServiceInterface{
       );
 
       if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_ORDER + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
+          print('Response From VatService (' + VAT_SERVICE_URL_SAVE_ORDER + '): ' + post.data.toString());
       }
 
       return post;
@@ -1424,7 +1415,7 @@ class ClientVatService implements VatServiceInterface{
         orderModel.toMap());
 
     Response post;
-    print('Update order with id : ' + orderModel.pk_order_id.toString() +  ' to status : ' + orderModel.status);
+    print('Update order with id : ' + orderModel.pk_order_id.toString() +  ' to status : ' + orderModel.status + ' (Paid: ${orderModel.paid})');
     print('Calling update order method ' + VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID + ' to modify order for branch with id ' + orderModel.fk_branch_id.toString());
     try{
       post = await dio.post(
@@ -2987,7 +2978,8 @@ class ClientVatService implements VatServiceInterface{
         depositOrder.toMap());
 
     Response post;
-    print('Save deposit order request body: ' + body);
+    print('Save deposit order url:($VAT_SERVICE_URL_INSERT_ORDER_DEPOSIT'
+        ') request body: ' + body);
     try{
       post = await dio.post(
         VAT_SERVICE_URL_INSERT_ORDER_DEPOSIT,

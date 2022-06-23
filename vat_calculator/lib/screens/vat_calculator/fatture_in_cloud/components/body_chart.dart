@@ -449,7 +449,7 @@ class _VatFattureInCloudCalculatorBodyChartState extends State<VatFattureInCloud
     int index = 10000;
     int daysNumber = currentDateTimeRangeVatService.end.difference(currentDateTimeRangeVatService.start).inDays;
     for(int i = 0; i <= daysNumber; i++){
-      if(isToday(currentDateTimeRangeVatService.start.add(Duration(days: i)).millisecondsSinceEpoch)){
+      if(isToday(currentDateTimeRangeVatService.start.add(Duration(days: i)))){
         index = i;
       }
     }

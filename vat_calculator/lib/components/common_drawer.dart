@@ -288,15 +288,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                         style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
                                   ),
-                                  SizedBox(
-                                    height: getProportionateScreenHeight(28),
-                                    width: dataBundleNotifier.currentListSuppliers.length > 90 ? getProportionateScreenWidth(35) : getProportionateScreenWidth(28),
-                                    child: Card(
-                                      color: kCustomOrange,
-                                      child: Center(child: Text(getDraftOrdersNumber(dataBundleNotifier.currentOrdersForCurrentBranch)
-                                        , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
-                                    ),
-                                  ),
                                   const Icon(Icons.arrow_forward_ios),
                                 ],
                               ),
@@ -558,16 +549,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
       
     });
     return Column(children: branchList,);
-  }
-
-  String getDraftOrdersNumber(List<OrderModel> currentOrdersForCurrentBranch) {
-    int counter = 0;
-    currentOrdersForCurrentBranch.forEach((element) {
-      if(element.status.toString() == OrderState.DRAFT.toString()){
-        counter = counter + 1;
-      }
-    });
-    return counter.toString();
   }
 
   void buildCustomShowDialogPriviledgeWarning(String message) {

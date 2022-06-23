@@ -22,7 +22,6 @@ import '../models/databundlenotifier.dart';
 import '../size_config.dart';
 import 'event/component/event_create_screen.dart';
 import 'orders/components/screens/archivied_order_page.dart';
-import 'orders/components/screens/draft_order_page.dart';
 import 'orders/components/screens/order_creation/order_create_screen.dart';
 
 class HomeScreenMain extends StatelessWidget {
@@ -212,32 +211,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold
                                   ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        top: 10.0,
-                        right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 0.0 : -1.1,
-                        child: Stack(
-                          children: <Widget>[
-                            Icon(
-                              Icons.brightness_1,
-                              size: 16,
-                              color: Colors.orange,
-                            ),
-                            Positioned(
-                              right: dataBundleNotifier.currentDraftOrdersList.length > 9 ? 3.0 : 5.0,
-                              top: 3.5,
-                              child: Center(
-                                child: Text(
-                                  dataBundleNotifier.currentDraftOrdersList.length.toString(),
-                                  style: const TextStyle(
-                                      fontSize: 8.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
@@ -507,56 +480,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 ),
               ],
             ),
-            dataBundleNotifier.currentBranch == null ? SizedBox(width: 0,) : Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                  child: IconButton(
-                      icon: SvgPicture.asset(
-                        "assets/icons/draft.svg",
-                        width: 25,
-                        color: kCustomWhite,
-                      ),
-                      onPressed: () {
-                        dataBundleNotifier.setShowIvaButtonToFalse();
-                        Navigator.pushNamed(
-                            context, DraftOrderPage.routeName);
-                      }),
-                ),
-                Positioned(
-                  top: 13.0,
-                  right: dataBundleNotifier.currentDraftOrdersList.length > 9
-                      ? 5.0
-                      : 8.0,
-                  child: Stack(
-                    children: <Widget>[
-                      const Icon(
-                        Icons.brightness_1,
-                        size: 16,
-                        color: Colors.orange,
-                      ),
-                      Positioned(
-                        right:
-                        dataBundleNotifier.currentDraftOrdersList.length >
-                            9
-                            ? 3.0
-                            : 5.0,
-                        top: 2,
-                        child: Center(
-                          child: Text(
-                            dataBundleNotifier.currentDraftOrdersList.length
-                                .toString(),
-                            style: const TextStyle(
-                                fontSize: 8.0, color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-              ],
-            ),
           ],
           iconTheme: const IconThemeData(color: kCustomWhite),
           centerTitle: true,
@@ -597,66 +520,66 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
   }
 
   void buildStorageChooserDialog(BuildContext context, DataBundleNotifier dataBundleNotifier) {
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          contentPadding: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(10.0))),
-          content: Builder(
-            builder: (context) {
-              var width = MediaQuery.of(context).size.width;
-              return SizedBox(
-
-                width: width,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10.0),
-                              topLeft: Radius.circular(10.0)),
-                          color: kPrimaryColor,
-                        ),
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '  Lista Magazzini',
-                              style: TextStyle(
-                                fontSize:
-                                getProportionateScreenWidth(17),
-                                color: Colors.white,
-                              ),
-                            ),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.clear,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      Column(
-                        children: buildListStorages(
-                            dataBundleNotifier, context),
-                      ),
-
-                    ],
-                  ),
-                ),
-              );
-            },
+    showModalBottomSheet(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(25.0),
           ),
-        ));
+        ),
+        context: context,
+        builder: (context) {
+          return SizedBox(
+
+            width: 500,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10.0),
+                          topLeft: Radius.circular(10.0)),
+                      color: kPrimaryColor,
+                    ),
+                    child: Row(
+                      mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '  Lista Magazzini',
+                          style: TextStyle(
+                            fontSize:
+                            getProportionateScreenWidth(17),
+                            color: Colors.white,
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.clear,
+                            color: Colors.white,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 30),
+                    child: Column(
+                      children: buildListStorages(
+                          dataBundleNotifier, context),
+                    ),
+                  ),
+
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   buildListStorages(DataBundleNotifier dataBundleNotifier, context) {

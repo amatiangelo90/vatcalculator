@@ -37,10 +37,12 @@ class OrderUtils{
     String deliveryDate,
     String currentUserName}) {
 
+    print('MATTIALIUZZI');
+    print(productList.toString());
+
     String orderString = 'Ciao $supplierName,%0a%0aOrdine #$orderId%0a%0aCarrello%0a----------------%0a';
     productList.forEach((currentProductOrderAmount) {
       if(currentProductOrderAmount.orderItems != 0){
-
         orderString = orderString + currentProductOrderAmount.nome +
             ' x ' + currentProductOrderAmount.orderItems.toString() + ' ${currentProductOrderAmount.unita_misura} %0a';
       }

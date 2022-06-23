@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const String kVersionApp = '1.0.64';
+const String kVersionApp = '1.0.73';
 const Color kPrimaryColor = Color(0XFF0A2227);
 
 const Color kCustomGreyBlue = Color(0XFF41414A);
@@ -21,6 +22,9 @@ const kPrimaryLightColor = Color(0xFFFFECDF);
 const kTextColor = Color(0xFF757575);
 
 const kAnimationDuration = Duration(milliseconds: 200);
+
+DateFormat dateFormat = DateFormat("dd-MM-yyyy");
+
 
 final headingStyle = TextStyle(
   fontSize: getProportionateScreenWidth(28),
@@ -116,8 +120,7 @@ String getDayFromWeekDayTrim(int weekDay){
   }
 }
 
-bool isToday(int delivery_date) {
-  DateTime currentDate = DateTime.fromMillisecondsSinceEpoch(delivery_date);
+bool isToday(DateTime currentDate) {
   DateTime now = DateTime.now();
   bool result = false;
 

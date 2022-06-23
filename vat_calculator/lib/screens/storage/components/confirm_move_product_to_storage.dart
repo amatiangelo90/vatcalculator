@@ -48,8 +48,7 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
             bottomSheet: Padding(
               padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
               child: DefaultButton(
-                text: ''
-                    'Conferma ed Invia',
+                text: 'Conferma ed Invia',
                 press: () async {
                   context.loaderOverlay.show();
                   print('Performing send order ...');

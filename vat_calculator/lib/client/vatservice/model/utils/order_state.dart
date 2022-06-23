@@ -4,7 +4,7 @@ import 'package:vat_calculator/components/icon_custom.dart';
 import '../../../../constants.dart';
 
 class OrderState{
-  static const String DRAFT = 'BOZZA';
+
   static const String SENT = 'INVIATO';
   static const String INCOMING = 'IN ARRIVO';
   static const String READ = 'LETTO';

@@ -75,7 +75,7 @@ class EventCard extends StatelessWidget {
                                   style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                 Text(
                                   eventModel.location,
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kRed, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kPalePink, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -87,7 +87,7 @@ class EventCard extends StatelessWidget {
                                   dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
                                   textAlign: TextAlign.justify,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: LightColors.kRed, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: LightColors.kPalePink, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -99,7 +99,7 @@ class EventCard extends StatelessWidget {
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kRed, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kPalePink, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -124,13 +124,13 @@ class EventCard extends StatelessWidget {
                 Divider(
                   indent: 20,
                   endIndent: 20,
-                  color: LightColors.kRed,
-                  height: getProportionateScreenHeight(49),
+                  color: LightColors.kPalePink,
+                  height: getProportionateScreenHeight(40),
                 ),
                 showButton ? SizedBox(
                   width: getProportionateScreenWidth(400),
                   child: CupertinoButton(
-                    color: Colors.lightBlue,
+                    color: LightColors.kPalePink,
                     onPressed: () async {
 
                       List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);
@@ -146,7 +146,7 @@ class EventCard extends StatelessWidget {
 
                       Navigator.pushNamed(context, EventManagerScreen.routeName);
                     },
-                    child: Text('Accedi a ' + eventModel.eventName, style: TextStyle(fontWeight: FontWeight.w600)),
+                    child: Text('Accedi a ' + eventModel.eventName, style: TextStyle(fontWeight: FontWeight.w500, fontSize: getProportionateScreenWidth(20))),
                   ),
                 ) : SizedBox(width: 0,)
               ],

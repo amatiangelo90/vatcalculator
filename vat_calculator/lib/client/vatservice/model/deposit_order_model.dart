@@ -18,11 +18,11 @@ class DepositOrder{
 
   toMap(){
     return {
-      'pkDepositOrderId' : pkDepositOrderId,
-      'creationDate': creationDate,
+      'pk_deposit_order_id' : pkDepositOrderId,
+      'creation_date': creationDate,
       'amount': amount,
-      'fkOrderId' : fkOrderId,
-      'user' : user,
+      'fk_order_id' : fkOrderId,
+      'user' : user
     };
   }
 

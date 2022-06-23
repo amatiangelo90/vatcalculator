@@ -1,7 +1,5 @@
 
 import 'dart:io';
-
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/email_sender/emailservice.dart';
@@ -83,8 +81,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<OrderModel> currentUnderWorkingOrdersList = [];
 
-  List<OrderModel> currentDraftOrdersList = [];
-
   List<ActionModel> currentBranchActionsList = [];
 
   List<String> currentBossTokenList = [];
@@ -112,7 +108,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   bool cupertinoSwitch = false;
   bool isZtoAOrderded = false;
-  bool editOrder = true;
 
   int daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
   int currentYear = DateTime.now().year;
@@ -384,35 +379,20 @@ class DataBundleNotifier extends ChangeNotifier {
       currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
 
       currentTodayOrdersForCurrentBranch.clear();
-
-      currentDraftOrdersList.clear();
       orderIdProductListMap.clear();
       currentUnderWorkingOrdersList.clear();
 
       currentOrdersForCurrentBranch.forEach((orderItem) async {
 
-        if(orderItem.status == OrderState.DRAFT){
-          currentDraftOrdersList.add(orderItem);
-          currentDraftOrdersList.forEach((element) async {
-            List<ProductOrderAmountModel> list = await getclientServiceInstance()
-                .retrieveProductByOrderId(
-              OrderModel(
-                pk_order_id: element.pk_order_id,
-              ),
-            );
-            orderIdProductListMap[element.pk_order_id] = list;
-          });
-        }else{
-          currentUnderWorkingOrdersList.add(orderItem);
-          if(
-          DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == DateTime.now().day &&
-          DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
-          DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+          if(orderItem.delivery_date != null)
+            currentUnderWorkingOrdersList.add(orderItem);
 
+          DateTime currentDeliveryDate = dateFormat.parse(orderItem.delivery_date);
+          if(currentDeliveryDate.day == DateTime.now().day &&
+              currentDeliveryDate.month == DateTime.now().month &&
+              currentDeliveryDate.year == DateTime.now().year){
             currentTodayOrdersForCurrentBranch.add(orderItem);
-
           }
-        }
       });
 
     }
@@ -429,12 +409,10 @@ class DataBundleNotifier extends ChangeNotifier {
   Future<void> setCurrentBranch(BranchModel branchModel) async {
 
     currentOrdersForCurrentBranch.clear();
-    currentDraftOrdersList.clear();
     currentStorageList.clear();
-    currentDraftOrdersList.clear();
     orderIdProductListMap.clear();
     currentUnderWorkingOrdersList.clear();
-    sleep(Duration(milliseconds: 500));
+    sleep(const Duration(milliseconds: 500));
 
     currentBranch = branchModel;
 
@@ -502,47 +480,29 @@ class DataBundleNotifier extends ChangeNotifier {
     currentOrdersForCurrentBranch.clear();
     currentOrdersForCurrentBranch.addAll(retrieveOrdersByBranch);
     currentTodayOrdersForCurrentBranch.clear();
-
-    currentDraftOrdersList.clear();
     orderIdProductListMap.clear();
     currentUnderWorkingOrdersList.clear();
 
     currentOrdersForCurrentBranch.forEach((orderItem) async {
-      if(orderItem.status == OrderState.DRAFT){
 
-        currentDraftOrdersList.add(orderItem);
-        currentDraftOrdersList.forEach((element) async {
-          List<ProductOrderAmountModel> list = await getclientServiceInstance()
-              .retrieveProductByOrderId(
-            OrderModel(
-              pk_order_id: element.pk_order_id,
-            ),
-          );
-          orderIdProductListMap[element.pk_order_id] = list;
-        });
+      print(orderItem.toMap().toString());
 
-      }else {
-        currentUnderWorkingOrdersList.add(orderItem);
-        if(
-        DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == DateTime.now().day &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+      if(orderItem.delivery_date != null) {
+        DateTime currentDeliveryDate = dateFormat.parse(orderItem.delivery_date);
 
+        if(currentDeliveryDate.day == DateTime.now().day &&
+            currentDeliveryDate.month == DateTime.now().month &&
+            currentDeliveryDate.year == DateTime.now().year) {
           currentTodayOrdersForCurrentBranch.add(orderItem);
-
         }
+        currentUnderWorkingOrdersList.add(orderItem);
       }
     });
-
-    //currentBranchActionsList.clear();
-    //currentBranchActionsList = await getclientServiceInstance().retrieveLastWeekActionsByBranchId(currentBranch.pkBranchId);
 
     clearAndUpdateMapBundle();
 
     List<String> tokenList = await clientService.retrieveTokenList(currentBranch);
     setCurrentBossTokenList(tokenList);
-
-    //retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
     notifyListeners();
   }
 
@@ -591,7 +551,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
     if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
-      currentDraftOrdersList.clear();
       orderIdProductListMap.clear();
       currentUnderWorkingOrdersList.clear();
       currentTodayOrdersForCurrentBranch.clear();
@@ -607,10 +566,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
     if(currentStorageList != null && currentStorageList.isNotEmpty){
       currentStorageList.clear();
-    }
-    if(currentDraftOrdersList != null && currentDraftOrdersList.isNotEmpty){
-      currentDraftOrdersList.clear();
-      orderIdProductListMap.clear();
     }
     if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
@@ -723,33 +678,19 @@ class DataBundleNotifier extends ChangeNotifier {
     currentOrdersForCurrentBranch.clear();
     currentTodayOrdersForCurrentBranch.clear();
     currentOrdersForCurrentBranch.addAll(orderModelList);
-    currentDraftOrdersList.clear();
     orderIdProductListMap.clear();
     currentUnderWorkingOrdersList.clear();
 
     currentOrdersForCurrentBranch.forEach((orderItem) async {
-      if(orderItem.status == OrderState.DRAFT){
-
-        currentDraftOrdersList.add(orderItem);
-        currentDraftOrdersList.forEach((element) async {
-          List<ProductOrderAmountModel> list = await getclientServiceInstance()
-              .retrieveProductByOrderId(
-            OrderModel(
-              pk_order_id: element.pk_order_id,
-            ),
-          );
-          orderIdProductListMap[element.pk_order_id] = list;
-        });
-      }else{
+      if(orderItem.delivery_date != null)
         currentUnderWorkingOrdersList.add(orderItem);
-        if(
-        DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == DateTime.now().day &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == DateTime.now().month &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == DateTime.now().year){
+        DateTime deliveryDate = dateFormat.parse(orderItem.delivery_date);
+        if(deliveryDate.day == DateTime.now().day &&
+            deliveryDate.month == DateTime.now().month &&
+            deliveryDate.year == DateTime.now().year){
 
           currentTodayOrdersForCurrentBranch.add(orderItem);
         }
-      }
     });
     notifyListeners();
   }
@@ -942,21 +883,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void switchEditOrder() {
-    if(editOrder){
-      editOrder = false;
-    }else{
-      editOrder = true;
-    }
-    notifyListeners();
-  }
-
-  void setEditOrderToFalse(){
-    editOrder = false;
-
-    notifyListeners();
-  }
-
   StorageModel getStorageFromCurrentStorageListByStorageId(int storageId) {
     StorageModel storageResult;
     currentStorageList.forEach((storage) {
@@ -967,7 +893,7 @@ class DataBundleNotifier extends ChangeNotifier {
     return storageResult;
   }
 
-  void updateOrderStatusById(int pk_order_id, String received_archived, int millisecondsSinceEpoch, String closedByUser) {
+  void updateOrderStatusById(int pk_order_id, String received_archived, String date, String closedByUser) {
 
     List<OrderModel> orderModelToRemove = [];
 
@@ -975,7 +901,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
       if(currentUnderWorkingOrderItem.pk_order_id == pk_order_id){
         orderModelToRemove.add(currentUnderWorkingOrderItem);
-        currentUnderWorkingOrderItem.delivery_date = millisecondsSinceEpoch;
+        currentUnderWorkingOrderItem.delivery_date = date;
         currentUnderWorkingOrderItem.status = received_archived;
         currentUnderWorkingOrderItem.closedby = closedByUser;
       }
@@ -1126,17 +1052,6 @@ class DataBundleNotifier extends ChangeNotifier {
     return supplierToReturn;
   }
 
-  OrderModel getDraftOrderFromListBySupplierId(int pkSupplierId) {
-    OrderModel orderToReturn;
-
-    currentDraftOrdersList.forEach((draftOrder) {
-      if(draftOrder.fk_supplier_id == pkSupplierId){
-        orderToReturn = draftOrder;
-      }
-    });
-    return orderToReturn;
-  }
-
   void setCurrentProductListToSendDraftOrder(List<ProductOrderAmountModel> prodOrderModelList) {
     currentProdOrderModelList.clear();
     currentProdOrderModelList.addAll(prodOrderModelList);
@@ -1184,9 +1099,10 @@ class DataBundleNotifier extends ChangeNotifier {
       return counter;
     }else{
       currentUnderWorkingOrdersList.forEach((orderItem) {
-        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day == date.day &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month == date.month &&
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year == date.year){
+        DateTime currentDeliveryDate = dateFormat.parse(orderItem.delivery_date);
+        if(currentDeliveryDate.day == date.day &&
+            currentDeliveryDate.month == date.month &&
+            currentDeliveryDate.year == date.year){
           counter = counter + 1;
         }
       });
@@ -1201,10 +1117,12 @@ class DataBundleNotifier extends ChangeNotifier {
     if(currentUnderWorkingOrdersList.isEmpty){
       return orders;
     }else{
+
       currentUnderWorkingOrdersList.forEach((order) {
-        if(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day == date.day &&
-            DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month == date.month &&
-            DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year == date.year){
+        DateTime deliveryDate = dateFormat.parse(order.delivery_date);
+        if(deliveryDate.day == date.day &&
+            deliveryDate.month == date.month &&
+            deliveryDate.year == date.year){
           orders.add(order);
         }
       });
@@ -1444,10 +1362,14 @@ class DataBundleNotifier extends ChangeNotifier {
     int result = 0;
     if(currentUnderWorkingOrdersList.isNotEmpty){
       currentUnderWorkingOrdersList.forEach((orderItem) {
-        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).day < DateTime.now().day ||
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).month < DateTime.now().month ||
-            DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).year < DateTime.now().year){
-          result = result + 1;
+        if(orderItem != null && orderItem.delivery_date != null){
+
+          DateTime deliveryDate = dateFormat.parse(orderItem.delivery_date);
+          if(deliveryDate.day < DateTime.now().day ||
+              deliveryDate.month < DateTime.now().month ||
+              deliveryDate.year < DateTime.now().year){
+            result = result + 1;
+          }
         }
       });
     }
@@ -1471,7 +1393,7 @@ class DataBundleNotifier extends ChangeNotifier {
     List<OrderModel> list = [];
     if(currentUnderWorkingOrdersList.isNotEmpty){
       currentUnderWorkingOrdersList.forEach((orderItem) {
-        if(DateTime.fromMillisecondsSinceEpoch(orderItem.delivery_date).isBefore(DateTime.now())){
+        if(dateFormat.parse(orderItem.delivery_date).isBefore(DateTime.now())){
           list.add(orderItem);
         }
       });
@@ -1641,4 +1563,55 @@ class DataBundleNotifier extends ChangeNotifier {
 
     notifyListeners();
   }
+
+  Future<void> updateMapOrderIdDepositOrderListByOrderId(OrderModel orderModel) async {
+
+    List<DepositOrder> listOrderDeposit = await getclientServiceInstance().performRetrieveDepositOrderByOrderId(orderModel);
+    mapOrderIdDepositOrderList[orderModel.pk_order_id].clear();
+    mapOrderIdDepositOrderList[orderModel.pk_order_id] = listOrderDeposit;
+
+    notifyListeners();
+  }
+
+  String executeLoadStorage = 'SI';
+  String signAsPaid = 'NO';
+  String sameTotalThanCalculated = 'NO';
+
+  void setExdecuteLoadStorage(String value){
+    executeLoadStorage = value;
+    notifyListeners();
+  }
+
+  void setSignAsPaid(String value){
+    signAsPaid = value;
+    notifyListeners();
+  }
+
+  void setSameTotalThanCalcuated(String value){
+    sameTotalThanCalculated = value;
+    notifyListeners();
+  }
+
+  void removeFromUnderWorkingOrdersTheOnesUpdateAsReceived(int pk_order_id_incoming) {
+    currentUnderWorkingOrdersList.removeWhere((element) => element.pk_order_id == pk_order_id_incoming);
+    notifyListeners();
+  }
+
+  void setTo0ExtraFieldAfterOrderPerform(int supplierId) {
+    currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+      if(element.supplierId == supplierId){
+        element.extra = 0.0;
+      }
+    });
+    notifyListeners();
+  }
+
+  void refreshExtraFieldsIntoDuplicatedProductList() {
+    currentStorageProductListForCurrentStorageDuplicated.forEach((element) {
+        element.extra = 0.0;
+    });
+    notifyListeners();
+  }
+
+
 }

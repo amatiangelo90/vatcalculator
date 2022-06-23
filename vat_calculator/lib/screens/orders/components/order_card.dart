@@ -94,11 +94,12 @@ class OrderCard extends StatelessWidget {
                                   height: getProportionateScreenHeight(25),
                                 ),
                                 onPressed: () {
+                                  DateTime deliveryDate = dateFormat.parse(order.delivery_date);
                                   String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
                                       branchName: dataBundleNotifier.currentBranch.companyName,
                                       orderId: order.code,
                                       orderProductList: orderIdProductList,
-                                      deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                                      deliveryDate: getDayFromWeekDay(deliveryDate.weekday) + ' ' + deliveryDate.day.toString() + '/' + deliveryDate.month.toString() + '/' + deliveryDate.year.toString(),
                                       supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
                                       currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
                                       storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
@@ -122,11 +123,12 @@ class OrderCard extends StatelessWidget {
                                   height: getProportionateScreenHeight(25),
                                 ),
                                 onPressed: () async {
+                                  DateTime deliveryDate = dateFormat.parse(order.delivery_date);
                                   String message = OrderUtils.buildMessageFromCurrentOrderListFromDraft(
                                       branchName: dataBundleNotifier.currentBranch.companyName,
                                       orderId: order.code,
                                       orderProductList: orderIdProductList,
-                                      deliveryDate: getDayFromWeekDay(DateTime.fromMillisecondsSinceEpoch(order.delivery_date).weekday) + ' ' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' + DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                                      deliveryDate: getDayFromWeekDay(deliveryDate.weekday) + ' ' + deliveryDate.day.toString() + '/' + deliveryDate.month.toString() + '/' + deliveryDate.year.toString(),
                                       supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
                                       currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
                                       storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
@@ -188,9 +190,7 @@ class OrderCard extends StatelessWidget {
                           '  Data Consegna: ',
                           style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                         Text(
-                          DateTime.fromMillisecondsSinceEpoch(order.delivery_date).day.toString() + '/' +
-                          DateTime.fromMillisecondsSinceEpoch(order.delivery_date).month.toString() + '/' +
-                          DateTime.fromMillisecondsSinceEpoch(order.delivery_date).year.toString(),
+                          order.delivery_date,
                           style: TextStyle(fontSize: getProportionateScreenHeight(13), color: Colors.white, fontWeight: FontWeight.bold),),
                       ],
                     ),
@@ -275,7 +275,6 @@ class OrderCard extends StatelessWidget {
                             fontSize: getProportionateScreenHeight(13)),
                       ),
                       children: [
-
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -324,7 +323,7 @@ class OrderCard extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.creation_date)),
+                                Text(order.creation_date,
                                   style: TextStyle(color: Colors.green, fontSize: getProportionateScreenHeight(14)),),
                                 SizedBox(width: getProportionateScreenWidth(10),),
                               ],
@@ -342,7 +341,7 @@ class OrderCard extends StatelessWidget {
                             ),
                             Row(
                               children: [
-                                Text(getStringDateFromDateTime(DateTime.fromMillisecondsSinceEpoch(order.delivery_date)),
+                                Text(order.creation_date,
                                   style: TextStyle(color: Colors.green, fontSize: getProportionateScreenHeight(14)),),
                                 SizedBox(width: getProportionateScreenWidth(10),),
                               ],
@@ -360,6 +359,10 @@ class OrderCard extends StatelessWidget {
                       child: CupertinoButton(
                         color: kCustomBlue,
                         onPressed: (){
+                          dataBundleNotifier.setSignAsPaid('NO');
+                          dataBundleNotifier.setExdecuteLoadStorage('SI');
+                          dataBundleNotifier.setSameTotalThanCalcuated('SI');
+                          order.total = 0.0;
                           Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
                             productList: orderIdProductList,),),);
                         },

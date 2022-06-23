@@ -16,6 +16,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
+import '../../../components/light_colors.dart';
 import '../../orders/components/unpaidmanager/order_unpaid_card.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -68,7 +69,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 press: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
                 },
-                color: kCustomGreenAccent,
+                color: LightColors.kBlue,
               ),
             ),
             body: FutureBuilder(
@@ -146,7 +147,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           );
         },
       ),
-
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, _){
           return Container(
@@ -155,6 +155,32 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 50.0,
+
+                      decoration: BoxDecoration(
+                        color: LightColors.kLavender,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: FlatButton(
+
+                        onPressed: () {
+
+                        },
+                        child: const Center(
+                          child: Text(
+                            'MOSTRA STORICO',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 16),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   buildUnpaidOrderScreen(dataBundleNotifier),
                 ],
               ),
@@ -162,7 +188,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           );
         },
       ),
-
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(

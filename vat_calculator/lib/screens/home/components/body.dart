@@ -3,6 +3,7 @@ import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/action_model.dart';
@@ -19,6 +20,7 @@ import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/expence_manager/components/expence_reg_card.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
+import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../branch_registration/branch_update.dart';
@@ -86,7 +88,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                     child: buildGestureDetectorBranchSelector(
                         context, dataBundleNotifier),
                   ),
-                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDateRecessedRegistrationWidget(dataBundleNotifier),
                   Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: Row(
@@ -333,7 +334,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ),
                   dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).isEmpty ?
-
                   dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Padding(
                     padding: const EdgeInsets.all(28.0),
                     child: const Text('Non hai eventi in programma oggi'),
@@ -443,7 +443,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text('Developed by A.A.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(9))),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(20),),
+                  SizedBox(height: getProportionateScreenHeight(200),),
                 ],
               ),
             ),
@@ -457,65 +457,42 @@ class _HomePageBodyState extends State<HomePageBody> {
       BuildContext context, DataBundleNotifier dataBundleNotifier) {
     return GestureDetector(
       onTap: () {
-        showDialog(
+        showModalBottomSheet(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(25.0),
+              ),
+            ),
             context: context,
-            builder: (_) => AlertDialog(
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: Builder(
-                    builder: (context) {
-                      return SizedBox(
-                        width: getProportionateScreenWidth(800),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.only(
-                                      topRight: Radius.circular(10.0),
-                                      topLeft: Radius.circular(10.0)),
-                                  color: kPrimaryColor,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '  Lista Attività',
-                                      style: TextStyle(
-                                        fontSize:
-                                            getProportionateScreenWidth(17),
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.clear,
-                                        color: Colors.white,
-                                      ),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 1),
-                              Column(
-                                children: buildListBranches(dataBundleNotifier),
-                              ),
-                              SizedBox(
-                                height: getProportionateScreenHeight(10),
-                              ),
-                            ],
-                          ),
+            builder: (context) {
+              return SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SizedBox(
+                  height: getProportionateScreenHeight(550),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('        Seleziona attività', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kPrimaryColor, fontWeight: FontWeight.w900)),
+                            IconButton(icon: Icon(Icons.clear, size: getProportionateScreenHeight(30)), color: kPrimaryColor, onPressed: (){
+                              Navigator.of(context).pop();
+                            },)
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                      Column(
+                        children: buildListBranches(dataBundleNotifier),
+                      ),
+
+                      SizedBox(height: 10),
+                    ],
                   ),
-                ));
+                ),
+              );
+            });
       },
       child: Card(
         shape: RoundedRectangleBorder(
@@ -571,108 +548,42 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   buildListBranches(DataBundleNotifier dataBundleNotifier) {
     List<Widget> branchWidgetList = [];
-
+    branchWidgetList.add(
+        Divider(color: Colors.grey, height: 10,)
+    );
     dataBundleNotifier.userDetailsList[0].companyList.forEach((currentBranch) {
       branchWidgetList.add(
-        GestureDetector(
-          child: Container(
-            decoration: BoxDecoration(
-              color: dataBundleNotifier.currentBranch.pkBranchId ==
-                      currentBranch.pkBranchId
-                  ? kPrimaryColor
-                  : Colors.white,
-              border: const Border(
-                bottom: BorderSide(width: 1.0, color: Colors.grey),
-              ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.format_align_right_rounded,
-                        color: dataBundleNotifier.currentBranch.pkBranchId ==
-                                currentBranch.pkBranchId
-                            ? kCustomGreenAccent
-                            : kPrimaryColor,
-                      ),
-                      Icon(
-                        currentBranch.accessPrivilege == Privileges.EMPLOYEE
-                            ? Icons.person
-                            : Icons.vpn_key_outlined,
-                        color: dataBundleNotifier.currentBranch.pkBranchId ==
-                                currentBranch.pkBranchId
-                            ? kCustomGreenAccent
-                            : kPrimaryColor,
-                      ),
-                      Text(
-                        '   ' + currentBranch.companyName,
-                        style: TextStyle(
-                          fontSize:
-                              dataBundleNotifier.currentBranch.pkBranchId ==
-                                      currentBranch.pkBranchId
-                                  ? getProportionateScreenWidth(16)
-                                  : getProportionateScreenWidth(13),
-                          color: dataBundleNotifier.currentBranch.pkBranchId ==
-                                  currentBranch.pkBranchId
-                              ? Colors.white
-                              : Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  dataBundleNotifier.currentBranch.pkBranchId ==
-                          currentBranch.pkBranchId
-                      ? Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 3, 5, 0),
-                          child: SvgPicture.asset(
-                            'assets/icons/success-green.svg',
-                            color: kCustomGreenAccent,
-                            width: 22,
-                          ),
-                        )
-                      : const SizedBox(
-                          height: 0,
-                        ),
-                ],
-              ),
-            ),
-          ),
+        ListTile(
+          title: Text(currentBranch.companyName, style: TextStyle(color: dataBundleNotifier.currentBranch.pkBranchId ==
+              currentBranch.pkBranchId ? LightColors.kPalePink : Colors.grey, fontSize: getProportionateScreenHeight(18), fontWeight: FontWeight.w800)),
+          leading: dataBundleNotifier.currentBranch.pkBranchId ==
+              currentBranch.pkBranchId ? Icon(FontAwesomeIcons.checkCircle, color: LightColors.kPalePink,) : SizedBox(height: 0),
           onTap: () async {
-            context.loaderOverlay.show();
-            Navigator.pop(context);
-            await dataBundleNotifier.setCurrentBranch(currentBranch);
-            context.loaderOverlay.hide();
+            if(dataBundleNotifier.currentBranch.pkBranchId ==
+                currentBranch.pkBranchId){
+              Navigator.pop(context);
+            }else{
+              context.loaderOverlay.show();
+              Navigator.pop(context);
+              await dataBundleNotifier.setCurrentBranch(currentBranch);
+              context.loaderOverlay.hide();
+            }
           },
         ),
       );
     });
     branchWidgetList.add(
-      Padding(
-        padding: const EdgeInsets.fromLTRB(8, 6, 8, 0),
-        child: SizedBox(
-          height: getProportionateScreenHeight(50),
-          width: MediaQuery.of(context).size.width,
-          child: CupertinoButton(
-            child: const Text('Crea Attività'),
-            color: kCustomGreenAccent,
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BranchChoiceCreationEnjoy(),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
+      Divider(color: Colors.grey, height: 10,)
+    );
+    branchWidgetList.add(
+      ListTile(
+        leading: Icon(FontAwesomeIcons.plus, color: kPrimaryColor,),
+        title: Text('Crea Nuova Attività', style: TextStyle(fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.w900)),
+        onTap: (){
+          Navigator.of(context).pop();
+          Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
+        },
+      )
     );
     return branchWidgetList;
   }
@@ -857,7 +768,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     List<OrderCard> orderCardList = [];
 
     await Future.forEach(dataBundleNotifier.currentUnderWorkingOrdersList, (OrderModel orderModel) async {
-      if (isToday(orderModel.delivery_date)) {
+      if (isToday(dateFormat.parse(orderModel.delivery_date))) {
         List<ProductOrderAmountModel> list = await dataBundleNotifier
             .getclientServiceInstance()
             .retrieveProductByOrderId(
@@ -876,17 +787,6 @@ class _HomePageBodyState extends State<HomePageBody> {
     return orderCardList;
   }
 
-  buildDateRecessedRegistrationWidget(DataBundleNotifier dataBundleNotifier) {
-    return ExpandablePageView(
-      scrollDirection: Axis.horizontal,
-      animateFirstPage: true,
-      children: [
-        ExpenceCard(showTopNavigatorRow: true),
-        RecessedCard(showIndex: true, showHeader: true),
-      ],
-    );
-  }
-
   String normalizeCalendarValue(int day) {
     if (day < 10) {
       return '0' + day.toString();
@@ -895,14 +795,19 @@ class _HomePageBodyState extends State<HomePageBody> {
     }
   }
 
-  List<OrderModel> retrieveTodayOrdersList(
-      List<OrderModel> currentUnderWorkingOrdersList) {
+  List<OrderModel> retrieveTodayOrdersList(List<OrderModel> currentUnderWorkingOrdersList) {
+
     List<OrderModel> toReturnTodayOrders = [];
-    currentUnderWorkingOrdersList.forEach((element) {
-      if (isToday(element.delivery_date)) {
-        toReturnTodayOrders.add(element);
-      }
-    });
+    if(currentUnderWorkingOrdersList != null){
+      currentUnderWorkingOrdersList.forEach((element) {
+        if(element.delivery_date != null){
+          if (isToday(dateFormat.parse(element.delivery_date))) {
+            toReturnTodayOrders.add(element);
+          }
+        }
+      });
+    }
+
 
     return toReturnTodayOrders;
   }
@@ -911,7 +816,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
     List<OrderModel> list = [];
     currentUnderWorkingOrdersList.forEach((element) async {
-      if (isToday(element.delivery_date)) {
+      if (isToday(dateFormat.parse(element.delivery_date))) {
         list.add(element);
       }
     });

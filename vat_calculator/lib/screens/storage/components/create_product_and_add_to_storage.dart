@@ -4,8 +4,10 @@ import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import 'package:vat_calculator/components/light_colors.dart';
 import '../../../client/fattureICloud/model/response_fornitori.dart';
 import '../../../client/vatservice/model/action_model.dart';
 import '../../../client/vatservice/model/product_model.dart';
@@ -29,19 +31,14 @@ class CreateAndAddProductScreen extends StatefulWidget {
 
 class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _unitMeasureController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _unitMeasureController = TextEditingController();
+  TextEditingController _priceController = TextEditingController();
+  TextEditingController _categoryController = TextEditingController();
+  TextEditingController _descriptionController = TextEditingController();
 
-  bool _selectedValue4 = false;
-  bool _selectedValue5 = false;
-  bool _selectedValue10 = false;
-  bool _selectedValue22 = false;
-
-  bool _bottlesUnitMeasure = false;
-  bool _kgUnitMeasure = false;
-  bool _packagesUnitMeasure = false;
-  bool _otherUnitMeasure = false;
+  String currentUnitMeasure = 'Seleziona unità di misura';
+  String currentIva = 'Seleziona aliquota applicata';
 
   String _selectedSupplier = 'Seleziona Fornitore';
 
@@ -50,143 +47,148 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-        return Scaffold(
+        return GestureDetector(
+          onTap: FocusScope.of(context).unfocus,
+          child: Scaffold(
 
-          bottomSheet: Container(
-            color: kPrimaryColor,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-                  child: SizedBox(
-                    width: getProportionateScreenWidth(330),
-                    child: CupertinoButton(
-                      color: kCustomGreenAccent,
-                      onPressed: () async {
-                        if(_nameController.text.isEmpty || _nameController.text == ''){
-                          buildSnackBar(text: 'Inserire il nome del prodotto', color: kPinaColor);
-                        }else if(!_bottlesUnitMeasure && !_otherUnitMeasure && !_kgUnitMeasure && !_packagesUnitMeasure){
-                          buildSnackBar(text: 'Unità di misura del prodotto obbligatoria', color: kPinaColor);
-                        } else if(_otherUnitMeasure && (_unitMeasureController.text.isEmpty || _unitMeasureController.text == '')){
-                          buildSnackBar(text: 'Specificare unità di misura', color: kPinaColor);
-                        }else if(_priceController.text.isEmpty || _priceController.text == ''){
-                          buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text);
-                        }else if(double.tryParse(_priceController.text.replaceAll(",", ".")) == null){
-                          buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kPinaColor);
-                        }else if(_selectedSupplier == 'Seleziona Fornitore'){
-                          buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: kPinaColor);
-                        } else{
+            bottomSheet: Container(
+              color: Colors.transparent,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
+                    child: SizedBox(
+                      width: getProportionateScreenWidth(330),
+                      child: CupertinoButton(
+                        color: LightColors.kBlue,
+                        onPressed: () async {
+                          if(_nameController.text.isEmpty || _nameController.text == ''){
+                            buildSnackBar(text: 'Inserire il nome del prodotto', color: LightColors.kRed);
+                          }else if(_priceController.text.isEmpty || _priceController.text == ''){
+                            buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text, color: LightColors.kRed);
+                          }else if(double.tryParse(_priceController.text.replaceAll(",", ".")) == null){
+                            buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: LightColors.kRed);
+                          }else if(currentUnitMeasure == 'Seleziona unità di misura'){
+                            buildSnackBar(text: 'Selezionare unità di misura valida', color: LightColors.kRed);
+                          }else if(currentUnitMeasure == 'Altro' && (_unitMeasureController.text == '' || _unitMeasureController.text.isEmpty)){
+                            buildSnackBar(text: 'Specificare unità di misura', color: LightColors.kRed);
+                          }else if(currentIva == 'Seleziona aliquota applicata'){
+                            buildSnackBar(text: 'Selezionare un valore per Aliquota', color: LightColors.kRed);
+                          }else if(_selectedSupplier == 'Seleziona Fornitore'){
+                            buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: LightColors.kRed);
+                          } else{
 
-                          SupplierModel currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier);
-                          ProductModel productModel = ProductModel(
-                              nome: _nameController.text,
-                              categoria: '',
-                              codice: const Uuid().v1(),
-                              descrizione: '',
-                              iva_applicata: _selectedValue4 ? 4 : _selectedValue5 ? 5 : _selectedValue10 ? 10 : _selectedValue22 ? 22 : 0,
-                              prezzo_lordo: double.parse(_priceController.text.replaceAll(",", ".")),
-                              unita_misura: _bottlesUnitMeasure ? 'bottiglia' : _kgUnitMeasure ? 'kg' : _packagesUnitMeasure ? 'pacchi' : _otherUnitMeasure ? _unitMeasureController.text : '',
-                              fkSupplierId: currentSupplierToSaveProduct.pkSupplierId
-                          );
+                            SupplierModel currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier);
+                            ProductModel productModel = ProductModel(
+                                nome: _nameController.text,
+                                categoria: _categoryController.text,
+                                codice: const Uuid().v1(),
+                                descrizione: _descriptionController.text,
+                                iva_applicata: int.parse(currentIva),
+                                prezzo_lordo: double.parse(_priceController.text.replaceAll(",", ".")),
+                                unita_misura: currentUnitMeasure == 'Altro' ? _unitMeasureController.text : currentUnitMeasure,
+                                fkSupplierId: currentSupplierToSaveProduct.pkSupplierId
+                            );
 
-                          print(productModel.toMap().toString());
+                            print(productModel.toMap().toString());
 
-                          Response performSaveProduct = await dataBundleNotifier.getclientServiceInstance().performSaveProduct(
-                              product: productModel,
-                              actionModel: ActionModel(
-                                  date: DateTime.now().millisecondsSinceEpoch,
-                                  description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${currentSupplierToSaveProduct.nome} ',
-                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.PRODUCT_CREATION
-                              )
-                          );
-                          sleep(const Duration(milliseconds: 600));
-
-
-                          if(performSaveProduct != null && performSaveProduct.statusCode == 200){
-                            List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier.getclientServiceInstance().retrieveProductsBySupplier(currentSupplierToSaveProduct);
-                            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                            clearAll();
-
-
-                            dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
-                                saveProductToStorageRequest: SaveProductToStorageRequest(
-                                    fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
-                                    fkProductId: performSaveProduct.data,
-                                    available: 'true',
-                                    stock: 0,
-                                    dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
-                                    dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
-                                    pkStorageProductCreationModelId: 0,
-                                    user: dataBundleNotifier.userDetailsList[0].firstName
-                                ),
+                            Response performSaveProduct = await dataBundleNotifier.getclientServiceInstance().performSaveProduct(
+                                product: productModel,
                                 actionModel: ActionModel(
                                     date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha aggiunto ${productModel.nome} al magazzino ${dataBundleNotifier.currentStorage.name}.',
+                                    description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${currentSupplierToSaveProduct.nome} ',
                                     fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
                                     user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                    type: ActionType.ADD_PRODUCT_TO_STORAGE
+                                    type: ActionType.PRODUCT_CREATION
                                 )
                             );
-                            dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                            buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + currentSupplierToSaveProduct.nome + ' ed inserito nel magazzino ${dataBundleNotifier.currentStorage.name}', color: Colors.green.shade700);
-                            dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                            widget.callBackFunction();
-                          }else{
-                            buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
-                          }
+                            sleep(const Duration(milliseconds: 600));
 
-                        }
-                      },
-                      child: Text('Crea ' + _nameController.text),
+
+                            if(performSaveProduct != null && performSaveProduct.statusCode == 200){
+                              List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier.getclientServiceInstance().retrieveProductsBySupplier(currentSupplierToSaveProduct);
+                              dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+                              clearAll();
+
+
+                              dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
+                                  saveProductToStorageRequest: SaveProductToStorageRequest(
+                                      fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
+                                      fkProductId: performSaveProduct.data,
+                                      available: 'true',
+                                      stock: 0,
+                                      dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
+                                      dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
+                                      pkStorageProductCreationModelId: 0,
+                                      user: dataBundleNotifier.userDetailsList[0].firstName
+                                  ),
+                                  actionModel: ActionModel(
+                                      date: DateTime.now().millisecondsSinceEpoch,
+                                      description: 'Ha aggiunto ${productModel.nome} al magazzino ${dataBundleNotifier.currentStorage.name}.',
+                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
+                                      type: ActionType.ADD_PRODUCT_TO_STORAGE
+                                  )
+                              );
+                              dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
+                              buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + currentSupplierToSaveProduct.nome + ' ed inserito nel magazzino ${dataBundleNotifier.currentStorage.name}', color: Colors.green.shade700);
+                              dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
+                              widget.callBackFunction();
+                            }else{
+                              buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
+                            }
+
+                          }
+                        },
+                        child: Text('Crea ' + _nameController.text),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          appBar: AppBar(
-            backgroundColor: kPrimaryColor,
-            leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
-            iconTheme: const IconThemeData(color: Colors.white),
-            title: Column(
-              children: [
-                Text(dataBundleNotifier.currentStorage.name, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
-                Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
-              ],
+            appBar: AppBar(
+              backgroundColor: kPrimaryColor,
+              leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+              iconTheme: const IconThemeData(color: Colors.white),
+              title: Column(
+                children: [
+                  Text(dataBundleNotifier.currentStorage.name, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
+                  Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: LightColors.kLightYellow2, fontSize: getProportionateScreenHeight(10)),),
+                ],
+              ),
             ),
-          ),
-          body: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                dataBundleNotifier.currentListSuppliers.isEmpty ? Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Column(
-                    children: [
-                      SizedBox(height: 30),
-                      Text('Non hai ancora configurato nessun fornitore'),
-                      SizedBox(height: 50),
-                      SizedBox(
-                        width: SizeConfig.screenWidth * 0.6,
-                        child: DefaultButton(
-                          text: "Crea Fornitore",
-                          press: () async {
-                            Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
-                          },
+            body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  dataBundleNotifier.currentListSuppliers.isEmpty ? Padding(
+                    padding: const EdgeInsets.all(18.0),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30),
+                        const Text('Non hai ancora configurato nessun fornitore'),
+                        const SizedBox(height: 50),
+                        SizedBox(
+                          width: SizeConfig.screenWidth * 0.6,
+                          child: DefaultButton(
+                            text: "Crea Fornitore",
+                            press: () async {
+                              Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ) :
-                buildWidgetRowForProduct(dataBundleNotifier),
-              ],
+                      ],
+                    ),
+                  ) :
+                  buildWidgetRowForProduct(dataBundleNotifier),
+                ],
+              ),
             ),
           ),
         );
@@ -205,19 +207,13 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
 
   void clearAll() {
     setState((){
-      _selectedValue4 = false;
-      _selectedValue5 = false;
-      _selectedValue10 = false;
-      _selectedValue22 = false;
-
-      _bottlesUnitMeasure = false;
-      _kgUnitMeasure = false;
-      _packagesUnitMeasure = false;
-      _otherUnitMeasure = false;
-
+      currentIva = 'Seleziona aliquota applicata';
+      currentUnitMeasure = 'Seleziona unità di misura';
       _nameController.clear();
       _unitMeasureController.clear();
       _priceController.clear();
+      _categoryController.clear();
+      _descriptionController.clear();
     });
   }
 
@@ -277,111 +273,93 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      _bottlesUnitMeasure = true;
-                      _kgUnitMeasure = false;
-                      _packagesUnitMeasure = false;
-                      _otherUnitMeasure = false;
-                    });
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height *0.04,
-                    decoration: BoxDecoration(
-                      color: _bottlesUnitMeasure ? kCustomGreenAccent : Colors.white,
-                      border: Border.all(
-                        width: 0.2,
-                        color: Colors.grey,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height *0.05,
+            width: MediaQuery.of(context).size.width - 7,
+            child: ElevatedButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white),),
+                onPressed: (){
+                  showModalBottomSheet(
+                      shape: const RoundedRectangleBorder( // <-- SEE HERE
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(25.0),
+                        ),
                       ),
-                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(3), bottomLeft: Radius.circular(3)),
-                    ),
-                    child: Center(child: Text('bottiglia', style: TextStyle(color: _bottlesUnitMeasure ? Colors.white : kPrimaryColor,),)),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      _bottlesUnitMeasure = false;
-                      _kgUnitMeasure = true;
-                      _packagesUnitMeasure = false;
-                      _otherUnitMeasure = false;
-                    });
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height *0.04,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.1,
-                        color: kBeigeColor,
-                      ),
-                      color: _kgUnitMeasure ? kCustomGreenAccent : Colors.white,
-                    ),
-                    child: Center(child: Text('kg', style: TextStyle(color: _kgUnitMeasure ? Colors.white : kPrimaryColor,))),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      _bottlesUnitMeasure = false;
-                      _kgUnitMeasure = false;
-                      _packagesUnitMeasure = true;
-                      _otherUnitMeasure = false;
-                    });
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height *0.04,
-                    decoration: BoxDecoration(
-                      color: _packagesUnitMeasure ? kCustomGreenAccent : Colors.white,
-                      border: Border.all(
-                        width: 0.1,
-                        color: kBeigeColor,
-                      ),
-                    ),
-                    child: Center(child: Text('Pacchi', style: TextStyle(color: _packagesUnitMeasure ? Colors.white : kPrimaryColor,))),
-                  ),
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  onTap: (){
-                    setState(() {
-                      _bottlesUnitMeasure = false;
-                      _kgUnitMeasure = false;
-                      _packagesUnitMeasure = false;
-                      _otherUnitMeasure = true;
-                    });
-                  },
-                  child: Container(
-                    height: MediaQuery.of(context).size.height *0.04,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.1,
-                        color: kBeigeColor,
-                      ),
-                      color: _otherUnitMeasure ? kCustomGreenAccent : Colors.white,
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(3), bottomRight: Radius.circular(3)),
-                    ),
-                    child: Center(child: Text('Altro', style: TextStyle(color: _otherUnitMeasure ? Colors.white : kPrimaryColor,),)),
-                  ),
-                ),
-              ),
-            ],
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              leading: Icon(FontAwesomeIcons.weightHanging, color: kPrimaryColor),
+                              title: Text('Kg', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                              onTap: () {
+                                setState(() {
+                                  currentUnitMeasure = 'Kg';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(FontAwesomeIcons.boxOpen, color: kPrimaryColor),
+                              title: Text('Cartoni', style: const TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                              onTap: () {
+                                setState(() {
+                                  currentUnitMeasure = 'Cartoni';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(FontAwesomeIcons.wineBottle, color: kPrimaryColor),
+                              title: Text('Bottiglia', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                              onTap: () {
+                                setState(() {
+                                  currentUnitMeasure = 'Bottiglia';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
+                              title: Text('Unità', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                              onTap: () {
+                                setState(() {
+                                  currentUnitMeasure = 'Unità';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(FontAwesomeIcons.adn, color: kPrimaryColor),
+                              title: Text('Altro', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                              onTap: () {
+                                setState(() {
+                                  currentUnitMeasure = 'Altro';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            SizedBox(height: 30,)
+                          ],
+                        );
+                      });
+
+                }, child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                Text(currentUnitMeasure, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                Icon(Icons.keyboard_arrow_down_sharp, color: kPrimaryColor,)
+              ],
+            )),
           ),
         ),
-        _otherUnitMeasure ? Padding(
+        currentUnitMeasure == 'Altro' ? Padding(
           padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height *0.04,
+            height: MediaQuery.of(context).size.height *0.05,
             child: CupertinoTextField(
               controller: _unitMeasureController,
               textInputAction: TextInputAction.next,
@@ -402,9 +380,131 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
           child: SizedBox(
             height: MediaQuery.of(context).size.height *0.04,
             child: CupertinoTextField(
+              onEditingComplete: (){
+                FocusScope.of(context).unfocus;
+              },
               controller: _priceController,
               textInputAction: TextInputAction.next,
-              keyboardType: TextInputType.numberWithOptions(decimal: true, signed: true),
+              keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+              clearButtonMode: OverlayVisibilityMode.editing,
+              autocorrect: false,
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            const SizedBox(width: 11,),
+            Text('   Iva Applicata', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height *0.05,
+            width: MediaQuery.of(context).size.width - 7,
+            child: ElevatedButton(
+                style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(
+                    Colors.white),),
+                onPressed: (){
+                  showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(25.0),
+                        ),
+                      ),
+                      context: context,
+                      builder: (context) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            ListTile(
+                              leading: Text('4%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                              title: Text(''),
+                              onTap: () {
+                                setState(() {
+                                  currentIva = '4';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: Text('5%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                              title: Text(''),
+                              onTap: () {
+                                setState(() {
+                                  currentIva = '5';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: Text('10%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                              title: Text(''),
+                              onTap: () {
+                                setState(() {
+                                  currentIva = '10';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            ListTile(
+                              leading: Text('22%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                              title: Text(''),
+                              onTap: () {
+                                setState(() {
+                                  currentIva = '22';
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            SizedBox(height: 30,)
+                          ],
+                        );
+                      });
+
+                }, child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                Text(currentIva, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
+                Icon(Icons.keyboard_arrow_down_sharp, color: kPrimaryColor,)
+              ],
+            )),
+          ),
+        ),
+        Row(
+          children: [
+            const SizedBox(width: 11,),
+            Text('   Categoria', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height *0.05,
+            child: CupertinoTextField(
+              controller: _categoryController,
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.text,
+              clearButtonMode: OverlayVisibilityMode.editing,
+              autocorrect: false,
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            const SizedBox(width: 11,),
+            Text('   Descrizione', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height *0.05,
+            child: CupertinoTextField(
+              controller: _descriptionController,
+              textInputAction: TextInputAction.next,
+              keyboardType: TextInputType.text,
               clearButtonMode: OverlayVisibilityMode.editing,
               autocorrect: false,
             ),

@@ -212,11 +212,13 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
   Map<DateTime, List<OrderModel>> buildListEvent(List<OrderModel> eventsList) {
     Map<DateTime, List<OrderModel>> map1 = Map();
     eventsList.forEach((element) {
-      if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date))))){
-        map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))].add(element);
+
+      if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date))))){
+        map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))].add(element);
       }else{
         List<OrderModel> listToAdd = [element];
-        map1[buildDateKeyFromDate(Timestamp.fromDate(DateTime.fromMillisecondsSinceEpoch(element.delivery_date)))] = listToAdd;
+        map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))] = listToAdd;
+
       }
     });
     return map1;
@@ -253,8 +255,6 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
   String getNiceNumber(String string) {
     if(string.contains('.00')){
       return string.replaceAll('.00', '');
-    }else if(string.contains('.0')){
-      return string.replaceAll('.0', '');
     }else {
       return string;
     }

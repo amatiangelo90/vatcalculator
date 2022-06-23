@@ -61,8 +61,8 @@ class PdfService{
             lineAlignment: PdfVerticalAlignment.bottom));
     final DateFormat format = DateFormat.yMMMMd('en_US');
     final String invoiceNumber = 'Codice Ordine: ${order.code}\r\n\r\nEffettuato in data: ' +
-        format.format(DateTime.fromMillisecondsSinceEpoch(order.creation_date)) + '\r\n\r\nDa consegnare in data: ' +
-    format.format(DateTime.fromMillisecondsSinceEpoch(order.delivery_date));
+        order.creation_date + '\r\n\r\nDa consegnare in data: ' +
+        order.delivery_date;
 
     final Size contentSize = contentFont.measureString(invoiceNumber);
     String address =
