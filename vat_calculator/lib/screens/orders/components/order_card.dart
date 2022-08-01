@@ -144,6 +144,10 @@ class OrderCard extends StatelessWidget {
                                   message = message.replaceAll('</h4>', '');
                                   message = message.replaceAll('<h4>', '');
                                   message = message.replaceAll('à', 'a');
+                                  message = message.replaceAll('\'', '');
+
+                                  message = message.replaceAll('á', 'a');
+                                  message = message.replaceAll('â', 'a');
                                   message = message.replaceAll('è', 'e');
                                   message = message.replaceAll('ò', 'o');
                                   message = message.replaceAll('ù', 'u');

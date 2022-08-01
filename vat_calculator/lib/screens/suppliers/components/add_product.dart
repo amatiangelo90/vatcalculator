@@ -160,10 +160,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                     ),
                                     ListTile(
                                       leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
-                                      title: const Text('Unità', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                      title: const Text('Unita', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
                                       onTap: () {
                                         setState(() {
-                                          currentUnitMeasure = 'Unità';
+                                          currentUnitMeasure = 'Unita';
                                         });
                                         Navigator.pop(context);
                                       },

@@ -323,10 +323,10 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                             ),
                             ListTile(
                               leading: Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
-                              title: Text('Unità', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                              title: Text('Unita', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
                               onTap: () {
                                 setState(() {
-                                  currentUnitMeasure = 'Unità';
+                                  currentUnitMeasure = 'Unita';
                                 });
                                 Navigator.pop(context);
                               },

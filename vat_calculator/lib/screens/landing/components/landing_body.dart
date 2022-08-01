@@ -104,8 +104,9 @@ class _LandingBodyState extends State<LandingBody> {
                       dataBundleNotifier.switchLandingButton();
 
                       ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                      UserModel userModelRetrieved = await clientService.retrieveUserByEmail(widget.email);
 
+                      print('Retrieve user by email: ' + widget.email);
+                      UserModel userModelRetrieved = await clientService.retrieveUserByEmail(widget.email);
                       UserDetailsModel dataBundle = UserDetailsModel(
                           userModelRetrieved.id,
                           userModelRetrieved.mail,

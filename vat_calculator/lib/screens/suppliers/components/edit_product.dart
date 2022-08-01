@@ -263,10 +263,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                         ),
                                         ListTile(
                                           leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
-                                          title: const Text('Unità', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          title: const Text('Unita', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
                                           onTap: () {
                                             setState(() {
-                                              _currentUnitMeasure = 'Unità';
+                                              _currentUnitMeasure = 'Unita';
                                             });
                                             Navigator.pop(context);
                                           },
@@ -473,7 +473,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
     setState((){
 
-      if(['Kg', 'Pezzi', 'Cartoni', 'Bottiglia', 'Unità'].contains(unitMeasure)){
+      if(['Kg', 'Pezzi', 'Cartoni', 'Bottiglia', 'Unita'].contains(unitMeasure)){
         _currentUnitMeasure = unitMeasure;
       }else{
         _currentUnitMeasure = 'Altro';

@@ -1,6 +1,8 @@
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 
+import '../../../../client/vatservice/model/storage_product_model.dart';
+
 class OrderUtils{
 
   static buildMessageFromCurrentOrderList({List<ProductModel> productList,
@@ -19,6 +21,30 @@ class OrderUtils{
 
         orderString = orderString + currentProductOrderAmount.nome +
             ' x ' + currentProductOrderAmount.orderItems.toString() + ' ${currentProductOrderAmount.unita_misura} <br>';
+      }
+    });
+    orderString = orderString + '-------------------------------------</h4>';
+    orderString = orderString + '<br><br>Da consegnare $deliveryDate<br>a $storageCity ($storageCap)<br>in via: $storageAddress.';
+    orderString = orderString + '<br><br>Cordiali Saluti<br>${currentUserName}<br><br>$branchName';
+    return orderString;
+  }
+
+  static buildMessageFromCurrentOrderListStorageOrder({List<StorageProductModel> orderedMapBySuppliers,
+    String branchName,
+    String orderId,
+    String supplierName,
+    String storageAddress,
+    String storageCity,
+    String storageCap,
+    String deliveryDate,
+    String currentUserName
+  }) {
+    String orderString = 'Ciao $supplierName,<br><br><br>Ordine #$orderId<br><br><h4>Carrello<br>-------------------------------------<br>';
+    orderedMapBySuppliers.forEach((currentProductOrderAmount) {
+      if(currentProductOrderAmount.extra != 0){
+
+        orderString = orderString + currentProductOrderAmount.productName +
+            ' x ' + currentProductOrderAmount.extra.toString() + ' ${currentProductOrderAmount.unitMeasure} <br>';
       }
     });
     orderString = orderString + '-------------------------------------</h4>';

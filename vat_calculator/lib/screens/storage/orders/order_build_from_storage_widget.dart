@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
@@ -10,6 +11,7 @@ import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import '../../../client/vatservice/model/order_model.dart';
 import '../../../client/vatservice/model/product_order_amount_model.dart';
 import '../../../client/vatservice/model/utils/order_state.dart';
+import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../orders/components/screens/orders_utils.dart';
@@ -30,7 +32,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
   bool orderSent = false;
 
   OrderModel currentOrderModelAfterSend;
-  List<ProductOrderAmountModel> currentProductList = [];
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime pickedDate = await showDatePicker(
@@ -74,12 +76,12 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-        return builtIt( widget.supplierId, widget.orderedMapBySuppliers, dataBundleNotifier);
+        return buildOrderWidget( widget.supplierId, widget.orderedMapBySuppliers, dataBundleNotifier);
       },
     );
   }
 
-  builtIt(int key, List<StorageProductModel> orderedMapBySuppliers, DataBundleNotifier dataBundleNotifier) {
+  buildOrderWidget(int key, List<StorageProductModel> orderedMapBySuppliers, DataBundleNotifier dataBundleNotifier) {
     List<Widget> widgets = [
     ];
     widgets.add(Padding(
@@ -87,24 +89,74 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
       child: Text(dataBundleNotifier.retrieveSupplierById(key), style: TextStyle(fontSize: getProportionateScreenHeight(25), color: kPrimaryColor, fontWeight: FontWeight.w700)),
     ));
     orderSent ? SizedBox(height: 0,) : orderedMapBySuppliers.forEach((element) {
+      TextEditingController textController = TextEditingController(text: element.extra.toString());
       widgets.add(Padding(
         padding: const EdgeInsets.only(right: 25, left: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(' - ' +element.productName.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kPrimaryColor, fontWeight: FontWeight.w700)),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: getProportionateScreenWidth(200),
+                  child: Text(element.productName, overflow: TextOverflow.clip, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenWidth(18)),),
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(3.0),
+                      child: Icon(
+                        FontAwesomeIcons.dotCircle,
+                        color: Colors.grey,
+                        size: getProportionateScreenWidth(3),
+                      ),
+                    ),
+                    dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Text('',style:
+                    TextStyle(fontSize: getProportionateScreenWidth(8))) : Text(
+                        element.price.toString() + ' € / ',
+                        style:
+                        TextStyle(fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.bold, color: kPrimaryColor)
+                    ),
+                    Text(
+                      element.unitMeasure,
+                      style: TextStyle(fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.bold, color: Colors.green.shade800),
+                    ),
+                  ],
+                ),
+              ],
+            ),
             Row(
               children: [
-                Text(element.unitMeasure.toString() + ' x ', style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.w600)),
-                Text(element.extra.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(18), color: kPrimaryColor)),
-              ],
+                ConstrainedBox(
+                  constraints: BoxConstraints.loose(Size(getProportionateScreenWidth(70), getProportionateScreenWidth(60))),
+                  child: CupertinoTextField(
+                    controller: textController,
+                    onChanged: (text) {
+                      element.extra = double.parse(text.replaceAll(',', '.'));
+                    },
+                    textInputAction: TextInputAction.next,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
+                    clearButtonMode: OverlayVisibilityMode.never,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: getProportionateScreenHeight(20),
+                        color: kPrimaryColor,
+                        fontWeight: FontWeight.w600
+                    ),
+                    autocorrect: false,
+                  ),
+                ),
+               ],
             ),
           ],
         ),
       ));
     });
     if(orderSent){
-      widgets.add(OrderCard(order: currentOrderModelAfterSend, orderIdProductList: currentProductList, showExpandedTile: false),);
+
+      widgets.add(buildOrderCardAfterSentOrder(currentOrderModelAfterSend, dataBundleNotifier));
     }else{
       widgets.add(currentDate == null ? Padding(
         padding: const EdgeInsets.all(8.0),
@@ -140,6 +192,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                   Text('Invia Ordine', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: getProportionateScreenWidth(20))),
                   color: kPrimaryColor,
                   onPressed: () async {
+
                     SupplierModel supplier = dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.supplierId);
                     String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
 
@@ -165,20 +218,24 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
 
                     if(performSaveOrderId.statusCode == 200 && performSaveOrderId.data != 0){
 
+                      String message = OrderUtils.buildMessageFromCurrentOrderListStorageOrder(
+                        branchName: dataBundleNotifier.currentBranch.companyName,
+                        orderId: code,
+                        orderedMapBySuppliers: orderedMapBySuppliers,
+                        deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                        supplierName: supplier.nome,
+                        currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
+                        storageAddress: dataBundleNotifier.currentStorage.address,
+                        storageCap: dataBundleNotifier.currentStorage.cap,
+                        storageCity: dataBundleNotifier.currentStorage.city,
+                      );
+
+                      print('Message order: ' + message);
+
                       Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailServiceApi(
                           supplierName: supplier.nome,
                           branchName: dataBundleNotifier.currentBranch.companyName,
-                          message: OrderUtils.buildMessageFromCurrentOrderList(
-                            branchName: dataBundleNotifier.currentBranch.companyName,
-                            orderId: code,
-                            productList: dataBundleNotifier.currentProductModelListForSupplierDuplicated,
-                            deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                            supplierName: supplier.nome,
-                            currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                            storageAddress: dataBundleNotifier.currentStorage.address,
-                            storageCap: dataBundleNotifier.currentStorage.cap,
-                            storageCity: dataBundleNotifier.currentStorage.city,
-                          ),
+                          message: message,
                           orderCode: code,
                           supplierEmail: supplier.mail,
                           userEmail: dataBundleNotifier.userDetailsList[0].email,
@@ -195,21 +252,12 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                         if(performSaveOrderId != null){
                           orderedMapBySuppliers.forEach((element) async {
                             if(element.extra != 0){
+
                               await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
                                   element.extra,
                                   element.fkProductId,
                                   performSaveOrderId.data
                               );
-                              setState((){
-                                currentProductList.add(ProductOrderAmountModel(pkProductId: element.fkProductId,
-                                    amount: element.extra,
-                                    nome: element.productName,
-                                    fkOrderId: performSaveOrderId.data,
-                                    fkSupplierId: widget.supplierId,
-                                    prezzo_lordo: element.price,
-                                    unita_misura: element.unitMeasure
-                                ));
-                              });
                             }
                           });
                         }
@@ -230,7 +278,6 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                           dataBundleNotifier.setTo0ExtraFieldAfterOrderPerform(widget.supplierId);
 
                           print('Retrieve product by order id: ' +performSaveOrderId.data.toString() );
-
 
                           setState((){
                             orderSent = true;
@@ -256,5 +303,32 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
     return Column(
       children: widgets,
     );
+  }
+
+  Widget buildOrderCardAfterSentOrder(OrderModel currentOrderModelAfterSend, dataBundleNotifier) {
+    return FutureBuilder(
+      initialData: [
+        Column(
+          children: const [
+            CircularProgressIndicator(
+              color: kPrimaryColor,
+            ),
+            Center(child: Text('Caricamento dati..')),
+          ],
+        ),
+      ],
+      builder: (context, snapshot){
+        return Column(
+          children: snapshot.data,
+        );
+      },
+      future: retrieveData(currentOrderModelAfterSend, dataBundleNotifier),
+    );
+  }
+
+  Future<List<Widget>> retrieveData(OrderModel currentOrderModelAfterSend, DataBundleNotifier dataBundleNotifier) async{
+    List<ProductOrderAmountModel> products = await dataBundleNotifier.clientService.retrieveProductByOrderId(OrderModel(pk_order_id: currentOrderModelAfterSend.pk_order_id, paid: 'TRUE'));
+    return [OrderCard(order: currentOrderModelAfterSend, orderIdProductList: products, showExpandedTile: false)];
+
   }
 }

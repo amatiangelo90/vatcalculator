@@ -13,7 +13,6 @@ class UserDetailsModel {
   String _privilege;
   List<BranchModel> _companyList;
 
-
   UserDetailsModel(this._id,
       this._email,
       this._password,

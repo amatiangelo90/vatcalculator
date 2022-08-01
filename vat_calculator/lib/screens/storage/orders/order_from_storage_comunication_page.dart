@@ -26,11 +26,17 @@ class OrderFromStorageComunicationPage extends StatelessWidget {
             width: getProportionateScreenWidth(500),
             child: CupertinoButton(
               child:
-              const Text('Torna alla Home'),
+              Text('Torna alla Home', style: TextStyle(
+                  fontSize: getProportionateScreenHeight(20),
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600
+              ),),
               color: Colors.green,
               onPressed: () {
+                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
                 dataBundleNotifier.onItemTapped(0);
                 dataBundleNotifier.refreshExtraFieldsIntoDuplicatedProductList();
+
                 Navigator.pushNamed(context, HomeScreenMain.routeName);
               },
             ),

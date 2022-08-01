@@ -91,6 +91,8 @@ class OrderSentDetailsScreen extends StatelessWidget {
                   messageToSend = messageToSend.replaceAll('</h4>', '');
                   messageToSend = messageToSend.replaceAll('<h4>', '');
                   messageToSend = messageToSend.replaceAll('à', 'a');
+                  messageToSend = messageToSend.replaceAll('á', 'a');
+                  messageToSend = messageToSend.replaceAll('â', 'a');
                   messageToSend = messageToSend.replaceAll('è', 'e');
                   messageToSend = messageToSend.replaceAll('ò', 'o');
                   messageToSend = messageToSend.replaceAll('ù', 'u');
