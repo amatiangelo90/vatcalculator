@@ -332,7 +332,7 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                         color: LightColors.kRed,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: FlatButton(
+                      child: TextButton(
 
                         onPressed: () {
 
@@ -528,14 +528,15 @@ class _UnpaidOrderManagerScreenState extends State<UnpaidOrderManagerScreen> {
                   width: 200,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: RaisedButton(
-                      padding: EdgeInsets.all(10.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateColor.resolveWith((states) => Colors.blueGrey.shade700),
+                        shape: MaterialStateProperty.resolveWith((states) => RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),),
+                        elevation: MaterialStateProperty.resolveWith((states) => 19.0)
                       ),
-                      color: Colors.blueGrey.shade700,
-                      elevation: 19.0,
-                      child: Text('Aggiorna', style: const TextStyle(fontSize: 18.0,color: Colors.white, fontFamily: 'LoraFont'),),
+                      child: const Text('Aggiorna', style: TextStyle(fontSize: 18.0,color: Colors.white, fontFamily: 'LoraFont'),),
                       onPressed: () async {
 
                         if(double.tryParse(_textEditingController.value.text.replaceAll(',', '.')) != null){

@@ -34,7 +34,7 @@ class EventsBodyWidget extends StatelessWidget {
                     selectionColor: Colors.blue ,
                     selectedTextColor: Colors.white,
                     width: getProportionateScreenHeight(50),
-                    daysCount: 13,
+                    daysCount: 50,
                     dayTextStyle: TextStyle(fontSize: getProportionateScreenWidth(8)),
                     dateTextStyle: TextStyle(fontSize: 15),
                     monthTextStyle: TextStyle(fontSize: 10),

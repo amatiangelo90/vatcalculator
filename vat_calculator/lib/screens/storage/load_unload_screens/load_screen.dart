@@ -59,12 +59,10 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                   });
 
                   if (currentProductWithMorethan0Amount == 0) {
-                    _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: kPinaColor,
-                      content: Text(
-                          'Immettere la quantità di carico per almeno un prodotto'),
+                      content: Text('Immettere la quantità di carico per almeno un prodotto'),
                     ));
-
                   } else {
 
                     List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
@@ -96,16 +94,14 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                     );
                     if(response != null && response.data == 1){
                       dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        backgroundColor: Colors.green,
-                        content: Text(
-                            'Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        content: Text('Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
                       ));
                     }else{
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: kPinaColor,
-                        content: Text(
-                            'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
+                        content: Text(   'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
                       ));
                     }
 

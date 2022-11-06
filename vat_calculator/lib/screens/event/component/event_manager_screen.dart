@@ -158,7 +158,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                     dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
                     dataBundleNotifier.workstationsProductsMapCalculate();
-                    _scaffoldKey.currentState
+                    ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: const Duration(milliseconds: 800),
@@ -227,7 +227,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                     dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
                     dataBundleNotifier.workstationsProductsMapCalculate();
-                    _scaffoldKey.currentState
+                    ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: Duration(milliseconds: 800),
@@ -379,14 +379,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               child: const Text('Salva impostazioni'),
               onPressed: () async {
                 if(controllerEventName.text == null || controllerEventName.text == ''){
-                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: kPinaColor,
                     duration: Duration(milliseconds: 600),
                     content: Text(
                         'Il nome dell\'evento è obbligatorio'),
                   ));
                 }else if(controllerLocation.text == null || controllerLocation.text == ''){
-                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: kPinaColor,
                     duration: Duration(milliseconds: 600),
                     content: Text(
@@ -531,7 +531,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                                           dataBundleNotifier.onItemTapped(0);
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
@@ -539,7 +539,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                     event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
                                           ));
                                         }catch(e){
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: kCustomBordeaux,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
@@ -675,7 +675,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                                           await dataBundleNotifier.getclientServiceInstance().deleteEventModel(event);
                                           dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
@@ -688,7 +688,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
 
                                         }catch(e){
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: kCustomBordeaux,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(

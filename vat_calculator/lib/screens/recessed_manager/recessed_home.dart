@@ -141,14 +141,14 @@ class _RecessedScreenState extends State<RecessedScreen> {
                                                 child: CupertinoButton(child: const Text('Crea'), color: kCustomGreenAccent, onPressed: () async {
 
                                                   if (cashRegisterNameController.text == null || cashRegisterNameController.text == '') {
-                                                    _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                       backgroundColor: kPinaColor,
                                                       duration: Duration(milliseconds: 1200),
                                                       content: Text(
                                                           'Inserisci il nome del Registratore di cassa'),
                                                     ));
                                                   } else if (dataBundleNotifier.isCurrentCashAlreadyUsed(cashRegisterNameController.text)){
-                                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                       backgroundColor: kPinaColor,
                                                       duration: Duration(milliseconds: 1200),
                                                       content: Text(
@@ -161,7 +161,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
                                                         fkBranchId: dataBundleNotifier.currentBranch.pkBranchId));
 
                                                     if(response != null && response.data > 0){
-                                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                         backgroundColor: Colors.green.withOpacity(0.8),
                                                         duration: Duration(milliseconds: 1200),
                                                         content: const Text(
@@ -172,7 +172,7 @@ class _RecessedScreenState extends State<RecessedScreen> {
 
                                                       dataBundleNotifier.setCashRegisterList(cashRegisterModelList);
                                                     }else{
-                                                      _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                         backgroundColor: kPinaColor,
                                                         duration: Duration(milliseconds: 1500),
                                                         content: Text(

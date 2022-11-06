@@ -351,7 +351,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
   }
 
   void buildSnackBar({@required String text, @required Color color}) {
-    _scaffoldKey.currentState.
+    ScaffoldMessenger.of(context).
         showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 2000),
         backgroundColor: color,

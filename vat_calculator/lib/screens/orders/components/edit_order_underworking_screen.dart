@@ -176,7 +176,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                     dataBundleNotifier.onItemTapped(0);
                                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                                   }else{
-                                    _scaffoldKey.currentState
+                                    ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
                                         backgroundColor: LightColors.kRed,
                                         duration: Duration(milliseconds: 1200),
@@ -281,7 +281,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                   );
                                 },);
                             }else{
-                              _scaffoldKey.currentState
+                              ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
                                   backgroundColor: LightColors.kRed,
                                   duration: Duration(milliseconds: 1200),
@@ -364,7 +364,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                           if (await canLaunch(urlString)) {
                             await launch(urlString);
                           } else {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: kPinaColor,
                                 duration: Duration(milliseconds: 3000),
                                 content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'

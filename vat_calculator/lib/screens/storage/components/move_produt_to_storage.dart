@@ -47,11 +47,9 @@ class _MoveProductToStorageScreenState extends State<MoveProductToStorageScreen>
 
                   for(StorageProductModel storageProductModel in dataBundleNotifier.currentStorageProductListForCurrentStorageDuplicated){
                     if(storageProductModel.extra != 0 && storageProductModel.extra > storageProductModel.stock){
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: kPinaColor,
-                        duration: Duration(seconds: 2),
-                        content: Text(
-                            storageProductModel.productName + '. Scarico richiesto: ' + storageProductModel.extra.toStringAsFixed(2) + '. Stock: ' + storageProductModel.stock.toStringAsFixed(2)),
+                        content: Text(storageProductModel.productName + '. Scarico richiesto: ' + storageProductModel.extra.toStringAsFixed(2) + '. Stock: ' + storageProductModel.stock.toStringAsFixed(2)),
                       ));
                       canExecute = false;
                       break;
@@ -85,11 +83,11 @@ class _MoveProductToStorageScreenState extends State<MoveProductToStorageScreen>
                       );
 
                     }else{
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         backgroundColor: kPinaColor,
-                        duration: Duration(seconds: 2),
-                        content: Text('Immettere quantità per almeno un prodotto',
-                      )));
+                        content: Text('Immettere quantità per almeno un prodotto'),
+                      ));
+
                     }
                   }
                 },
@@ -264,7 +262,8 @@ class _MoveProductToStorageScreenState extends State<MoveProductToStorageScreen>
                           if (double.tryParse(text) != null) {
                             currentProduct.extra = double.parse(text);
                           } else {
-                            Scaffold.of(context).showSnackBar(SnackBar(
+
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
                               content: Text(
                                   'Immettere un valore numerico corretto per ' +

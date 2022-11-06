@@ -894,7 +894,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                                       if (await canLaunch(urlString)) {
                                                                         await launch(urlString);
                                                                       } else {
-                                                                        Scaffold.of(context).showSnackBar(SnackBar(
+                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                             backgroundColor: kPinaColor,
                                                                             duration: Duration(milliseconds: 3000),
                                                                             content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'

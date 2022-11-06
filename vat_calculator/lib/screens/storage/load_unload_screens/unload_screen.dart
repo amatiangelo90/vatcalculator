@@ -86,7 +86,8 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                         }
                       });
                       if(stockProductDiffentThan0 == 0){
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
+
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere la quantità di scarico per almeno un prodotto'),
                         ));

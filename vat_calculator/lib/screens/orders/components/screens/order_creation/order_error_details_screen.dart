@@ -123,7 +123,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                               if (await canLaunch(urlString)) {
                                 await launch(urlString);
                               } else {
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     backgroundColor: kPinaColor,
                                     duration: Duration(milliseconds: 3000),
                                     content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -171,7 +171,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                       if (await canLaunch(urlString)) {
                                         await launch(urlString);
                                       } else {
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: kPinaColor,
                                             duration: Duration(milliseconds: 3000),
                                             content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -192,7 +192,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         GestureDetector(
                           onTap: (){
 
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: kPinaColor,
                                 duration: Duration(milliseconds: 3000),
                                 content: Text('Funzione non ancora implementata'
@@ -216,7 +216,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 IconButton(
                                   onPressed: (){
 
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         backgroundColor: kPinaColor,
                                         duration: Duration(milliseconds: 3000),
                                         content: Text('Funzione non ancora implementata'
@@ -261,7 +261,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                                 performFinalAction(dataBundleNotifier, context);
                               } else {
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     backgroundColor: kPinaColor,
                                     duration: Duration(milliseconds: 3000),
                                     content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -312,7 +312,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                         sendOrderPushNotification(dataBundleNotifier, supplier, deliveryDate, storageModel);
                                         performFinalAction(dataBundleNotifier, context);
                                       } else {
-                                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: kPinaColor,
                                             duration: Duration(milliseconds: 3000),
                                             content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -334,7 +334,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: (){
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: kPinaColor,
                                 duration: Duration(milliseconds: 3000),
                                 content: Text('Funzione non ancora implementata'
@@ -356,7 +356,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 ),
                                 IconButton(
                                   onPressed: (){
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         backgroundColor: kPinaColor,
                                         duration: Duration(milliseconds: 3000),
                                         content: Text('Funzione non ancora implementata'

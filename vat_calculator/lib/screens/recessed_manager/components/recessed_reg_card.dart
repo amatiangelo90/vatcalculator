@@ -491,14 +491,14 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                                           child: CupertinoButton(child: const Text('Crea'), color: kCustomGreenAccent, onPressed: () async {
 
                                                             if (cashRegisterNameController.text == null || cashRegisterNameController.text == '') {
-                                                              Scaffold.of(context).showSnackBar(const SnackBar(
+                                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                                 backgroundColor: kPinaColor,
                                                                 duration: Duration(milliseconds: 1200),
                                                                 content: Text(
                                                                     'Inserisci il nome del Registratore di cassa'),
                                                               ));
                                                               } else if (dataBundleNotifier.isCurrentCashAlreadyUsed(cashRegisterNameController.text)){
-                                                                Scaffold.of(context).showSnackBar(SnackBar(
+                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                   backgroundColor: kPinaColor,
                                                                   duration: Duration(milliseconds: 1200),
                                                                   content: Text(
@@ -511,7 +511,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
                                                                   fkBranchId: dataBundleNotifier.currentBranch.pkBranchId));
 
                                                               if(response != null && response.data > 0){
-                                                                Scaffold.of(context).showSnackBar(SnackBar(
+                                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                   backgroundColor: Colors.green.withOpacity(0.8),
                                                                   duration: Duration(milliseconds: 1200),
                                                                   content: const Text(
@@ -522,7 +522,7 @@ class _RecessedCardState extends State<RecessedCard> with RestorationMixin {
 
                                                                 dataBundleNotifier.setCashRegisterList(cashRegisterModelList);
                                                               }else{
-                                                                Scaffold.of(context).showSnackBar(const SnackBar(
+                                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                                   backgroundColor: kPinaColor,
                                                                   duration: Duration(milliseconds: 1500),
                                                                   content: Text(

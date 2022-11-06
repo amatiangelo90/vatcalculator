@@ -78,7 +78,7 @@ class _OrderFromStorageScreenState extends State<OrderFromStorageScreen> {
                         }
                       });
                       if(stockProductDiffentThan0 == 0){
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere quantità per almeno un prodotto'),
                         ));

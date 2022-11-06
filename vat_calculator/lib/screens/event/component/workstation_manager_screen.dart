@@ -224,7 +224,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   GestureDetector(
                     onTap: () {
                       if(element.consumed + 1 > element.refillStock){
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           duration: Duration(milliseconds: 2000),
                           content: Text(
@@ -276,7 +276,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       text: 'Effettua Scarico',
                       press: () async {
                         if(widget.eventModel.closed == 'Y'){
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: kPinaColor,
                             duration: Duration(milliseconds: 3000),
                             content: Text(
@@ -288,7 +288,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             for(WorkstationProductModel workProd in dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]){
 
                               if(workProd.refillStock < workProd.consumed){
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   backgroundColor: kPinaColor,
                                   duration: Duration(milliseconds: 5000),
                                   content: Text(
@@ -310,7 +310,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                   )
                               );
                               dataBundleNotifier.workstationsProductsMapCalculate();
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: Colors.green.withOpacity(0.8),
                                 duration: Duration(milliseconds: 600),
                                 content: Text(
@@ -318,7 +318,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                               ));
                             }
                           }catch(e){
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
                               content: Text(
                                   'Errore durante operazione di scarico bar ' +
@@ -364,7 +364,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           onPressed: () async {
 
             if(widget.eventModel.closed == 'Y'){
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: kPinaColor,
                 duration: Duration(milliseconds: 3000),
                 content: Text(
@@ -498,7 +498,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             'Carico per ${loadPaxController.text} persone', style: TextStyle(color: Colors.white)),
             onPressed: () async {
                 if(widget.eventModel.closed == 'Y'){
-                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: kPinaColor,
                 duration: Duration(milliseconds: 3000),
                 content: Text(
@@ -568,14 +568,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                                 });
                                               });
 
-                                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                 backgroundColor: Colors.green.withOpacity(0.9),
                                                 duration: Duration(milliseconds: 3000),
                                                 content: Text(
                                                     'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
                                               ));
                                             } else {
-                                              _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 backgroundColor: kPinaColor,
                                                 duration: Duration(milliseconds: 600),
                                                 content: Text(
@@ -688,21 +688,21 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                                       element.amountHunderd = currentValue;
                                                     });
                                                   }catch(e){
-                                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                       backgroundColor: kPinaColor,
                                                       duration: Duration(milliseconds: 600),
                                                       content: Text(
                                                           'Errore configurazione Q/100. ' + e),
                                                     ));
                                                   }
-                                                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                     backgroundColor: Colors.green.withOpacity(0.9),
                                                     duration: Duration(milliseconds: 1600),
                                                     content: Text(
                                                         'Configurato Q/100 ${amountController.text} per ${element.productName}'),
                                                   ));
                                                 } else {
-                                                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                     backgroundColor: kPinaColor,
                                                     duration: Duration(milliseconds: 1600),
                                                     content: Text(
@@ -786,7 +786,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                 )
                             );
                             dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: Colors.redAccent.withOpacity(0.9),
                               duration: Duration(milliseconds: 1000),
                               content: Text(
@@ -873,7 +873,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   text: 'Effettua Carico',
                   press: () async {
                     if(widget.eventModel.closed == 'Y'){
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: kPinaColor,
                         duration: Duration(milliseconds: 3000),
                         content: Text(
@@ -933,14 +933,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                           dataBundleNotifier.workstationsProductsMapCalculate();
 
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.green.withOpacity(0.8),
                             duration: Duration(milliseconds: 600),
                             content: Text(
                                 'Carico per ${widget.workstationModel.name} effettuato'),
                           ));
                         }else{
-                          Scaffold.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: kPinaColor,
                             content: Text(
                                 'Immettere un valore numerico corretto per $productWrong'),
@@ -949,7 +949,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
 
                       }catch(e){
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text(
                               'Errore durante operazione di scarico bar ' +
@@ -1046,7 +1046,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         onPressed: () async {
                           if(controllerWorkStationName.text == null || controllerWorkStationName.text == ''){
                             print('Il nome della postazione è obbligatorio');
-                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               backgroundColor: kPinaColor,
                               duration: Duration(milliseconds: 600),
                               content: Text(
@@ -1093,7 +1093,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         child: Text('Elimina ${widget.workstationModel.name}'),
                         onPressed: () async {
                           if(widget.eventModel.closed == 'Y'){
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
                               duration: Duration(milliseconds: 3000),
                               content: Text(

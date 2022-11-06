@@ -164,8 +164,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         color: LightColors.kLavender,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: FlatButton(
-
+                      child: TextButton(
                         onPressed: () {
 
                         },

@@ -74,7 +74,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                      title: const Text("Errore"),
                                      content: Text('Validazione Fallita. Messaggio di errore dal server: ' + performRichiestaInfoResponse.data.toString()),
                                      actions: <Widget>[
-                                       FlatButton(
+                                       TextButton(
                                          child: const Text("OK"),
                                          onPressed: () {
                                            Navigator.of(context).pop();
@@ -135,7 +135,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                         content: const Text("Impossibile salvare dettagli provider per la fatturazione elettronica"
                                             ". Provare più tardi."),
                                         actions: <Widget>[
-                                          FlatButton(
+                                          TextButton(
                                             child: const Text("OK"),
                                             onPressed: () {
                                               Navigator.of(context).pop();
@@ -171,7 +171,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                      title: const Text("Errore"),
                                      content: const Text("Validazione Fallita. Credenziali errate."),
                                      actions: <Widget>[
-                                       FlatButton(
+                                       TextButton(
                                          child: const Text("OK"),
                                          onPressed: () {
                                            Navigator.of(context).pop();
@@ -190,7 +190,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                    title: Text("Errore"),
                                    content: Text("Selezionare e configurare un provider per la fatturazione elettronica"),
                                    actions: <Widget>[
-                                     FlatButton(
+                                     TextButton(
                                        child: new Text("OK"),
                                        onPressed: () {
                                          Navigator.of(context).pop();
@@ -210,7 +210,7 @@ class RegisterFattureProviderScreenState extends State<RegisterFattureProviderSc
                                  title: const Text("Errore"),
                                  content: Text("Impossibile salvare credenziali provider. Riprova più tardi. Errore: $e"),
                                  actions: <Widget>[
-                                   FlatButton(
+                                   TextButton(
                                      child: const Text("OK"),
                                      onPressed: () {
                                        Navigator.of(context).pop();

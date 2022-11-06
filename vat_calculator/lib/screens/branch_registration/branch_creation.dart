@@ -42,9 +42,8 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
         }else{
           controllerEmail = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
         }
-
         void buildShowErrorDialog(String text) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: Duration(seconds: 1),
             backgroundColor: Colors.redAccent.withOpacity(0.9),
             content: Text(text),
@@ -110,7 +109,8 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                                   fkBranchId: 0);
                               await clientService.performSaveBranch(company, actionModel);
 
-                              List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
+                              List<BranchModel> _branchList
+                              = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                               dataBundleNotifier.addBranches(_branchList);
 
 

@@ -1545,7 +1545,6 @@ class DataBundleNotifier extends ChangeNotifier {
   void setEventDateTime(DateTime date){
     currentDateEvent = date;
     notifyListeners();
-
   }
 
   List<OrderModel> retrievedOrderModelArchiviedNotPaid = [];

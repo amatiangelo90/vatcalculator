@@ -59,7 +59,7 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
                   });
 
                   if(amountHundred == 0){
-                    Scaffold.of(context).showSnackBar(const SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: kPinaColor,
                       content: Text('Immettere il valore di Q/100 per almeno un prodotto'),
                     ));
@@ -144,7 +144,8 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
                       if( double.tryParse(text) != null){
                         element.amountHundred = double.parse(text);
                       }else{
-                        Scaffold.of(context).showSnackBar(SnackBar(
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere un valore numerico corretto per ' + element.productName),
                         ));

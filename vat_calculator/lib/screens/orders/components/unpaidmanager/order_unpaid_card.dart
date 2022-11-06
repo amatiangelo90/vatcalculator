@@ -226,7 +226,7 @@ class OrderUnpaidCard extends StatelessWidget {
                     color: LightColors.kGreen,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: function,
                     child: Center(
                       child: Text(
@@ -247,7 +247,7 @@ class OrderUnpaidCard extends StatelessWidget {
                     color: LightColors.kRed,
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: FlatButton(
+                  child: TextButton(
 
                     onPressed: () {
 
