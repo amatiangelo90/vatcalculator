@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../constants.dart';
@@ -20,13 +18,13 @@ class CreationBranchScreen extends StatefulWidget {
 }
 
 class _CreationBranchScreenState extends State<CreationBranchScreen> {
-  TextEditingController controllerPIva;
-  TextEditingController controllerCompanyName;
-  TextEditingController controllerEmail;
-  TextEditingController controllerAddress;
-  TextEditingController controllerCity;
-  TextEditingController controllerCap;
-  TextEditingController controllerMobileNo;
+  late TextEditingController controllerPIva;
+  late TextEditingController controllerCompanyName;
+  late TextEditingController controllerEmail;
+  late TextEditingController controllerAddress;
+  late TextEditingController controllerCity;
+  late TextEditingController controllerCap;
+  late TextEditingController controllerMobileNo;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -42,9 +40,8 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
         }else{
           controllerEmail = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
         }
-
         void buildShowErrorDialog(String text) {
-          _scaffoldKey.currentState.showSnackBar(SnackBar(
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             duration: Duration(seconds: 1),
             backgroundColor: Colors.redAccent.withOpacity(0.9),
             content: Text(text),
@@ -97,20 +94,14 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                                   providerFatture: '',
                                   vatNumber: controllerPIva.text,
                                   pkBranchId: 0,
-                                  accessPrivilege: Privileges.OWNER
+                                  accessPrivilege: Privileges.OWNER, token: ''
                               );
 
                               ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                              ActionModel actionModel =
-                              ActionModel(
-                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  description: 'Ha creato l\'attività ${controllerCompanyName.text}',
-                                  type: ActionType.BRANCH_CREATION,
-                                  date: DateTime.now().millisecondsSinceEpoch,
-                                  fkBranchId: 0);
-                              await clientService.performSaveBranch(company, actionModel);
+                              await clientService.performSaveBranch(company);
 
-                              List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
+                              List<BranchModel> _branchList
+                              = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                               dataBundleNotifier.addBranches(_branchList);
 
 

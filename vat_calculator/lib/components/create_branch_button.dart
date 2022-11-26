@@ -6,7 +6,7 @@ import 'package:vat_calculator/screens/branch_registration/branch_choice_registr
 import 'default_button.dart';
 
 class CreateBranchButton extends StatelessWidget {
-  const CreateBranchButton({Key key}) : super(key: key);
+  const CreateBranchButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class CreateBranchButton extends StatelessWidget {
       text: "Crea Attività",
       press: () async {
         Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-      },
+      }, textColor: Color(0xff121212),
     );
   }
 }

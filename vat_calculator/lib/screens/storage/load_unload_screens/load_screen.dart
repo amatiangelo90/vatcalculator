@@ -5,9 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -17,7 +14,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class LoadStorageScreen extends StatefulWidget {
-  const LoadStorageScreen({Key key}) : super(key: key);
+  const LoadStorageScreen({Key? key}) : super(key: key);
 
   static String routeName = 'load_screen_storage';
 
@@ -59,12 +56,10 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                   });
 
                   if (currentProductWithMorethan0Amount == 0) {
-                    _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: kPinaColor,
-                      content: Text(
-                          'Immettere la quantità di carico per almeno un prodotto'),
+                      content: Text('Immettere la quantità di carico per almeno un prodotto'),
                     ));
-
                   } else {
 
                     List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
@@ -85,33 +80,24 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
                     });
 
                     Response response = await dataBundleNotifier.getclientServiceInstance()
-                        .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                        actionModel: ActionModel(
-                            date: DateTime.now().millisecondsSinceEpoch,
-                            description: 'Ha effettuato carico in magazzino ${dataBundleNotifier.currentStorage.pkStorageId}',
-                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                            type: ActionType.STORAGE_LOAD
-                        )
+                        .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
                     );
                     if(response != null && response.data == 1){
                       dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                        backgroundColor: Colors.green,
-                        content: Text(
-                            'Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        backgroundColor: kPinaColor,
+                        content: Text('Carico effettuato per magazzino ${dataBundleNotifier.currentStorage.name}'),
                       ));
                     }else{
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: kPinaColor,
-                        content: Text(
-                            'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
+                        content: Text(   'Errore. Carico non effettuato per magazzino ${dataBundleNotifier.currentStorage.name}. Riprova fra un paio di minuti.'),
                       ));
                     }
 
 
                   }
-                },
+                }, textColor: kPrimaryColor,
               ),
             ),
           ),

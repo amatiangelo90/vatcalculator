@@ -11,12 +11,12 @@ class ExpenceEventModel{
 
 
   ExpenceEventModel({
-    @required this.pkEventExpenceId,
-    @required this.description,
-    @required this.amount,
-    @required this.cost,
-    @required this.dateTimeInsert,
-    @required this.fkEventId
+    required this.pkEventExpenceId,
+    required this.description,
+    required this.amount,
+    required this.cost,
+    required this.dateTimeInsert,
+    required this.fkEventId
   });
 
   toMap(){
@@ -26,7 +26,7 @@ class ExpenceEventModel{
       'amount': amount,
       'cost': cost,
       'dateTimeInsert' : dateTimeInsert.toString(),
-      'fkEventId' : fkEventId
+      'fkEventId' : fkEventId ?? 0
     };
   }
 }

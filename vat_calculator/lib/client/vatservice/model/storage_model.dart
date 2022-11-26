@@ -11,14 +11,14 @@ class StorageModel {
   int fkBranchId;
 
   StorageModel({
-    @required this.pkStorageId,
-    @required this.name,
-    @required this.code,
-    @required this.creationDate,
-    @required this.address,
-    @required this.city,
-    @required this.cap,
-    @required this.fkBranchId,
+    required this.pkStorageId,
+    required this.name,
+    required this.code,
+    required this.creationDate,
+    required this.address,
+    required this.city,
+    required this.cap,
+    required this.fkBranchId,
   });
 
   factory StorageModel.fromJson(dynamic json){

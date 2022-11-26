@@ -1,19 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/screens/main_page.dart';
-import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import 'package:vat_calculator/size_config.dart';
 
-import '../../../../../client/fattureICloud/model/response_fornitori.dart';
-import '../../../../home/home_screen.dart';
-
 class OrderSentDetailsScreen extends StatelessWidget {
-  const OrderSentDetailsScreen({Key key, this.message, this.number, this.mail, this.supplierName}) : super(key: key);
+  const OrderSentDetailsScreen({Key? key,required this.message,required this.number,required this.mail,required this.supplierName}) : super(key: key);
 
   final String message;
   final String number;
@@ -105,7 +100,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                     if (await canLaunch(urlString)) {
                       await launch(urlString);
                     } else {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           duration: Duration(milliseconds: 3000),
                           content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -146,7 +141,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                             if (await canLaunch(urlString)) {
                               await launch(urlString);
                             } else {
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   backgroundColor: kPinaColor,
                                   duration: Duration(milliseconds: 3000),
                                   content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'

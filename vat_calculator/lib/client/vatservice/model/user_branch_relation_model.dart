@@ -8,11 +8,11 @@ class UserBranchRelationModel{
   String token;
 
   UserBranchRelationModel({
-    @required this.pkUserBranchId,
-    @required this.fkBranchId,
-    @required this.fkUserId,
-    @required this.accessPrivilege,
-    @required this.token
+    required this.pkUserBranchId,
+    required this.fkBranchId,
+    required this.fkUserId,
+    required this.accessPrivilege,
+    required this.token
 });
 
   toMap(){

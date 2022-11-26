@@ -55,7 +55,7 @@ class ForgotPassForm extends StatefulWidget {
 class _ForgotPassFormState extends State<ForgotPassForm> {
   final _formKey = GlobalKey<FormState>();
   List<String> errors = [];
-  String email;
+  String? email;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
               return null;
             },
             validator: (value) {
-              if (value.isEmpty && !errors.contains(kEmailNullError)) {
+              if (value!.isEmpty && !errors.contains(kEmailNullError)) {
                 setState(() {
                   errors.add(kEmailNullError);
                 });
@@ -106,12 +106,12 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
             text: "Continua",
             press: () async {
 
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
 
                 try{
                   final _auth = FirebaseAuth.instance;
-                  await _auth.sendPasswordResetEmail(email: email);
+                  await _auth.sendPasswordResetEmail(email: email!);
                   ScaffoldMessenger.of(context)
                       .showSnackBar(SnackBar(
                       duration: const Duration(milliseconds: 1500),
@@ -126,7 +126,7 @@ class _ForgotPassFormState extends State<ForgotPassForm> {
                       content: Text('Errore invio mail per reset password. Errore: ${e}' , style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                 }
               }
-            },
+            }, textColor: Color(0xff121212), color: Color(0xff121212),
           ),
           SizedBox(height: SizeConfig.screenHeight * 0.1),
           const NoAccountText(),

@@ -1,34 +1,29 @@
 import 'dart:async';
-import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/screens/event/component/event_card.dart';
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
+import 'package:vat_calculator/screens/marketing/marketing_screen.dart';
 import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
-import 'package:vat_calculator/screens/expence_manager/components/expence_reg_card.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../branch_registration/branch_update.dart';
 import '../../event/event_home.dart';
-import '../../recessed_manager/components/recessed_reg_card.dart';
 
 class HomePageBody extends StatefulWidget {
-  const HomePageBody({Key key}) : super(key: key);
+  const HomePageBody({Key? key}) : super(key: key);
 
   @override
   _HomePageBodyState createState() => _HomePageBodyState();
@@ -250,7 +245,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                 : SingleChildScrollView(
                                   scrollDirection: Axis.horizontal,
                                   child: Row(
-                                    children: snapshot.data,
+                                    children: snapshot.data!,
                                   ),
                                 ),
                             Padding(
@@ -334,9 +329,9 @@ class _HomePageBodyState extends State<HomePageBody> {
                     ),
                   ),
                   dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).isEmpty ?
-                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? Padding(
-                    padding: const EdgeInsets.all(28.0),
-                    child: const Text('Non hai eventi in programma oggi'),
+                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Padding(
+                    padding: EdgeInsets.all(28.0),
+                    child: Text('Non hai eventi in programma oggi'),
                   ) : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
@@ -437,7 +432,60 @@ class _HomePageBodyState extends State<HomePageBody> {
                       ),
                     ),
                   ),
-                  // buildActionsList(dataBundleNotifier.currentBranchActionsList),
+                  const SizedBox(height: 20,),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: getProportionateScreenWidth(10),
+                      ),
+                      Text(
+                        'Marketing',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: getProportionateScreenWidth(12)),
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 20,),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: getProportionateScreenWidth(400),
+                      child: CupertinoButton(
+                        color: kCustomBordeaux,
+                        onPressed: () {
+                          Navigator.pushNamed(context,
+                              MarketingScreen.routeName);
+                        },
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(''),
+                            Text(
+                              'Area marketing',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize:
+                                  getProportionateScreenWidth(
+                                      17)),
+                            ),
+                            IconButton(
+                              icon: SvgPicture.asset(
+                                'assets/icons/activity.svg',
+                                color: kCustomWhite,
+                                width: 25,
+                              ),
+                              onPressed: () {
+                                Navigator.pushNamed(context,
+                                    MarketingScreen.routeName);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(height: getProportionateScreenHeight(dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? 280 : 100),),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -588,151 +636,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     return branchWidgetList;
   }
 
-  Widget buildActionsList(List<ActionModel> currentBranchActionsList) {
-    List<Padding> rows = [
-      Padding(
-        padding: const EdgeInsets.all(0.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: getProportionateScreenWidth(10),
-                ),
-                Text(
-                  'Ultime Azioni',
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: getProportionateScreenWidth(12)),
-                ),
-              ],
-            ),
-            CupertinoButton(
-              onPressed: () {
-                Navigator.pushNamed(context, ActionsDetailsScreen.routeName);
-              },
-              child: Row(
-                children: [
-                  Text(
-                    'Visualizza Tutte',
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: getProportionateScreenWidth(12),
-                        color: Colors.grey),
-                  ),
-                  Icon(Icons.arrow_forward_ios,
-                      size: getProportionateScreenWidth(15),
-                      color: Colors.grey),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    ];
-
-    rows.add(const Padding(
-      padding: EdgeInsets.all(0.0),
-      child: Divider(
-        height: 1,
-      ),
-    ));
-
-    currentBranchActionsList.forEach((action) {
-      if (rows.length < 10) {
-        rows.add(
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    ActionType.getIconWidget(action.type) ??
-                        const Text('ICONA'),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            action.user,
-                            style: TextStyle(
-                                color: kPrimaryColor,
-                                fontSize: getProportionateScreenWidth(15),
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                              DateTime.fromMillisecondsSinceEpoch(action.date)
-                                      .day
-                                      .toString() +
-                                  '/' +
-                                  DateTime.fromMillisecondsSinceEpoch(action.date)
-                                      .month
-                                      .toString() +
-                                  '/' +
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                          action.date)
-                                      .year
-                                      .toString() +
-                                  '  ' +
-                                  DateTime.fromMillisecondsSinceEpoch(
-                                          action.date)
-                                      .hour
-                                      .toString() +
-                                  ':' +
-                                  (DateTime.fromMillisecondsSinceEpoch(
-                                                  action.date)
-                                              .minute >
-                                          9
-                                      ? DateTime.fromMillisecondsSinceEpoch(
-                                              action.date)
-                                          .minute
-                                          .toString()
-                                      : '0' +
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                                  action.date)
-                                              .minute
-                                              .toString()),
-                              style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(getProportionateScreenWidth(58),
-                      0, getProportionateScreenWidth(10), 2),
-                  child: Text(
-                    action.description,
-                    textAlign: TextAlign.start,
-                    overflow: TextOverflow.visible,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Divider(
-                  height: 1,
-                  indent: getProportionateScreenWidth(58),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-    });
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: rows,
-      ),
-    );
-  }
-
-  AnimatedContainer buildDot({int index}) {
+  AnimatedContainer buildDot({int? index}) {
     return AnimatedContainer(
       duration: kAnimationDuration,
       margin: const EdgeInsets.only(right: 5),
@@ -747,7 +651,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  AnimatedContainer buildDotEvent({int index}) {
+  AnimatedContainer buildDotEvent({int? index}) {
     return AnimatedContainer(
       duration: kAnimationDuration,
       margin: const EdgeInsets.only(right: 5),
@@ -774,7 +678,18 @@ class _HomePageBodyState extends State<HomePageBody> {
             .retrieveProductByOrderId(
           OrderModel(
             pk_order_id: orderModel.pk_order_id,
-          ),
+              code: '',
+              closedby: '',
+              creation_date: '',
+              delivery_date: '',
+              details: '',
+              fk_branch_id: 0,
+              fk_storage_id: 0,
+              fk_supplier_id: 0,
+              fk_user_id: 0,
+              paid: '',
+              status: '',
+              total: 0),
         );
         orderCardList.add(OrderCard(
           order: orderModel,

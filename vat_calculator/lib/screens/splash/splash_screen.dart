@@ -3,7 +3,7 @@ import 'components/body.dart';
 
 class SplashScreen extends StatelessWidget {
   static String routeName = 'splashscreen';
-  const SplashScreen({Key key}) : super(key: key);
+  const SplashScreen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(

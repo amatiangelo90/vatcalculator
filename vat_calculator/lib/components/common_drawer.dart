@@ -4,23 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/actions_manager/action_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/event/event_home.dart';
-import 'package:vat_calculator/screens/expence_manager/expence_home.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
-import 'package:vat_calculator/screens/recessed_manager/recessed_home.dart';
-import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import '../constants.dart';
 import '../screens/main_page.dart';
 import '../size_config.dart';
@@ -28,7 +20,7 @@ import 'create_branch_button.dart';
 import 'loader_overlay_widget.dart';
 
 class CommonDrawer extends StatefulWidget {
-  const CommonDrawer({Key key}) : super(key: key);
+  const CommonDrawer({Key? key}) : super(key: key);
 
   @override
   State<CommonDrawer> createState() => _CommonDrawerState();
@@ -45,7 +37,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayOpacity: 0.9,
-      overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati...',),
+      overlayWidget: LoaderOverlayWidget(message: 'Caricamento dati...',),
       child: Drawer(
         elevation: 6.0,
         child: Consumer<DataBundleNotifier>(
@@ -81,7 +73,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text('20m2', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.white, fontSize: getProportionateScreenHeight(18))),
-                                    Text('IVA, ORDINI E GESTIONE', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
+                                    Text('ORDINI E GESTIONE', style: TextStyle(fontWeight: FontWeight.w300, color: Colors.white, fontSize: getProportionateScreenHeight(9)),),
 
                                   ],
                                 ),
@@ -154,7 +146,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       Padding(
                         padding: const EdgeInsets.fromLTRB(0, 17, 0, 0),
                         child: buildDrawerRow('assets/icons/home.svg','Home',(){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
                           dataBundleNotifier.onItemTapped(0);
                           Navigator.pushNamed(context, HomeScreenMain.routeName);
                         },
@@ -211,7 +202,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       showBranchStuff ? Padding(
                         padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                         child: buildDrawerRow('','Crea',(){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(context, CreationBranchScreen.routeName);
                         }, kCustomWhite,
                             kPrimaryColor,
@@ -220,41 +210,12 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       showBranchStuff ? Padding(
                         padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
                         child: buildDrawerRow('','Associa tramite Codice',(){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
                           Navigator.pushNamed(context, BranchJoinScreen.routeName);
                         }, kCustomWhite,
                             kPrimaryColor,
                             kCustomWhite),
                       ) : SizedBox(width: 0,),
                       showBranchStuff ? buildBranchList(dataBundleNotifier) : SizedBox(width: 0,),
-
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/iva.svg','Dettaglio Iva',(){
-                          dataBundleNotifier.setShowIvaButtonToFalse();
-                          switch(dataBundleNotifier.currentBranch.providerFatture){
-                            case 'fatture_in_cloud':
-                              Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                              break;
-                            case 'aruba':
-                              Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                              break;
-                            case '':
-                              Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                              break;
-                          }
-                      }, Colors.white,
-                          Colors.black54.withOpacity(0.1),
-                          kCustomWhite),
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/expence.svg','Gestione Spese',(){
-                          Navigator.pushNamed(
-                              context, ExpenceScreen.routeName);
-                      }, Colors.white,
-                          Colors.black54.withOpacity(0.1),
-                          kCustomWhite),
-                      dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : buildDrawerRow('assets/icons/cashregister.svg','Gestione Incassi',(){
-                          Navigator.pushNamed(context, RecessedScreen.routeName);
-                      }, Colors.white,
-                          Colors.black54.withOpacity(0.1),
-                          kCustomWhite),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
                         child: TextButton(
@@ -421,9 +382,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                             backgroundColor: Colors.black54.withOpacity(0.1),
                           ),
                           onPressed: (){
-                            Navigator.pushNamed(
-                                  context, ActionsDetailsScreen.routeName);
-
                           },
                           child: Row(
                             children: [
@@ -434,15 +392,15 @@ class _CommonDrawerState extends State<CommonDrawer> {
                                 width: 22,
                               ),
                               const SizedBox(width: 20),
-                              const Expanded(child: Text('Azioni', style: TextStyle(color: kCustomWhite),)),
+                              const Expanded(child: Text('Marketing', style: TextStyle(color: kCustomWhite),)),
                               Row(
                                 children: [
                                   SizedBox(
                                     height: getProportionateScreenHeight(28),
-                                    width: dataBundleNotifier.currentBranchActionsList.length > 100 ? getProportionateScreenWidth(40) : getProportionateScreenWidth(28),
+                                    width: getProportionateScreenWidth(40),
                                     child: Card(
                                       color: kCustomPurple,
-                                      child: Center(child: Text(dataBundleNotifier.currentBranchActionsList.length > 100 ? '+100' : dataBundleNotifier.currentBranchActionsList.length.toString()
+                                      child: Center(child: Text('aaa'
                                         , style: const TextStyle(fontSize: 12.0, color: Colors.white),),),
                                     ),
                                   ),
@@ -457,7 +415,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
                       buildDrawerRow('assets/icons/Settings.svg',
                           'Area Gestione',
                               (){
-                                dataBundleNotifier.setShowIvaButtonToFalse();
                                 dataBundleNotifier.onItemTapped(3);
                                 Navigator.pop(context);
                                 },
@@ -501,7 +458,7 @@ class _CommonDrawerState extends State<CommonDrawer> {
     );
   }
 
-  buildDrawerRow(String icon, String description, Function onPress, Color iconColor, Color backgroundColor, Color textColor){
+  buildDrawerRow(String icon, String description, Function()? onPress, Color iconColor, Color backgroundColor, Color textColor){
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
       child: TextButton(
@@ -537,7 +494,6 @@ class _CommonDrawerState extends State<CommonDrawer> {
           Padding(
             padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
             child: buildDrawerRow('',branch.companyName,(){
-              dataBundleNotifier.setShowIvaButtonToFalse();
               dataBundleNotifier.setCurrentBranch(branch);
               dataBundleNotifier.onItemTapped(0);
               Navigator.pushNamed(context, HomeScreenMain.routeName);

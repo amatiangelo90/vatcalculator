@@ -14,7 +14,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
 class ArchiviedOrderPage extends StatefulWidget {
-  const ArchiviedOrderPage({Key key}) : super(key: key);
+  const ArchiviedOrderPage({Key? key}) : super(key: key);
 
   static String routeName = 'archive_order';
   @override
@@ -24,14 +24,14 @@ class ArchiviedOrderPage extends StatefulWidget {
 class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
 
 
-  ValueNotifier<List<OrderModel>> _selectedEvents;
+  late ValueNotifier<List<OrderModel>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.week;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
   final LinkedHashMap<DateTime, List<OrderModel>> _kOrders = LinkedHashMap();
 
   DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay;
+  late DateTime _selectedDay;
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
@@ -252,7 +252,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                                       fontSize: getProportionateScreenHeight(16), fontWeight: FontWeight.bold),
                                                 ),
                                                 Text(orderIdProductListMap[
-                                                orderList[order].pk_order_id]
+                                                orderList[order].pk_order_id]!
                                                     .length
                                                     .toString(),
                                                   style: TextStyle(
@@ -272,7 +272,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                                   '€ ' +
                                                       calculatePriceFromProductList(
                                                           orderIdProductListMap[
-                                                          orderList[order].pk_order_id]),
+                                                          orderList[order].pk_order_id]!),
                                                   style: TextStyle(
                                                       color: kPrimaryColor,
                                                       fontSize: getProportionateScreenHeight(16)),
@@ -383,7 +383,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                                             ),
                                             SizedBox(height: getProportionateScreenHeight(20),),
                                             Text('Carrello'),
-                                            buildProductListWidget(orderIdProductListMap[orderList[order].pk_order_id], dataBundleNotifier),
+                                            buildProductListWidget(orderIdProductListMap[orderList[order].pk_order_id]!, dataBundleNotifier),
                                             SizedBox(height: getProportionateScreenHeight(20),),
                                           ],
                                         ),
@@ -429,7 +429,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
 
       if(element.delivery_date != null){
         if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date))))){
-          map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))].add(element);
+          map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))]!.add(element);
         }else{
           List<OrderModel> listToAdd = [element];
           map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))] = listToAdd;
@@ -451,7 +451,8 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
 
     dataBundleNotifier.currentArchiviedWorkingOrdersList.forEach((element) async {
       List<ProductOrderAmountModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveProductByOrderId(
-        OrderModel(pk_order_id: element.pk_order_id,),
+        OrderModel(pk_order_id: element.pk_order_id, code: '', creation_date: '', details: '', fk_branch_id: 0, fk_storage_id: 0, fk_supplier_id: 0, fk_user_id: 0, total: 0, status: '', paid: '', delivery_date:
+        '', closedby: ''),
       );
       orderIdProductListMap[element.pk_order_id] = list;
     });

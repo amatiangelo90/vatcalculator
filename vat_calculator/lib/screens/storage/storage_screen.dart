@@ -5,14 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/storage/components/move_produt_to_storage.dart';
 import '../../client/vatservice/model/storage_product_model.dart';
-import '../../client/vatservice/model/utils/action_type.dart';
 import '../../client/vatservice/model/utils/privileges.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
@@ -30,7 +28,7 @@ class StorageScreen extends StatefulWidget{
   @override
   State<StorageScreen> createState() => _StorageScreenState();
 
-  const StorageScreen({Key key}) : super(key: key);
+  const StorageScreen({Key? key}) : super(key: key);
 }
 
 class _StorageScreenState extends State<StorageScreen> {
@@ -107,7 +105,7 @@ class _StorageScreenState extends State<StorageScreen> {
                         ),
                       ),
                     );
-                  },
+                  }, textColor: kPrimaryColor, color: kPrimaryColor,
                 ),
               ),
             ],
@@ -154,15 +152,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                         productToRemove.forEach((productStorageElementToRemove) async {
                                           await dataBundleNotifier.getclientServiceInstance()
                                               .removeProductFromStorage(
-                                              storageProductModel: productStorageElementToRemove,
-                                              actionModel: ActionModel(
-                                                  date: DateTime.now().millisecondsSinceEpoch,
-                                                  description: 'Ha rimosso ${productStorageElementToRemove.productName} (${productStorageElementToRemove.supplierName}) dal magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                                      'Giacenza al momendo della rimozione: ${productStorageElementToRemove.stock} ${productStorageElementToRemove.unitMeasure}.',
-                                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                                  type: ActionType.PRODUCT_DELETE
-                                              )
+                                              storageProductModel: productStorageElementToRemove
                                           );
                                         });
                                         //TODO magari riproporre la logica per l'eliminazione dalla lista oltre che ricaricare lo storage tramite set current storage
@@ -170,11 +160,11 @@ class _StorageScreenState extends State<StorageScreen> {
                                         dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
                                       }
                                     }catch(e){
-                                      print('Impossible to remove product from storage. Exception: ' + e);
+                                      print('Impossible to remove product from storage. Exception: ' + e.toString());
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                           duration: const Duration(milliseconds: 400),
-                                          content: Text('Impossible to remove product from storage. Exception: ' + e)));
+                                          content: Text('Impossible to remove product from storage. Exception: ' + e.toString())));
                                     }
                                   },
                                 ),
@@ -647,7 +637,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                                                         ScaffoldMessenger.of(context)
                                                                             .showSnackBar(SnackBar(
                                                                             duration: const Duration(milliseconds: 400),
-                                                                            content: Text('Impossibile completare operazione. Riprovare fra un paio di minuti. Exception: ' + e)));
+                                                                            content: Text('Impossibile completare operazione. Riprovare fra un paio di minuti. Exception: ' + e.toString())));
                                                                       }
 
                                                                     }
@@ -752,8 +742,8 @@ class Content extends StatefulWidget {
 
   final Widget child;
   Content({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
   }) : super(key: key);
 
   @override

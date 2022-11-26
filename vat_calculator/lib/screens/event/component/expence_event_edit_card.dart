@@ -8,7 +8,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class EditingExpenceEventCard extends StatefulWidget {
-  const EditingExpenceEventCard({Key key, this.expenceEventModel}) : super(key: key);
+  const EditingExpenceEventCard({Key? key,required this.expenceEventModel}) : super(key: key);
 
   final ExpenceEventModel expenceEventModel;
 

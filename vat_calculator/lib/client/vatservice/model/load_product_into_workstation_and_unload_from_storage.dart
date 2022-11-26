@@ -7,10 +7,10 @@ class LoadProductIntoWorkstationAndUnloadFromStorageModel{
   double amount;
 
   LoadProductIntoWorkstationAndUnloadFromStorageModel({
-    @required this.pkProductId,
-    @required this.storageIdFrom,
-    @required this.storageIdTo,
-    @required this.amount,
+    required this.pkProductId,
+    required this.storageIdFrom,
+    required this.storageIdTo,
+    required this.amount,
   });
 
   toMap(){

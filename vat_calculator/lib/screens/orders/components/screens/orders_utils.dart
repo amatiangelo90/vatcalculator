@@ -5,15 +5,15 @@ import '../../../../client/vatservice/model/storage_product_model.dart';
 
 class OrderUtils{
 
-  static buildMessageFromCurrentOrderList({List<ProductModel> productList,
-    String branchName,
-    String orderId,
-    String supplierName,
-    String storageAddress,
-    String storageCity,
-    String storageCap,
-    String deliveryDate,
-    String currentUserName
+  static buildMessageFromCurrentOrderList({required List<ProductModel> productList,
+    required String branchName,
+    required String orderId,
+    required String supplierName,
+    required String storageAddress,
+    required String storageCity,
+    required String storageCap,
+    required String deliveryDate,
+    required String currentUserName
   }) {
     String orderString = 'Ciao $supplierName,<br><br><br>Ordine #$orderId<br><br><h4>Carrello<br>-------------------------------------<br>';
     productList.forEach((currentProductOrderAmount) {
@@ -29,15 +29,15 @@ class OrderUtils{
     return orderString;
   }
 
-  static buildMessageFromCurrentOrderListStorageOrder({List<StorageProductModel> orderedMapBySuppliers,
-    String branchName,
-    String orderId,
-    String supplierName,
-    String storageAddress,
-    String storageCity,
-    String storageCap,
-    String deliveryDate,
-    String currentUserName
+  static buildMessageFromCurrentOrderListStorageOrder({required List<StorageProductModel> orderedMapBySuppliers,
+    required String branchName,
+    required String orderId,
+    required String supplierName,
+    required String storageAddress,
+    required String storageCity,
+    required String storageCap,
+    required String deliveryDate,
+    required String currentUserName
   }) {
     String orderString = 'Ciao $supplierName,<br><br><br>Ordine #$orderId<br><br><h4>Carrello<br>-------------------------------------<br>';
     orderedMapBySuppliers.forEach((currentProductOrderAmount) {
@@ -53,18 +53,16 @@ class OrderUtils{
     return orderString;
   }
 
-  static buildWhatsAppMessageFromCurrentOrderList({List<ProductModel> productList,
-    String branchName,
-    String orderId,
-    String supplierName,
-    String storageAddress,
-    String storageCity,
-    String storageCap,
-    String deliveryDate,
-    String currentUserName}) {
-
-    print('MATTIALIUZZI');
-    print(productList.toString());
+  static buildWhatsAppMessageFromCurrentOrderList({
+    required List<ProductModel> productList,
+    required String branchName,
+    required String orderId,
+    required String supplierName,
+    required String storageAddress,
+    required String storageCity,
+    required String storageCap,
+    required String deliveryDate,
+    required String currentUserName}) {
 
     String orderString = 'Ciao $supplierName,%0a%0aOrdine #$orderId%0a%0aCarrello%0a----------------%0a';
     productList.forEach((currentProductOrderAmount) {
@@ -79,15 +77,16 @@ class OrderUtils{
     return orderString;
   }
 
-  static buildMessageFromCurrentOrderListFromDraft({List<ProductOrderAmountModel> orderProductList,
-    String branchName,
-    String orderId,
-    String storageAddress,
-    String storageCity,
-    String storageCap,
-    String deliveryDate,
-    String currentUserName,
-    String supplierName}) {
+  static buildMessageFromCurrentOrderListFromDraft({
+    required List<ProductOrderAmountModel> orderProductList,
+    required String branchName,
+    required String orderId,
+    required String storageAddress,
+    required String storageCity,
+    required String storageCap,
+    required String deliveryDate,
+    required String currentUserName,
+    required String supplierName}) {
 
     String orderString = 'Ciao $supplierName,<br><br><br>Ordine #$orderId<br><br><h4>Carrello<br>-------------------------------------<br>';
     orderProductList.forEach((currentProductOrderAmount) {

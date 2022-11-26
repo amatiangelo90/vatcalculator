@@ -12,7 +12,7 @@ import '../../../size_config.dart';
 import 'order_from_storage_comunication_page.dart';
 
 class OrderFromStorageScreen extends StatefulWidget {
-  const OrderFromStorageScreen({Key key}) : super(key: key);
+  const OrderFromStorageScreen({Key? key}) : super(key: key);
 
   static String routeName = 'order_from_storage';
 
@@ -71,14 +71,14 @@ class _OrderFromStorageScreenState extends State<OrderFromStorageScreen> {
                         if(element.extra != 0){
                           stockProductDiffentThan0 = stockProductDiffentThan0 + 1;
                           if(orderedMapBySuppliers.keys.contains(element.supplierId)){
-                            orderedMapBySuppliers[element.supplierId].add(element);
+                            orderedMapBySuppliers[element.supplierId]!.add(element);
                           }else{
                             orderedMapBySuppliers[element.supplierId] = [element];
                           }
                         }
                       });
                       if(stockProductDiffentThan0 == 0){
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere quantità per almeno un prodotto'),
                         ));
@@ -86,7 +86,7 @@ class _OrderFromStorageScreenState extends State<OrderFromStorageScreen> {
                         Map<int, List<StorageProductModel>> recapMapForCustomer = orderedMapBySuppliers;
                         Navigator.push(context, MaterialPageRoute(builder: (context) => OrderFromStorageComunicationPage(orderedMapBySuppliers: recapMapForCustomer ,),),);
                       }
-                    },
+                    }, textColor: kPrimaryColor,
                   ),
                 ),
               ),

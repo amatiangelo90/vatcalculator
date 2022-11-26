@@ -5,11 +5,11 @@ import '../size_config.dart';
 
 class DefaultButton extends StatelessWidget {
   const DefaultButton({
-    Key key,
-    this.text,
-    this.press,
-    this.textColor,
-    @required this.color
+    Key? key,
+    required this.text,
+    required this.press,
+    required this.textColor,
+    required this.color
   }) : super(key: key);
   final String text;
   final Function press;

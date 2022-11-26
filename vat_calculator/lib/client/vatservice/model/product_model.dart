@@ -13,16 +13,16 @@ class ProductModel {
   double orderItems;
 
   ProductModel({
-    @required this.pkProductId,
-    @required this.nome,
-    @required this.codice,
-    @required this.unita_misura,
-    @required this.iva_applicata,
-    @required this.prezzo_lordo,
-    @required this.descrizione,
-    @required this.categoria,
-    @required this.fkSupplierId,
-    @required this.orderItems
+    required this.pkProductId,
+    required this.nome,
+    required this.codice,
+    required this.unita_misura,
+    required this.iva_applicata,
+    required this.prezzo_lordo,
+    required this.descrizione,
+    required this.categoria,
+    required this.fkSupplierId,
+    required this.orderItems
 });
 
   toMap(){

@@ -7,18 +7,18 @@ import 'costants_mail_service.dart';
 class EmailSenderService{
 
   Future<Response> sendEmailServiceApi({
-    String userName,
-    String userEmail,
-    String message,
-    String orderCode,
-    String branchName,
-    String supplierName,
-    String supplierEmail,
-    String addressBranch,
-    String addressBranchCity,
-    String addressBranchCap,
-    String branchNumber,
-    String deliveryDate
+    required String userName,
+    required String userEmail,
+    required String message,
+    required String orderCode,
+    required String branchName,
+    required String supplierName,
+    required String supplierEmail,
+    required String addressBranch,
+    required String addressBranchCity,
+    required String addressBranchCap,
+    required String branchNumber,
+    required String deliveryDate
   }) async {
 
     print('Sending mail order from branch [$branchName] from [$userName] with email address [$userEmail] to supplier [$supplierName] with email [$supplierEmail]');
@@ -52,7 +52,7 @@ class EmailSenderService{
 
     }catch(e){
       print('Exception message: ' + e.toString());
-      return Response(statusCode: 500);
+      return Response(statusCode: 500, requestOptions: RequestOptions(path: ''));
     }
     return post;
   }

@@ -5,19 +5,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
-import '../../../client/vatservice/model/action_model.dart';
 import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../main_page.dart';
 
 class ProductMoveToOtherStorageConfirmationScreen extends StatefulWidget {
-  const ProductMoveToOtherStorageConfirmationScreen({Key key, this.currentSupplier,this.storageList}) : super(key: key);
+  const ProductMoveToOtherStorageConfirmationScreen({Key? key,required this.currentSupplier, required this.storageList}) : super(key: key);
 
   static String routeName = 'productmoveconfirmationscreen';
 
@@ -31,9 +30,9 @@ class ProductMoveToOtherStorageConfirmationScreen extends StatefulWidget {
 class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMoveToOtherStorageConfirmationScreen> {
 
   String _selectedStorage = 'Seleziona Magazzino';
-  StorageModel currentStorageModel;
+  late StorageModel currentStorageModel;
 
-  DateTime currentDate;
+  late DateTime currentDate;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +42,7 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
         return LoaderOverlay(
           useDefaultLoading: false,
           overlayOpacity: 0.9,
-          overlayWidget: const LoaderOverlayWidget(message: 'Invio ordine in corso...',),
+          overlayWidget: LoaderOverlayWidget(message: 'Invio ordine in corso...',),
           child: Scaffold(
             bottomSheet: Padding(
               padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
@@ -86,10 +85,7 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
 
                         //TODO popolare la action
                         Response response = await dataBundleNotifier.getclientServiceInstance()
-                            .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                          actionModel: ActionModel(
-
-                          )
+                            .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
                         );
 
                         if(response != null && response.data == 1){
@@ -112,7 +108,7 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
                         context.loaderOverlay.hide();
                   }
                 },
-                color: kCustomGreenAccent,
+                color: kCustomGreenAccent, textColor: kPrimaryColor,
               ),
             ),
             appBar: AppBar(
@@ -223,12 +219,12 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
                         placeHolder: 'Ricerca Magazzino',
                         disabled: false,
                         items: widget.storageList.map((StorageModel storageModel) {
-                          return storageModel.pkStorageId.toString() + ' - ' + storageModel.name + ' (${dataBundleNotifier.retrieveBranchById(storageModel.fkBranchId).companyName})';
+                          return storageModel.pkStorageId.toString() + ' - ' + storageModel.name + ' (${dataBundleNotifier.retrieveBranchById(storageModel.fkBranchId)!.companyName})';
                         }).toList(),
                         selected: _selectedStorage,
                         onChanged: (storage) {
                           setCurrentStorage(storage, dataBundleNotifier, widget.storageList);
-                        },
+                        }, label: '',
                       ),
                     ),
                   ),

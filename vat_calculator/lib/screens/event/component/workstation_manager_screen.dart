@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/move_product_between_storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
@@ -24,9 +22,9 @@ import '../../../size_config.dart';
 import 'event_manager_screen.dart';
 
 class WorkstationManagerScreen extends StatefulWidget {
-  const WorkstationManagerScreen({Key key,
-    this.eventModel,
-    this.workstationModel}) : super(key: key);
+  const WorkstationManagerScreen({Key? key,
+    required this.eventModel,
+    required this.workstationModel}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
@@ -101,8 +99,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
               ),
               body: TabBarView(
                 children: [
-                  buildRefillWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId], dataBundleNotifier),
-                  buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId], dataBundleNotifier),
+                  buildRefillWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!, dataBundleNotifier),
+                  buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!, dataBundleNotifier),
                   dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildConfigurationWorkstationPage(widget.workstationModel, dataBundleNotifier),
                 ],
               ),
@@ -224,7 +222,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   GestureDetector(
                     onTap: () {
                       if(element.consumed + 1 > element.refillStock){
-                        _scaffoldKey.currentState.showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           duration: Duration(milliseconds: 2000),
                           content: Text(
@@ -276,7 +274,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                       text: 'Effettua Scarico',
                       press: () async {
                         if(widget.eventModel.closed == 'Y'){
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: kPinaColor,
                             duration: Duration(milliseconds: 3000),
                             content: Text(
@@ -285,10 +283,10 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         }else{
                           try{
                             bool isValid = true;
-                            for(WorkstationProductModel workProd in dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]){
+                            for(WorkstationProductModel workProd in dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!){
 
                               if(workProd.refillStock < workProd.consumed){
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   backgroundColor: kPinaColor,
                                   duration: Duration(milliseconds: 5000),
                                   content: Text(
@@ -300,17 +298,10 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             }
                             if(isValid){
                               await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                                  dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId],
-                                  ActionModel(
-                                      date: DateTime.now().millisecondsSinceEpoch,
-                                      description: 'Ha effettuato scarico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                      type: ActionType.EVENT_STORAGE_UNLOAD, pkActionId: null
-                                  )
+                                  dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!
                               );
                               dataBundleNotifier.workstationsProductsMapCalculate();
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: Colors.green.withOpacity(0.8),
                                 duration: Duration(milliseconds: 600),
                                 content: Text(
@@ -318,17 +309,17 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                               ));
                             }
                           }catch(e){
-                            Scaffold.of(context).showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
                               content: Text(
                                   'Errore durante operazione di scarico bar ' +
-                                      e),
+                                      e.toString()),
                             ));
                           }
                         }
 
                       },
-                      color: kCustomBordeaux,
+                      color: kCustomBordeaux, textColor: Color(0xff121212),
                     ),
                   ),
                 ),
@@ -364,14 +355,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           onPressed: () async {
 
             if(widget.eventModel.closed == 'Y'){
-              _scaffoldKey.currentState.showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: kPinaColor,
                 duration: Duration(milliseconds: 3000),
                 content: Text(
                     'L\'evento ${widget.eventModel.eventName} è chiuso. Non puoi aggiungere prodotti alla postazione.'),
               ));
             }else{
-              currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId));
+              currentStorageProductModelList = await retrieveProductListFromChoicedStorage(dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId)!);
               currentStorageProductModelList.removeWhere((element) => getIdsProductListAlreadyPresent(workStationProdModelList).contains(element.fkProductId));
 
               showDialog(
@@ -433,7 +424,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                   ),
                                 ),
                                 Text(
-                                  'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId).name,
+                                  'Magazzino di riferimento: ' + dataBundleNotifier.getStorageModelById(widget.eventModel.fkStorageId)!.name,
                                   style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold),),
                                 PaginatedDataTable(
                                   rowsPerPage: 5,
@@ -498,7 +489,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
             'Carico per ${loadPaxController.text} persone', style: TextStyle(color: Colors.white)),
             onPressed: () async {
                 if(widget.eventModel.closed == 'Y'){
-                _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 backgroundColor: kPinaColor,
                 duration: Duration(milliseconds: 3000),
                 content: Text(
@@ -568,14 +559,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                                 });
                                               });
 
-                                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                 backgroundColor: Colors.green.withOpacity(0.9),
                                                 duration: Duration(milliseconds: 3000),
                                                 content: Text(
                                                     'Carico configurato per ${loadPaxController.text} persone. Ricorda di salvare;)'),
                                               ));
                                             } else {
-                                              _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                 backgroundColor: kPinaColor,
                                                 duration: Duration(milliseconds: 600),
                                                 content: Text(
@@ -688,21 +679,21 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                                       element.amountHunderd = currentValue;
                                                     });
                                                   }catch(e){
-                                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                       backgroundColor: kPinaColor,
                                                       duration: Duration(milliseconds: 600),
                                                       content: Text(
-                                                          'Errore configurazione Q/100. ' + e),
+                                                          'Errore configurazione Q/100. ' + e.toString()),
                                                     ));
                                                   }
-                                                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                     backgroundColor: Colors.green.withOpacity(0.9),
                                                     duration: Duration(milliseconds: 1600),
                                                     content: Text(
                                                         'Configurato Q/100 ${amountController.text} per ${element.productName}'),
                                                   ));
                                                 } else {
-                                                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                     backgroundColor: kPinaColor,
                                                     duration: Duration(milliseconds: 1600),
                                                     content: Text(
@@ -781,12 +772,10 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                   storageIdFrom: 0,
                                   storageIdTo: widget.eventModel.fkStorageId,
                                   amount: element.backupRefillStock)
-                            ],
-                                actionModel: ActionModel(
-                                )
+                            ]
                             );
                             dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: Colors.redAccent.withOpacity(0.9),
                               duration: Duration(milliseconds: 1000),
                               content: Text(
@@ -873,7 +862,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   text: 'Effettua Carico',
                   press: () async {
                     if(widget.eventModel.closed == 'Y'){
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         backgroundColor: kPinaColor,
                         duration: Duration(milliseconds: 3000),
                         content: Text(
@@ -884,7 +873,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         bool isEverthingOk = true;
                         String productWrong = '';
 
-                        dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId].forEach((prodModel) {
+                        dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!.forEach((prodModel) {
                           if(double.tryParse(prodModel.refillStock.toString()) != null){
                             print(prodModel.productName + ' ok as refillStock value');
                           }else{
@@ -897,7 +886,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           List<MoveProductBetweenStorageModel> unloadProdList = [];
 
 
-                          dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId].forEach((element) {
+                          dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!.forEach((element) {
 
 
                               if(element.refillStock != element.backupRefillStock){
@@ -913,34 +902,25 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                           });
 
                           await dataBundleNotifier.getclientServiceInstance()
-                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: unloadProdList,
-                              actionModel: ActionModel(
-                              )
+                              .moveProductBetweenStorage(listMoveProductBetweenStorageModel: unloadProdList
                           );
 
                           dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
 
                           await dataBundleNotifier.getclientServiceInstance().updateWorkstationProductModel(
-                              dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId],
-                              ActionModel(
-                                  date: DateTime.now().millisecondsSinceEpoch,
-                                  description: 'Ha effettuato carico per postazione ${widget.workstationModel.name} (${widget.workstationModel.type}) in evento ${widget.eventModel.eventName}',
-                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.EVENT_STORAGE_LOAD, pkActionId: null
-                              )
+                              dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]
                           );
 
                           dataBundleNotifier.workstationsProductsMapCalculate();
 
-                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: Colors.green.withOpacity(0.8),
                             duration: Duration(milliseconds: 600),
                             content: Text(
                                 'Carico per ${widget.workstationModel.name} effettuato'),
                           ));
                         }else{
-                          Scaffold.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: kPinaColor,
                             content: Text(
                                 'Immettere un valore numerico corretto per $productWrong'),
@@ -949,17 +929,17 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
 
                       }catch(e){
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text(
                               'Errore durante operazione di scarico bar ' +
-                                  e),
+                                  e.toString()),
                         ));
                       }
                     }
 
                   },
-                  color: kCustomGreenAccent,
+                  color: kCustomGreenAccent, textColor: Color(0xff121212),
                 ),
               ),
             ],
@@ -1046,7 +1026,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         onPressed: () async {
                           if(controllerWorkStationName.text == null || controllerWorkStationName.text == ''){
                             print('Il nome della postazione è obbligatorio');
-                            _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               backgroundColor: kPinaColor,
                               duration: Duration(milliseconds: 600),
                               content: Text(
@@ -1093,7 +1073,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         child: Text('Elimina ${widget.workstationModel.name}'),
                         onPressed: () async {
                           if(widget.eventModel.closed == 'Y'){
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
                               duration: Duration(milliseconds: 3000),
                               content: Text(

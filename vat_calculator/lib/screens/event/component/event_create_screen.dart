@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,11 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -26,7 +23,7 @@ import '../../../../../size_config.dart';
 import '../event_home.dart';
 
 class EventCreateScreen extends StatefulWidget {
-  const EventCreateScreen({Key key}) : super(key: key);
+  const EventCreateScreen({Key? key}) : super(key: key);
 
   static String routeName = 'create_event_screen';
 
@@ -36,12 +33,12 @@ class EventCreateScreen extends StatefulWidget {
 
 class _EventCreateScreenState extends State<EventCreateScreen> {
 
-  DateTime currentDate;
-  static TextEditingController controllerEventName;
-  static TextEditingController controllerLocation;
+  DateTime currentDate = DateTime.now();
+  late TextEditingController controllerEventName;
+  late TextEditingController controllerLocation;
 
   String _selectedStorage = 'Seleziona Magazzino';
-  StorageModel currentStorageModel;
+  late StorageModel currentStorageModel;
 
   int _barPositionCounter = 0;
   int _champagneriePositionCounter = 0;
@@ -54,10 +51,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
   @override
   void initState() {
     super.initState();
-    currentStorageModel = null;
     controllerEventName = TextEditingController();
     controllerLocation = TextEditingController();
-    currentDate = null;
   }
 
   @override
@@ -73,7 +68,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     });
     currentStorageProductModelListChampagnerie.clear();
     currentStorageProductModelListBar.clear();
-    currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage);
+    currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage)!;
     currentStorageProductModelListBar = await retrieveProductListFromChoicedStorage(currentStorageModel);
     currentStorageProductModelListChampagnerie = await retrieveProductListFromChoicedStorage(currentStorageModel);
   }
@@ -228,7 +223,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                               selected: _selectedStorage,
                               onChanged: (storage) {
                                 setCurrentStorage(storage, dataBundleNotifier);
-                              },
+                              }, label: '',
                             ),
                           ),
                         ),
@@ -306,9 +301,9 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         _barPositionCounter == 0 ? const SizedBox() : PaginatedDataTable(
                           rowsPerPage: _rowsPerPage,
                           availableRowsPerPage: const <int>[5, 10, 20, 25],
-                          onRowsPerPageChanged: (int value) {
+                          onRowsPerPageChanged: (int? value) {
                             setState(() {
-                              _rowsPerPage = value;
+                              _rowsPerPage = value!;
                             });
                           },
                           columns: kTableColumns,
@@ -383,9 +378,9 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         _champagneriePositionCounter == 0 ? const SizedBox() : PaginatedDataTable(
                           rowsPerPage: _rowsPerPageChamp,
                           availableRowsPerPage: const <int>[5, 10, 20, 25],
-                          onRowsPerPageChanged: (int value) {
+                          onRowsPerPageChanged: (int? value) {
                             setState(() {
-                              _rowsPerPageChamp = value;
+                              _rowsPerPageChamp = value!;
                             });
                           },
                           columns: kTableColumns,
@@ -446,13 +441,6 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                     closed: 'N',
                                     location: controllerLocation.value.text,
                                     pkEventId: 0
-                                ),
-                                actionModel: ActionModel(
-                                    date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha creato l\'evento ' + controllerEventName.value.text + 'per attività ' + dataBundleNotifier.currentBranch.companyName,
-                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                    type: ActionType.EVENT_CREATION, pkActionId: 0
                                 )
                             );
 
@@ -518,7 +506,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                 duration: const Duration(milliseconds: 800),
                                 content: Text('Evento ${controllerEventName.value.text} creato')));
                             }catch(e){
-                              print('Exception: ' + e);
+                              print('Exception: ' + e.toString());
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
                                   backgroundColor: Colors.redAccent.withOpacity(0.8),
@@ -527,7 +515,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             }
                           }
                         },
-                      color: LightColors.kPalePink,
+                      color: LightColors.kPalePink, textColor: Color(0xff121212),
                     ),
                   ),
                 ),
@@ -538,7 +526,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime pickedDate = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
@@ -559,7 +547,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                 ),
               ),
             ),
-            child: child,
+            child: child!,
           );
         },
 

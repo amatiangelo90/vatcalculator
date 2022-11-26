@@ -16,19 +16,19 @@ class BranchModel{
   String token;
 
   BranchModel({
-    @required this.pkBranchId,
-    @required this.companyName,
-    @required this.eMail,
-    @required this.vatNumber,
-    @required this.address,
-    @required this.city,
-    @required this.cap,
-    @required this.phoneNumber,
-    @required this.providerFatture,
-    @required this.apiKeyOrUser,
-    @required this.apiUidOrPassword,
-    @required this.accessPrivilege,
-    @required this.token,
+    required this.pkBranchId,
+    required this.companyName,
+    required this.eMail,
+    required this.vatNumber,
+    required this.address,
+    required this.city,
+    required this.cap,
+    required this.phoneNumber,
+    required this.providerFatture,
+    required this.apiKeyOrUser,
+    required this.apiUidOrPassword,
+    required this.accessPrivilege,
+    required this.token,
   });
 
 

@@ -1,52 +1,31 @@
-
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/client/email_sender/emailservice.dart';
-import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_acquisti_api.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fatture_api.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_ndc_api.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
-import 'package:vat_calculator/client/vatservice/model/deposit_order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
-import 'package:vat_calculator/client/vatservice/model/expence_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
-import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
 import 'package:vat_calculator/components/vat_data.dart';
-import '../client/fattureICloud/model/response_info_company.dart';
+import 'package:vat_calculator/swagger/swagger.enums.swagger.dart';
 import '../client/firebase_service/firebase_messaging_service_impl.dart';
 import '../client/vatservice/model/expence_event_model.dart';
-import '../client/vatservice/model/utils/privileges.dart';
 import '../client/vatservice/model/workstation_product_model.dart';
 import '../constants.dart';
+import '../swagger/swagger.models.swagger.dart';
 import 'bundle_users_storage_supplier_forbranch.dart';
 import 'databundle.dart';
 
 class DataBundleNotifier extends ChangeNotifier {
 
-
   List<UserDetailsModel> userDetailsList = [
-  ];
-
-  List<CashRegisterModel> currentListCashRegister = [
-  ];
-
-  List<RecessedModel> currentListRecessed = [
-  ];
-
-  List<ExpenceModel> currentListExpences = [
   ];
 
   List<SupplierModel> currentListSuppliers = [
@@ -81,8 +60,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   List<OrderModel> currentUnderWorkingOrdersList = [];
 
-  List<ActionModel> currentBranchActionsList = [];
-
   List<String> currentBossTokenList = [];
 
   List<ProductModel> productListForChoicedSupplierToPerformOrder = [];
@@ -92,19 +69,17 @@ class DataBundleNotifier extends ChangeNotifier {
   List<EventModel> eventModelList = [];
   List<EventModel> eventModelListOlderThanToday = [];
 
-  String currentPrivilegeType;
+  String currentPrivilegeType = '';
 
   ClientVatService clientService = ClientVatService();
   FirebaseMessagingService clientMessagingFirebase = FirebaseMessagingService();
-  FattureInCloudClient iCloudClient = FattureInCloudClient();
   EmailSenderService emailService = EmailSenderService();
 
-  BranchModel currentBranch;
-  StorageModel currentStorage;
-  CashRegisterModel currentCashRegisterModel;
+  late BranchModel currentBranch;
+  late StorageModel currentStorage;
 
   DateTime currentDateTime = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 0, 0, 0, 0, 0);
-  DateTimeRange currentDateTimeRangeVatService;
+  late DateTimeRange currentDateTimeRangeVatService;
 
   bool cupertinoSwitch = false;
   bool isZtoAOrderded = false;
@@ -112,27 +87,7 @@ class DataBundleNotifier extends ChangeNotifier {
   int daysRangeDate = DateUtils.getDaysInMonth(DateTime.now().year, DateTime.now().month);
   int currentYear = DateTime.now().year;
   DateTime currentDate = DateTime.now();
-  DateTimeRange currentWeek;
-
-  double totalIvaAcquisti = 0.0;
-  double totalIvaFatture = 0.0;
-  double totalIvaNdcReceived = 0.0;
-  double totalIvaNdcSent = 0.0;
-
-
-  List<ResponseAcquistiApi> extractedAcquistiFatture = [];
-  List<ResponseAcquistiApi> extractedAcquistiFattureBis = [];
-
-  List<ResponseAcquistiApi> extractedNdc = [];
-  List<ResponseAcquistiApi> extractedNdcBis = [];
-
-  List<ResponseAcquistiApi> retrieveListaAcquisti = [];
-
-  List<ResponseFattureApi> retrieveListaFatture = [];
-  List<ResponseFattureApi> retrieveListaFattureBis = [];
-
-  List<ResponseNDCApi> retrieveListaNDC = [];
-  ResponseCompanyFattureInCloud fattureInCloudCompanyInfo;
+  late DateTimeRange currentWeek;
 
   List<ProductModel> storageTempListProduct = [];
   List<ProductOrderAmountModel> currentProdOrderModelList = [];
@@ -207,19 +162,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void recalculateGraph() {
-
-    if(currentBranch != null){
-      if(currentBranch.providerFatture == 'fatture_in_cloud'){
-        retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
-      }else if(currentBranch.providerFatture == 'aruba'){
-        // retrieveDataToDrawChartAruba(currentDateTimeRange);
-      }
-    }
-    clearAndUpdateMapBundle();
-    notifyListeners();
-  }
-
   DateTime findFirstDateOfTheWeek(DateTime dateTime) {
     return dateTime.subtract(Duration(days: dateTime.weekday - 1));
   }
@@ -228,135 +170,13 @@ class DataBundleNotifier extends ChangeNotifier {
     return dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
   }
 
-  void initializeCurrentDateTimeRange3Months() {
-    DateTime date = DateTime.now();
-
-    if(date.month == 1 || date.month == 2 || date.month == 3){
-      currentDateTimeRangeVatService = DateTimeRange(
-        start: DateTime(date.year, 1, 1, 0, 0, 0, 0,0),
-        end: DateTime(date.year, 3, DateTime(date.year, 4, 0).day, 0, 0, 0, 0,0),
-      );
-    }else if(date.month == 4 || date.month == 5 || date.month == 6){
-      currentDateTimeRangeVatService = DateTimeRange(
-        start: DateTime(date.year, 4, 1, 0, 0, 0, 0,0),
-        end: DateTime(date.year, 6, DateTime(date.year, 7, 0).day, 0, 0, 0, 0,0),
-      );
-    }else if(date.month == 7 || date.month == 8 || date.month == 9){
-      currentDateTimeRangeVatService = DateTimeRange(
-        start: DateTime(date.year, 7, 1, 0, 0, 0, 0,0),
-        end: DateTime(date.year, 10, DateTime(date.year, 7, 0).day, 0, 0, 0, 0,0),
-      );
-    }else if(date.month == 10 || date.month == 11 || date.month == 12){
-      currentDateTimeRangeVatService = DateTimeRange(
-        start: DateTime(date.year, 10, 1, 0, 0, 0, 0,0),
-        end: DateTime(date.year, 12, DateTime(date.year + 1, 0, 0).day, 0, 0, 0, 0,0),
-      );
-    }
-
-
-    currentWeek = DateTimeRange(start: findFirstDateOfTheWeek(date), end: findLastDateOfTheWeek(date));
-    if(currentBranch != null){
-      if(currentBranch.providerFatture == 'fatture_in_cloud'){
-        retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
-      }else if(currentBranch.providerFatture == 'aruba'){
-        // retrieveDataToDrawChartAruba(currentDateTimeRange);
-      }
-    }
-    clearAndUpdateMapBundle();
-    notifyListeners();
-  }
-
-  void addWeekToDateTimeRangeWeekly(){
-    currentWeek = DateTimeRange(
-      start: currentWeek.start
-          .add(const Duration(days: 7)),
-      end: currentWeek.end.add(const Duration(
-          days: 7)),
-    );
-
-    totalFiscalExpences = 0.0;
-    totalNotFiscalExpences = 0.0;
-
-    currentListExpences.forEach((expence) {
-      if(currentWeek.start.isBefore(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence).add(const Duration(days: 1))) &&
-          currentWeek.end.isAfter(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence).subtract(const Duration(days: 1)))) {
-
-        if(expence.fiscal == 'Y'){
-          totalFiscalExpences = totalFiscalExpences + expence.amount;
-        }else if(expence.fiscal == 'N'){
-          totalNotFiscalExpences = totalNotFiscalExpences + expence.amount;
-        }
-      }
-    });
-    notifyListeners();
-  }
-
-  void subtractWeekToDateTimeRangeWeekly(){
-    currentWeek = DateTimeRange(
-      start: currentWeek.start
-          .subtract(const Duration(days: 7)),
-      end: currentWeek.end.subtract(const Duration(
-          days: 7)),
-    );
-
-    calculateFiscalNotFiscalAmount();
-    notifyListeners();
-  }
-
-
   bool showIvaButtonPressed = false;
   int indexIvaList = 0;
   List<int> ivaList = [22, 10, 4, 0];
 
-  int trimCounter;
-  Map<int, Widget> ivaListCupertino = {
-    0 : const Text('22'),
-    1 : const Text('10'),
-    2 : const Text('4'),
-    3 : const Text('0'),
-  };
+  late int trimCounter;
 
-  void setShowIvaButtonToFalse(){
-    showIvaButtonPressed = false;
-    notifyListeners();
-  }
 
-  void setShowIvaButtonToTrue(){
-    showIvaButtonPressed = true;
-    notifyListeners();
-  }
-
-  List<RecessedModel> getRecessedListByRangeDate(DateTime start, DateTime end){
-    List<RecessedModel> listToReturn = [];
-    if(currentListRecessed.isEmpty){
-      return listToReturn;
-    }else{
-      currentListRecessed.forEach((recessedElement) {
-        if(DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isBefore(end.add(Duration(days: 1))) && DateTime.fromMillisecondsSinceEpoch(recessedElement.dateTimeRecessed).isAfter(start.subtract(Duration(days: 1)))){
-          listToReturn.add(recessedElement);
-        }
-      });
-      return listToReturn;
-    }
-  }
-
-  List<ExpenceModel> getExpenceListByRangeDate(DateTime start, DateTime end){
-    List<ExpenceModel> listToReturn = [];
-    if(currentListExpences.isEmpty){
-      return listToReturn;
-    }else{
-      currentListExpences.forEach((expenceElement) {
-        if(DateTime.fromMillisecondsSinceEpoch(expenceElement.dateTimeExpence).isBefore(end) && DateTime.fromMillisecondsSinceEpoch(expenceElement.dateTimeExpence).isAfter(start)){
-          listToReturn.add(expenceElement);
-        }
-      });
-      return listToReturn;
-    }
-  }
-
-  List<int> getIvaList(){
-    return ivaList;
-  }
 
   void addDataBundle(UserDetailsModel bundle){
     print('Adding bundle to Notifier' + bundle.email.toString());
@@ -372,7 +192,6 @@ class DataBundleNotifier extends ChangeNotifier {
     if(userDetailsList[0].companyList.isNotEmpty){
 
       currentBranch = userDetailsList[0].companyList[0];
-      initializeCurrentDateTimeRange3Months();
       setCurrentPrivilegeType(currentBranch.accessPrivilege);
       List<OrderModel> retrieveOrdersByBranch = await getclientServiceInstance().retrieveOrdersByBranch(currentBranch);
       currentOrdersForCurrentBranch.clear();
@@ -416,39 +235,14 @@ class DataBundleNotifier extends ChangeNotifier {
 
     currentBranch = branchModel;
 
-    initializeCurrentDateTimeRange3Months();
     setCurrentPrivilegeType(currentBranch.accessPrivilege);
 
-
-    if(branchModel.accessPrivilege != Privileges.EMPLOYEE){
-      currentListCashRegister.clear();
-      currentListRecessed.clear();
-      List<RecessedModel> _recessedModelList = [];
-      currentListCashRegister = await clientService.retrieveCashRegistersByBranchId(currentBranch);
-
-      if(currentListCashRegister.isNotEmpty){
-        await Future.forEach(currentListCashRegister,
-                (CashRegisterModel cashRegisterModel) async {
-              List<RecessedModel> list = await clientService.retrieveRecessedListByCashRegister(cashRegisterModel);
-              _recessedModelList.addAll(list);
-            });
-        currentCashRegisterModel = currentListCashRegister.first;
-        currentListRecessed.addAll(_recessedModelList);
-      }
-
-      List<ExpenceModel> _expenceModelList = await clientService.retrieveExpencesListByBranch(currentBranch);
-      currentListExpences.clear();
-      currentListExpences.addAll(_expenceModelList);
-    }
 
     List<EventModel> _eventModelList = await clientService.retrieveEventsListByBranchId(currentBranch);
 
     addCurrentEventsList(_eventModelList);
-
     totalFiscalExpences = 0.0;
     totalNotFiscalExpences = 0.0;
-
-    calculateFiscalNotFiscalAmount();
 
     List<SupplierModel> _supplierModelList = await clientService.retrieveSuppliersListByBranch(currentBranch);
     currentListSuppliers.clear();
@@ -514,14 +308,6 @@ class DataBundleNotifier extends ChangeNotifier {
       }
   }
 
-  List<RecessedModel> getCurrentListRecessed(){
-    return currentListRecessed;
-  }
-
-  List<ExpenceModel> getCurrentListExpences(){
-    return currentListExpences;
-  }
-
   void setCurrentDateTime(DateTime newDateTime){
     currentDateTime = newDateTime;
     notifyListeners();
@@ -531,25 +317,8 @@ class DataBundleNotifier extends ChangeNotifier {
     if(userDetailsList.isNotEmpty){
       userDetailsList.clear();
     }
-    if(currentBranch != null){
-      currentBranch = null;
-      currentPrivilegeType = null;
-    }
-    if(currentListRecessed.isNotEmpty){
-      currentListRecessed.clear();
-    }
 
-    if(currentListCashRegister.isNotEmpty){
-      currentListCashRegister.clear();
-    }
-
-    currentCashRegisterModel = null;
-
-    if(currentListExpences.isNotEmpty){
-      currentListExpences.clear();
-    }
-
-    if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
+    if(currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
       orderIdProductListMap.clear();
       currentUnderWorkingOrdersList.clear();
@@ -557,24 +326,23 @@ class DataBundleNotifier extends ChangeNotifier {
 
     }
 
-    if(currentListSuppliers != null && currentListSuppliers.isNotEmpty){
+    if(currentListSuppliers.isNotEmpty){
       currentListSuppliers.clear();
     }
-    if(currentListSuppliersDuplicated != null && currentListSuppliersDuplicated.isNotEmpty){
+    if(currentListSuppliersDuplicated.isNotEmpty){
       currentListSuppliers.clear();
     }
 
-    if(currentStorageList != null && currentStorageList.isNotEmpty){
+    if(currentStorageList.isNotEmpty){
       currentStorageList.clear();
     }
-    if(currentOrdersForCurrentBranch != null && currentOrdersForCurrentBranch.isNotEmpty){
+    if(currentOrdersForCurrentBranch.isNotEmpty){
       currentOrdersForCurrentBranch.clear();
     }
-    if(currentTodayOrdersForCurrentBranch != null && currentTodayOrdersForCurrentBranch.isNotEmpty){
+    if(currentTodayOrdersForCurrentBranch.isNotEmpty){
       currentTodayOrdersForCurrentBranch.clear();
     }
 
-    setShowIvaButtonToFalse();
     indexIvaList = 0;
 
     notifyListeners();
@@ -590,42 +358,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCurrentRecessedList(List<RecessedModel> recessedModelList) {
-    currentListRecessed.clear();
-    currentListRecessed = recessedModelList;
-
-    notifyListeners();
-  }
-
-  void addCurrentExpencesList(List<ExpenceModel> expenceList) {
-    currentListExpences.clear();
-    currentListExpences = expenceList;
-
-    totalFiscalExpences = 0.0;
-    totalNotFiscalExpences = 0.0;
-
-    calculateFiscalNotFiscalAmount();
-
-    notifyListeners();
-  }
-
-  void previousIva() {
-    if(indexIvaList == 0){
-      indexIvaList = 3;
-    }else{
-      indexIvaList --;
-    }
-    notifyListeners();
-  }
-
-  void nextIva() {
-    if(indexIvaList == 3){
-      indexIvaList = 0;
-    }else{
-      indexIvaList ++;
-    }
-    notifyListeners();
-  }
 
   void addCurrentSuppliersList(List<SupplierModel> suppliersModelList) {
     currentListSuppliers.clear();
@@ -697,7 +429,6 @@ class DataBundleNotifier extends ChangeNotifier {
 
   String getSupplierName(int fk_supplier_id) {
 
-    print('Retrieve supplier name for id ' + fk_supplier_id.toString());
     String currentSupplierName = 'Fornitore Sconosciuto';
 
     currentListSuppliers.forEach((currentSupplier) {
@@ -706,7 +437,6 @@ class DataBundleNotifier extends ChangeNotifier {
         currentSupplierName = currentSupplier.nome;
       }
     });
-    print('Name retrieved: ' + currentSupplierName);
     return currentSupplierName;
   }
 
@@ -774,14 +504,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  void addProviderFattureDetailsToCurrentBranch({String providerFatture, String apiKeyOrUser, String apiUidOrPassword}) {
-    currentBranch.providerFatture = providerFatture;
-    currentBranch.apiKeyOrUser = apiKeyOrUser;
-    currentBranch.apiUidOrPassword = apiUidOrPassword;
-    notifyListeners();
-
-  }
 
   void filterCurrentListSupplierByName(String currentText) {
     if(currentText == ''){
@@ -868,23 +590,22 @@ class DataBundleNotifier extends ChangeNotifier {
     userDetailsList[0].companyList.forEach((currentBranch) async {
 
       List<StorageModel> listStorages = await getclientServiceInstance().retrieveStorageListByBranch(BranchModel(
-          pkBranchId: currentBranch.pkBranchId
+          pkBranchId: currentBranch.pkBranchId, companyName: '', phoneNumber: '', city: '', cap: 0, address: '', accessPrivilege: '', apiKeyOrUser: '', apiUidOrPassword: '', eMail: '' ,providerFatture: '', token: '', vatNumber: ''
       ));
 
       List<SupplierModel> listSuppliers = await getclientServiceInstance().retrieveSuppliersListByBranch(BranchModel(
-          pkBranchId: currentBranch.pkBranchId
+          pkBranchId: currentBranch.pkBranchId, companyName: '', phoneNumber: '', city: '', cap: 0, address: '', accessPrivilege: '', apiKeyOrUser: '', apiUidOrPassword: '', eMail: '' ,providerFatture: '', token: '', vatNumber: ''
       ));
 
       List<UserModel> listUsers = await getclientServiceInstance().retrieveUserListRelatedWithBranchByBranchId(BranchModel(
-          pkBranchId: currentBranch.pkBranchId
-      ));
+          pkBranchId: currentBranch.pkBranchId, companyName: '', phoneNumber: '', city: '', cap: 0, address: '', accessPrivilege: '', apiKeyOrUser: '', apiUidOrPassword: '', eMail: '' ,providerFatture: '', token: '', vatNumber: ''));
       currentMapBranchIdBundleSupplierStorageUsers[currentBranch.pkBranchId] = BundleUserStorageSupplier(currentBranch.pkBranchId, listStorages, listUsers, listSuppliers);
     });
     notifyListeners();
   }
 
-  StorageModel getStorageFromCurrentStorageListByStorageId(int storageId) {
-    StorageModel storageResult;
+  StorageModel? getStorageFromCurrentStorageListByStorageId(int storageId) {
+    StorageModel? storageResult;
     currentStorageList.forEach((storage) {
       if(storage.pkStorageId == storageId){
         storageResult = storage;
@@ -927,67 +648,6 @@ class DataBundleNotifier extends ChangeNotifier {
     }
   }
 
-  retrieveDataToDrawChartFattureInCloud(DateTimeRange currentDateTimeRange) async {
-
-    totalIvaAcquisti = 0.0;
-    totalIvaFatture = 0.0;
-    totalIvaNdcReceived = 0.0;
-    totalIvaNdcSent = 0.0;
-
-    extractedAcquistiFatture.clear();
-    extractedAcquistiFattureBis.clear();
-    extractedNdc.clear();
-    extractedNdcBis.clear();
-    retrieveListaAcquisti.clear();
-    retrieveListaFatture.clear();
-    retrieveListaFattureBis.clear();
-
-    retrieveListaNDC.clear();
-
-    if(currentBranch.providerFatture != null && currentBranch.providerFatture != ''){
-      retrieveListaAcquisti = await iCloudClient.retrieveListaAcquisti(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
-      retrieveListaFatture = await iCloudClient.retrieveListaFatture(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
-      retrieveListaNDC = await iCloudClient.retrieveListaNdc( currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser, currentDateTimeRange.start, currentDateTimeRange.end, '', '', currentDateTimeRange.start.year);
-
-      fattureInCloudCompanyInfo = await iCloudClient.performRichiestaGetCompanyInfo(currentBranch.apiUidOrPassword, currentBranch.apiKeyOrUser,);
-
-      retrieveListaFattureBis.addAll(retrieveListaFatture);
-
-      totalIvaAcquisti = 0.0;
-      totalIvaNdcReceived = 0.0;
-
-      retrieveListaAcquisti.forEach((acquisto) {
-        if (acquisto.tipo == 'spesa') {
-          extractedAcquistiFatture.add(acquisto);
-          extractedAcquistiFattureBis.add(acquisto);
-          totalIvaAcquisti = totalIvaAcquisti + double.parse(acquisto.importo_iva);
-        } else if (acquisto.tipo == 'ndc') {
-          extractedNdc.add(acquisto);
-          extractedNdcBis.add(acquisto);
-          totalIvaNdcReceived = totalIvaNdcReceived + double.parse(acquisto.importo_iva);
-        }
-      });
-
-
-      print(retrieveListaFatture.length.toString());
-      totalIvaFatture = 0.0;
-      retrieveListaFatture.forEach((fattura) {
-        print(fattura.importo_totale.toString());
-        print(fattura.importo_netto.toString());
-        totalIvaFatture = totalIvaFatture + (double.parse(fattura.importo_totale) - double.parse(fattura.importo_netto));
-        print(totalIvaFatture.toString());
-      });
-
-      totalIvaNdcSent = 0.0;
-      retrieveListaNDC.forEach((ndc) {
-        totalIvaNdcSent = totalIvaNdcSent + (double.parse(ndc.importo_totale) - double.parse(ndc.importo_netto));
-      });
-    }
-    notifyListeners();
-  }
-
-
-
   String normalizeDayValue(int day) {
     if(day < 10){
       return '0' + day.toString();
@@ -1009,8 +669,8 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
 
-  StorageModel retrieveStorageFromStorageListByIdName(String storageIdName) {
-    StorageModel storageModelToReturn;
+  StorageModel? retrieveStorageFromStorageListByIdName(String storageIdName) {
+    StorageModel? storageModelToReturn;
 
     currentStorageList.forEach((storage) {
       if(storageIdName.contains(storage.name) &&
@@ -1031,8 +691,8 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  SupplierModel retrieveSupplierFromSupplierListByIdName(String selectedSupplier) {
-    SupplierModel supplierToReturn;
+  SupplierModel? retrieveSupplierFromSupplierListByIdName(String selectedSupplier) {
+    SupplierModel? supplierToReturn;
     currentListSuppliers.forEach((supplier) {
       if(selectedSupplier.contains(supplier.nome) &&
           selectedSupplier.contains(supplier.pkSupplierId.toString())){
@@ -1042,8 +702,8 @@ class DataBundleNotifier extends ChangeNotifier {
     return supplierToReturn;
   }
 
-  SupplierModel retrieveSupplierFromSupplierListById(int fk_supplier_id) {
-    SupplierModel supplierToReturn;
+  SupplierModel? retrieveSupplierFromSupplierListById(int fk_supplier_id) {
+    SupplierModel? supplierToReturn;
     currentListSuppliers.forEach((supplier) {
       if(supplier.pkSupplierId == fk_supplier_id){
         supplierToReturn = supplier;
@@ -1055,23 +715,6 @@ class DataBundleNotifier extends ChangeNotifier {
   void setCurrentProductListToSendDraftOrder(List<ProductOrderAmountModel> prodOrderModelList) {
     currentProdOrderModelList.clear();
     currentProdOrderModelList.addAll(prodOrderModelList);
-    notifyListeners();
-  }
-
-  void calculateFiscalNotFiscalAmount() {
-    totalFiscalExpences = 0.0;
-    totalNotFiscalExpences = 0.0;
-    currentListExpences.forEach((expence) {
-      if(currentWeek.start.isBefore(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence).add(const Duration(days: 1))) &&
-          currentWeek.end.isAfter(DateTime.fromMillisecondsSinceEpoch(expence.dateTimeExpence))) {
-
-        if(expence.fiscal == 'Y'){
-          totalFiscalExpences = totalFiscalExpences + expence.amount;
-        }else if(expence.fiscal == 'N'){
-          totalNotFiscalExpences = totalNotFiscalExpences + expence.amount;
-        }
-      }
-    });
     notifyListeners();
   }
 
@@ -1170,21 +813,21 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   String retrieveStorageById(int fkStorageId) {
-    StorageModel storage;
+    StorageModel? storage;
     currentStorageList.forEach((element) {
       if(element.pkStorageId == fkStorageId){
         storage = element;
       }
     });
-    if(storage != null && storage.name != null && storage.name != ''){
-      return storage.name;
+    if(storage != null && storage!.name != null && storage!.name != ''){
+      return storage!.name;
     }else{
      return 'Nessun magazzino trovato';
     }
   }
 
-  BranchModel retrieveBranchById(int key) {
-    BranchModel branchToReturn;
+  BranchModel? retrieveBranchById(int key) {
+    BranchModel? branchToReturn;
 
     userDetailsList[0].companyList.forEach((branch) {
       if(branch.pkBranchId == key){
@@ -1201,118 +844,11 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void setCurrentDateTimeRange(DateTimeRange dateTimeRange) {
     currentDateTimeRangeVatService = dateTimeRange;
-    if(currentBranch != null){
-      if(currentBranch.providerFatture == 'fatture_in_cloud'){
-        retrieveDataToDrawChartFattureInCloud(currentDateTimeRangeVatService);
-      }else if(currentBranch.providerFatture == 'aruba'){
-        // retrieveDataToDrawChartAruba(currentDateTimeRange);
-      }
-    }
     notifyListeners();
   }
 
-  filterextractedAcquistiFattureByText(String filterText){
-    if(filterText.isEmpty){
-      extractedAcquistiFatture.clear();
-      extractedAcquistiFatture.addAll(extractedAcquistiFattureBis);
-    }else{
-      extractedAcquistiFatture.clear();
-      extractedAcquistiFattureBis.forEach((element) {
-        if(element.nome.toLowerCase().contains(filterText.toLowerCase())){
-          extractedAcquistiFatture.add(element);
-        }
-      });
-    }
-    notifyListeners();
-  }
-
-  void filterextractedextractedNdcByText(String filterText) {
-    if(filterText.isEmpty){
-      extractedNdc.clear();
-      extractedNdc.addAll(extractedNdcBis);
-    }else{
-      extractedNdc.clear();
-      extractedNdcBis.forEach((element) {
-        if(element.nome.toLowerCase().contains(filterText.toLowerCase())){
-          extractedNdc.add(element);
-        }
-      });
-    }
-    notifyListeners();
-  }
-
-  void filterListaFattureByText(String filterText) {
-    if(filterText.isEmpty){
-      retrieveListaFatture.clear();
-      retrieveListaFatture.addAll(retrieveListaFattureBis);
-    }else{
-      retrieveListaFatture.clear();
-      retrieveListaFattureBis.forEach((element) {
-        if(element.nome.toLowerCase().contains(filterText.toLowerCase())){
-          retrieveListaFatture.add(element);
-        }
-      });
-    }
-    notifyListeners();
-
-  }
-
-  void setCashRegisterList(List<CashRegisterModel> cashRegisterModelList) {
-    if(cashRegisterModelList.isNotEmpty){
-      currentListCashRegister.clear();
-      currentListCashRegister.addAll(cashRegisterModelList);
-      currentCashRegisterModel = currentListCashRegister.first;
-      notifyListeners();
-    }
-  }
-
-  void switchCurrentCashRegisterBack() {
-    int currentIndex = 0;
-    if(currentListCashRegister.length != 1){
-      for(int i = 0; i < currentListCashRegister.length; i++){
-        if(currentCashRegisterModel.pkCashRegisterId == currentListCashRegister.elementAt(i).pkCashRegisterId){
-          currentIndex = i;
-        }
-      }
-      if(currentIndex == 0){
-        currentCashRegisterModel = currentListCashRegister.last;
-      }else{
-        currentCashRegisterModel = currentListCashRegister.elementAt(currentIndex - 1);
-      }
-    }
-    notifyListeners();
-  }
-
-  void switchCurrentCashRegisterForward() {
-
-    int currentIndex = 0;
-    if(currentListCashRegister.length != 1){
-      for(int i = 0; i < currentListCashRegister.length; i++){
-        if(currentCashRegisterModel.pkCashRegisterId == currentListCashRegister.elementAt(i).pkCashRegisterId){
-          currentIndex = i;
-        }
-      }
-      if(currentIndex != currentListCashRegister.length - 1){
-        currentCashRegisterModel = currentListCashRegister.elementAt(currentIndex + 1);
-      }else{
-        currentCashRegisterModel = currentListCashRegister.first;
-      }
-    }
-    notifyListeners();
-  }
-
-  bool isCurrentCashAlreadyUsed(String text) {
-    bool result = false;
-    currentListCashRegister.forEach((element) {
-      if(element.name.toLowerCase() == text.toLowerCase()){
-        result = true;
-      }
-    });
-    return result;
-  }
-
-  StorageModel getStorageModelById(int fkStorageId) {
-    StorageModel storageModel;
+  StorageModel? getStorageModelById(int fkStorageId) {
+    StorageModel? storageModel;
 
     currentStorageList.forEach((element) {
       if(element.pkStorageId == fkStorageId){
@@ -1322,9 +858,9 @@ class DataBundleNotifier extends ChangeNotifier {
     return storageModel;
   }
 
-  SupplierModel getSupplierFromList(int fk_supplier_id) {
+  SupplierModel? getSupplierFromList(int fk_supplier_id) {
     print('Retrieve supplier for id ' + fk_supplier_id.toString());
-    SupplierModel currentSupplierName;
+    SupplierModel? currentSupplierName;
 
     currentListSuppliers.forEach((currentSupplier) {
 
@@ -1507,9 +1043,8 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  EventModel currentEventModel;
+  late EventModel currentEventModel;
   void setCurrentEventModel(EventModel eventModel) {
-    currentEventModel = null;
     currentEventModel = eventModel;
     notifyListeners();
   }
@@ -1530,7 +1065,7 @@ class DataBundleNotifier extends ChangeNotifier {
             (WorkstationModel workstationModel) async {
 
           if(workstationsProductsMap.containsKey(workstationModel.pkWorkstationId)){
-            workstationsProductsMap[workstationModel.pkWorkstationId].clear();
+            workstationsProductsMap[workstationModel.pkWorkstationId]!.clear();
             workstationsProductsMap[workstationModel.pkWorkstationId] = await getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
           }else{
             workstationsProductsMap[workstationModel.pkWorkstationId] = await getclientServiceInstance().retrieveWorkstationProductModelByWorkstationId(workstationModel);
@@ -1545,33 +1080,11 @@ class DataBundleNotifier extends ChangeNotifier {
   void setEventDateTime(DateTime date){
     currentDateEvent = date;
     notifyListeners();
-
   }
 
   List<OrderModel> retrievedOrderModelArchiviedNotPaid = [];
-  Map<int, List<DepositOrder>> mapOrderIdDepositOrderList = {};
 
-  Future<void> addAllCurrentOrdersArchiviedAndNotPaidForCurrentBranchAndSupplier(List<OrderModel> retrievedOrderModelArchiviedNotPaidIcoming) async {
-    retrievedOrderModelArchiviedNotPaid.clear();
-    mapOrderIdDepositOrderList.clear();
 
-    await Future.forEach(retrievedOrderModelArchiviedNotPaidIcoming, (OrderModel orderElement) async {
-      mapOrderIdDepositOrderList[orderElement.pk_order_id] = await getclientServiceInstance().performRetrieveDepositOrderByOrderId(orderElement);
-    });
-
-    retrievedOrderModelArchiviedNotPaid.addAll(retrievedOrderModelArchiviedNotPaidIcoming);
-
-    notifyListeners();
-  }
-
-  Future<void> updateMapOrderIdDepositOrderListByOrderId(OrderModel orderModel) async {
-
-    List<DepositOrder> listOrderDeposit = await getclientServiceInstance().performRetrieveDepositOrderByOrderId(orderModel);
-    mapOrderIdDepositOrderList[orderModel.pk_order_id].clear();
-    mapOrderIdDepositOrderList[orderModel.pk_order_id] = listOrderDeposit;
-
-    notifyListeners();
-  }
 
   String executeLoadStorage = 'SI';
   String signAsPaid = 'NO';
@@ -1613,5 +1126,37 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  DateTime marketingDate = DateTime.now();
+  Map<String, List<Customer>> customersMarketingMap = {};
 
+  void setMarketingDate(DateTime date) {
+    marketingDate = date;
+    notifyListeners();
+  }
+
+  Set<Customer> customerListCisternino = <Customer>{};
+  Set<Customer> customerListLocorotondo = <Customer>{};
+  Set<Customer> customerListMonopoli = <Customer>{};
+
+  void setCurrentCustomerList(List<Customer> customers) {
+    customerListCisternino.clear();
+    customerListLocorotondo.clear();
+    customerListMonopoli.clear();
+    customers.forEach((customer) {
+      customer.accessesList!.forEach((CustomerAccess access) {
+        switch(access.branchLocation){
+          case CustomerAccessBranchLocation.cisternino:
+            customerListCisternino.add(customer);
+            break;
+          case CustomerAccessBranchLocation.locorotondo:
+            customerListLocorotondo.add(customer);
+            break;
+          case CustomerAccessBranchLocation.monopoli:
+            customerListMonopoli.add(customer);
+            break;
+        }
+      });
+    });
+    notifyListeners();
+  }
 }

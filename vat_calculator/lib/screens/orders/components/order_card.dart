@@ -6,7 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
@@ -14,14 +14,13 @@ import 'package:vat_calculator/models/bundle_users_storage_supplier_forbranch.da
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/edit_order_underworking_screen.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
-import '../../../client/pdf/pdf_service.dart';
 import '../../../client/vatservice/model/utils/order_state.dart';
 import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({Key key, @required this.order, @required this.orderIdProductList, @required this.showExpandedTile}) : super(key: key);
+  const OrderCard({Key? key, required this.order, required this.orderIdProductList, required this.showExpandedTile}) : super(key: key);
 
   final OrderModel order;
   final List<ProductOrderAmountModel> orderIdProductList;
@@ -102,12 +101,12 @@ class OrderCard extends StatelessWidget {
                                       deliveryDate: getDayFromWeekDay(deliveryDate.weekday) + ' ' + deliveryDate.day.toString() + '/' + deliveryDate.month.toString() + '/' + deliveryDate.year.toString(),
                                       supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
                                       currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                                      storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
-                                      storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
-                                      storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
+                                      storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id)!.address,
+                                      storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id)!.cap,
+                                      storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id)!.city);
 
                                   print('Message to send vrvrve: ' + message);
-                                  SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
+                                  SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id)!;
 
                                   message = message.replaceAll('#', '');
                                   message = message.replaceAll('<br>', '\n');
@@ -131,11 +130,11 @@ class OrderCard extends StatelessWidget {
                                       deliveryDate: getDayFromWeekDay(deliveryDate.weekday) + ' ' + deliveryDate.day.toString() + '/' + deliveryDate.month.toString() + '/' + deliveryDate.year.toString(),
                                       supplierName: dataBundleNotifier.getSupplierName(order.fk_supplier_id),
                                       currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                                      storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id).address,
-                                      storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id).cap,
-                                      storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id).city);
+                                      storageAddress: dataBundleNotifier.getStorageModelById(order.fk_storage_id)!.address,
+                                      storageCap: dataBundleNotifier.getStorageModelById(order.fk_storage_id)!.cap,
+                                      storageCity: dataBundleNotifier.getStorageModelById(order.fk_storage_id)!.city);
 
-                                  SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id);
+                                  SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(order.fk_supplier_id)!;
 
                                   message = message.replaceAll('&', '%26');
                                   message = message.replaceAll(' ', '%20');
@@ -159,7 +158,7 @@ class OrderCard extends StatelessWidget {
                                     if (await canLaunch(urlString)) {
                                       await launch(urlString);
                                     } else {
-                                      Scaffold.of(context).showSnackBar(SnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                           backgroundColor: kPinaColor,
                                           duration: Duration(milliseconds: 3000),
                                           content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -169,19 +168,6 @@ class OrderCard extends StatelessWidget {
                                   }else{
                                     await launch(urlString);
                                   }
-                                }
-                            ),
-                            IconButton(
-                                icon: SvgPicture.asset(
-                                  'assets/icons/pdf.svg',
-                                  height: getProportionateScreenHeight(25),
-                                ),
-                                onPressed: () {
-                                  PdfService pdfService = PdfService();
-                                  pdfService.generatePdfOrderAndOpenOnDevide(
-                                      order,
-                                      orderIdProductList,
-                                  dataBundleNotifier.currentBranch);
                                 }
                             ),
                           ],

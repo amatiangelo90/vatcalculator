@@ -7,7 +7,7 @@ class Body extends StatelessWidget {
   final String email;
   final String password;
 
-  const Body({@required this.email, @required this.password});
+  const Body({required this.email, required this.password});
 
   @override
   Widget build(BuildContext context) {

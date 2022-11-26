@@ -19,19 +19,19 @@ class WorkstationProductModel{
 
   WorkstationProductModel(
       {
-        @required this.productName,
-        @required this.unitMeasure,
-        @required this.fkSupplierId,
-        @required this.pkWorkstationStorageProductId,
-        @required this.refillStock,
-        @required this.consumed,
-        @required this.fkWorkstationId,
-        @required this.fkStorProdId,
-        @required this.fkProductId,
-        @required this.storeStock,
-        @required this.amountHunderd,
-        @required this.productPrice,
-        @required this.backupRefillStock,
+        required this.productName,
+        required this.unitMeasure,
+        required this.fkSupplierId,
+        required this.pkWorkstationStorageProductId,
+        required this.refillStock,
+        required this.consumed,
+        required this.fkWorkstationId,
+        required this.fkStorProdId,
+        required this.fkProductId,
+        required this.storeStock,
+        required this.amountHunderd,
+        required this.productPrice,
+        required this.backupRefillStock,
       });
 
   toMap(){
@@ -65,6 +65,7 @@ class WorkstationProductModel{
       storeStock: json['storeStock'] as double,
       amountHunderd: json['amountHunderd'] as double,
       productPrice: json['productPrice'] as double,
+      backupRefillStock: 0.0,
     );
   }
 }

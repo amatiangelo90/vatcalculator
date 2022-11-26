@@ -5,8 +5,7 @@ class ConfigurationModel{
   String recessedextra;
 
   ConfigurationModel({
-    @required this.recessedextra,
-
+    required this.recessedextra,
   });
 
   toMap(){

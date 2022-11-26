@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,14 +7,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 
@@ -24,7 +19,7 @@ import '../../size_config.dart';
 import '../main_page.dart';
 
 class BranchJoinScreen extends StatefulWidget {
-  const BranchJoinScreen({Key key}) : super(key: key);
+  const BranchJoinScreen({Key? key}) : super(key: key);
 
   static String routeName = 'branch_join_screen';
 
@@ -39,11 +34,11 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
   TextEditingController controllerBranchName = TextEditingController();
 
 
-  StreamController<ErrorAnimationType> errorController;
+  late StreamController<ErrorAnimationType> errorController;
   final formKey = GlobalKey<FormState>();
 
   bool hasError = false;
-  String currentPassword;
+  late String currentPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +115,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                 ],
                                 onCompleted: (code) async {
 
-                                  formKey.currentState.validate();
+                                  formKey.currentState!.validate();
 
                                   Widget cancelButton = TextButton(
                                     child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
@@ -353,14 +348,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                           Response response = await dataBundleNotifier.getclientServiceInstance().createUserBranchRelation(
                                             accessPrivilege: Privileges.EMPLOYEE,
                                             fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
-                                            fkUserId: dataBundleNotifier.userDetailsList[0].id,
-                                              actionModel: ActionModel(
-                                                  date: DateTime.now().millisecondsSinceEpoch,
-                                                  description: 'Si è collegato all\'attività ${retrieveBranchByBranchId[0].companyName} tramite il codice $currentPassword.',
-                                                  type: ActionType.BRANCH_JOIN,
-                                                  fkBranchId: retrieveBranchByBranchId[0].pkBranchId,
-                                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser()
-                                              )
+                                            fkUserId: dataBundleNotifier.userDetailsList[0].id
                                           );
                                           if(response == null){
                                             await FirebaseMessaging.instance.subscribeToTopic('branch-${retrieveBranchByBranchId[0].pkBranchId}').then((value) => print('Subscription to topic [branch-${retrieveBranchByBranchId[0].pkBranchId}] done!!'));
@@ -434,22 +422,6 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                             List<BranchModel> _branchList = await dataBundleNotifier.getclientServiceInstance().retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
                                             dataBundleNotifier.addBranches(_branchList);
 
-                                            List<CashRegisterModel> currentListCashRegister = [];
-                                            List<RecessedModel> _recessedModelList = [];
-
-                                            if(dataBundleNotifier.currentBranch != null){
-                                              currentListCashRegister = await dataBundleNotifier.getclientServiceInstance().retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
-
-                                              if(currentListCashRegister.isNotEmpty){
-                                                await Future.forEach(currentListCashRegister,
-                                                        (CashRegisterModel cashRegisterModel) async {
-                                                      List<RecessedModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByCashRegister(cashRegisterModel);
-                                                      _recessedModelList.addAll(list);
-                                                    });
-                                              }
-                                              dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                                              dataBundleNotifier.setCashRegisterList(currentListCashRegister);
-                                            }
 
                                             if(dataBundleNotifier.currentBranch != null){
                                               List<SupplierModel> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
@@ -465,8 +437,6 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                               dataBundleNotifier.addCurrentOrdersList(_orderModelList);
 
                                             }
-
-                                            dataBundleNotifier.initializeCurrentDateTimeRange3Months();
                                             dataBundleNotifier.onItemTapped(0);
                                             Navigator.pushNamed(context, HomeScreenMain.routeName);
                                           }

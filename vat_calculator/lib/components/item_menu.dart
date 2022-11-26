@@ -4,12 +4,12 @@ import '../constants.dart';
 
 class ItemMenu extends StatelessWidget {
   const ItemMenu({
-    Key key,
-    @required this.text,
-    @required this.icon,
-    this.press,
-    this.showArrow,
-    @required this.backgroundColor,
+    Key? key,
+    required this.text,
+    required this.icon,
+    required this.press,
+    required this.showArrow,
+    required this.backgroundColor,
   }) : super(key: key);
 
   final String text, icon;

@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/light_colors.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -18,7 +16,7 @@ import '../../../size_config.dart';
 
 class AddProductScreen extends StatefulWidget {
   static String routeName = 'addproduct';
-  const AddProductScreen({Key key, this.supplier}) : super(key: key);
+  const AddProductScreen({Key? key, required this.supplier}) : super(key: key);
 
   final SupplierModel supplier;
 
@@ -380,21 +378,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         iva_applicata: int.parse(currentIva),
                         prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
                         unita_misura: currentUnitMeasure == 'Altro' ? _unitMeasureController.text : currentUnitMeasure,
-                        fkSupplierId: widget.supplier.pkSupplierId
+                        fkSupplierId: widget.supplier.pkSupplierId, pkProductId: 0, orderItems: 0
                     );
 
                     print(productModel.toMap().toString());
 
                     ClientVatService vatService = ClientVatService();
                     Response performSaveProduct = await vatService.performSaveProduct(
-                        product: productModel,
-                        actionModel: ActionModel(
-                            date: DateTime.now().millisecondsSinceEpoch,
-                            description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${dataBundleNotifier.getSupplierName(productModel.fkSupplierId)} ',
-                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                            type: ActionType.PRODUCT_CREATION
-                        )
+                        product: productModel
                     );
                     sleep(const Duration(seconds: 1));
 
@@ -413,7 +404,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
                   }
                 },
-                text: 'Crea ' + _nameController.text,
+                text: 'Crea ' + _nameController.text, textColor: kPrimaryColor,
               ),
             ),
           ),
@@ -422,12 +413,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  void buildSnackBar({@required String text, @required Color color}) {
+  void buildSnackBar({@required String? text, @required Color? color}) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 2000),
         backgroundColor: color,
-        content: Text(text, style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+        content: Text(text!, style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
   }
 
   void setInitialState(bool vat4,

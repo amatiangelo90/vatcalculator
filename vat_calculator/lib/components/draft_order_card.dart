@@ -13,7 +13,7 @@ import '../constants.dart';
 import '../size_config.dart';
 
 class DraftOrderCard extends StatelessWidget {
-  const DraftOrderCard({Key key, @required this.order, @required this.orderIdProductListMap, @required this.showExpandedTile}) : super(key: key);
+  const DraftOrderCard({Key? key, required this.order, required this.orderIdProductListMap, required this.showExpandedTile}) : super(key: key);
 
   final OrderModel order;
   final Map<int, List<ProductOrderAmountModel>> orderIdProductListMap;
@@ -34,7 +34,7 @@ class DraftOrderCard extends StatelessWidget {
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                    productList: orderIdProductListMap[order.pk_order_id],),),);
+                    productList: orderIdProductListMap[order.pk_order_id]!,),),);
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -116,7 +116,7 @@ class DraftOrderCard extends StatelessWidget {
                                   color: kCustomOrange,
                                   fontSize: getProportionateScreenHeight(13),),
                               ),
-                              Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id].length.toString(),
+                              Text(orderIdProductListMap[order.pk_order_id] == null ? '0' : orderIdProductListMap[order.pk_order_id]!.length.toString(),
                                 style: TextStyle(
                                     color: kCustomWhite,
                                     fontSize: getProportionateScreenHeight(15),
@@ -136,7 +136,7 @@ class DraftOrderCard extends StatelessWidget {
                                 '€ ' +
                                     calculatePriceFromProductList(
                                         orderIdProductListMap[
-                                        order.pk_order_id]),
+                                        order.pk_order_id]!),
                                 style: TextStyle(
                                     color: kCustomWhite,
                                     fontSize: getProportionateScreenHeight(15),
@@ -238,7 +238,7 @@ class DraftOrderCard extends StatelessWidget {
                           ),
                           SizedBox(height: getProportionateScreenHeight(20),),
                           const Text('Carrello'),
-                          buildProductListWidget(orderIdProductListMap[order.pk_order_id], dataBundleNotifier),
+                          buildProductListWidget(orderIdProductListMap[order.pk_order_id]!, dataBundleNotifier),
                           SizedBox(height: getProportionateScreenHeight(20),),
                         ],
                       ) : SizedBox(width: 0,),
@@ -248,7 +248,7 @@ class DraftOrderCard extends StatelessWidget {
                           color: kCustomOrange,
                           onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context) => OrderCompletionScreen(orderModel: order,
-                              productList: orderIdProductListMap[order.pk_order_id],),),);
+                              productList: orderIdProductListMap[order.pk_order_id]!,),),);
                           },
                           child: Text('Completa Ordine'),
                         ),

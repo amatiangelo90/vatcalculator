@@ -32,11 +32,11 @@ Future<void> main() async {
   FirebaseMessaging.onMessageOpenedApp.listen((event) {
     _firebasePushHandler;
   });
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
 
 
@@ -62,4 +62,5 @@ Future<void> _firebasePushHandler(RemoteMessage message) {
   //AwesomeNotifications().createNotificationFromJsonData(
   //    message.data,
   //);
+  return Future.value();
 }

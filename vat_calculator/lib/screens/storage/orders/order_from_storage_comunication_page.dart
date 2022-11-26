@@ -9,7 +9,7 @@ import '../../main_page.dart';
 import 'order_build_from_storage_widget.dart';
 
 class OrderFromStorageComunicationPage extends StatelessWidget {
-  const OrderFromStorageComunicationPage({Key key, this.orderedMapBySuppliers})
+  const OrderFromStorageComunicationPage({Key? key,required this.orderedMapBySuppliers})
       : super(key: key);
 
   final Map<int, List<StorageProductModel>> orderedMapBySuppliers;

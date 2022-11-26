@@ -6,9 +6,9 @@ import '../size_config.dart';
 
 class SocialCard extends StatelessWidget {
   const SocialCard({
-    Key key,
-    this.icon,
-    this.press,
+    Key? key,
+    required this.icon,
+    required this.press,
   }) : super(key: key);
 
   final String icon;

@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
@@ -11,10 +10,9 @@ import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
-import 'order_creation/order_create_screen.dart';
 
 class UnderWorkingOrderPage extends StatefulWidget {
-  const UnderWorkingOrderPage({Key key}) : super(key: key);
+  const UnderWorkingOrderPage({Key? key}) : super(key: key);
 
   @override
   State<UnderWorkingOrderPage> createState() => _UnderWorkingOrderPageState();
@@ -23,14 +21,14 @@ class UnderWorkingOrderPage extends StatefulWidget {
 class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
 
-  ValueNotifier<List<OrderModel>> _selectedEvents;
+  late ValueNotifier<List<OrderModel>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.week;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
   final LinkedHashMap<DateTime, List<OrderModel>> _kOrders = LinkedHashMap();
 
   DateTime _focusedDay = DateTime.now();
-  DateTime _selectedDay;
+  DateTime _selectedDay = DateTime.now();
 
   Map<int, List<ProductOrderAmountModel>> orderIdProductListMap = {};
 
@@ -180,7 +178,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
                             itemBuilder: (context, order) {
                               return OrderCard(order: orderList[order],
                                 showExpandedTile: true,
-                                orderIdProductList: orderIdProductListMap[orderList[order].pk_order_id],
+                                orderIdProductList: orderIdProductListMap[orderList[order].pk_order_id]!,
                               );
                             },
                           );
@@ -214,7 +212,7 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
     eventsList.forEach((element) {
 
       if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date))))){
-        map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))].add(element);
+        map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))]!.add(element);
       }else{
         List<OrderModel> listToAdd = [element];
         map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))] = listToAdd;
@@ -235,7 +233,8 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
     dataBundleNotifier.currentUnderWorkingOrdersList.forEach((element) async {
       List<ProductOrderAmountModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveProductByOrderId(
-        OrderModel(pk_order_id: element.pk_order_id,),
+        OrderModel(pk_order_id: element.pk_order_id, code: '', closedby: '', delivery_date: '',
+          paid: '', status: '', total: 0, fk_user_id: 0, fk_supplier_id: 0, fk_storage_id: 0, fk_branch_id: 0, details: '', creation_date: ''),
       );
       orderIdProductListMap[element.pk_order_id] = list;
     });

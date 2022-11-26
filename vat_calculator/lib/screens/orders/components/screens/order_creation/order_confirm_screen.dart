@@ -1,16 +1,13 @@
 import 'dart:io';
-
 import 'package:csc_picker/dropdown_with_search.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
@@ -23,7 +20,7 @@ import 'order_error_details_screen.dart';
 import 'order_sent_details_screen.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
-  const OrderConfirmationScreen({Key key, this.currentSupplier}) : super(key: key);
+  const OrderConfirmationScreen({Key? key, required this.currentSupplier}) : super(key: key);
 
   static String routeName = 'orderconfirmationscreen';
 
@@ -37,9 +34,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
   String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
   String _selectedStorage = 'Seleziona Magazzino';
-  StorageModel currentStorageModel;
+  StorageModel currentStorageModel = StorageModel(pkStorageId: 0, name: '', code: '', creationDate: DateTime.now(), address: '', city: '', cap: '0', fkBranchId: 0);
 
-  DateTime currentDate;
+  DateTime currentDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +121,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 fk_user_id: dataBundleNotifier.userDetailsList[0].id,
                                 pk_order_id: 0,
                                 fk_supplier_id: widget.currentSupplier.pkSupplierId,
-                                paid: 'false'
+                                paid: 'false', closedby: ''
                             ),
                         );
 
@@ -196,7 +193,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       }
                   }
                 },
-                color: kCustomGreenAccent,
+                color: kCustomGreenAccent, textColor: Color(0xff121212),
               ),
             ),
             appBar: AppBar(
@@ -261,8 +258,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
   }
 
   Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
-    List<Widget> list = [
-      Center(
+    List<Widget> list = [];
+    try{
+      list.add( Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SizedBox(
@@ -272,13 +270,13 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 children: [
                   Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25),
                       color: kPrimaryColor),),
-                  Text('#' + code, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
-                  Divider(endIndent: 40, indent: 40,),
+                  Text('#' + code!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
+                  const Divider(endIndent: 40, indent: 40,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text('  Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                      Text(dataBundleNotifier.userDetailsList[0]!.firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                     ],
                   ),
                   Row(
@@ -309,7 +307,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         selected: _selectedStorage,
                         onChanged: (storage) {
                           setCurrentStorage(storage, dataBundleNotifier);
-                        },
+                        }, label: '',
                       ),
                     ),
                   ),
@@ -362,9 +360,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         ) : SizedBox(height: 0,),
                         currentDate == null
                             ? const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text(''),
-                            )
+                          padding: EdgeInsets.all(8.0),
+                          child: Text(''),
+                        )
                             : Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -391,84 +389,88 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             ),
           ),
         ),
-      ),
-    ];
-
-    if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){
-      list.add(Column(
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height*0.3,),
-          const Center(child: Text('Nessun prodotto registrato')),
-        ],
       ),);
-      return list;
-    }
-    list.add(Card(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(10.0),
-            child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
-          ),
-          CupertinoButton(
-              child: const Text('Modifica', style: TextStyle(color: Colors.black54),),
-            onPressed: (){
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    ));
-    dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
-      TextEditingController controller = TextEditingController(text: currentProduct.orderItems.toString());
-
-      if(currentProduct.orderItems != 0){
-        list.add(
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(currentProduct.nome, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
-                      Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints.loose(Size(
-                            getProportionateScreenWidth(70),
-                            getProportionateScreenWidth(60))),
-                        child: CupertinoTextField(
-                          controller: controller,
-                          enabled: false,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true, signed: true),
-                          clearButtonMode: OverlayVisibilityMode.never,
-                          textAlign: TextAlign.center,
-                          autocorrect: false,
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ],
-              ),
-            )
-        );
+      if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){
+        list.add(Column(
+          children: [
+            SizedBox(height: MediaQuery.of(context).size.height*0.3,),
+            const Center(child: Text('Nessun prodotto registrato')),
+          ],
+        ),);
+        return list;
       }
-    });
+      list.add(Card(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
+            ),
+            CupertinoButton(
+              child: const Text('Modifica', style: TextStyle(color: Colors.black54),),
+              onPressed: (){
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ));
+      dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
+        TextEditingController controller = TextEditingController(text: currentProduct.orderItems.toString());
 
-    list.add(Column(
-      children: const [
-        SizedBox(height: 80,),
-      ],
-    ));
+        if(currentProduct.orderItems != 0){
+          list.add(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(currentProduct.nome, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
+                        Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints.loose(Size(
+                              getProportionateScreenWidth(70),
+                              getProportionateScreenWidth(60))),
+                          child: CupertinoTextField(
+                            controller: controller,
+                            enabled: false,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true, signed: true),
+                            clearButtonMode: OverlayVisibilityMode.never,
+                            textAlign: TextAlign.center,
+                            autocorrect: false,
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ],
+                ),
+              )
+          );
+        }
+      });
+
+      list.add(Column(
+        children: const [
+          SizedBox(height: 80,),
+        ],
+      ));
+    }catch(e){
+      print(e);
+    }
+
+
+
     return list;
   }
 
@@ -477,18 +479,18 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
       _selectedStorage = storage;
     });
 
-    currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage);
+    currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage)!;
 
   }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime pickedDate = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
               backgroundColor: Colors.black,
               dialogBackgroundColor: Colors.black,
-              colorScheme: ColorScheme.dark(
+              colorScheme: const ColorScheme.dark(
                 onSurface: Colors.white,
                 primary: Colors.white,
                 secondary: kPrimaryColor,
@@ -502,7 +504,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 ),
               ),
             ),
-            child: child,
+            child: child!,
           );
         },
 

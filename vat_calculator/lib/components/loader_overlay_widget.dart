@@ -6,7 +6,7 @@ import '../constants.dart';
 import '../size_config.dart';
 
 class LoaderOverlayWidget extends StatelessWidget {
-  const LoaderOverlayWidget({Key key, this.message}) : super(key: key);
+  const LoaderOverlayWidget({Key? key, required this.message}) : super(key: key);
 
   final String message;
 

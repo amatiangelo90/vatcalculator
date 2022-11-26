@@ -2,15 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-
 import '../../../client/vatservice/model/event_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../../main_page.dart';
 import 'event_card.dart';
 
 class ArchiviedEventPage extends StatelessWidget {
-  const ArchiviedEventPage({Key key}) : super(key: key);
+  const ArchiviedEventPage({Key? key}) : super(key: key);
 
   static String routeName = "/eventarchivied";
   

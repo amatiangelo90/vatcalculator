@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../../../client/fattureICloud/model/response_fornitori.dart';
+import '../../../../client/vatservice/model/response_fornitori.dart';
 import '../../../../constants.dart';
 import '../../../../models/databundlenotifier.dart';
 import '../../../../size_config.dart';

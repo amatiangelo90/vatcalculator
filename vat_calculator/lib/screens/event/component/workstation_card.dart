@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/workstation_manager_screen.dart';
 import 'package:vat_calculator/size_config.dart';
@@ -12,7 +11,7 @@ import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
 
 class WorkstationCard extends StatelessWidget {
-  const WorkstationCard({Key key, this.eventModel, this.workstationModel, this.isBarType}) : super(key: key);
+  const WorkstationCard({Key? key,required this.eventModel,required this.workstationModel,required this.isBarType}) : super(key: key);
 
   final EventModel eventModel;
   final WorkstationModel workstationModel;
@@ -209,7 +208,7 @@ class WorkstationCard extends StatelessWidget {
       )
     ];
 
-    dataBundleNotifier.workstationsProductsMap[workstationModel.pkWorkstationId].forEach((workstationProd) {
+    dataBundleNotifier.workstationsProductsMap[workstationModel.pkWorkstationId]!.forEach((workstationProd) {
         list.add(TableRow(
           children: [
             Column(

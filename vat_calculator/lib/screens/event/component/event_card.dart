@@ -14,7 +14,7 @@ import '../../../size_config.dart';
 import 'event_manager_screen.dart';
 
 class EventCard extends StatelessWidget {
-  const EventCard({Key key, @required this.eventModel, @required this.showButton, @required this.showArrow}) : super(key: key);
+  const EventCard({Key? key, required this.eventModel, required this.showButton, required this.showArrow}) : super(key: key);
 
   final EventModel eventModel;
   final bool showButton;

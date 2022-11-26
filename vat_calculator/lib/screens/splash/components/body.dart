@@ -43,8 +43,8 @@ class _BodyState extends State<Body> {
                 },
                 itemCount: splashData.length,
                 itemBuilder: (context, index) => SplashContent(
-                  image: splashData[index]["image"],
-                  text: splashData[index]['text'],
+                  image: splashData[index]!["image"]!,
+                  text: splashData[index]!['text']!,
                 ),
               ),
             ),
@@ -68,7 +68,7 @@ class _BodyState extends State<Body> {
                       text: "Continua",
                       press: () {
                         Navigator.pushNamed(context, SignInScreen.routeName);
-                      },
+                      }, textColor: kCustomBlue, color: kPrimaryColor,
                     ),
                     const Spacer(),
                   ],
@@ -81,7 +81,7 @@ class _BodyState extends State<Body> {
     );
   }
 
-  AnimatedContainer buildDot({int index}) {
+  AnimatedContainer buildDot({int? index}) {
     return AnimatedContainer(
       duration: kAnimationDuration,
       margin: const EdgeInsets.only(right: 5),

@@ -9,7 +9,7 @@ import 'constant/utils_firebase_service.dart';
 class FirebaseMessagingService implements FirebaseServiceInterface{
 
   @override
-  Future<Response> sendNotificationToTopic(String topicName, String message, String title, String msgId) async {
+  Future<Response> sendNotificationToTopic(String? topicName, String? message, String? title, String? msgId) async {
 
     try{
       var dio = Dio();
@@ -36,14 +36,15 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
         data: jsonEncodedBody,
       );
 
-
+      return Response(requestOptions: RequestOptions(path: ''));
     }catch(e){
       print(e);
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
 
   @override
-  Future<Response> sendNotificationToUsersByTokens(List<String> tokensList, String message, String title, String msgId) async {
+  Future<Response> sendNotificationToUsersByTokens(List<String>? tokensList, String? message, String? title, String? msgId) async {
     try{
       print('Send notification to follow list tokens ' + tokensList.toString());
       if(tokensList != null && tokensList.isNotEmpty){
@@ -81,11 +82,9 @@ class FirebaseMessagingService implements FirebaseServiceInterface{
       }else{
         print('Not sending push notification. Tokens list is empty');
       }
-
-
-
     }catch(e){
       print(e);
     }
+    return Response(requestOptions: RequestOptions(path: ''));
   }
 }

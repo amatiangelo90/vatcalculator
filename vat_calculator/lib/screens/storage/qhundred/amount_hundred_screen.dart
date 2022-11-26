@@ -12,7 +12,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class AmountHundredScreen extends StatefulWidget {
-  const AmountHundredScreen({Key key}) : super(key: key);
+  const AmountHundredScreen({Key? key}) : super(key: key);
 
   static String routeName = 'amount_hundred_screen_storage';
 
@@ -50,7 +50,7 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
                     if(element.amountHundred != 0){
                       amountHundred = amountHundred + 1;
                       if(orderedMapBySuppliers.keys.contains(element.supplierId)){
-                        orderedMapBySuppliers[element.supplierId].add(element);
+                        orderedMapBySuppliers[element.supplierId]!.add(element);
                       }else{
                         orderedMapBySuppliers[element.supplierId] = [element];
                       }
@@ -59,14 +59,14 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
                   });
 
                   if(amountHundred == 0){
-                    Scaffold.of(context).showSnackBar(const SnackBar(
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: kPinaColor,
                       content: Text('Immettere il valore di Q/100 per almeno un prodotto'),
                     ));
                   }else{
 
                   }
-                },
+                }, textColor: kPrimaryColor,
               ),
             ),
 
@@ -144,7 +144,8 @@ class _AmountHundredScreenState extends State<AmountHundredScreen> {
                       if( double.tryParse(text) != null){
                         element.amountHundred = double.parse(text);
                       }else{
-                        Scaffold.of(context).showSnackBar(SnackBar(
+
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere un valore numerico corretto per ' + element.productName),
                         ));

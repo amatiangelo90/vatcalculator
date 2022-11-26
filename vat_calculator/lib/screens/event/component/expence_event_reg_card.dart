@@ -9,7 +9,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class ExpenceEventCard extends StatefulWidget {
-  const ExpenceEventCard({Key key, this.eventModel}) : super(key: key);
+  const ExpenceEventCard({Key? key, required this.eventModel}) : super(key: key);
 
   final EventModel eventModel;
 

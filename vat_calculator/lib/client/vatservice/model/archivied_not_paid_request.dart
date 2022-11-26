@@ -13,8 +13,8 @@ class ArchiviedNotPaidRequest{
   }
 
   ArchiviedNotPaidRequest({
-    @required this.pkBranchId,
-    @required this.pkSupplierId
+    required this.pkBranchId,
+    required this.pkSupplierId
   });
 
 }

@@ -12,29 +12,29 @@ class EventModel{
   int fkBranchId;
 
   EventModel({
-    @required this.pkEventId,
-    @required this.eventName,
-    @required this.creationDate,
-    @required this.eventDate,
-    @required this.closed,
-    @required this.owner,
-    @required this.location,
-    @required this.fkStorageId,
-    @required this.fkBranchId,
+    required this.pkEventId,
+    required this.eventName,
+    required this.creationDate,
+    required this.eventDate,
+    required this.closed,
+    required this.owner,
+    required this.location,
+    required this.fkStorageId,
+    required this.fkBranchId,
   });
 
 
   toMap(){
     return {
-      'pkEventId' : pkEventId,
+      'pkEventId' : pkEventId ?? 0,
       'eventName': eventName,
       'creationDate': creationDate,
       'eventDate' : eventDate,
       'closed' : closed,
       'owner' : owner,
       'location' : location,
-      'fkStorageId' : fkStorageId,
-      'fkBranchId' : fkBranchId,
+      'fkStorageId' : fkStorageId ?? 0,
+      'fkBranchId' : fkBranchId ?? 0,
     };
   }
 }

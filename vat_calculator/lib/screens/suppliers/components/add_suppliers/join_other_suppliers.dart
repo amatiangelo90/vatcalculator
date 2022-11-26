@@ -4,14 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
 class JoinSupplierAlreadyRegisteredScreen extends StatefulWidget {
-  JoinSupplierAlreadyRegisteredScreen({Key key, this.mapListSupplierForBranch}) : super(key: key);
+  JoinSupplierAlreadyRegisteredScreen({Key? key, required this.mapListSupplierForBranch}) : super(key: key);
 
   static String routeName = 'joinfromsupplierlist';
 
@@ -84,7 +84,7 @@ class _JoinSupplierAlreadyRegisteredScreenState extends State<JoinSupplierAlread
           children: [
             Padding(
               padding: EdgeInsets.all(8.0),
-              child: Text('  Fornitori associati a ' + dataBundleNotifier.retrieveBranchById(key).companyName, style: TextStyle(color: kPrimaryColor),),
+              child: Text('  Fornitori associati a ' + dataBundleNotifier.retrieveBranchById(key)!.companyName, style: TextStyle(color: kPrimaryColor),),
             ),
           ],
         )

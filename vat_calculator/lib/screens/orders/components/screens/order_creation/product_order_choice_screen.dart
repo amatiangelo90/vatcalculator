@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../client/vatservice/model/utils/privileges.dart';
@@ -14,7 +14,7 @@ import 'order_confirm_screen.dart';
 import 'order_create_screen.dart';
 
 class ChoiceOrderProductScreen extends StatefulWidget {
-  const ChoiceOrderProductScreen({Key key, this.currentSupplier}) : super(key: key);
+  const ChoiceOrderProductScreen({Key? key, required this.currentSupplier}) : super(key: key);
 
   static String routeName = 'addproductorder';
 
@@ -350,8 +350,8 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
     return list;
   }
 
-  void buildSnackBar({@required String text, @required Color color}) {
-    _scaffoldKey.currentState.
+  void buildSnackBar({required String text, required Color color}) {
+    ScaffoldMessenger.of(context).
         showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 2000),
         backgroundColor: color,

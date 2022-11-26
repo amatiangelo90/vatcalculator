@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/ticker.dart';
@@ -8,13 +7,9 @@ import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/screens/home/components/body.dart';
 import 'package:vat_calculator/screens/orders/orders_screen.dart';
 import 'package:vat_calculator/screens/profile_edit/profile_edit_home.dart';
-import 'package:vat_calculator/screens/registration_provider/fatture_provider_registration.dart';
 import 'package:vat_calculator/screens/storage/components/add_storage_screen.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/aruba/aruba_home_screen.dart';
-import 'package:vat_calculator/screens/vat_calculator/fatture_in_cloud/fatture_in_cloud_home_screen.dart';
 import 'package:vat_calculator/screens/warnings/warning_screen.dart';
-
 import '../client/vatservice/model/order_model.dart';
 import '../client/vatservice/model/utils/privileges.dart';
 import '../components/common_drawer.dart';
@@ -35,7 +30,7 @@ class HomeScreenMain extends StatelessWidget {
 }
 
 class MyStatefulWidget extends StatefulWidget {
-  const MyStatefulWidget({Key key}) : super(key: key);
+  const MyStatefulWidget({Key? key}) : super(key: key);
 
   @override
   State<MyStatefulWidget> createState() => _MyStatefulWidgetState();
@@ -46,10 +41,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
 
   static final List<Widget> _pages = <Widget>[
-    const HomePageBody(),
-    const StorageScreen(),
-    const OrdersScreen(),
-    const ProfileEditiScreen()
+    HomePageBody(),
+    StorageScreen(),
+    OrdersScreen(),
+    ProfileEditiScreen()
   ];
 
 
@@ -144,7 +139,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 ],
               ),
             ) : const SizedBox(height: 0,),
-          drawer: const CommonDrawer(),
+          drawer: CommonDrawer(),
           appBar: getAppBarByIndex(dataBundleNotifier.selectedIndex, dataBundleNotifier),
           body: Center(
             child: _pages.elementAt(dataBundleNotifier.selectedIndex),
@@ -250,31 +245,6 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
           iconTheme: const IconThemeData(color: Colors.white),
           backgroundColor: kPrimaryColor,
           actions: [
-            dataBundleNotifier.currentBranch == null ? const SizedBox(width: 0,) : dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') : Column(
-              children: [
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Text('') :
-                IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icons/iva.svg',
-                    color: dataBundleNotifier.getProviderColor(),
-                    width: 25,
-                  ),
-                  onPressed: () {
-                    switch(dataBundleNotifier.currentBranch.providerFatture){
-                      case 'fatture_in_cloud':
-                        Navigator.pushNamed(context, FattureInCloudCalculatorScreen.routeName);
-                        break;
-                      case 'aruba':
-                        Navigator.pushNamed(context, ArubaCalculatorScreen.routeName);
-                        break;
-                      case '':
-                        Navigator.pushNamed(context, RegisterFattureProviderScreen.routeName);
-                        break;
-                    }
-                  },
-                ),
-              ],
-            ),
             Stack(
               children: [ IconButton(
                 icon: SvgPicture.asset(
@@ -605,7 +575,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 children: [
                   Row(
                     children: [
-                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: kCustomGreenAccent, width: getProportionateScreenWidth(25),), ),
+                      IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: kCustomGreenAccent, width: getProportionateScreenWidth(25),), onPressed: () {  }, ),
                       Text(
                         '   ' + currentStorageElement.name,
                         style: TextStyle(

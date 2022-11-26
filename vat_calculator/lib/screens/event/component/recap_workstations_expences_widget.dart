@@ -13,7 +13,7 @@ import '../../../size_config.dart';
 import 'event_manager_screen.dart';
 
 class RecapWorkstationsWidget extends StatelessWidget {
-  const RecapWorkstationsWidget({Key key}) : super(key: key);
+  const RecapWorkstationsWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,7 @@ class RecapWorkstationsWidget extends StatelessWidget {
                 color: Colors.lightBlueAccent,
               )),
           builder: (context, snapshot){
-            return snapshot.data;
+            return snapshot.data!;
           },
           future: retrieveDataToBuildRecapWidget(dataBundleNotifier),
         );
@@ -76,8 +76,8 @@ class RecapWorkstationsWidget extends StatelessWidget {
           if(product.fkProductId == productId){
 
             if(supportTableObjList.containsKey(productId)){
-              supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
-              supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+              supportTableObjList[productId]!.amountout = supportTableObjList[productId]!.amountout + product.consumed;
+              supportTableObjList[productId]!.amountin = supportTableObjList[productId]!.amountin + product.refillStock;
 
             }else{
               supportTableObjList[productId] = SupportTableObj(
@@ -97,7 +97,7 @@ class RecapWorkstationsWidget extends StatelessWidget {
     double totalExpence = 0.0;
 
     idsProductsPresent.forEach((id) {
-      totalExpence = totalExpence + ((supportTableObjList[id].amountin - supportTableObjList[id].amountout) * supportTableObjList[id].price);
+      totalExpence = totalExpence + ((supportTableObjList[id]!.amountin - supportTableObjList[id]!.amountout) * supportTableObjList[id]!.price);
       rows.add(TableRow( children: [
         Padding(
           padding: const EdgeInsets.all(4.0),
@@ -105,9 +105,9 @@ class RecapWorkstationsWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(supportTableObjList[id].productName, textAlign: TextAlign.start, overflow: TextOverflow.visible,
+              Text(supportTableObjList[id]!.productName, textAlign: TextAlign.start, overflow: TextOverflow.visible,
                 style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
-              Text('€ ' + supportTableObjList[id].price.toStringAsFixed(2) + ' / ' + supportTableObjList[id].unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
+              Text('€ ' + supportTableObjList[id]!.price.toStringAsFixed(2) + ' / ' + supportTableObjList[id]!.unitMeasure, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(10)),),
             ],
           ),
         ),
@@ -115,21 +115,21 @@ class RecapWorkstationsWidget extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
           child: Column(
             children: [
-              Text(supportTableObjList[id].amountin.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
+              Text(supportTableObjList[id]!.amountin.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Text(supportTableObjList[id].amountout.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
+          child: Text(supportTableObjList[id]!.amountout.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14)),),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Text((supportTableObjList[id].amountin - supportTableObjList[id].amountout).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
+          child: Text((supportTableObjList[id]!.amountin - supportTableObjList[id]!.amountout).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-          child: Text(((supportTableObjList[id].amountin - supportTableObjList[id].amountout) * supportTableObjList[id].price).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
+          child: Text(((supportTableObjList[id]!.amountin - supportTableObjList[id]!.amountout) * supportTableObjList[id]!.price).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontSize: getProportionateScreenHeight(14)),),
         ),
       ]),);
     });
@@ -251,7 +251,7 @@ class RecapWorkstationsWidget extends StatelessWidget {
         ]),
       );
       double totalExpenceWorkstation = 0.0;
-      map[workstationItem.pkWorkstationId].forEach((workStationProdModel) {
+      map[workstationItem.pkWorkstationId]!.forEach((workStationProdModel) {
 
 
         totalExpenceWorkstation = totalExpenceWorkstation + (workStationProdModel.refillStock - workStationProdModel.consumed) * workStationProdModel.productPrice;

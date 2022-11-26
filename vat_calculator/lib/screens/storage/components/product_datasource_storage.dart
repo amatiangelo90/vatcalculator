@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/constants.dart';
-import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 
 class ProductDataSourceStorage extends DataTableSource {
@@ -16,16 +15,16 @@ class ProductDataSourceStorage extends DataTableSource {
   @override
   DataRow getRow(int index) {
     assert(index >= 0);
-    if (index >= _products.length) return null;
+    if (index >= _products.length) return DataRow(cells: []);
     final StorageProductModel product = _products[index];
     return DataRow.byIndex(
         index: index,
         selected: product.selected,
-        onSelectChanged: (bool value) {
+        onSelectChanged: (bool? value) {
           if (product.selected != value) {
-            _selectedCount += value ? 1 : -1;
+            _selectedCount += value! ? 1 : -1;
             assert(_selectedCount >= 0);
-            product.selected = value;
+            product.selected = value!;
             notifyListeners();
           }
         },

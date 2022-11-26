@@ -5,11 +5,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../components/light_colors.dart';
@@ -18,7 +16,7 @@ import '../../../size_config.dart';
 
 class EditProductScreen extends StatefulWidget {
   static String routeName = 'editproduct';
-  const EditProductScreen({Key key, this.product, this.supplier, }) : super(key: key);
+  const EditProductScreen({Key? key,required this.product,required this.supplier, }) : super(key: key);
 
   final ProductModel product;
   final SupplierModel supplier;
@@ -84,7 +82,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           descrizione: _descriptionController.text,
                           iva_applicata: int.parse(_currentIva),
                           prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
-                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure,
+                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure, fkSupplierId: 0, orderItems: 0
                         );
 
                         ClientVatService vatService = ClientVatService();
@@ -101,7 +99,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         }
                       }
                     },
-                    text: 'Modifica',
+                    text: 'Modifica', textColor: kPrimaryColor,
                   ),
                 ),
               appBar: AppBar(
@@ -141,21 +139,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           descrizione: _descriptionController.text,
                           iva_applicata: int.parse(_currentIva),
                           prezzo_lordo: double.parse(_priceController.text),
-                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure,
+                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure, fkSupplierId: 0, orderItems: 0
                         );
 
                         print(productModel.toMap().toString());
 
                         ClientVatService vatService = ClientVatService();
                         Response perforDelteProduct = await vatService.performDeleteProduct(
-                            product: productModel,
-                            actionModel: ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha eliminato il prodotto ${productModel.nome} dal catalogo del fornitore ${widget.supplier.nome}',
-                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                type: ActionType.PRODUCT_DELETE
-                            )
+                            product: productModel
                         );
                         if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
                           List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
@@ -455,7 +446,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     );
   }
 
-  void buildSnackBar({@required String text, @required Color color}) {
+  void buildSnackBar({required String text, required Color color}) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 2000),
@@ -464,12 +455,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   void setInitialState({
-    @required String currentIva,
-    @required String name,
-    @required double price,
-    @required String unitMeasure,
-    @required String category,
-    @required String descr}) {
+    required String currentIva,
+    required String name,
+    required double price,
+    required String unitMeasure,
+    required String category,
+    required String descr}) {
 
     setState((){
 

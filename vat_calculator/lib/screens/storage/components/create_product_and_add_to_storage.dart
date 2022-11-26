@@ -8,11 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/components/light_colors.dart';
-import '../../../client/fattureICloud/model/response_fornitori.dart';
-import '../../../client/vatservice/model/action_model.dart';
+import '../../../client/vatservice/model/response_fornitori.dart';
 import '../../../client/vatservice/model/product_model.dart';
 import '../../../client/vatservice/model/save_product_into_storage_request.dart';
-import '../../../client/vatservice/model/utils/action_type.dart';
 import '../../../components/default_button.dart';
 import '../../../constants.dart';
 import '../../../models/databundlenotifier.dart';
@@ -20,7 +18,7 @@ import '../../../size_config.dart';
 import '../../suppliers/components/add_suppliers/add_supplier_choice.dart';
 
 class CreateAndAddProductScreen extends StatefulWidget {
-  const CreateAndAddProductScreen({Key key, @required this.callBackFunction}) : super(key: key);
+  const CreateAndAddProductScreen({Key? key, required this.callBackFunction}) : super(key: key);
 
   final Function callBackFunction;
 
@@ -79,7 +77,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                             buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: LightColors.kRed);
                           } else{
 
-                            SupplierModel currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier);
+                            SupplierModel currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier)!;
                             ProductModel productModel = ProductModel(
                                 nome: _nameController.text,
                                 categoria: _categoryController.text,
@@ -88,20 +86,13 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                                 iva_applicata: int.parse(currentIva),
                                 prezzo_lordo: double.parse(_priceController.text.replaceAll(",", ".")),
                                 unita_misura: currentUnitMeasure == 'Altro' ? _unitMeasureController.text : currentUnitMeasure,
-                                fkSupplierId: currentSupplierToSaveProduct.pkSupplierId
+                                fkSupplierId: currentSupplierToSaveProduct.pkSupplierId, pkProductId: 0, orderItems: 0
                             );
 
                             print(productModel.toMap().toString());
 
                             Response performSaveProduct = await dataBundleNotifier.getclientServiceInstance().performSaveProduct(
-                                product: productModel,
-                                actionModel: ActionModel(
-                                    date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha aggiunto ${productModel.nome} al catalogo prodotti del fornitore ${currentSupplierToSaveProduct.nome} ',
-                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                    type: ActionType.PRODUCT_CREATION
-                                )
+                                product: productModel
                             );
                             sleep(const Duration(milliseconds: 600));
 
@@ -122,13 +113,6 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                                       dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
                                       pkStorageProductCreationModelId: 0,
                                       user: dataBundleNotifier.userDetailsList[0].firstName
-                                  ),
-                                  actionModel: ActionModel(
-                                      date: DateTime.now().millisecondsSinceEpoch,
-                                      description: 'Ha aggiunto ${productModel.nome} al magazzino ${dataBundleNotifier.currentStorage.name}.',
-                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                      type: ActionType.ADD_PRODUCT_TO_STORAGE
                                   )
                               );
                               dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
@@ -180,7 +164,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                             text: "Crea Fornitore",
                             press: () async {
                               Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
-                            },
+                            }, textColor: kPrimaryColor,color: kCustomBordeaux,
                           ),
                         ),
                       ],
@@ -197,7 +181,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
 
   }
 
-  void buildSnackBar({@required String text, @required Color color}) {
+  void buildSnackBar({required String text, required Color color}) {
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 2500),
@@ -242,7 +226,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
               selected: _selectedSupplier,
               onChanged: (storage) {
                 setCurrentSupplier(storage, dataBundleNotifier);
-              },
+              }, label: '',
             ),
           ),
         ),

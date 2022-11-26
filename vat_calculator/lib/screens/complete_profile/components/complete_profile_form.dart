@@ -8,7 +8,6 @@ import 'package:vat_calculator/components/custom_surfix_icon.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/form_error.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/landing/landing_page.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -17,7 +16,7 @@ class CompleteProfileForm extends StatefulWidget {
   final String email;
   final String password;
 
-  const CompleteProfileForm({this.email, this.password});
+  const CompleteProfileForm({required this.email, required this.password});
 
   @override
   _CompleteProfileFormState createState() => _CompleteProfileFormState();
@@ -26,22 +25,22 @@ class CompleteProfileForm extends StatefulWidget {
 class _CompleteProfileFormState extends State<CompleteProfileForm> {
   final _formKey = GlobalKey<FormState>();
   final List<String> errors = [];
-  String firstName;
-  String lastName;
-  String phoneNumber;
+  late String firstName;
+  late String lastName;
+  late String phoneNumber;
 
-  void addError({String error}) {
-    if (!errors.contains(error)) {
+  void addError({String? error}) {
+    if (!errors.contains(error!)) {
       setState(() {
-        errors.add(error);
+        errors.add(error!);
       });
     }
   }
 
-  void removeError({String error}) {
-    if (errors.contains(error)) {
+  void removeError({String? error}) {
+    if (errors.contains(error!)) {
       setState(() {
-        errors.remove(error);
+        errors.remove(error!);
       });
     }
   }
@@ -62,8 +61,8 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
           DefaultButton(
             text: "Crea Profilo ed Accedi",
             press: () async {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
                 KeyboardUtil.hideKeyboard(context);
                 try{
                   final _auth = FirebaseAuth.instance;
@@ -97,7 +96,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
                       content: Text('Abbiamo riscontrato qualche problema nel create la tua utenza. Riprova più tardi. Errore : $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                 }
               }
-            },
+            }, textColor: Color(0xff121212), color: Colors.green,
           ),
         ],
       ),
@@ -107,7 +106,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
   TextFormField buildPhoneNumberFormField() {
     return TextFormField(
       keyboardType: TextInputType.phone,
-      onSaved: (newValue) => phoneNumber = newValue,
+      onSaved: (newValue) => phoneNumber = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kPhoneNumberNullError);
@@ -115,7 +114,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         return null;
       },
       validator: (value) {
-        if (value.isEmpty) {
+        if (value!.isEmpty) {
           addError(error: kPhoneNumberNullError);
           return "";
         }
@@ -132,7 +131,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
   TextFormField buildLastNameFormField() {
     return TextFormField(
-      onSaved: (newValue) => lastName = newValue,
+      onSaved: (newValue) => lastName = newValue!,
       decoration: const InputDecoration(
         labelText: "Cognome",
         hintText: "Inserisci il cognome",
@@ -146,7 +145,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
 
   TextFormField buildFirstNameFormField() {
     return TextFormField(
-      onSaved: (newValue) => firstName = newValue,
+      onSaved: (newValue) => firstName = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kNamelNullError);
@@ -154,7 +153,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
         return null;
       },
       validator: (value) {
-        if (value.isEmpty) {
+        if (value!.isEmpty) {
           addError(error: kNamelNullError);
           return "";
         }

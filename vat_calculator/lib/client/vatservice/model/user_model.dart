@@ -11,13 +11,13 @@ class UserModel{
 
   UserModel(
       {
-        @required this.id,
-        @required this.name,
-        @required this.lastName,
-        @required this.phone,
-        @required this.mail,
-        @required this.privilege,
-        @required this.relatedUserId,
+        required this.id,
+        required this.name,
+        required this.lastName,
+        required this.phone,
+        required this.mail,
+        required this.privilege,
+        required this.relatedUserId,
       });
 
   toMap(){

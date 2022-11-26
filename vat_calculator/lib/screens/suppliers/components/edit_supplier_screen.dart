@@ -5,11 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/deposit_order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -17,16 +14,13 @@ import 'package:vat_calculator/screens/orders/components/screens/order_creation/
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../components/light_colors.dart';
-import '../../orders/components/unpaidmanager/order_unpaid_card.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-
-import '../../orders/components/unpaidmanager/unpaid_order_manager_screen.dart';
 import '../suppliers_screen.dart';
 import 'edit_product.dart';
 
 class EditSuppliersScreen extends StatefulWidget {
-  const EditSuppliersScreen({Key key, this.currentSupplier}) : super(key: key);
+  const EditSuppliersScreen({Key? key, required this.currentSupplier}) : super(key: key);
 
   final SupplierModel currentSupplier;
   static String routeName = 'editsupplier';
@@ -38,13 +32,13 @@ class EditSuppliersScreen extends StatefulWidget {
 class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
 
   bool isEditingEnabled = true;
-  TextEditingController controllerSupplierName;
-  TextEditingController controllerAddress;
-  TextEditingController controllerMobileNo;
-  TextEditingController controllerCity;
-  TextEditingController controllerCap;
-  TextEditingController controllerEmail;
-  TextEditingController controllerPIva;
+  late TextEditingController controllerSupplierName;
+  late TextEditingController controllerAddress;
+  late TextEditingController controllerMobileNo;
+  late TextEditingController controllerCity;
+  late TextEditingController controllerCap;
+  late TextEditingController controllerEmail;
+  late TextEditingController controllerPIva;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +63,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 press: () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
                 },
-                color: LightColors.kBlue,
+                color: LightColors.kBlue, textColor: kPrimaryColor,
               ),
             ),
             body: FutureBuilder(
@@ -140,7 +134,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                     ),
                   );
                 },
-                color: Colors.deepOrangeAccent.shade700.withOpacity(0.6),
+                color: Colors.deepOrangeAccent.shade700.withOpacity(0.6), textColor: kPrimaryColor,
               ),
             ),
             body: Center(child: const Text('Ordini')),
@@ -164,8 +158,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         color: LightColors.kLavender,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: FlatButton(
-
+                      child: TextButton(
                         onPressed: () {
 
                         },
@@ -181,7 +174,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       ),
                     ),
                   ),
-                  buildUnpaidOrderScreen(dataBundleNotifier),
                 ],
               ),
             ),
@@ -236,14 +228,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                               );
 
                               await dataBundleNotifier.getclientServiceInstance().performEditSupplier(
-                                  anagraficaFornitore: supplier,
-                                  actionModel: ActionModel(
-                                      date: DateTime.now().millisecondsSinceEpoch,
-                                      description: 'Ha aggiornato il fornitore ${supplier.nome}. Dettaglio ${supplier.toMap()}',
-                                      fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                      user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                      type: ActionType.SUPPLIER_EDIT
-                                  )
+                                  anagraficaFornitore: supplier
                               );
                               List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
@@ -269,7 +254,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                             }
                           }
 
-                        }),
+                        }, textColor: kPrimaryColor,),
                   ),
                 ),
               ],
@@ -466,17 +451,31 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         Widget continueButton = TextButton(
                           child: const Text("Elimina", style: TextStyle(color: kPinaColor)),
                           onPressed:  () async {
-                            SupplierModel requestRemoveSupplierFromBranch = widget.currentSupplier;
-                            requestRemoveSupplierFromBranch.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
+                            SupplierModel supplierRetrievedByCodeToUpdateRelationTableBranchSupplier = widget.currentSupplier;
+
+                            SupplierModel supplierModel = SupplierModel(
+                                tel: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.tel,
+                                referente: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.referente,
+                                piva: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.piva,
+                                paese: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.paese,
+                                nome: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome,
+                                mail: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.mail,
+                                indirizzo_via: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_via,
+                                indirizzo_provincia: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_provincia,
+                                indirizzo_extra: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_extra,
+                                indirizzo_citta: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_citta,
+                                indirizzo_cap: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_cap,
+                                id: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.id,
+                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                                fax: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.fax,
+                                extra: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.extra,
+                                cf: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.cf,
+                                pec: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.pec,
+                                pkSupplierId: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.pkSupplierId,
+                            );
+
                             await dataBundleNotifier.getclientServiceInstance().removeSupplierFromCurrentBranch(
-                                requestRemoveSupplierFromBranch: requestRemoveSupplierFromBranch,
-                                actionModel: ActionModel(
-                                    date: DateTime.now().millisecondsSinceEpoch,
-                                    description: 'Ha rimosso il fornitore ${widget.currentSupplier.nome} dall\'attività ${dataBundleNotifier.currentBranch.companyName}',
-                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.SUPPLIER_DELETE
-                                )
+                                requestRemoveSupplierFromBranch: supplierModel
                             );
                             List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
                                 .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
@@ -757,53 +756,5 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
     if(controllerPIva != null){
       controllerPIva.clear();
     }
-  }
-
-  Widget buildUnpaidOrderScreen(DataBundleNotifier databundle) {
-    List<Widget> list = [];
-    databundle.retrievedOrderModelArchiviedNotPaid.forEach((unpaidOrder) {
-      list.add(
-          Row(
-            children: [
-              OrderUnpaidCard(
-                supplierName: widget.currentSupplier.nome,
-                code: unpaidOrder.code.toString(),
-                total: unpaidOrder.total.toStringAsFixed(2),
-                cardColor: kPrimaryColor,
-                function: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => UnpaidOrderManagerScreen(
-                    supplierName: widget.currentSupplier.nome,
-                    orderModel: unpaidOrder,
-                  ),),);
-                },
-                orderStatus: unpaidOrder.status,
-                paidPercent: calculatePercentagePaid(databundle.mapOrderIdDepositOrderList[unpaidOrder.pk_order_id], unpaidOrder.total),
-                depositList: databundle.mapOrderIdDepositOrderList[unpaidOrder.pk_order_id],
-                order: unpaidOrder,
-                mapBundleUserStorageSupplier: databundle.currentMapBranchIdBundleSupplierStorageUsers
-              ),
-            ],
-          ),
-      );
-    });
-
-    return Column(
-      children: list,
-    );
-  }
-
-  double calculatePercentagePaid(List<DepositOrder> mapOrderIdDepositOrderList, double total) {
-    if(total == 0.0 || total == null){
-      return 0.0;
-    }else{
-      double totalPaid = 0.0;
-
-      mapOrderIdDepositOrderList.forEach((element) {
-        totalPaid = totalPaid + element.amount;
-      });
-
-      return totalPaid/total;
-    }
-
   }
 }

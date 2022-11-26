@@ -1,23 +1,19 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../storage_screen.dart';
 
 class AddStorageScreen extends StatelessWidget {
-  const AddStorageScreen({Key key, this.branch}) : super(key: key);
+  const AddStorageScreen({Key? key,required this.branch}) : super(key: key);
 
   final BranchModel branch;
   static String routeName = "/addstoragescreen";
@@ -37,7 +33,7 @@ class AddStorageScreen extends StatelessWidget {
     }
 
 
-    void buildSnackBar({@required String text, @required Color color}) {
+    void buildSnackBar({required String text, required Color color}) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(
           backgroundColor: color,
@@ -89,14 +85,7 @@ class AddStorageScreen extends StatelessWidget {
                         );
 
                         Response performSaveStorage = await vatService.performSaveStorage(
-                            storageModel: storageModel,
-                            actionModel: ActionModel(
-                                date: DateTime.now().millisecondsSinceEpoch,
-                                description: 'Ha creato il magazzino ${storageModel.name}.',
-                                fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                type: ActionType.STORAGE_CREATION
-                            )
+                            storageModel: storageModel
                         );
                         //sleep(const Duration(seconds: 1));
 
@@ -116,7 +105,7 @@ class AddStorageScreen extends StatelessWidget {
                         Navigator.pop(context);
                       }
 
-                    }),
+                    }, textColor: kPrimaryColor,),
                   ),
                 ),
               ],

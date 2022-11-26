@@ -11,13 +11,13 @@ class WorkstationModel{
 
   WorkstationModel(
       {
-        @required this.pkWorkstationId,
-        @required this.name,
-        @required this.type,
-        @required this.responsable,
-        @required this.extra,
-        @required this.closed,
-        @required this.fkEventId,
+        required this.pkWorkstationId,
+        required this.name,
+        required this.type,
+        required this.responsable,
+        required this.extra,
+        required this.closed,
+        required this.fkEventId,
       });
 
   toMap(){

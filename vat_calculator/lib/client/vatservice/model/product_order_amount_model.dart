@@ -17,18 +17,18 @@ class ProductOrderAmountModel {
   int fkOrderId;
 
   ProductOrderAmountModel({
-    @required this.pkProductId,
-    this.nome,
-    this.codice,
-    this.unita_misura,
-    this.iva_applicata,
-    this.prezzo_lordo,
-    this.descrizione,
-    this.categoria,
-    this.fkSupplierId,
-    this.amount,
-    this.pkOrderProductId,
-    this.fkOrderId,
+    required this.pkProductId,
+    required this.nome,
+    required this.codice,
+    required this.unita_misura,
+    required this.iva_applicata,
+    required this.prezzo_lordo,
+    required this.descrizione,
+    required this.categoria,
+    required this.fkSupplierId,
+    required this.amount,
+    required this.pkOrderProductId,
+    required this.fkOrderId,
   });
 
   toMap(){

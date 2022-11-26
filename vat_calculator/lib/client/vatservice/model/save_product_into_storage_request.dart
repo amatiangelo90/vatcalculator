@@ -10,14 +10,14 @@ class SaveProductToStorageRequest {
   int fkStorageId;
 
   SaveProductToStorageRequest(
-  {this.pkStorageProductCreationModelId,
-    this.user,
-    this.dateTimeCreation,
-    this.dateTimeEdit,
-    this.stock,
-    this.available,
-    this.fkProductId,
-    this.fkStorageId});
+  {required this.pkStorageProductCreationModelId,
+    required this.user,
+    required this.dateTimeCreation,
+    required this.dateTimeEdit,
+    required this.stock,
+    required this.available,
+    required this.fkProductId,
+    required this.fkStorageId});
 
   toMap(){
     return {

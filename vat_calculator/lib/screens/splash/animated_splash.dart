@@ -24,8 +24,8 @@ class SecondClass extends StatefulWidget {
 
 class _SecondClassState extends State<SecondClass>
     with TickerProviderStateMixin {
-  AnimationController scaleController;
-  Animation<double> scaleAnimation;
+  late AnimationController scaleController;
+  late Animation<double> scaleAnimation;
 
   double _opacity = 0;
   bool _value = true;
@@ -42,7 +42,7 @@ class _SecondClassState extends State<SecondClass>
         if (status == AnimationStatus.completed) {
           Navigator.of(context).pushReplacement(
             ThisIsFadeRoute(
-              route: SignInScreen(),
+              route: SignInScreen(), page: Text(''),
             ),
           );
           Timer(
@@ -135,7 +135,7 @@ class ThisIsFadeRoute extends PageRouteBuilder {
   final Widget page;
   final Widget route;
 
-  ThisIsFadeRoute({this.page, this.route})
+  ThisIsFadeRoute({required this.page,required this.route})
       : super(
     pageBuilder: (
         BuildContext context,

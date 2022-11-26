@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vat_calculator/size_config.dart';
 
-const String kVersionApp = '1.0.77';
+const String kVersionApp = '1.0.82';
 const Color kPrimaryColor = Color(0XFF0A2227);
 
 const Color kCustomGreyBlue = Color(0XFF41414A);
@@ -212,14 +212,10 @@ String getNameDayFromWeekDay(int weekday) {
       return 'Sabato';
     case 7:
       return 'Domenica';
+    default:
+      return 'ERRORE';
 
   }
-
-  String buildDateFromMilliseconds(int date) {
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
-    return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
-  }
-
 }
 
 

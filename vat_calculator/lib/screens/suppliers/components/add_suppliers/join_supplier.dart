@@ -1,19 +1,16 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
 class JoinSupplierScreen extends StatefulWidget {
-  JoinSupplierScreen({Key key}) : super(key: key);
+  JoinSupplierScreen({Key? key}) : super(key: key);
 
   static String routeName = 'joinsupplier';
 
@@ -26,10 +23,10 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
   static TextEditingController supplierCodeControllerSearch = TextEditingController();
 
   final formKey = GlobalKey<FormState>();
-  StreamController<ErrorAnimationType> errorController;
+  StreamController<ErrorAnimationType> errorController = StreamController();
 
   bool hasError = false;
-  String currentPassword;
+  String currentPassword = '';
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +114,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                 )
               ],
               onCompleted: (code) async {
-                formKey.currentState.validate();
+                formKey.currentState?.validate();
                 print('Retrieve Supplier model by code : ' + code);
                 List<SupplierModel> retrieveSuppliersListByCode = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByCode(
                     code: code
@@ -234,16 +231,30 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
 
                           SupplierModel supplierRetrievedByCodeToUpdateRelationTableBranchSupplier = retrieveSuppliersListByCode[0];
 
-                          supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.fkBranchId = dataBundleNotifier.currentBranch.pkBranchId;
+
+                          SupplierModel supplierModel = SupplierModel(
+                            tel: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.tel,
+                            referente: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.referente,
+                            piva: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.piva,
+                            paese: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.paese,
+                            nome: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome,
+                            mail: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.mail,
+                            indirizzo_via: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_via,
+                            indirizzo_provincia: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_provincia,
+                            indirizzo_extra: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_extra,
+                            indirizzo_citta: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_citta,
+                            indirizzo_cap: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_cap,
+                            id: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.id,
+                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
+                            fax: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.fax,
+                            extra: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.extra,
+                            cf: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.cf,
+                            pec: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.pec,
+                            pkSupplierId: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.pkSupplierId
+                          );
+
                           await dataBundleNotifier.getclientServiceInstance().addSupplierToCurrentBranch(
-                              supplierRetrievedByCodeToUpdateRelationTableBranchSupplier: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier,
-                              actionModel: ActionModel(
-                                  date: DateTime.now().millisecondsSinceEpoch,
-                                  description: 'Ha associato a ${dataBundleNotifier.currentBranch.companyName} il fornitore ${supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome} tramite il codice ${supplierCodeControllerSearch.text.toString()}.',
-                                  fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                  user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                  type: ActionType.SUPPLIER_ASSOCIATION
-                              )
+                              supplierRetrievedByCodeToUpdateRelationTableBranchSupplier: supplierModel
                           );
 
                           List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance()

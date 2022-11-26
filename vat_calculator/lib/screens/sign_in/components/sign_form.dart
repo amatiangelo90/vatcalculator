@@ -10,7 +10,7 @@ import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class SignForm extends StatefulWidget {
-  const SignForm({Key key}) : super(key: key);
+  const SignForm({Key? key}) : super(key: key);
 
   @override
   _SignFormState createState() => _SignFormState();
@@ -20,23 +20,23 @@ class _SignFormState extends State<SignForm> {
 
 
   final _auth = FirebaseAuth.instance;
-  User loggedInUser;
+  late User loggedInUser;
 
   final _formKey = GlobalKey<FormState>();
-  String email;
-  String password;
+  late String email;
+  late String password;
   bool remember = false;
   final List<String> errors = [];
 
-  void addError({String error}) {
+  void addError({String? error}) {
     if (!errors.contains(error)) {
       setState(() {
-        errors.add(error);
+        errors.add(error!);
       });
     }
   }
 
-  void removeError({String error}) {
+  void removeError({String? error}) {
     if (errors.contains(error)) {
       setState(() {
         errors.remove(error);
@@ -72,8 +72,8 @@ class _SignFormState extends State<SignForm> {
           DefaultButton(
             text: "Continua",
             press: () async {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
+              if (_formKey.currentState!.validate()) {
+                _formKey.currentState!.save();
                 print('user: ' + email.toString());
                 print('password: ' + password.toString());
                 try{
@@ -95,7 +95,7 @@ class _SignFormState extends State<SignForm> {
                       content: Text('Errore accesso. ${e}' , style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
                 }
               }
-            },
+            }, textColor: kPrimaryColor, color: kBeigeColor,
           ),
         ],
       ),
@@ -105,7 +105,7 @@ class _SignFormState extends State<SignForm> {
   TextFormField buildPasswordFormField() {
     return TextFormField(
       obscureText: true,
-      onSaved: (newValue) => password = newValue,
+      onSaved: (newValue) => password = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kPassNullError);
@@ -115,10 +115,10 @@ class _SignFormState extends State<SignForm> {
         return null;
       },
       validator: (value) {
-        if (value.isEmpty) {
+        if (value!.isEmpty) {
           addError(error: kPassNullError);
           return "";
-        } else if (value.length < 6) {
+        } else if (value!.length < 6) {
           addError(error: kShortPassError);
           return "";
         }
@@ -136,7 +136,7 @@ class _SignFormState extends State<SignForm> {
   TextFormField buildEmailFormField() {
     return TextFormField(
       keyboardType: TextInputType.emailAddress,
-      onSaved: (newValue) => email = newValue,
+      onSaved: (newValue) => email = newValue!,
       onChanged: (value) {
         if (value.isNotEmpty) {
           removeError(error: kEmailNullError);
@@ -146,7 +146,7 @@ class _SignFormState extends State<SignForm> {
         return null;
       },
       validator: (value) {
-        if (value.isEmpty) {
+        if (value!.isEmpty) {
           addError(error: kEmailNullError);
           return "";
         } else if (!emailValidatorRegExp.hasMatch(value)) {
@@ -174,8 +174,8 @@ class _SignFormState extends State<SignForm> {
     try{
       final user = await _auth.currentUser;
       if(user != null){
-          print('Email logged in : ' + user.email);
-          Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen(email: user.email),),);
+          print('Email logged in : ' + user!.email!);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => LandingScreen(email: user!.email!),),);
 
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(

@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,19 +5,16 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/expence_event_reg_card.dart';
 import 'package:vat_calculator/screens/event/component/recap_workstations_expences_widget.dart';
 import 'package:vat_calculator/screens/event/component/workstation_card.dart';
 import 'package:vat_calculator/size_config.dart';
-import '../../../client/vatservice/model/action_model.dart';
 import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
 import '../../main_page.dart';
-import '../event_home.dart';
 import 'expence_event_edit_card.dart';
 
 class EventManagerScreen extends StatefulWidget {
@@ -158,7 +153,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                     dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
                     dataBundleNotifier.workstationsProductsMapCalculate();
-                    _scaffoldKey.currentState
+                    ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: const Duration(milliseconds: 800),
@@ -227,7 +222,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                     dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
                     dataBundleNotifier.workstationsProductsMapCalculate();
-                    _scaffoldKey.currentState
+                    ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
                         duration: Duration(milliseconds: 800),
@@ -379,14 +374,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               child: const Text('Salva impostazioni'),
               onPressed: () async {
                 if(controllerEventName.text == null || controllerEventName.text == ''){
-                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: kPinaColor,
                     duration: Duration(milliseconds: 600),
                     content: Text(
                         'Il nome dell\'evento è obbligatorio'),
                   ));
                 }else if(controllerLocation.text == null || controllerLocation.text == ''){
-                  _scaffoldKey.currentState.showSnackBar(const SnackBar(
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     backgroundColor: kPinaColor,
                     duration: Duration(milliseconds: 600),
                     content: Text(
@@ -441,7 +436,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('Chiudendo l\'evento ${event.eventName} i tuoi dipendenti non potranno più accedervi. '
-                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'. La merce residua verrà caricata nel magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'. La merce residua verrà caricata nel magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
                               ),
                               SizedBox(height: 40),
                               InkWell(
@@ -457,7 +452,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       width: getProportionateScreenWidth(300),
                                       child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
                                         try{
-                                          await dataBundleNotifier.getclientServiceInstance().performSetNullAllProductsWithNegativeValueForStockStorage(dataBundleNotifier.getStorageModelById(dataBundleNotifier.currentEventModel.fkStorageId));
+                                          await dataBundleNotifier.getclientServiceInstance().performSetNullAllProductsWithNegativeValueForStockStorage(dataBundleNotifier.getStorageModelById(dataBundleNotifier.currentEventModel.fkStorageId!)!);
 
                                           Map<int, SupportTableObj> supportTableObjList = {};
 
@@ -483,8 +478,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                   if(product.fkProductId == productId){
 
                                                     if(supportTableObjList.containsKey(productId)){
-                                                      supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
-                                                      supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+                                                      supportTableObjList[productId]!.amountout = supportTableObjList[productId]!.amountout + product.consumed;
+                                                      supportTableObjList[productId]!.amountin = supportTableObjList[productId]!.amountin + product.refillStock;
 
                                                     }else{
                                                       supportTableObjList[productId] = SupportTableObj(
@@ -517,10 +512,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                               );
                                             });
                                             await dataBundleNotifier.getclientServiceInstance()
-                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                                                actionModel: ActionModel(
-
-                                                )
+                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
                                             );
                                           }
 
@@ -531,20 +523,20 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                                           dataBundleNotifier.onItemTapped(0);
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Evento ' +
-                                                    event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
+                                                    event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}'),
                                           ));
                                         }catch(e){
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: kCustomBordeaux,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Impossibile chiudere evento ' +
-                                                    event.eventName + '. ' + e),
+                                                    event.eventName + '. ' + e.toString()),
                                           ));
                                         }
                                       }
@@ -590,7 +582,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('Eliminando l\'evento ${event.eventName} tutta la merce caricata nelle postazioni lavorative verrà reinserita nel magazzino di riferimento  '
-                                    '${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                    '${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
                               ),
                               SizedBox(height: 60),
                               InkWell(
@@ -631,8 +623,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                   if(product.fkProductId == productId){
 
                                                     if(supportTableObjList.containsKey(productId)){
-                                                      supportTableObjList[productId].amountout = supportTableObjList[productId].amountout + product.consumed;
-                                                      supportTableObjList[productId].amountin = supportTableObjList[productId].amountin + product.refillStock;
+                                                      supportTableObjList[productId]!.amountout = supportTableObjList[productId]!.amountout + product.consumed;
+                                                      supportTableObjList[productId]!.amountin = supportTableObjList[productId]!.amountin + product.refillStock;
 
                                                     }else{
                                                       supportTableObjList[productId] = SupportTableObj(
@@ -664,10 +656,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                               );
                                             });
                                             await dataBundleNotifier.getclientServiceInstance()
-                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                                                actionModel: ActionModel(
-
-                                                )
+                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
                                             );
                                           }
 
@@ -675,12 +664,12 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                                           await dataBundleNotifier.getclientServiceInstance().deleteEventModel(event);
                                           dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Evento ' +
-                                                    event.eventName + ' Eliminato. Merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId).name}'),
+                                                    event.eventName + ' Eliminato. Merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}'),
                                           ));
 
                                           dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
@@ -688,7 +677,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
 
                                         }catch(e){
-                                          _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: kCustomBordeaux,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
@@ -739,7 +728,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             color: kPinaColor,
           )),
       builder: (context, snapshot){
-        return snapshot.data;
+        return snapshot.data!;
       },
       future: retrieveDataToBuildRecapWidgetExtraExpences(workstationModelList, dataBundleNotifier, event, context),
     );
@@ -1014,7 +1003,7 @@ class SupportTableObj{
   double price;
   String unitMeasure;
 
-  SupportTableObj({this.id, this.productName, this.amountin, this.amountout, this.price, this.unitMeasure});
+  SupportTableObj({required this.id,required  this.productName, required this.amountin, required this.amountout, required this.price, required this.unitMeasure});
 
   toMap(){
     return {

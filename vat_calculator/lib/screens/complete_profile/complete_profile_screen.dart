@@ -7,7 +7,7 @@ class CompleteProfileScreen extends StatelessWidget {
   final String email;
   final String password;
 
-  const CompleteProfileScreen({@required this.email, @required this.password});
+  const CompleteProfileScreen({required this.email, required this.password});
 
   @override
   Widget build(BuildContext context) {

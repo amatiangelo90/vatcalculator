@@ -19,7 +19,7 @@ import '../../size_config.dart';
 import 'managment_pages/branch_edit_screen.dart';
 
 class ProfileEditiScreen extends StatefulWidget {
-  const ProfileEditiScreen({Key key}) : super(key: key);
+  const ProfileEditiScreen({Key? key}) : super(key: key);
 
   @override
   State<ProfileEditiScreen> createState() => _ProfileEditiScreenState();
@@ -28,10 +28,9 @@ class ProfileEditiScreen extends StatefulWidget {
 class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
   int currentPage = 0;
 
-  TextEditingController _nameController;
-  TextEditingController _lastNameController;
-  TextEditingController _phoneController;
-  TextEditingController _eMailController;
+  late TextEditingController _nameController;
+  late TextEditingController _lastNameController;
+  late TextEditingController _phoneController;
 
   refreshPage(){
     setState(() {
@@ -613,9 +612,9 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                   Row(
                                     children: [
                                       Text((dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
-                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList != null &&
-                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.isNotEmpty)
-                                          ? dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].userModelList.length.toString()
+                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.userModelList != null &&
+                                          dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.userModelList.isNotEmpty)
+                                          ? dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.userModelList.length.toString()
                                           + ' x ' : '0 x ',
                                           style: TextStyle(
                                               color: kCustomOrange,
@@ -636,12 +635,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     children: [
                                       Text(
                                           (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
-                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList != null &&
-                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].supplierModelList.isNotEmpty) ?
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.supplierModelList != null &&
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.supplierModelList.isNotEmpty) ?
                                           dataBundleNotifier
                                                   .currentMapBranchIdBundleSupplierStorageUsers[
                                                       companyList[index]
-                                                          .pkBranchId]
+                                                          .pkBranchId]!
                                                   .supplierModelList
                                                   .length
                                                   .toString() + ' x' : '0 x',
@@ -664,12 +663,12 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                     children: [
                                       Text(
                                           (dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers.isNotEmpty &&
-                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList != null &&
-                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId].storageModelList.isNotEmpty) ?
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.storageModelList != null &&
+                                              dataBundleNotifier.currentMapBranchIdBundleSupplierStorageUsers[companyList[index].pkBranchId]!.storageModelList.isNotEmpty) ?
                                           dataBundleNotifier
                                                   .currentMapBranchIdBundleSupplierStorageUsers[
                                                       companyList[index]
-                                                          .pkBranchId]
+                                                          .pkBranchId]!
                                                   .storageModelList
                                                   .length
                                                   .toString() + ' x ' : '0 x ',
@@ -705,15 +704,15 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                               companyList[index],
                                           listStorageModel: dataBundleNotifier
                                               .currentMapBranchIdBundleSupplierStorageUsers[
-                                                  companyList[index].pkBranchId]
+                                                  companyList[index].pkBranchId]!
                                               .storageModelList,
                                           listSuppliersModel: dataBundleNotifier
                                               .currentMapBranchIdBundleSupplierStorageUsers[
-                                                  companyList[index].pkBranchId]
+                                                  companyList[index].pkBranchId]!
                                               .supplierModelList,
                                           listUserModel: dataBundleNotifier
                                               .currentMapBranchIdBundleSupplierStorageUsers[
-                                                  companyList[index].pkBranchId]
+                                                  companyList[index].pkBranchId]!
                                               .userModelList,
                                         ),
                                       ),
@@ -894,7 +893,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
                                                                       if (await canLaunch(urlString)) {
                                                                         await launch(urlString);
                                                                       } else {
-                                                                        Scaffold.of(context).showSnackBar(SnackBar(
+                                                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                                                             backgroundColor: kPinaColor,
                                                                             duration: Duration(milliseconds: 3000),
                                                                             content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -984,7 +983,7 @@ class _ProfileEditiScreenState extends State<ProfileEditiScreen> {
     );
   }
 
-  AnimatedContainer buildDot({int index}) {
+  AnimatedContainer buildDot({int? index}) {
     return AnimatedContainer(
       duration: kAnimationDuration,
       margin: const EdgeInsets.only(right: 5),

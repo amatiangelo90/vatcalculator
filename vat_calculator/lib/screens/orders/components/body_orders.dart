@@ -2,19 +2,17 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/client_icloud.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
+import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
 
 import '../../../size_config.dart';
 
 class OrdersScreenBody extends StatefulWidget {
-  const OrdersScreenBody({Key key}) : super(key: key);
+  const OrdersScreenBody({Key? key}) : super(key: key);
 
   @override
   _OrdersScreenBodyState createState() => _OrdersScreenBodyState();
@@ -69,7 +67,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                               text: "Crea Fornitore",
                               press: () async {
                                 Navigator.pushNamed(context, AddSupplierScreen.routeName);
-                              },
+                              }, textColor: kCustomBlue, color: kPrimaryColor,
                             ),
                           ),
                         ],

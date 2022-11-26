@@ -3,11 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/order_card.dart';
-
 import '../../../client/vatservice/model/order_model.dart';
 import '../../../client/vatservice/model/product_order_amount_model.dart';
 import '../../../client/vatservice/model/utils/order_state.dart';
@@ -17,7 +16,7 @@ import '../../../size_config.dart';
 import '../../orders/components/screens/orders_utils.dart';
 
 class OrderWidgetForStorage extends StatefulWidget {
-  const OrderWidgetForStorage({@required this.supplierId, @required this.orderedMapBySuppliers});
+  const OrderWidgetForStorage({required this.supplierId, required this.orderedMapBySuppliers});
 
   final int supplierId;
   final List<StorageProductModel> orderedMapBySuppliers;
@@ -28,14 +27,14 @@ class OrderWidgetForStorage extends StatefulWidget {
 
 class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
 
-  DateTime currentDate;
+  late DateTime currentDate;
   bool orderSent = false;
 
-  OrderModel currentOrderModelAfterSend;
+  late OrderModel currentOrderModelAfterSend;
 
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime pickedDate = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
@@ -55,7 +54,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                 ),
               ),
             ),
-            child: child,
+            child: child!,
           );
         },
 
@@ -193,7 +192,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                   color: kPrimaryColor,
                   onPressed: () async {
 
-                    SupplierModel supplier = dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.supplierId);
+                    SupplierModel supplier = dataBundleNotifier.retrieveSupplierFromSupplierListById(widget.supplierId)!;
                     String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
 
                     OrderModel order = OrderModel(
@@ -210,7 +209,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                         fk_user_id: dataBundleNotifier.userDetailsList[0].id,
                         pk_order_id: 0,
                         fk_supplier_id: widget.supplierId,
-                        paid: 'false'
+                        paid: 'false', closedby: ''
                     );
                     Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
                       orderModel: order
@@ -286,7 +285,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
                           });
                         }
                       }else{
-                        dataBundleNotifier.getclientServiceInstance().deleteOrder(orderModel: OrderModel(pk_order_id: performSaveOrderId.data),actionModel:  null);
+                        dataBundleNotifier.getclientServiceInstance().deleteOrder(orderModel: OrderModel(pk_order_id: performSaveOrderId.data, code: '', total: 0, fk_user_id: 0, fk_supplier_id: 0, fk_storage_id: 0, fk_branch_id: 0, details: '', creation_date: '', status: '', paid: '', delivery_date: '', closedby: ''));
                       }
                     }
                   },
@@ -319,7 +318,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
       ],
       builder: (context, snapshot){
         return Column(
-          children: snapshot.data,
+          children: snapshot.data!,
         );
       },
       future: retrieveData(currentOrderModelAfterSend, dataBundleNotifier),
@@ -327,7 +326,7 @@ class _OrderWidgetForStorageState extends State<OrderWidgetForStorage> {
   }
 
   Future<List<Widget>> retrieveData(OrderModel currentOrderModelAfterSend, DataBundleNotifier dataBundleNotifier) async{
-    List<ProductOrderAmountModel> products = await dataBundleNotifier.clientService.retrieveProductByOrderId(OrderModel(pk_order_id: currentOrderModelAfterSend.pk_order_id, paid: 'TRUE'));
+    List<ProductOrderAmountModel> products = await dataBundleNotifier.clientService.retrieveProductByOrderId(OrderModel(pk_order_id: currentOrderModelAfterSend.pk_order_id, paid: 'TRUE', code: '', closedby: '', delivery_date: '', status: '', creation_date: '', details: '', fk_branch_id: 0, fk_storage_id: 0, fk_supplier_id: 0, fk_user_id: 0, total: 0));
     return [OrderCard(order: currentOrderModelAfterSend, orderIdProductList: products, showExpandedTile: false)];
 
   }

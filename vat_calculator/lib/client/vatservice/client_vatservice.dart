@@ -1,10 +1,6 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:dio/dio.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/cash_register_model.dart';
-import 'package:vat_calculator/client/vatservice/model/deposit_order_model.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/client/vatservice/model/move_product_between_storage_model.dart';
@@ -16,11 +12,9 @@ import 'package:vat_calculator/models/databundle.dart';
 import 'constant/utils_vatservice.dart';
 import 'model/archivied_not_paid_request.dart';
 import 'model/branch_model.dart';
-import 'model/expence_model.dart';
 import 'model/order_model.dart';
 import 'model/product_model.dart';
 import 'model/product_order_amount_model.dart';
-import 'model/recessed_model.dart';
 import 'model/save_product_into_storage_request.dart';
 import 'model/storage_product_model.dart';
 import 'model/user_branch_relation_model.dart';
@@ -38,7 +32,7 @@ class ClientVatService implements VatServiceInterface{
             mail: eMail,
             phone: phoneNumber,
             privilege: privileges,
-            relatedUserId: relatedUserId,
+            relatedUserId: relatedUserId, id: 0,
         ).toMap());
 
     Response post;
@@ -83,107 +77,12 @@ class ClientVatService implements VatServiceInterface{
     }
     return post;
   }
+
   @override
-  Future<Response> performSaveRecessed(double amountF,
-      double amountNF,
-      double amountCash,
-      double amountPos,
-      String description,
-      int iva,
-      int dateTimeRecessed,
-      int pkCashRegisterId,
-      ActionModel actionModel) async{
-
-    var dio = Dio();
-
-    String body = json.encode(
-        RecessedModel(
-            amountF: amountF,
-            amountNF: amountNF,
-            amountCash: amountCash,
-            amountPos: amountPos,
-            vat: iva,
-            dateTimeRecessed: dateTimeRecessed,
-            description: description,
-            dateTimeRecessedInsert: DateTime.now().add(const Duration(hours: 1)).millisecondsSinceEpoch,
-            fkCashRegisterId: pkCashRegisterId,
-            pkRecessedId: null).toMap());
-
-    Response post;
-    print('Save import recessed request body: ' + body);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH,
-        data: body,
-      );
-
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_RECESSED_FOR_BRANCH + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
-
-      return post;
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-  @override
-  Future<Response> performSaveExpence(double amount, String description, int iva, int dateTimeExpence, int pkBranchId, String fiscal, ActionModel actionModel) async{
-
+  Future<Response> performSaveStorage({StorageModel? storageModel}) async{
     var dio = Dio();
     String body = json.encode(
-        ExpenceModel(
-            amount: amount,
-            vat: iva,
-            dateTimeExpence: dateTimeExpence,
-            description: description,
-            dateTimeExpenceInsert: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch,
-            fkBranchId: pkBranchId,
-            pkExpenceId: null,
-            fiscal: fiscal
-        ).toMap());
-
-    Response post;
-    print('Save expence request body: ' + body);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_SAVE_EXPENCE_FOR_BRANCH,
-        data: body,
-      );
-
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_SAVE_EXPENCE_FOR_BRANCH + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
-
-      return post;
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-  @override
-  Future<Response> performSaveStorage({StorageModel storageModel, ActionModel actionModel}) async{
-    var dio = Dio();
-    String body = json.encode(
-        storageModel.toMap());
+        storageModel!.toMap());
 
     Response post;
     print('Save storage : ' + body);
@@ -197,15 +96,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_STORAGE_FOR_BRANCH + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
       return post;
@@ -215,11 +105,11 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performSaveOrder({OrderModel orderModel}) async {
+  Future<Response> performSaveOrder({OrderModel? orderModel}) async {
 
     var dio = Dio();
     String body = json.encode(
-        orderModel.toMap());
+        orderModel!.toMap());
 
     Response post;
     print('Save order : ' + body);
@@ -296,12 +186,12 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future<Response> performSaveSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel}) async{
+  Future<Response> performSaveSupplier({SupplierModel? anagraficaFornitore}) async{
 
     var dio = Dio();
 
     String body = json.encode(
-        anagraficaFornitore.toMap());
+        anagraficaFornitore!.toMap());
     Response post;
 
     print('Save supplier ($VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH) request body: ' + body);
@@ -313,15 +203,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_SUPPLIER_FOR_BRANCH + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
       return post;
@@ -331,7 +212,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performSaveBranch(BranchModel company, ActionModel actionModel) async {
+  Future<Response> performSaveBranch(BranchModel company) async {
 
     var dio = Dio();
 
@@ -352,16 +233,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService create branch (' + VAT_SERVICE_URL_SAVE_BRANCH + '): ' + post.data.toString());
-        try{
-          actionModel.fkBranchId = post.data;
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
       return post;
     }catch(e){
@@ -369,11 +240,11 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performSaveProduct({ProductModel product, ActionModel actionModel}) async {
+  Future<Response> performSaveProduct({ProductModel? product}) async {
 
     var dio = Dio();
     String body = json.encode(
-        product.toMap());
+        product!.toMap());
 
     print('Calling ' + VAT_SERVICE_URL_SAVE_PRODUCT + '...');
     print('Body Request Save product: ' + body);
@@ -386,15 +257,6 @@ class ClientVatService implements VatServiceInterface{
       );
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
       return post;
     }catch(e){
@@ -402,12 +264,12 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performSaveProductIntoStorage({SaveProductToStorageRequest saveProductToStorageRequest, ActionModel actionModel}) async {
+  Future<Response> performSaveProductIntoStorage({SaveProductToStorageRequest? saveProductToStorageRequest}) async {
 
     var dio = Dio();
 
     String body = json.encode(
-        saveProductToStorageRequest.toMap());
+        saveProductToStorageRequest!.toMap());
 
 
     print('Calling ' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE + '...');
@@ -423,15 +285,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_SAVE_PRODUCT_INTO_STORAGE + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
 
@@ -475,12 +328,12 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performUpdateProduct({ProductModel product}) async {
+  Future<Response> performUpdateProduct({ProductModel? product}) async {
 
     var dio = Dio();
 
     String body = json.encode(
-        product.toMap());
+        product!.toMap());
 
 
     print('Calling ' + VAT_SERVICE_URL_UPDATE_PRODUCT + '...');
@@ -504,42 +357,14 @@ class ClientVatService implements VatServiceInterface{
     }
 
   }
+
   @override
-  Future<Response> performUpdateExpence({ExpenceModel expenceModel, ActionModel actionModel}) async {
+  Future<Response> performDeleteProduct({ProductModel? product}) async {
 
     var dio = Dio();
 
     String body = json.encode(
-        expenceModel.toMap());
-
-
-    print('Calling ' + VAT_SERVICE_URL_UPDATE_EXPENCE + '...');
-    print('Body Request update exence: ' + body);
-
-    Response post;
-    try{
-
-      post = await dio.post(
-        VAT_SERVICE_URL_UPDATE_EXPENCE,
-        data: body,
-      );
-
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_EXPENCE + '): ' + post.data.toString());
-      }
-      return post;
-    }catch(e){
-      rethrow;
-    }
-
-  }
-  @override
-  Future<Response> performDeleteProduct({ProductModel product, ActionModel actionModel}) async {
-
-    var dio = Dio();
-
-    String body = json.encode(
-        product.toMap());
+        product!.toMap());
     print('Calling ' + VAT_SERVICE_URL_DELETE_PRODUCT + '...');
     print('Body Request delete product: ' + body);
 
@@ -552,15 +377,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null){
         print('Response From VatService removed product(' + VAT_SERVICE_URL_DELETE_PRODUCT + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
       return post;
     }catch(e){
@@ -568,12 +384,12 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> removeProductFromStorage({StorageProductModel storageProductModel, ActionModel actionModel}) async {
+  Future<Response> removeProductFromStorage({StorageProductModel? storageProductModel}) async {
 
     var dio = Dio();
 
     String body = json.encode(
-        storageProductModel.toMap());
+        storageProductModel!.toMap());
 
 
     print('Calling ' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE + '...');
@@ -589,15 +405,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null){
         print('Response From VatService delete product (' + VAT_SERVICE_URL_REMOVE_PRODUCT_FROM_STORAGE + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
       return post;
@@ -618,7 +425,7 @@ class ClientVatService implements VatServiceInterface{
             lastName: '',
             mail: eMail,
             phone: '',
-            privilege: ''
+            privilege: '', id: 0, relatedUserId: 0
         ).toMap());
 
     print('Request body for Vat Service (Retrieve User by Email): ' + body);
@@ -639,7 +446,7 @@ class ClientVatService implements VatServiceInterface{
         lastName: post.data['lastName'],
         phone: post.data['phone'],
         mail: post.data['mail'],
-        privilege: post.data['privilege']
+        privilege: post.data['privilege'], relatedUserId: 0
       );
 
       return userModel;
@@ -663,7 +470,7 @@ class ClientVatService implements VatServiceInterface{
             name: '',
             lastName: '',
             mail: '',
-            phone: ''
+            phone: '', privilege: '', relatedUserId: 0
         ).toMap());
 
     print('Retrieve branches body request: '  + body);
@@ -706,100 +513,6 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<List<ActionModel>> retrieveActionsByBranchId(int branchId) async {
-
-    var dio = Dio();
-
-    List<ActionModel> actionModelList = [];
-
-    print('Retrieve actions list for the branch with id ' + branchId.toString());
-    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_ACTIONS_BY_BRANCH_ID);
-    String body = json.encode(
-        BranchModel(
-            pkBranchId: branchId
-        ).toMap());
-
-    print('Retrieve actions body request: ' + body);
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_ACTIONS_BY_BRANCH_ID,
-        data: body,
-      );
-
-      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_ACTIONS_BY_BRANCH_ID + '): ' + post.data.toString());
-      String encode = json.encode(post.data);
-
-      List<dynamic> valueList = jsonDecode(encode);
-
-      valueList.forEach((actionElement) {
-
-        actionModelList.add(
-            ActionModel(
-              pkActionId: actionElement['pkActionId'],
-              user: actionElement['user'],
-              fkBranchId: actionElement['fkBranchId'],
-              description: actionElement['description'],
-              date: actionElement['date'],
-              type: actionElement['type'],
-
-            ));
-      });
-      return actionModelList;
-
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-  @override
-  Future<List<ActionModel>> retrieveLastWeekActionsByBranchId(int branchId) async {
-
-    var dio = Dio();
-
-    List<ActionModel> actionModelList = [];
-
-    print('Retrieve actions list for the branch with id ' + branchId.toString());
-    print('Url: ' + VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID);
-    String body = json.encode(
-        BranchModel(
-            pkBranchId: branchId
-        ).toMap());
-
-    print('Retrieve actions body request: ' + body);
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID,
-        data: body,
-      );
-
-      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_LASTWEEK_ACTIONS_BY_BRANCH_ID + '): ' + post.data.toString());
-      String encode = json.encode(post.data);
-
-      List<dynamic> valueList = jsonDecode(encode);
-
-      valueList.forEach((actionElement) {
-
-        actionModelList.add(
-            ActionModel(
-              pkActionId: actionElement['pkActionId'],
-              user: actionElement['user'],
-              fkBranchId: actionElement['fkBranchId'],
-              description: actionElement['description'],
-              date: actionElement['date'],
-              type: actionElement['type'],
-
-            ));
-      });
-      return actionModelList;
-
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-  @override
   Future<List<StorageProductModel>> retrieveRelationalModelProductsStorage(int pkStorageId) async {
 
     var dio = Dio();
@@ -813,7 +526,7 @@ class ClientVatService implements VatServiceInterface{
             pkStorageId: pkStorageId,
             name: '',
             code: '',
-            creationDate: null,
+            creationDate: DateTime.now(),
             address: '',
             city: '',
             cap: '',
@@ -856,97 +569,6 @@ class ClientVatService implements VatServiceInterface{
       return storageProoductModelRelationList;
 
     }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-  @override
-  Future<List<RecessedModel>> retrieveRecessedListByCashRegister(CashRegisterModel cashRegister) async {
-    var dio = Dio();
-
-    List<RecessedModel> recessedList = [];
-
-
-    String body = json.encode(
-        cashRegister.toMap());
-
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES,
-        data: body,
-      );
-
-      print('Request body for Vat Service (Retrieve recessed list by cashRegister model): ' + body);
-      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_RECESSED_BY_BRANCHES + '): ' + post.data.toString());
-      String encode = json.encode(post.data);
-
-      List<dynamic> valueList = jsonDecode(encode);
-
-      valueList.forEach((recessedElement) {
-
-        recessedList.add(
-            RecessedModel(
-
-                fkCashRegisterId: recessedElement['fkCashRegisterId'],
-                description: recessedElement['description'],
-                vat: recessedElement['vat'],
-                dateTimeRecessed: recessedElement['dateTimeRecessed'],
-                dateTimeRecessedInsert: recessedElement['dateTimeRecessedInsert'],
-                amountF: recessedElement['amountF'],
-                amountNF: recessedElement['amountNF'],
-                amountPos: recessedElement['amountPos'],
-                amountCash: recessedElement['amountCash'],
-                pkRecessedId: recessedElement['pkRecessedId']
-            ));
-      });
-      return recessedList;
-  }catch(e){
-      print('Errore retrieving recessed : ');
-      print(e);
-      rethrow;
-    }
-  }
-  @override
-  Future<List<ExpenceModel>> retrieveExpencesListByBranch(BranchModel currentBranch) async {
-    var dio = Dio();
-
-    List<ExpenceModel> expenceList = [];
-
-
-    String body = json.encode(
-        currentBranch.toMap());
-
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_EXPENCE_BY_BRANCHES,
-        data: body,
-      );
-
-      print('Request body for Vat Service (Retrieve expences list by branch): ' + body);
-      print('Response From Vat Service (' + VAT_SERVICE_URL_RETRIEVE_EXPENCE_BY_BRANCHES + '): ' + post.data.toString());
-      String encode = json.encode(post.data);
-
-      List<dynamic> valueList = jsonDecode(encode);
-
-      valueList.forEach((expenceElement) {
-
-        expenceList.add(
-            ExpenceModel(
-                fkBranchId: expenceElement['fkBranchId'],
-                description: expenceElement['description'],
-                vat: expenceElement['vat'],
-                dateTimeExpence: expenceElement['dateTimeExpence'],
-                dateTimeExpenceInsert: expenceElement['dateTimeExpenceInsert'],
-                amount: expenceElement['amount'],
-                fiscal: expenceElement['fiscal'],
-                pkExpenceId: expenceElement['pkExpenceId']
-            ));
-      });
-      return expenceList;
-  }catch(e){
-      print('Errore retrieving recessed : ');
       print(e);
       rethrow;
     }
@@ -1094,7 +716,7 @@ class ClientVatService implements VatServiceInterface{
               piva: supplierElement['piva'],
               referente: supplierElement['referente'],
               tel: supplierElement['tel'],
-              fkBranchId: supplierElement['fkBranchId'],
+              fkBranchId: supplierElement['fkBranchId'] ?? 0,
             ));
       });
       return suppliersList;
@@ -1180,7 +802,7 @@ class ClientVatService implements VatServiceInterface{
                 prezzo_lordo: product['price'],
                 descrizione: product['description'],
                 categoria: product['category'],
-                fkSupplierId: product['fkSupplierId']));
+                fkSupplierId: product['fkSupplierId'], orderItems: 0.0));
       });
       return productsList;
     }catch(e){
@@ -1252,7 +874,7 @@ class ClientVatService implements VatServiceInterface{
             vatNumber: '',
             address: '',
             cap: 00000,
-            city: ''
+            city: '', token: ''
         ).toMap());
 
     print('Retrieve branches body request: '  + body);
@@ -1283,7 +905,7 @@ class ClientVatService implements VatServiceInterface{
                 providerFatture: branchElement['provider'],
                 apiKeyOrUser: branchElement['idKeyUser'],
                 apiUidOrPassword: branchElement['idUidPassword'],
-                accessPrivilege: branchElement['accessPrivilege']
+                accessPrivilege: branchElement['accessPrivilege'], token: ''
             ));
       });
       return branchList;
@@ -1339,11 +961,11 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future<void> deleteOrder({OrderModel orderModel, ActionModel actionModel}) async {
+  Future<void> deleteOrder({OrderModel? orderModel}) async {
     var dio = Dio();
 
     String body = json.encode(
-        orderModel.toMap());
+        orderModel!.toMap());
 
     Response post;
     print('Delete order : ' + body);
@@ -1356,29 +978,19 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_DELETE_ORDER + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
-      return post;
     }catch(e){
       print(e);
       rethrow;
     }
   }
   @override
-  Future<void> deleteStorage({StorageModel storageModel, ActionModel actionModel}) async{
+  Future<void> deleteStorage({StorageModel? storageModel}) async{
     var dio = Dio();
 
     String body = json.encode(
-        storageModel.toMap());
+        storageModel!.toMap());
 
     Response post;
     print('Calling delete storage method ' + VAT_SERVICE_URL_DELETE_STORAGE + ' to delete storage ${storageModel.name} from current branch ');
@@ -1390,29 +1002,18 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_DELETE_STORAGE + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
-
-      return post;
     }catch(e){
       print(e);
       rethrow;
     }
   }
   @override
-  Future<void> updateOrderStatus({OrderModel orderModel, ActionModel actionModel}) async {
+  Future<void> updateOrderStatus({OrderModel? orderModel}) async {
     var dio = Dio();
 
     String body = json.encode(
-        orderModel.toMap());
+        orderModel!.toMap());
 
     Response post;
     print('Update order with id : ' + orderModel.pk_order_id.toString() +  ' to status : ' + orderModel.status + ' (Paid: ${orderModel.paid})');
@@ -1425,29 +1026,19 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_ORDER_STATUS_BY_ID + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
-      return post;
     }catch(e){
       print(e);
       rethrow;
     }
   }
   @override
-  Future<Response> addProviderDetailsToBranch({BranchModel branchModel, ActionModel actionModel}) async {
+  Future<Response> addProviderDetailsToBranch({BranchModel? branchModel}) async {
     var dio = Dio();
 
     String body = json.encode(
-        branchModel.toMap());
+        branchModel!.toMap());
 
     Response post;
     print('Add provider configuration to  : ' + branchModel.pkBranchId.toString());
@@ -1460,15 +1051,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH_ADD_PROVIDER_FATTURE + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
       return post;
     }catch(e){
@@ -1477,7 +1059,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<List<SupplierModel>> retrieveSuppliersListByCode({String code}) async {
+  Future<List<SupplierModel>> retrieveSuppliersListByCode({String? code}) async {
     var dio = Dio();
 
     List<SupplierModel> suppliersList = [];
@@ -1486,7 +1068,7 @@ class ClientVatService implements VatServiceInterface{
         SupplierModel(
           pkSupplierId: 0,
           cf: '',
-          extra: code,
+          extra: code!,
           fax: '',
           id: '',
           indirizzo_cap:'',
@@ -1547,13 +1129,13 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<int> addSupplierToCurrentBranch({SupplierModel supplierRetrievedByCodeToUpdateRelationTableBranchSupplier, ActionModel actionModel}) async {
+  Future<int> addSupplierToCurrentBranch({SupplierModel? supplierRetrievedByCodeToUpdateRelationTableBranchSupplier}) async {
     var dio = Dio();
 
     List<SupplierModel> suppliersList = [];
 
     String body = json.encode(
-        supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.toMap());
+        supplierRetrievedByCodeToUpdateRelationTableBranchSupplier!.toMap());
 
     Response post;
     print('Request body for Vat Service (Add supplier to brancg): ' + body);
@@ -1565,18 +1147,6 @@ class ClientVatService implements VatServiceInterface{
 
       print('Response From Vat Service add supplier to branch (' + VAT_SERVICE_ADD_SUPPLIER_TO_CURRENT_BRANCH + '): ' + post.data.toString());
 
-      if(post != null){
-        print('Adding action : ' + actionModel.toMap().toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
       int result = post.data;
       return result;
     }catch(e){
@@ -1585,10 +1155,10 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<void> removeSupplierFromCurrentBranch({SupplierModel requestRemoveSupplierFromBranch, ActionModel actionModel}) async {
+  Future<void> removeSupplierFromCurrentBranch({SupplierModel? requestRemoveSupplierFromBranch}) async {
     var dio = Dio();
     String body = json.encode(
-        requestRemoveSupplierFromBranch.toMap());
+        requestRemoveSupplierFromBranch!.toMap());
 
     print('Calling ' + VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH + '...');
     print('Body Request remove supplier from branch: ' + body);
@@ -1602,26 +1172,16 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null){
         print('Response From VatService remove supplier (' + VAT_SERVICE_URL_REMOVE_SUPPLIER_FROM_BRANCH + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
-      return post;
     }catch(e){
       rethrow;
     }
   }
   @override
-  Future<Response> removeProviderFromBranch({BranchModel branchModel, ActionModel actionModel}) async {
+  Future<Response> removeProviderFromBranch({BranchModel? branchModel}) async {
     var dio = Dio();
     String body = json.encode(
-        branchModel.toMap());
+        branchModel!.toMap());
     print('Calling ' + VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH + '...');
     print('Body Request remove provider from branch: ' + body);
 
@@ -1634,15 +1194,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null){
         print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_PROVIDER_FROM_BRANCH + '). Rows Affected: ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
       return post;
     }catch(e){
@@ -1651,10 +1202,10 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future<Response> performCreateEvent({EventModel eventModel, ActionModel actionModel}) async {
+  Future<Response> performCreateEvent({EventModel? eventModel}) async {
     var dio = Dio();
 
-    print('Create event ${eventModel.eventName} for branch with id ${eventModel.fkBranchId}');
+    print('Create event ${eventModel!.eventName} for branch with id ${eventModel!.fkBranchId}');
     String body = json.encode(
         eventModel.toMap());
     print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_EVENT with body request $body');
@@ -1667,26 +1218,17 @@ class ClientVatService implements VatServiceInterface{
       );
 
       if(post != null){
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
       return post;
     }catch(e){
       print(e);
-      return null;
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
 
 
   @override
-  Future<Response> createUserBranchRelation({int fkUserId, int fkBranchId, String accessPrivilege, ActionModel actionModel}) async {
+  Future<Response> createUserBranchRelation({int? fkUserId, int? fkBranchId, String? accessPrivilege}) async {
 
     var dio = Dio();
 
@@ -1694,9 +1236,9 @@ class ClientVatService implements VatServiceInterface{
     String body = json.encode(
         UserBranchRelationModel(
             pkUserBranchId: 0,
-            fkUserId: fkUserId,
-            fkBranchId: fkBranchId,
-            accessPrivilege: accessPrivilege,
+            fkUserId: fkUserId!,
+            fkBranchId: fkBranchId!,
+            accessPrivilege: accessPrivilege!,
             token: ''
         ).toMap());
     print('Calling the following endpoint $VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH with body request $body');
@@ -1707,33 +1249,21 @@ class ClientVatService implements VatServiceInterface{
         VAT_SERVICE_URL_CREATE_RELATION_BETWEEN_USER_AND_BRANCH,
         data: body,
       );
-
-      if(post != null){
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
       return post;
     }catch(e){
       print(e);
-      return null;
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
   @override
-  Future<Response> updatePrivilegeForUserBranchRelation({int branchId, int userId, String privilegeType, ActionModel actionModel}) async {
+  Future<Response> updatePrivilegeForUserBranchRelation({int? branchId, int? userId, String? privilegeType}) async {
     var dio = Dio();
 
     String body = json.encode(
         UserBranchRelationModel(pkUserBranchId: 0,
-            fkBranchId: branchId,
-            fkUserId: userId,
-            accessPrivilege: privilegeType,
+            fkBranchId: branchId!,
+            fkUserId: userId!,
+            accessPrivilege: privilegeType!,
             token: '').toMap());
 
 
@@ -1750,15 +1280,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_WITH_NEW_ACCESS_PRIVILEGE + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
       return post;
@@ -1768,15 +1289,15 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future<Response> updateFirebaseTokenForUserBranchRelation({int branchId, int userId, String token}) async {
+  Future<Response> updateFirebaseTokenForUserBranchRelation({int? branchId, int? userId, String? token}) async {
     var dio = Dio();
 
     String body = json.encode(
         UserBranchRelationModel(pkUserBranchId: 0,
-            fkBranchId: branchId,
-            fkUserId: userId,
+            fkBranchId: branchId!,
+            fkUserId: userId!,
             accessPrivilege: '',
-            token: token).toMap());
+            token: token!).toMap());
 
 
     print('Calling ' + VAT_SERVICE_URL_UPDATE_USER_BRANCH_RELATION_TABLE_REFRESH_FIREBASE_TOKEN + '...');
@@ -1806,14 +1327,14 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future<Response> removeUserBranchRelation({int branchId, int userId, ActionModel actionModel}) async {
+  Future<Response> removeUserBranchRelation({int? branchId, int? userId}) async {
     var dio = Dio();
 
     String body = json.encode(
         UserBranchRelationModel(pkUserBranchId: 0,
-            fkBranchId: branchId,
-            fkUserId: userId,
-            accessPrivilege: '').toMap());
+            fkBranchId: branchId!,
+            fkUserId: userId!,
+            accessPrivilege: '', token: '').toMap());
 
 
     print('Calling ' + VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION + '...');
@@ -1829,15 +1350,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data){
         print('Response From VatService (' + VAT_SERVICE_URL_REMOVE_USER_BRANCH_RELATION + '): ' + post.data);
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
       return post;
@@ -1846,11 +1358,11 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<Response> performEditSupplier({SupplierModel anagraficaFornitore, ActionModel actionModel}) async {
+  Future<Response> performEditSupplier({SupplierModel? anagraficaFornitore}) async {
     var dio = Dio();
 
     String body = json.encode(
-        anagraficaFornitore.toMap());
+        anagraficaFornitore!.toMap());
     Response post;
 
     print('Update supplier ($VAT_SERVICE_URL_UPDATE_SUPPLIER) request body: ' + body);
@@ -1862,15 +1374,6 @@ class ClientVatService implements VatServiceInterface{
 
       if(post != null && post.data != null){
         print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_SUPPLIER + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
       }
 
       return post;
@@ -1939,42 +1442,6 @@ class ClientVatService implements VatServiceInterface{
     }
   }
   @override
-  Future<void> deleteExpence({ExpenceModel expenceModel, ActionModel actionModel}) async {
-
-    var dio = Dio();
-
-    String body = json.encode(expenceModel.toMap());
-
-    Response post;
-    print('Calling delete expence method ' + VAT_SERVICE_URL_DELETE_EXPENCE + ' to delete expence with id ${expenceModel.pkExpenceId} from current branch ');
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_DELETE_EXPENCE,
-        data: body,
-      );
-
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_DELETE_EXPENCE + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
-
-      return post;
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-
-  }
-
-  @override
   Future<void> updateUserData(UserDetailsModel userDetail) async {
     var dio = Dio();
 
@@ -2003,8 +1470,6 @@ class ClientVatService implements VatServiceInterface{
       if(post != null){
         print('Response From VatService. Updated user data result (url: ' + VAT_SERVICE_URL_UPDATE_USER_DATA + '). Result: ' + post.data.toString());
       }
-
-      return post;
     }catch(e){
       rethrow;
     }
@@ -2122,7 +1587,6 @@ class ClientVatService implements VatServiceInterface{
 
   Future<List<WorkstationModel>> retrieveWorkstationListByEventId(EventModel eventModel) async {
 
-
     if(eventModel != null || eventModel.pkEventId > 0){
       var dio = Dio();
       Response post;
@@ -2166,12 +1630,12 @@ class ClientVatService implements VatServiceInterface{
       print('Impossible to retrieve workstation while event is null or event id is empty or null. Event: ' + eventModel.toString());
     }
 
-
+    return [];
   }
 
   @override
-  Future<List<WorkstationProductModel>>retrieveWorkstationProductModelByWorkstationId(WorkstationModel workstation) async {
-    if(workstation != null || workstation.pkWorkstationId > 0){
+  Future<List<WorkstationProductModel>>retrieveWorkstationProductModelByWorkstationId(WorkstationModel? workstation) async {
+    if(workstation != null || workstation!.pkWorkstationId > 0){
       var dio = Dio();
       Response post;
       print('Retrieve workstation product model by workstation id ${workstation.pkWorkstationId.toString()}...');
@@ -2229,15 +1693,16 @@ class ClientVatService implements VatServiceInterface{
     }else{
       print('Impossible to retrieve workstation products while workstationmodel is null or workstation id is empty or null. Event: ' + workstation.toString());
     }
+    return [];
 
   }
 
   @override
-  Future<void> updateStock({List<StorageProductModel> currentStorageProductListForCurrentStorageUnload, ActionModel actionModel}) async {
+  Future<void> updateStock({List<StorageProductModel>? currentStorageProductListForCurrentStorageUnload}) async {
     var dio = Dio();
     print('Upload on storage. Call $VAT_SERVICE_URL_UPDATE_STOCK...');
     String body = '[';
-    currentStorageProductListForCurrentStorageUnload.forEach((currentStorageProductElement) {
+    currentStorageProductListForCurrentStorageUnload!.forEach((currentStorageProductElement) {
       body = body + json.encode(
           currentStorageProductElement.toMap()) + ',';
     });
@@ -2251,17 +1716,6 @@ class ClientVatService implements VatServiceInterface{
         data: body,
       );
 
-      if(post != null){
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
       print('Request body for Vat Service (Update Stock): ' + body);
       print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
 
@@ -2273,12 +1727,12 @@ class ClientVatService implements VatServiceInterface{
   }
 
   @override
-  Future updateWorkstationProductModel(List<WorkstationProductModel> workStationProdModelList, ActionModel actionModel) async {
+  Future updateWorkstationProductModel(List<WorkstationProductModel>? workStationProdModelList) async {
 
     try{
       var dio = Dio();
       String body = '[';
-      workStationProdModelList.forEach((workStationProdModel) {
+      workStationProdModelList!.forEach((workStationProdModel) {
         body = body + json.encode(
             workStationProdModel.toMap()) + ',';
       });
@@ -2289,17 +1743,6 @@ class ClientVatService implements VatServiceInterface{
         data: body,
       );
 
-      if(post != null){
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
       print('Request body for Vat Service (Update Stock): ' + body);
       print('Response From Vat Service (' + VAT_SERVICE_URL_UPDATE_STOCK + '): ' + post.toString());
 
@@ -2378,7 +1821,7 @@ class ClientVatService implements VatServiceInterface{
     }
   }
 
-  performUpdateBranch(BranchModel company, ActionModel actionModel) async {
+  performUpdateBranch(BranchModel company) async {
     var dio = Dio();
 
     String body = json.encode(
@@ -2396,220 +1839,8 @@ class ClientVatService implements VatServiceInterface{
         data: body,
       );
 
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_BRANCH + '): ' + post.data.toString());
-        try{
-          if(actionModel != null){
-            actionModel.fkBranchId = post.data;
-            String actionBody = json.encode(actionModel.toMap());
-            await dio.post(
-              VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-              data: actionBody,
-            );
-          }
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
       return post;
     }catch(e){
-      rethrow;
-    }
-  }
-
-  performUpdateRecessed(RecessedModel recessedModel, ActionModel actionModel) async {
-
-    var dio = Dio();
-
-    String body = json.encode(
-        recessedModel.toMap());
-
-    print('Calling ' + VAT_SERVICE_URL_UPDATE_RECESSED + '...');
-    print('Body Request update recessed: ' + body);
-
-    Response post;
-    try{
-
-      post = await dio.post(
-        VAT_SERVICE_URL_UPDATE_RECESSED,
-        data: body,
-      );
-
-      print('post after update:  '  + post.data.toString());
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_RECESSED + '): ' + post.data.toString());
-        try{
-          actionModel.fkBranchId = post.data;
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
-
-
-      return post;
-    }catch(e){
-      rethrow;
-    }
-  }
-
-  performDeleteRecessed(RecessedModel recessed, ActionModel actionModel) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        recessed.toMap());
-    print('Calling ' + VAT_SERVICE_URL_DELETE_RECESSED + '...');
-    print('Body Request delete recessed: ' + body);
-
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_DELETE_RECESSED,
-        data: body,
-      );
-
-      if(post != null){
-        print('Response From VatService removed recessed(' + VAT_SERVICE_URL_DELETE_RECESSED + '): ' + post.data.toString());
-        try{
-          String actionBody = json.encode(actionModel.toMap());
-          await dio.post(
-            VAT_SERVICE_URL_ADD_ACTION_FOR_BRANCH,
-            data: actionBody,
-          );
-        }catch(e){
-          print('Exception: ' + e.toString());
-        }
-      }
-      return post;
-    }catch(e){
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Response> createCashRegister(CashRegisterModel cashRegisterModel) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        cashRegisterModel.toMap());
-
-
-    print('Calling ' + VAT_SERVICE_URL_CREATAE_CASH_REGISTER + '...');
-    print('Body Request create cash register : ' + body);
-
-    Response post;
-    try{
-
-      post = await dio.post(
-        VAT_SERVICE_URL_CREATAE_CASH_REGISTER,
-        data: body,
-      );
-
-      if(post != null && post.data != null){
-        print('Response From VatService create branch (' + VAT_SERVICE_URL_CREATAE_CASH_REGISTER + '): ' + post.data.toString());
-      }
-      return post;
-    }catch(e){
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Response> deleteCashRegister(CashRegisterModel cashRegisterModel) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        cashRegisterModel.toMap());
-    print('Calling ' + VAT_SERVICE_URL_DELETE_CASH_REGISTER + '...');
-    print('Body Request delete cash register: ' + body);
-
-    Response post;
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_DELETE_CASH_REGISTER,
-        data: body,
-      );
-      return post;
-    }catch(e){
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Response> updateCashRegister(CashRegisterModel cashRegisterModel) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        cashRegisterModel.toMap());
-
-
-    print('Calling ' + VAT_SERVICE_URL_UPDATE_CASH_REGISTER + '...');
-    print('Body Request update cassh register: ' + body);
-
-    Response post;
-    try{
-
-      post = await dio.post(
-        VAT_SERVICE_URL_UPDATE_CASH_REGISTER,
-        data: body,
-      );
-
-      if(post != null && post.data != null){
-        print('Response From VatService (' + VAT_SERVICE_URL_UPDATE_CASH_REGISTER + '): ' + post.data.toString());
-      }
-
-      return post;
-    }catch(e){
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<CashRegisterModel>> retrieveCashRegistersByBranchId(BranchModel branchModel) async {
-
-    var dio = Dio();
-
-    List<CashRegisterModel> cashRegisterList = [];
-    String body = json.encode(
-        branchModel.toMap());
-
-    Response post;
-    print('Retrieve cash registers model by branch id: ' + branchModel.pkBranchId.toString());
-    print('Calling retrieve method to get cash registers model by branch id ' + VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID,
-        data: body,
-      );
-
-
-      String encode = json.encode(post.data);
-
-      List<dynamic> valueList = jsonDecode(encode);
-
-      valueList.forEach((productOrderElement) {
-
-        cashRegisterList.add(
-            CashRegisterModel(
-              fkBranchId: productOrderElement['fkBranchId'],
-              name: productOrderElement['name'],
-              pkCashRegisterId: productOrderElement['pkCashRegisterId'],
-            )
-        );
-      });
-      print('Response from api to retrieve cashregisters ($VAT_SERVICE_URL_RETRIEVE_CASH_REGISTERS_BY_BRANCH_ID): ');
-      if(cashRegisterList != null && cashRegisterList.isNotEmpty)
-      cashRegisterList.forEach((cashitem) {
-        print(cashitem.toMap().toString());
-      });
-      return cashRegisterList;
-
-    }catch(e){
-      print(e);
       rethrow;
     }
   }
@@ -2618,7 +1849,6 @@ class ClientVatService implements VatServiceInterface{
   Future<Response> removeProductFromWorkstation(WorkstationProductModel prodModelWorkstation) async {
     var dio = Dio();
 
-    List<CashRegisterModel> cashRegisterList = [];
     String body = json.encode(
         prodModelWorkstation.toMap());
 
@@ -2761,7 +1991,7 @@ class ClientVatService implements VatServiceInterface{
       return post;
     }catch(e){
       print(e);
-      return null;
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
 
@@ -2784,7 +2014,7 @@ class ClientVatService implements VatServiceInterface{
       return post;
     }catch(e){
       print(e);
-      return null;
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
 
@@ -2811,15 +2041,16 @@ class ClientVatService implements VatServiceInterface{
 
       List<dynamic> valueList = jsonDecode(encode);
 
+
       valueList.forEach((eventExpenceItem) {
         expenceEventModel.add(
             ExpenceEventModel(
               pkEventExpenceId: eventExpenceItem['pkEventExpenceId'],
-              amount: eventExpenceItem['amount'],
-              cost: eventExpenceItem['cost'],
-              dateTimeInsert: eventExpenceItem['pkEventId'],
-              description: eventExpenceItem['description'],
-              fkEventId: eventExpenceItem['fkEventId']
+              amount: eventExpenceItem['amount'] as double,
+              cost: eventExpenceItem['cost'] as double,
+              dateTimeInsert: eventExpenceItem['pkEventId'] ?? 0,
+              description: eventExpenceItem['description'] ?? '',
+              fkEventId: eventExpenceItem['fkEventId'] ?? 0
             ));
       });
 
@@ -2849,17 +2080,17 @@ class ClientVatService implements VatServiceInterface{
       return post;
     } catch(e){
       print(e);
-      return null;
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
 
   @override
-  Future<Response> moveProductBetweenStorage({List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel, ActionModel actionModel}) async {
+  Future<Response> moveProductBetweenStorage({List<MoveProductBetweenStorageModel>? listMoveProductBetweenStorageModel}) async {
 
     var dio = Dio();
 
     String body = '[';
-    listMoveProductBetweenStorageModel.forEach((moveProductModel) {
+    listMoveProductBetweenStorageModel!.forEach((moveProductModel) {
       body = body + json.encode(
           moveProductModel.toMap()) + ',';
     });
@@ -2876,7 +2107,7 @@ class ClientVatService implements VatServiceInterface{
       return post;
     }catch(e){
       print(e);
-      return null;
+      return Response(requestOptions: RequestOptions(path: ''));
     }
   }
 
@@ -2897,9 +2128,7 @@ class ClientVatService implements VatServiceInterface{
       return post;
     }catch(e){
       print(e);
-      return Response(
-        data: 0
-      );
+      return Response(requestOptions: RequestOptions(path: ''), data: 0);
     }
 
 
@@ -2942,123 +2171,7 @@ class ClientVatService implements VatServiceInterface{
       return post;
     }catch(e){
       print(e);
-      return Response(
-          data: 0
-      );
-    }
-  }
-
-  @override
-  Future<Response> performDeleteDepositOrder(DepositOrder depositOrder) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        depositOrder.toMap());
-
-    Response post;
-    print('Delete deposit order request body: ' + body);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_DELETE_ORDER_DEPOSIT,
-        data: body,
-      );
-
-      return post;
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Response> performInsertDepositOrder(DepositOrder depositOrder) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        depositOrder.toMap());
-
-    Response post;
-    print('Save deposit order url:($VAT_SERVICE_URL_INSERT_ORDER_DEPOSIT'
-        ') request body: ' + body);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_INSERT_ORDER_DEPOSIT,
-        data: body,
-      );
-
-      return post;
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<DepositOrder>> performRetrieveDepositOrderByOrderId(OrderModel orderModel) async {
-    var dio = Dio();
-
-    List<DepositOrder> depositOrderList = [];
-    String body = json.encode(
-        orderModel.toMap());
-
-    Response post;
-    print('Retrieve deposit by order id: ' + orderModel.pk_order_id.toString());
-    print('Calling retrieve method to get deposit by order id ' + VAT_SERVICE_URL_RETRIEVE_ORDER_DEPOSITS_BY_ORDER_ID);
-
-
-    print('Get deposit by order id body: ' + body);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_RETRIEVE_ORDER_DEPOSITS_BY_ORDER_ID,
-        data: body,
-      );
-
-
-      String encode = json.encode(post.data);
-
-      List<dynamic> valueList = jsonDecode(encode);
-
-      valueList.forEach((depositOrderElement) {
-        depositOrderList.add(
-            DepositOrder(
-              amount: depositOrderElement['amount'],
-              creationDate: depositOrderElement['creation_date'],
-              fkOrderId: depositOrderElement['fk_order_id'],
-              pkDepositOrderId: depositOrderElement['pk_deposit_order_id'],
-              user: depositOrderElement['user'],
-            )
-        );
-      });
-
-      print('Response from service to retrieve deposit order ($VAT_SERVICE_URL_RETRIEVE_PRODUCTS_BY_ORDER_ID): ' + depositOrderList.toString());
-
-      return depositOrderList;
-
-    }catch(e){
-      print(e);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<Response> performUpdateDepositOrder(DepositOrder depositOrder) async {
-    var dio = Dio();
-
-    String body = json.encode(
-        depositOrder.toMap());
-
-    Response post;
-    print('Update deposit order request body: ' + body);
-    try{
-      post = await dio.post(
-        VAT_SERVICE_URL_UPDATE_ORDER_DEPOSIT,
-        data: body,
-      );
-
-      return post;
-    }catch(e){
-      print(e);
-      rethrow;
+      return Response(requestOptions: RequestOptions(path: ''), data: 0);
     }
   }
 

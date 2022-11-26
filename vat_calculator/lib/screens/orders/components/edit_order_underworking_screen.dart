@@ -7,12 +7,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/pdf/pdf_service.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/light_colors.dart';
@@ -23,12 +20,12 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import 'package:vat_calculator/size_config.dart';
 
-import '../../../client/fattureICloud/model/response_fornitori.dart';
+import '../../../client/vatservice/model/response_fornitori.dart';
 import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../main_page.dart';
 
 class OrderCompletionScreen extends StatefulWidget {
-  const OrderCompletionScreen({Key key, this.orderModel, this.productList, }) : super(key: key);
+  const OrderCompletionScreen({Key? key,required this.orderModel,required this.productList, }) : super(key: key);
 
   final OrderModel orderModel;
   final List<ProductOrderAmountModel> productList;
@@ -40,8 +37,8 @@ class OrderCompletionScreen extends StatefulWidget {
 class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  TextEditingController totalController;
-  TextEditingController controllerUpdate;
+  late TextEditingController totalController;
+  late TextEditingController controllerUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +96,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                           paid: dataBundleNotifier.signAsPaid == 'SI' ? 'true' : 'false',
                                           total: dataBundleNotifier.sameTotalThanCalculated == 'SI' ? double.parse(totalController.text.replaceAll(',', '.')) : widget.orderModel.total,
                                           delivery_date: dateFormat.format(DateTime.now()),
-                                          closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
-                                      ),
-                                      actionModel: ActionModel(
-                                          date: DateTime.now().millisecondsSinceEpoch,
-                                          description: 'Ha modificato in ${OrderState.RECEIVED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
-                                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                          type: ActionType.RECEIVED_ORDER
+                                          closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName, code: '', creation_date: '', details: '', fk_branch_id: 0, fk_storage_id: 0, fk_supplier_id: 0, fk_user_id: 0
                                       )
                                   );
                                   dataBundleNotifier.updateOrderStatusById(
@@ -119,7 +109,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                   dataBundleNotifier.onItemTapped(0);
                                   Navigator.pushNamed(context, HomeScreenMain.routeName);
                                 }else{
-                                  StorageModel storageModel = dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id);
+                                  StorageModel storageModel = dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id)!;
                                   List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
 
                                   widget.productList.forEach((element) {
@@ -136,14 +126,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                   });
 
                                   Response response = await dataBundleNotifier.getclientServiceInstance()
-                                      .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel,
-                                      actionModel: ActionModel(
-                                          date: DateTime.now().millisecondsSinceEpoch,
-                                          description: 'Ha effettuato carico in magazzino ${storageModel.name} a fronte della ricezione dell\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
-                                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                          type: ActionType.STORAGE_LOAD
-                                      )
+                                      .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
                                   );
                                   if(response != null && response.data == 1){
                                     dataBundleNotifier.cleanExtraArgsListProduct();
@@ -155,14 +138,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             paid: dataBundleNotifier.signAsPaid == 'SI' ? 'true' : 'false',
                                             total: dataBundleNotifier.sameTotalThanCalculated == 'SI' ? double.parse(totalController.text.replaceAll(',', '.')) : widget.orderModel.total,
                                             delivery_date: dateFormat.format(DateTime.now()),
-                                            closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
-                                        ),
-                                        actionModel: ActionModel(
-                                            date: DateTime.now().millisecondsSinceEpoch,
-                                            description: 'Ha modificato in ${OrderState.RECEIVED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
-                                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                            type: ActionType.RECEIVED_ORDER
+                                            closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName, code: '', fk_user_id: 0, fk_supplier_id: 0, fk_storage_id: 0, fk_branch_id: 0, details: '', creation_date: ''
                                         )
                                     );
                                     dataBundleNotifier.updateOrderStatusById(widget.orderModel.pk_order_id, OrderState.RECEIVED_ARCHIVED, dateFormat.format(DateTime.now()), dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
@@ -176,7 +152,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                     dataBundleNotifier.onItemTapped(0);
                                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                                   }else{
-                                    _scaffoldKey.currentState
+                                    ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(
                                         backgroundColor: LightColors.kRed,
                                         duration: Duration(milliseconds: 1200),
@@ -281,7 +257,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                   );
                                 },);
                             }else{
-                              _scaffoldKey.currentState
+                              ScaffoldMessenger.of(context)
                                   .showSnackBar(const SnackBar(
                                   backgroundColor: LightColors.kRed,
                                   duration: Duration(milliseconds: 1200),
@@ -308,12 +284,12 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                             deliveryDate: getDayFromWeekDay(deliveryDate.weekday) + ' ' + deliveryDate.day.toString() + '/' + deliveryDate.month.toString() + '/' + deliveryDate.year.toString(),
                             supplierName: dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id),
                             currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                            storageAddress: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).address,
-                            storageCap: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).cap,
-                            storageCity: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).city);
+                            storageAddress: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id)!.address,
+                            storageCap: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id)!.cap,
+                            storageCity: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id)!.city);
 
                         print('Message to send: ' + message);
-                        SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id);
+                        SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id)!;
 
                         message = message.replaceAll('#', '');
                         message = message.replaceAll('<br>', '\n');
@@ -338,11 +314,11 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                             deliveryDate: getDayFromWeekDay(deliveryDate.weekday) + ' ' + deliveryDate.day.toString() + '/' + deliveryDate.month.toString() + '/' + deliveryDate.year.toString(),
                             supplierName: dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id),
                             currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                            storageAddress: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).address,
-                            storageCap: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).cap,
-                            storageCity: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id).city);
+                            storageAddress: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id)!.address,
+                            storageCap: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id)!.cap,
+                            storageCity: dataBundleNotifier.getStorageModelById(widget.orderModel.fk_storage_id)!.city);
 
-                        SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id);
+                        SupplierModel supplierNumber = dataBundleNotifier.getSupplierFromList(widget.orderModel.fk_supplier_id)!;
 
                         print(message);
 
@@ -364,7 +340,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                           if (await canLaunch(urlString)) {
                             await launch(urlString);
                           } else {
-                            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 backgroundColor: kPinaColor,
                                 duration: Duration(milliseconds: 3000),
                                 content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
@@ -417,14 +393,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                           status: OrderState.REFUSED_ARCHIVED,
                                           paid: 'false',
                                           delivery_date: dateFormat.format(DateTime.now()),
-                                          closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName
-                                      ),
-                                      actionModel: ActionModel(
-                                          date: DateTime.now().millisecondsSinceEpoch,
-                                          description: 'Ha modificato in ${OrderState.REFUSED_ARCHIVED} l\'ordine #${widget.orderModel.code} da parte del fornitore ${dataBundleNotifier.getSupplierName(widget.orderModel.fk_supplier_id)}.',
-                                          fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                          user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                          type: ActionType.ORDER_DELETE
+                                          closedby: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName, code: '', creation_date: '', details: '', fk_branch_id: 0, fk_storage_id: 0, fk_supplier_id: 0, fk_user_id: 0, total: 0
                                       )
                                   );
 
@@ -545,7 +514,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                   children: [
                                     const Text('Magazzino: ', style: TextStyle(fontWeight: FontWeight.bold),),
 
-                                    dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id) == null ? SizedBox(width: 0,) : Text(dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id).name, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                    dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id) == null ? SizedBox(width: 0,) : Text(dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id)!.name, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor),),
                                   ],
                                 ),
                                 Row(
@@ -611,7 +580,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             value: "SI",
                                             groupValue: dataBundleNotifier.executeLoadStorage,
                                             onChanged: (value){
-                                              dataBundleNotifier.setExdecuteLoadStorage(value);
+                                              dataBundleNotifier.setExdecuteLoadStorage(value!);
                                             }),
                                       ),
                                       ListTile(
@@ -620,7 +589,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             value: "NO",
                                             groupValue: dataBundleNotifier.executeLoadStorage,
                                             onChanged: (value){
-                                              dataBundleNotifier.setExdecuteLoadStorage(value);
+                                              dataBundleNotifier.setExdecuteLoadStorage(value!);
                                             }),
                                       )
                                     ]
@@ -637,7 +606,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             value: "SI",
                                             groupValue: dataBundleNotifier.signAsPaid,
                                             onChanged: (value){
-                                              dataBundleNotifier.setSignAsPaid(value);
+                                              dataBundleNotifier.setSignAsPaid(value!);
                                             }),
                                       ),
                                       ListTile(
@@ -646,7 +615,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             value: "NO",
                                             groupValue: dataBundleNotifier.signAsPaid,
                                             onChanged: (value){
-                                              dataBundleNotifier.setSignAsPaid(value);
+                                              dataBundleNotifier.setSignAsPaid(value!);
                                             }),
                                       )
                                     ]
@@ -664,24 +633,6 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Carrello', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.bold)),
-                          Row(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: IconButton(
-                                  icon: SvgPicture.asset('assets/icons/pdf.svg', width: getProportionateScreenWidth(23),),
-                                    onPressed: (){
-                                      PdfService pdfService = PdfService();
-                                      pdfService.generatePdfOrderAndOpenOnDevide(
-                                          widget.orderModel,
-                                          widget.productList,
-                                          dataBundleNotifier.currentBranch
-                                      );
-                                    },
-                                ),
-                              ),
-                            ],
-                          ),
                         ],
                       ),
                     ),
@@ -703,7 +654,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 value: "SI",
                                 groupValue: dataBundleNotifier.sameTotalThanCalculated,
                                 onChanged: (value){
-                                  dataBundleNotifier.setSameTotalThanCalcuated(value);
+                                  dataBundleNotifier.setSameTotalThanCalcuated(value!);
                                 }),
                           ),
                           ListTile(
@@ -712,7 +663,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                 value: "NO",
                                 groupValue: dataBundleNotifier.sameTotalThanCalculated,
                                 onChanged: (value){
-                                  dataBundleNotifier.setSameTotalThanCalcuated(value);
+                                  dataBundleNotifier.setSameTotalThanCalcuated(value!);
                                 }),
                           )
                         ]
@@ -989,7 +940,7 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                   if(text == ''){
                     widget.orderModel.total = 0.0;
                   }else if(double.tryParse(text.replaceAll(',', '.')) != null){
-                    widget.orderModel.total = double.tryParse(text.replaceAll(',', '.'));
+                    widget.orderModel.total = double.tryParse(text.replaceAll(',', '.'))!;
                   }
                 },
                 style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20),

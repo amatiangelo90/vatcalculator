@@ -7,22 +7,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/recessed_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/client/vatservice/model/user_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
 import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import '../../../client/vatservice/model/cash_register_model.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class EditBranchScreen extends StatefulWidget {
-  const EditBranchScreen({Key key, this.currentBranch, this.listStorageModel, this.listUserModel, this.listSuppliersModel, this.callBackFuntion}) : super(key: key);
+  const EditBranchScreen({Key? key,required this.currentBranch,required this.listStorageModel,required this.listUserModel,required this.listSuppliersModel,required this.callBackFuntion}) : super(key: key);
 
   final BranchModel currentBranch;
   final List<UserModel> listUserModel;
@@ -196,15 +192,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                                 .updatePrivilegeForUserBranchRelation(
                                                 branchId: currentBranch.pkBranchId,
                                                 userId: listUserModel[index].id,
-
                                               privilegeType: Privileges.ADMIN,
-                                                actionModel: ActionModel(
-                                                    date: DateTime.now().millisecondsSinceEpoch,
-                                                    description: 'Ha modificato i privilegi per ${listUserModel[index].name} in ${Privileges.ADMIN}',
-                                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                                    type: ActionType.UPDATE_PRIVILEGE
-                                                )
 
                                             );
 
@@ -230,14 +218,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                                 .updatePrivilegeForUserBranchRelation(
                                                 branchId: currentBranch.pkBranchId,
                                                 userId: listUserModel[index].id,
-                                                privilegeType: Privileges.EMPLOYEE,
-                                                actionModel: ActionModel(
-                                                    date: DateTime.now().millisecondsSinceEpoch,
-                                                    description: 'Ha modificato i privilegi per ${listUserModel[index].name} in ${Privileges.EMPLOYEE}',
-                                                    fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                                    user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                                    type: ActionType.UPDATE_PRIVILEGE
-                                                )
+                                                privilegeType: Privileges.EMPLOYEE
                                             );
                                             setState(() {
                                               if(response.data > 0){
@@ -298,7 +279,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                           }else{
                                             setState(() {
                                               dataBundleNotifier
-                                                  .currentMapBranchIdBundleSupplierStorageUsers[currentBranch.pkBranchId]
+                                                  .currentMapBranchIdBundleSupplierStorageUsers[currentBranch.pkBranchId]!
                                                   .userModelList.removeWhere((element) => element.id == listUserModel[index].id);
                                               widget.callBackFuntion();
                                             });
@@ -583,37 +564,11 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                                   onPressed:  () async {
 
                                     dataBundleNotifier.getclientServiceInstance().deleteStorage(
-                                        storageModel: listStorageModel[index],
-                                        actionModel: ActionModel(
-                                            date: DateTime.now().millisecondsSinceEpoch,
-                                            description: 'Ha eliminato il magazzino ${listStorageModel[index].name} da ${dataBundleNotifier.currentBranch.companyName}.',
-                                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                            user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                            type: ActionType.STORAGE_DELETE
-                                        )
+                                        storageModel: listStorageModel[index]
                                     );
 
                                     listStorageModel.removeAt(index);
 
-                                    List<CashRegisterModel> currentListCashRegister = [];
-                                    List<RecessedModel> _recessedModelList = [];
-
-                                    if(dataBundleNotifier.currentBranch != null) {
-
-                                      if(dataBundleNotifier.currentBranch != null){
-                                        currentListCashRegister = await dataBundleNotifier.getclientServiceInstance().retrieveCashRegistersByBranchId(dataBundleNotifier.currentBranch);
-
-                                        if(currentListCashRegister.isNotEmpty){
-                                          await Future.forEach(currentListCashRegister,
-                                                  (CashRegisterModel cashRegisterModel) async {
-                                                List<RecessedModel> list = await dataBundleNotifier.getclientServiceInstance().retrieveRecessedListByCashRegister(cashRegisterModel);
-                                                _recessedModelList.addAll(list);
-                                              });
-                                        }
-                                        dataBundleNotifier.addCurrentRecessedList(_recessedModelList);
-                                        dataBundleNotifier.setCashRegisterList(currentListCashRegister);
-                                      }
-                                    }
 
                                     if(dataBundleNotifier.currentBranch != null){
                                       List<SupplierModel> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
@@ -708,7 +663,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: IconButton(
                               icon: SvgPicture.asset('assets/icons/edit-cust.svg', width: getProportionateScreenWidth(25), color: kCustomWhite,),
-                              color: kCustomWhite,
+                              color: kCustomWhite, onPressed: () {  },
                             ),
                           ),
                         ],
@@ -747,7 +702,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
     );
   }
 
-  AnimatedContainer buildDot({int index}) {
+  AnimatedContainer buildDot({int? index}) {
     return AnimatedContainer(
       duration: kAnimationDuration,
       margin: const EdgeInsets.only(right: 5),
@@ -760,7 +715,7 @@ class _EditBranchScreenState extends State<EditBranchScreen> {
     );
   }
 
-  AnimatedContainer buildDotStoragePages({int index}) {
+  AnimatedContainer buildDotStoragePages({int? index}) {
     return AnimatedContainer(
       duration: kAnimationDuration,
       margin: const EdgeInsets.only(right: 5),

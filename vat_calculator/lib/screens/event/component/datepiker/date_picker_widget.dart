@@ -52,43 +52,40 @@ class DatePickerEvents extends StatefulWidget {
 
   DatePickerEvents(
     this.startDate, {
-    Key key,
+    Key? key,
     this.width = 30,
     this.height = 60,
-    this.controller,
+    required this.controller,
     this.monthTextStyle = defaultMonthTextStyle,
     this.dayTextStyle = defaultDayTextStyle,
     this.dateTextStyle = defaultDateTextStyle,
     this.selectedTextColor = Colors.white,
     this.selectionColor = AppColors.defaultSelectionColor,
     this.deactivatedColor = AppColors.defaultDeactivatedColor,
-    this.initialSelectedDate,
-    this.activeDates,
-    this.inactiveDates,
+    required this.initialSelectedDate,
+        required this.activeDates,
+        required this.inactiveDates,
     this.daysCount = 500,
-    this.onDateChange,
+        required this.onDateChange,
     this.locale = "en_US",
-  }) : assert(
-            activeDates == null || inactiveDates == null,
-            "Can't "
-            "provide both activated and deactivated dates List at the same time.");
+  });
 
   @override
   State<StatefulWidget> createState() => _DatePickerEventsState();
 }
 
 class _DatePickerEventsState extends State<DatePickerEvents> {
-  DateTime _currentDate;
+  late DateTime _currentDate;
 
   ScrollController _controller = ScrollController();
 
-  TextStyle selectedDateStyle;
-  TextStyle selectedMonthStyle;
-  TextStyle selectedDayStyle;
+  late TextStyle selectedDateStyle;
+  late TextStyle selectedMonthStyle;
+  late TextStyle selectedDayStyle;
 
-  TextStyle deactivatedDateStyle;
-  TextStyle deactivatedMonthStyle;
-  TextStyle deactivatedDayStyle;
+  late TextStyle deactivatedDateStyle;
+  late TextStyle deactivatedMonthStyle;
+  late TextStyle deactivatedDayStyle;
 
 
   @override
@@ -139,7 +136,7 @@ class _DatePickerEventsState extends State<DatePickerEvents> {
 
           bool isDeactivated = false;
 
-          if (widget.inactiveDates != null) {
+          if (widget.inactiveDates.isNotEmpty) {
             for (DateTime inactiveDate in widget.inactiveDates) {
               if (_compareDate(date, inactiveDate)) {
                 isDeactivated = true;
@@ -148,7 +145,7 @@ class _DatePickerEventsState extends State<DatePickerEvents> {
             }
           }
 
-          if (widget.activeDates != null) {
+          if (widget.activeDates.isNotEmpty) {
             isDeactivated = true;
             for (DateTime activateDate in widget.activeDates) {
               if (_compareDate(date, activateDate)) {
@@ -210,7 +207,7 @@ class _DatePickerEventsState extends State<DatePickerEvents> {
 }
 
 class DatePickerController {
-  _DatePickerEventsState _datePickerState;
+  late _DatePickerEventsState _datePickerState;
 
   void setDatePickerState(_DatePickerEventsState state) {
     _datePickerState = state;

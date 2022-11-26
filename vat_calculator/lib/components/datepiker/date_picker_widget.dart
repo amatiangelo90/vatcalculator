@@ -52,21 +52,21 @@ class DatePicker extends StatefulWidget {
 
   DatePicker(
     this.startDate, {
-    Key key,
+    required Key key,
     this.width = 30,
     this.height = 60,
-    this.controller,
+    required this.controller,
     this.monthTextStyle = defaultMonthTextStyle,
     this.dayTextStyle = defaultDayTextStyle,
     this.dateTextStyle = defaultDateTextStyle,
     this.selectedTextColor = Colors.white,
     this.selectionColor = AppColors.defaultSelectionColor,
     this.deactivatedColor = AppColors.defaultDeactivatedColor,
-    this.initialSelectedDate,
-    this.activeDates,
-    this.inactiveDates,
+    required this.initialSelectedDate,
+        required this.activeDates,
+        required this.inactiveDates,
     this.daysCount = 500,
-    this.onDateChange,
+        required this.onDateChange,
     this.locale = "en_US",
   }) : assert(
             activeDates == null || inactiveDates == null,
@@ -78,17 +78,17 @@ class DatePicker extends StatefulWidget {
 }
 
 class _DatePickerState extends State<DatePicker> {
-  DateTime _currentDate;
+  late DateTime _currentDate;
 
-  ScrollController _controller = ScrollController();
+  final ScrollController _controller = ScrollController();
 
-  TextStyle selectedDateStyle;
-  TextStyle selectedMonthStyle;
-  TextStyle selectedDayStyle;
+  late TextStyle selectedDateStyle;
+  late TextStyle selectedMonthStyle;
+  late TextStyle selectedDayStyle;
 
-  TextStyle deactivatedDateStyle;
-  TextStyle deactivatedMonthStyle;
-  TextStyle deactivatedDayStyle;
+  late TextStyle deactivatedDateStyle;
+  late TextStyle deactivatedMonthStyle;
+  late TextStyle deactivatedDayStyle;
 
   @override
   void initState() {
@@ -204,7 +204,7 @@ class _DatePickerState extends State<DatePicker> {
 }
 
 class DatePickerController {
-  _DatePickerState _datePickerState;
+  late _DatePickerState _datePickerState;
 
   void setDatePickerState(_DatePickerState state) {
     _datePickerState = state;

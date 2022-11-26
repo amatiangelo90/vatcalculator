@@ -12,16 +12,16 @@ class ProductDataSourceEvents extends DataTableSource {
   @override
   DataRow getRow(int index) {
     assert(index >= 0);
-    if (index >= _products.length) return null;
+    if (index >= _products.length) return const DataRow(cells: []);
     final StorageProductModel product = _products[index];
     return DataRow.byIndex(
         index: index,
         selected: product.selected,
-        onSelectChanged: (bool value) {
+        onSelectChanged: (bool? value) {
           if (product.selected != value) {
-            _selectedCount += value ? 1 : -1;
+            _selectedCount += value! ? 1 : -1;
             assert(_selectedCount >= 0);
-            product.selected = value;
+            product.selected = value!;
             notifyListeners();
           }
         },

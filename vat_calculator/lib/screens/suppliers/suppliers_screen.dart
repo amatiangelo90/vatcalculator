@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,16 +9,15 @@ import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/home/home_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
-import '../../client/fattureICloud/model/response_fornitori.dart';
+import '../../client/vatservice/model/response_fornitori.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../main_page.dart';
 import 'components/edit_supplier_screen.dart';
 
 class SuppliersScreen extends StatelessWidget {
-  const SuppliersScreen({Key key}) : super(key: key);
+  const SuppliersScreen({Key? key}) : super(key: key);
 
   static String routeName = 'suppliers';
 
@@ -132,7 +130,7 @@ class SuppliersScreen extends StatelessWidget {
                               text: "Crea Fornitore",
                               press: () async {
                                 Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
-                              },
+                              }, textColor: kPrimaryColor,
                             ),
                           ),
                         ],
@@ -174,12 +172,6 @@ class SuppliersScreen extends StatelessWidget {
                     .retrieveProductsBySupplier(supplier);
 
             dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-
-            List<OrderModel> retrievedOrderModelArchiviedNotPaid = await dataBundleNotifier
-                .getclientServiceInstance()
-                .retrieveOrderModelBySupplierIdAndBranchIdWhereStatusIsReceivedAndPaidIsFalse(supplier.pkSupplierId, dataBundleNotifier.currentBranch.pkBranchId);
-
-            dataBundleNotifier.addAllCurrentOrdersArchiviedAndNotPaidForCurrentBranchAndSupplier(retrievedOrderModelArchiviedNotPaid);
 
             Navigator.push(
               context,

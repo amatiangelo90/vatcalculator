@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +8,7 @@ import '../../../constants.dart';
 import '../../main_page.dart';
 
 class ComunicationUnloadStorageScreen extends StatelessWidget {
-  const ComunicationUnloadStorageScreen({Key key, this.orderedMapBySuppliers})
+  const ComunicationUnloadStorageScreen({Key? key, required this.orderedMapBySuppliers})
       : super(key: key);
 
   final Map<int, List<StorageProductModel>> orderedMapBySuppliers;

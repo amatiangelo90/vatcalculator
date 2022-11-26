@@ -1,16 +1,10 @@
 import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
@@ -18,7 +12,7 @@ import '../../../size_config.dart';
 import '../components/unload_comunication_page.dart';
 
 class UnloadStorageScreen extends StatefulWidget {
-  const UnloadStorageScreen({Key key}) : super(key: key);
+  const UnloadStorageScreen({Key? key}) : super(key: key);
 
   static String routeName = 'unload_screen_storage';
 
@@ -79,14 +73,15 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                           stockProductDiffentThan0 = stockProductDiffentThan0 + 1;
 
                           if(orderedMapBySuppliers.keys.contains(element.supplierId)){
-                            orderedMapBySuppliers[element.supplierId].add(element);
+                            orderedMapBySuppliers[element.supplierId]!.add(element);
                           }else{
                             orderedMapBySuppliers[element.supplierId] = [element];
                           }
                         }
                       });
                       if(stockProductDiffentThan0 == 0){
-                        _scaffoldKey.currentState.showSnackBar(const SnackBar(
+
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           backgroundColor: kPinaColor,
                           content: Text('Immettere la quantità di scarico per almeno un prodotto'),
                         ));
@@ -136,16 +131,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                                 ClientVatService getclientServiceInstance = dataBundleNotifier.getclientServiceInstance();
 
                                 getclientServiceInstance.updateStock(
-                                  currentStorageProductListForCurrentStorageUnload: [storageProductModelItem],
-                                    actionModel: ActionModel(
-                                        date: DateTime.now().millisecondsSinceEpoch,
-                                        description: 'Ha eseguito scarico da magazzino ${dataBundleNotifier.currentStorage.name}. '
-                                            '${storageProductModelItem.loadUnloadAmount.toStringAsFixed(2)} x ${storageProductModelItem.productName} rimossi. '
-                                            'Precedente disponibilità per ${storageProductModelItem.productName}: ${storageProductModelItem.stock.toStringAsFixed(2)} ${storageProductModelItem.unitMeasure} ',
-                                        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                                        user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-                                      type: ActionType.STORAGE_UNLOAD
-                                    )
+                                  currentStorageProductListForCurrentStorageUnload: [storageProductModelItem]
                                 );
                               }
                           });
@@ -158,7 +144,7 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
 
                         Navigator.push(context, MaterialPageRoute(builder: (context) => ComunicationUnloadStorageScreen(orderedMapBySuppliers: recapMapForCustomer ,),),);
                       }
-                    },
+                    }, textColor: kPrimaryColor,
                   ),
                 ),
               ),

@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/fattureICloud/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/action_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/action_type.dart';
+import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
@@ -13,7 +11,7 @@ import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
 class AddSupplierScreen extends StatefulWidget {
-  AddSupplierScreen({Key key}) : super(key: key);
+  AddSupplierScreen({Key? key}) : super(key: key);
 
   static String routeName = 'addsupplier';
 
@@ -34,7 +32,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
   bool hasError = false;
   final formKey = GlobalKey<FormState>();
 
-  String currentPassword;
+  String currentPassword = '';
 
   @override
   Widget build(BuildContext context) {
@@ -261,14 +259,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
 
       print(supplier.toMap());
       await dataBundleNotifier.getclientServiceInstance().performSaveSupplier(
-          anagraficaFornitore: supplier,
-          actionModel: ActionModel(
-              date: DateTime.now().millisecondsSinceEpoch,
-              description: 'Ha creato il fornitore ${supplier.nome}',
-              fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-              user: dataBundleNotifier.retrieveNameLastNameCurrentUser(),
-              type: ActionType.SUPPLIER_CREATION
-          )
+          anagraficaFornitore: supplier
       );
 
       List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
