@@ -39,7 +39,6 @@ class _UnloadStorageScreenState extends State<UnloadStorageScreen> {
                 elevation: 5,
                 actions: [
                   IconButton(onPressed: (){
-                    dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
                   }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
                 ],
                 leading: IconButton(

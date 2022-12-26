@@ -1,23 +1,15 @@
 import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/event_model.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/user_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/light_colors.dart';
-import 'package:vat_calculator/models/databundle.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../../main_page.dart';
+import '../../../swagger/swagger.swagger.dart';
+import '../../home/main_page.dart';
 
 class LandingBody extends StatefulWidget {
   final String email;
@@ -37,7 +29,7 @@ class _LandingBodyState extends State<LandingBody> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Scaffold(
-          backgroundColor: kPrimaryColor,
+          backgroundColor: kCustomGrey,
 
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -82,8 +74,8 @@ class _LandingBodyState extends State<LandingBody> {
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
                 child: FAProgressBar(
                   size: 20,
-                  progressColor: LightColors.kRed,
-                  backgroundColor: Colors.white,
+                  progressColor: kCustomGreen,
+                  backgroundColor: kCustomBlack,
                   currentValue: _currentValue,
                   displayText: '%',
                 ),
@@ -93,68 +85,23 @@ class _LandingBodyState extends State<LandingBody> {
                   width: getProportionateScreenWidth(500),
                   child: CupertinoButton(
                     child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                    color: LightColors.kRed,
+                    color: kCustomGreen,
                     onPressed: () async {
-                      dataBundleNotifier.switchLandingButton();
-
-                      ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-
-                      print('Retrieve user by email: ' + widget.email);
-                      UserModel userModelRetrieved = await clientService.retrieveUserByEmail(widget.email);
-                      UserDetailsModel dataBundle = UserDetailsModel(
-                          userModelRetrieved.id,
-                          userModelRetrieved.mail,
-                          '',
-                          userModelRetrieved.name,
-                          userModelRetrieved.lastName,
-                          userModelRetrieved.phone,
-                          userModelRetrieved.privilege,
-                          []);
-
-                      List<BranchModel> _branchList = await clientService.retrieveBranchesByUserId(userModelRetrieved.id);
-                      dataBundleNotifier.addDataBundle(dataBundle);
-                      dataBundleNotifier.addBranches(_branchList);
-                      _currentValue = 100;
-
-                      if(dataBundleNotifier.currentBranch != null){
-                        List<SupplierModel> _suppliersModelList = await clientService.retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.addCurrentSuppliersList(_suppliersModelList);
-                      }
-                      if(dataBundleNotifier.currentBranch != null){
-                        List<StorageModel> _storageModelList = await clientService.retrieveStorageListByBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.addCurrentStorageList(_storageModelList);
-                      }
-
-                      if(dataBundleNotifier.currentBranch != null){
-                        List<OrderModel> _orderModelList = await clientService.retrieveOrdersByBranch(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.addCurrentOrdersList(_orderModelList);
-                      }
-
-                      if(dataBundleNotifier.currentBranch != null){
-                        List<EventModel> _eventModelList = await clientService.retrieveEventsListByBranchId(dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.addCurrentEventsList(_eventModelList);
-                      }
-                      if(dataBundleNotifier.currentBranch != null) {
-                        List<String> tokenList = await clientService.retrieveTokenList(
-                            dataBundleNotifier.currentBranch);
-                        dataBundleNotifier.setCurrentBossTokenList(tokenList);
-
-                      }
-
-                      Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (BranchModel branch) {
-                        if(branch.token == null || branch.token == ''){
-                          FirebaseMessaging.instance.getToken().then((value) {
-                            branch.token = value!;
-                            dataBundleNotifier.getclientServiceInstance().updateFirebaseTokenForUserBranchRelation(branchId: branch.pkBranchId, userId: dataBundleNotifier.userDetailsList[0].id, token: value);
-                          });
-                        }
-                        FirebaseMessaging.instance.subscribeToTopic('branch-${branch.pkBranchId.toString()}').then((value) => print('Subscription to topic [branch-${branch.pkBranchId.toString()}] done!!'));
+                      setState((){
+                        _currentValue=100;
                       });
-                      _currentValue = 100;
-
                       dataBundleNotifier.switchLandingButton();
-                      dataBundleNotifier.onItemTapped(0);
-                      Navigator.pushNamed(context, HomeScreenMain.routeName);
+                      Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
+                      Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: widget.email);
+                      if(response.isSuccessful){
+                        dataBundleNotifier.setUser(response.body);
+                        Navigator.pushNamed(context, HomeScreenMain.routeName);
+
+                      }else{
+                        print(response.error);
+                        print(response.base.headers.toString());
+                      }
+                      dataBundleNotifier.switchLandingButton();
                     },
                   ),
                 ),

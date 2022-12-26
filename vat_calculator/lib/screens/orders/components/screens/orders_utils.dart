@@ -2,6 +2,7 @@ import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
 
 import '../../../../client/vatservice/model/storage_product_model.dart';
+import '../../../../swagger/swagger.models.swagger.dart';
 
 class OrderUtils{
 
@@ -54,7 +55,7 @@ class OrderUtils{
   }
 
   static buildWhatsAppMessageFromCurrentOrderList({
-    required List<ProductModel> productList,
+    required List<ROrderProduct> productList,
     required String branchName,
     required String orderId,
     required String supplierName,
@@ -66,9 +67,9 @@ class OrderUtils{
 
     String orderString = 'Ciao $supplierName,%0a%0aOrdine #$orderId%0a%0aCarrello%0a----------------%0a';
     productList.forEach((currentProductOrderAmount) {
-      if(currentProductOrderAmount.orderItems != 0){
-        orderString = orderString + currentProductOrderAmount.nome +
-            ' x ' + currentProductOrderAmount.orderItems.toString() + ' ${currentProductOrderAmount.unita_misura} %0a';
+      if(currentProductOrderAmount.amount != 0){
+        orderString = orderString + currentProductOrderAmount.productName! +
+            ' x ' + currentProductOrderAmount.amount.toString() + ' ${currentProductOrderAmount.unitMeasure} %0a';
       }
     });
     orderString = orderString + '----------------';

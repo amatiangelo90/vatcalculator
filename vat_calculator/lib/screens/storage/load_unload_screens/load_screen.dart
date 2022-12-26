@@ -26,7 +26,6 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
@@ -109,23 +108,22 @@ class _LoadStorageScreenState extends State<LoadStorageScreen> {
               },
               icon: Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
+                color: kPrimaryColor,
                 size: getProportionateScreenHeight(20),
               ),
             ),
             actions: [
               IconButton(onPressed: (){
-                dataBundleNotifier.clearLoadUnloadParameterOnEachProductForCurrentStorage();
               }, icon: Icon(Icons.clear, color: kPinaColor, size: getProportionateScreenWidth(20),))
             ],
             centerTitle: true,
-            backgroundColor: kPrimaryColor,
+            backgroundColor: Colors.white,
             title: Column(
               children: [
                 Text(
-                  dataBundleNotifier.currentStorage.name,
+                  dataBundleNotifier.getCurrentStorage()!.name!,
                   style: TextStyle(
-                      color: Colors.white,
+                      color: kPrimaryColor,
                       fontSize: getProportionateScreenHeight(17)),
                 ),
                 Text('Sezione Carico Magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(12)),),

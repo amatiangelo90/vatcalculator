@@ -2,15 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
-import '../../../../main_page.dart';
+import '../../../../../swagger/swagger.models.swagger.dart';
+import '../../../../home/main_page.dart';
 import 'product_order_choice_screen.dart';
 
 class CreateOrderScreen extends StatelessWidget {
@@ -28,11 +26,10 @@ class CreateOrderScreen extends StatelessWidget {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                    dataBundleNotifier.onItemTapped(0);
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              iconTheme: const IconThemeData(color: kPrimaryColor),
+              backgroundColor: kCustomWhite,
               centerTitle: true,
 
               title: Column(
@@ -43,47 +40,25 @@ class CreateOrderScreen extends StatelessWidget {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(19),
-                          color: Colors.white,
+                          color: kPrimaryColor,
                         ),
                       ),
                       Text(
                         'Seleziona Fornitore',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(12),
-                          color: Colors.lightBlueAccent,
+                          color: kBeigeColor,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              elevation: 5,
+              elevation: 0,
             ),
             body: Container(
               color: kCustomWhite,
-              child: dataBundleNotifier.currentBranch == null
-                  ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: getProportionateScreenWidth(13),
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  SizedBox(
-                    width: SizeConfig.screenWidth * 0.6,
-                    child: CreateBranchButton(),
-                  ),
-                ],
-              )
-                  : dataBundleNotifier.currentListSuppliers.isNotEmpty
+              child: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
                   ? buildListSuppliers(dataBundleNotifier, context)
                   : Center(
                 child: Column(
@@ -109,7 +84,7 @@ class CreateOrderScreen extends StatelessWidget {
                         press: () async {
                           Navigator.pushNamed(
                               context, SupplierChoiceCreationEnjoy.routeName);
-                        }, textColor: Color(0xff121212), color: Color(0xff121212),
+                        }, textColor: kCustomWhite, color: Color(0xff121212),
                       ),
                     ),
                   ],
@@ -137,24 +112,19 @@ class CreateOrderScreen extends StatelessWidget {
         ),
       ),
     );
-    dataBundleNotifier.currentListSuppliersDuplicated.forEach((supplier) {
+    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!) {
       listout.add(
-          GestureDetector(
+        GestureDetector(
           onTap: () async {
-            List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier
-                .getclientServiceInstance()
-                .retrieveProductsBySupplier(supplier);
-
-            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-              dataBundleNotifier.clearOrdersDetailsObject();
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ChoiceOrderProductScreen(
-                    currentSupplier: supplier,
-                  ),
+            dataBundleNotifier.resetBasket(supplier.productList!);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChoiceOrderProductScreen(
+                  currentSupplier: supplier
                 ),
-              );
+              ),
+            );
 
           },
           child: Padding(
@@ -170,7 +140,7 @@ class CreateOrderScreen extends StatelessWidget {
           ),
         ),
       );
-    });
+    }
 
     listout.add(SizedBox(
       height: getProportionateScreenHeight(50),
@@ -183,7 +153,7 @@ class CreateOrderScreen extends StatelessWidget {
     );
   }
 
-  buildSupplierRow(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, Color color) {
+  buildSupplierRow(DataBundleNotifier dataBundleNotifier, Supplier supplier, Color color) {
     return Container(
       decoration: const BoxDecoration(
         borderRadius: BorderRadius.only(
@@ -202,12 +172,12 @@ class CreateOrderScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    supplier.nome,
+                    supplier.name!,
                     style: TextStyle(
                         color: kPrimaryColor,
                         fontSize: getProportionateScreenWidth(17),
                         overflow: TextOverflow.fade,
-                      fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold
                     ),
                   ),
                   Row(
@@ -217,11 +187,11 @@ class CreateOrderScreen extends StatelessWidget {
                         color: color,
                         width: getProportionateScreenWidth(20),
                       ),
-                      Text('  #' + supplier.extra,
+                      Text('  #' + supplier.code!,
                           style: TextStyle(
-                            color: color,
-                            fontSize: getProportionateScreenWidth(12),
-                            fontWeight: FontWeight.bold
+                              color: color,
+                              fontSize: getProportionateScreenWidth(10),
+                              fontWeight: FontWeight.bold
                           )),
                     ],
                   ),

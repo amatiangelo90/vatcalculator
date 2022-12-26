@@ -4,12 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../client/vatservice/model/utils/privileges.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
+import '../../../../../swagger/swagger.enums.swagger.dart';
+import '../../../../../swagger/swagger.models.swagger.dart';
+import '../../../../suppliers/components/add_product.dart';
 import 'order_confirm_screen.dart';
 import 'order_create_screen.dart';
 
@@ -18,7 +20,7 @@ class ChoiceOrderProductScreen extends StatefulWidget {
 
   static String routeName = 'addproductorder';
 
-  final SupplierModel currentSupplier;
+  final Supplier currentSupplier;
 
   @override
   State<ChoiceOrderProductScreen> createState() => _ChoiceOrderProductScreenState();
@@ -42,129 +44,106 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
         child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Scaffold(
-              key: _scaffoldKey,
-              bottomSheet: SizedBox(
-                height: getProportionateScreenHeight(110),
-                child: Padding(
-                  padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text('Prodotti selezionati: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
-                                Text(dataBundleNotifier.setProducts.length.toString(), textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
-                              ],
-                            ),
+                key: _scaffoldKey,
+                bottomSheet: SizedBox(
+                  height: getProportionateScreenHeight(130),
+                  child: Padding(
+                    padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('Prodotti: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
+                                  Text(dataBundleNotifier.getProdNumberFromBasket(), textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
+                                ],
+                              ),
                               dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Row(
-                              children: [
-                                Text('Prezzo stimato: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
-                                Text(dataBundleNotifier.totalPriceOrder.toStringAsFixed(2) + ' €', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
-                              ],
-                            ),
-                          ],
+                                children: [
+                                  Text('Prezzo: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
+                                  Text(dataBundleNotifier.calculateTotalFromBasket()!.toString() + ' €', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      DefaultButton(
-                        textColor: Colors.white,
-                        text: 'Procedi',
-                        press: () async {
-
-                          int productsAmountsDiffentThan0 = 0;
-                          dataBundleNotifier.currentProductModelListForSupplier.forEach((element) {
-                            if(element.orderItems != 0){
-                              productsAmountsDiffentThan0 = productsAmountsDiffentThan0 + 1;
-                            }
-                          });
-                          if(productsAmountsDiffentThan0 == 0){
-                            buildSnackBar(text: 'Selezionare quantità per almeno un prodotto', color: kPinaColor);
-                          }else{
+                        DefaultButton(
+                          textColor: Colors.white,
+                          text: 'Procedi',
+                          press: () async {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => OrderConfirmationScreen(
-                                  currentSupplier: widget.currentSupplier,
+                                    currentSupplier: widget.currentSupplier
                                 ),
                               ),
                             );
-                          }
-                        },
-                        color: kPrimaryColor,
-                      ),
-                    ],
+
+                          },
+                          color: kPrimaryColor,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              appBar: AppBar(
-                leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () => {
-                      Navigator.pushNamed(context, CreateOrderScreen.routeName),
-                    }),
-                iconTheme: const IconThemeData(color: Colors.white),
-                backgroundColor: kPrimaryColor,
-                centerTitle: true,
-                title: Column(
-                  children: [
-                    Text(
-                      'Crea Ordine',
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(18),
-                        color: Colors.white,
+                appBar: AppBar(
+                  leading: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: () => {
+                        Navigator.pushNamed(context, CreateOrderScreen.routeName),
+                      }),
+                  iconTheme: const IconThemeData(color: kPrimaryColor),
+                  backgroundColor: Colors.white,
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stack(
+                        children: [
+                          const Icon(Icons.shopping_basket, color: kPrimaryColor,),
+                          dataBundleNotifier.getProdNumberFromBasket() == '0' ? Text('') : Positioned(
+                              left: 10,
+                              top: 1,
+                              child: Stack(children: [
+                                const Icon(Icons.circle, size: 15,color: Colors.green,),
+                                Center(child: Text( '  ' + dataBundleNotifier.getProdNumberFromBasket(), style: TextStyle(fontSize: 9))),
+                              ], )
+                          )
+                        ],
                       ),
-                    ),
-                    Text(
-                      'Immetti quantità per prodotti',
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.lightBlueAccent,
-                      ),
-                    ),
+                    )
                   ],
-                ),
-                elevation: 2,
-              ),
-              body: FutureBuilder(
-                initialData: <Widget>[
-                  const Center(
-                      child: CircularProgressIndicator(
-                        color: kPinaColor,
-                      )),
-                  const SizedBox(),
-                  Column(
-                    children: const [
-                      Center(
-                        child: Text(
-                          'Caricamento prodotti..',
-                          style: TextStyle(
-                              fontSize: 16.0,
-                              color: kPrimaryColor,
-                              fontFamily: 'LoraFont'),
+                  centerTitle: true,
+                  title: Column(
+                    children: [
+                      Text(
+                        'Crea Ordine',
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(18),
+                          color: kPrimaryColor,
+                        ),
+                      ),
+                      Text(
+                        'Immetti quantità per prodotti',
+                        style: TextStyle(
+                          fontSize: getProportionateScreenWidth(10),
+                          color: kPrimaryColor,
                         ),
                       ),
                     ],
                   ),
-                ],
-                future: buildProductPage(dataBundleNotifier, widget.currentSupplier),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: ListView(
-                        primary: false,
-                        shrinkWrap: true,
-                        children: snapshot.data,
-                      ),
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              ),
+                  elevation: 0,
+                ),
+                body: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: buildProductPage(dataBundleNotifier, widget.currentSupplier),
+                  ),
+                )
             );
           },
         ),
@@ -172,19 +151,31 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
     );
   }
 
-  Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
+  buildProductPage(DataBundleNotifier dataBundleNotifier, Supplier supplier) {
     List<Widget> list = [];
-
-    if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){
+    if(dataBundleNotifier.basket!.isEmpty){
       list.add(Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(height: MediaQuery.of(context).size.height*0.3,),
-          const Center(child: Text('Nessun prodotto registrato per il presente fornitore')),
+          const Center(child: Text('Nessun prodotto registrato per il presente fornitore', textAlign: TextAlign.center,)),
+          SizedBox(height: 20,),
+          SizedBox(
+            width: getProportionateScreenWidth(300),
+            child: DefaultButton(
+              textColor: Colors.white,
+              text: 'Crea prodotto',
+              press: () async {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
+              },
+              color: kPrimaryColor,
+            ),
+          ),
         ],
       ),);
       return list;
     }
-    list.add(Center(child: Text(supplier.nome, textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18)),)));
+    list.add(Center(child: Text(supplier.name!, textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18)),)));
     list.add(
       Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -200,14 +191,8 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
         ),
       ),
     );
-    dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
-      TextEditingController controller;
-
-      if(currentProduct.orderItems > 0){
-        controller = TextEditingController(text: currentProduct.orderItems.toStringAsFixed(2).replaceAll('.00', ''));
-      }else{
-        controller = TextEditingController();
-      }
+    for (var currentProduct in dataBundleNotifier.basket!) {
+      TextEditingController controller = TextEditingController(text: currentProduct.amount!.toStringAsFixed(2));
 
       list.add(
           Padding(
@@ -218,20 +203,20 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(currentProduct.nome, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.w700),),
+                    Text(currentProduct.productName!, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.w700),),
                     Row(
                       children: [
                         Text(
-                          currentProduct.unita_misura,
+                          currentProduct.unitMeasure!,
                           style:
                           TextStyle(fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
+                        const Padding(
+                          padding: EdgeInsets.all(4.0),
                           child: Icon(Icons.circle, size: 4, color: Colors.grey),
                         ),
                         Text(
-                          dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? '' : currentProduct.prezzo_lordo.toString() + ' €',
+                          dataBundleNotifier.getCurrentBranch().userPriviledge.toString().toLowerCase() == branchUserPriviledgeFromJson(BranchUserPriviledge.employee).toString() ? '' : currentProduct.price.toString() + ' €',
                           style:
                           TextStyle(fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold),
                         ),
@@ -244,19 +229,10 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          if (currentProduct.orderItems <= 0) {
-                            dataBundleNotifier.setProducts.remove(currentProduct.pkProductId);
-                          } else {
-                            currentProduct.orderItems --;
+                          if(currentProduct.amount! > 0){
+                            currentProduct.amount = currentProduct.amount! - 1;
                           }
-
-                          if(currentProduct.orderItems <= 0 || currentProduct.orderItems == null){
-                            dataBundleNotifier.setProducts.remove(currentProduct.pkProductId);
-                            currentProduct.orderItems = 0.0;
-                          }
-
                         });
-                        dataBundleNotifier.calculatePrice();
                       },
                       child: const Padding(
                         padding: EdgeInsets.all(8.0),
@@ -274,35 +250,14 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                         controller: controller,
                         onChanged: (text) {
 
-                          if(text == '' || text == null || text == '0' || text == '0.0'){
-                            dataBundleNotifier.setProducts.remove(currentProduct.pkProductId);
-                            double totalPriceOrder = 0.0;
-
-                            dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((prod) {
-                              if(prod.orderItems > 0){
-                                totalPriceOrder = double.parse((totalPriceOrder + (prod.orderItems * prod.prezzo_lordo)).toStringAsFixed(2));
-                              }
-                              currentProduct.orderItems = 0.0;
-                            });
-                            dataBundleNotifier.totalPriceOrder = totalPriceOrder;
+                          if(text == '' || text == '0' || text == '0.0'){
+                            for (ROrderProduct prod in dataBundleNotifier.basket) {
+                              // rimuovi dalla classe il final sul campo
+                              currentProduct.amount = 0.0;
+                            }
                           }else{
                             if (double.tryParse(text.replaceAll(',', '.')) != null) {
-                              currentProduct.orderItems = double.parse(text.replaceAll(',', '.'));
-                              dataBundleNotifier.totalPriceOrder = 0.0;
-                              dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((prod) {
-                                if(prod.orderItems > 0){
-                                  dataBundleNotifier.totalPriceOrder = double.parse((dataBundleNotifier.totalPriceOrder + (prod.orderItems * prod.prezzo_lordo)).toStringAsFixed(2));
-                                }
-                              });
-                              dataBundleNotifier.setProducts.add(currentProduct.pkProductId);
-                              double totalPriceOrder = 0.0;
-
-                              dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((prod) {
-                                if(prod.orderItems > 0){
-                                  totalPriceOrder = double.parse((totalPriceOrder + (prod.orderItems * prod.prezzo_lordo)).toStringAsFixed(2));
-                                }
-                              });
-                              dataBundleNotifier.totalPriceOrder = totalPriceOrder;
+                              currentProduct.amount = double.parse(text.replaceAll(',', '.'));
                             }
                           }
 
@@ -323,9 +278,8 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                     GestureDetector(
                       onTap: () {
                         setState(() {
-                          currentProduct.orderItems = currentProduct.orderItems + 1;
-                          dataBundleNotifier.addProdToSetProduct(currentProduct.pkProductId);
-                          dataBundleNotifier.calculatePrice();
+                          currentProduct.amount = currentProduct.amount! + 1;
+                          //dataBundleNotifier.addProdToSetProduct(currentProduct.pkProductId);
                         });
                       },
                       child: Padding(
@@ -340,11 +294,11 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
             ),
           ));
       list.add(Divider(color: Colors.grey.shade400, indent: 10, height: 1,));
-    });
+    }
 
     list.add(Column(
       children: const [
-        SizedBox(height: 80,),
+        SizedBox(height: 200,),
       ],
     ));
     return list;
@@ -352,7 +306,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
 
   void buildSnackBar({required String text, required Color color}) {
     ScaffoldMessenger.of(context).
-        showSnackBar(SnackBar(
+    showSnackBar(SnackBar(
         duration: const Duration(milliseconds: 2000),
         backgroundColor: color,
         content: Text(text, style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));

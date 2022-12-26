@@ -1,12 +1,11 @@
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import '../../../client/vatservice/model/product_model.dart';
-import '../../../client/vatservice/model/save_product_into_storage_request.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 
 class AddElementWidget extends StatelessWidget {
   const AddElementWidget({Key? key}) : super(key: key);
@@ -18,22 +17,13 @@ class AddElementWidget extends StatelessWidget {
         List<Widget> listWidget = [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Seleziona i prodotti non anora presenti dal catalogo dei fornitori', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
+            child: Text('Seleziona i prodotti non ancora presenti dal catalogo dei fornitori', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
           )
         ];
 
-        if(dataBundleNotifier.productToAddToStorage.isNotEmpty){
-          Map<String, List<ProductModel>> mapSupplierListProduct = {};
+        if(dataBundleNotifier.getProdToAddToCurrentStorage().isNotEmpty){
 
-          dataBundleNotifier.productToAddToStorage.forEach((product) {
-            if(mapSupplierListProduct.containsKey(dataBundleNotifier.retrieveSupplierById(product.fkSupplierId))){
-              mapSupplierListProduct[dataBundleNotifier.retrieveSupplierById(product.fkSupplierId)]!.add(product);
-            }else{
-              mapSupplierListProduct[dataBundleNotifier.retrieveSupplierById(product.fkSupplierId)] = [product];
-            }
-          });
-          mapSupplierListProduct.forEach((key, value) {
-            //print('Build list for current supplier : ' + key.toString());
+          dataBundleNotifier.getProdToAddToCurrentStorage().forEach((key, value) {
             listWidget.add(
               Padding(
                 padding: const EdgeInsets.fromLTRB(13, 5, 13, 2),
@@ -43,52 +33,47 @@ class AddElementWidget extends StatelessWidget {
                     color: kPrimaryColor,
                   ),
                   width: MediaQuery.of(context).size.width,
-                  child: Text(key, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
+                  child: Text(dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.supplierId == key).first.name!, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
                 ),
               ),
             );
             value.forEach((element) {
               listWidget.add(
-                GestureDetector(
-                  onTap: (){
-                    dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
-                        saveProductToStorageRequest: SaveProductToStorageRequest(
-                            fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
-                            fkProductId: element.pkProductId,
-                            available: 'true',
-                            stock: 0,
-                            dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
-                            dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
-                            pkStorageProductCreationModelId: 0,
-                            user: dataBundleNotifier.userDetailsList[0].firstName
-                        )
-                    );
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(element.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
+                          Text(productUnitMeasureToJson(element.unitMeasure)!, style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold,),),
+                        ],
+                      ),
+                      IconButton(onPressed: () async {
 
-                    dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                    dataBundleNotifier.removeProductToAddToStorage(element);
+                        Response apiV1AppStorageInsertproductGet = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageInsertproductGet(
+                            storageId: dataBundleNotifier.getCurrentStorage().storageId!.toInt(),
+                            productId: element.productId!.toInt());
 
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(
-                        duration: const Duration(milliseconds: 400),
-                        content: Text('${element.nome} aggiunto')));
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(element.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
-                            Text(element.unita_misura, style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGreenAccent,fontWeight: FontWeight.bold,),),
-                          ],
-                        ),
-                        SvgPicture.asset('assets/icons/rightarrow.svg', width: getProportionateScreenHeight(25), color: kCustomGreenAccent,
-                        ),
-                      ],
-                    ),
+                        if(apiV1AppStorageInsertproductGet.isSuccessful){
+                          dataBundleNotifier.addProductToCurrentStorage(apiV1AppStorageInsertproductGet.body);
+
+                        }else{
+                          print(apiV1AppStorageInsertproductGet.error.toString());
+
+                          Navigator.of(context).pop();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: kPinaColor,
+                            content: Text('Ho riscontrato degli errori durante il salvagaggio. Error: ' + apiV1AppStorageInsertproductGet.error.toString()),
+                          ));
+                        }
+                      }, icon: Icon(Icons.arrow_forward_sharp, color: kPrimaryColor, size: getProportionateScreenHeight(20)),
+
+                      ),
+                    ],
                   ),
                 ),
               );

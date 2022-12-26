@@ -1,25 +1,22 @@
-import 'package:dio/dio.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.enums.swagger.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 
 class EditProductScreen extends StatefulWidget {
   static String routeName = 'editproduct';
-  const EditProductScreen({Key? key,required this.product,required this.supplier, }) : super(key: key);
+  const EditProductScreen({Key? key,required this.product}) : super(key: key);
 
-  final ProductModel product;
-  final SupplierModel supplier;
+  final Product product;
 
   @override
   _EditProductScreenState createState() => _EditProductScreenState();
@@ -41,12 +38,12 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void initState() {
 
     setInitialState(
-      name: widget.product.nome,
-      category: widget.product.categoria,
-      descr: widget.product.descrizione,
-      price: widget.product.prezzo_lordo,
-      currentIva : widget.product.iva_applicata.toString(),
-      unitMeasure: widget.product.unita_misura);
+      name: widget.product.name!,
+      category: widget.product.category!,
+      descr: widget.product.description!,
+      price: widget.product.price!,
+      currentIva : widget.product.vatApplied!.toString(),
+      unitMeasure: widget.product.unitMeasure!.name);
   }
 
   @override
@@ -74,32 +71,30 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: LightColors.kRed);
                       } else{
 
-                        ProductModel productModel = ProductModel(
-                          pkProductId: widget.product.pkProductId,
-                          nome: _nameController.text,
-                          categoria: _categoryController.text,
-                          codice: const Uuid().v1(),
-                          descrizione: _descriptionController.text,
-                          iva_applicata: int.parse(_currentIva),
-                          prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
-                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure, fkSupplierId: 0, orderItems: 0
+                        Response updateProdRespo = await dataBundleNotifier.getSwaggerClient().apiV1AppProductsUpdatePut(
+                          productId: widget.product.productId!.toInt(),
+                          name: _nameController.text,
+                          category: _categoryController.text,
+                          code: widget.product.code,
+                          description: _descriptionController.text,
+                          vatApplied: int.parse(_currentIva),
+                          price: double.parse(_priceController.text.replaceAll(',', '.')),
+                          unitMeasureOTH: _currentUnitMeasure == 'Altro' ? _currentUnitMeasure : '',
+                          unitMeasure: _currentUnitMeasure == 'Altro' ? ProductUnitMeasure.altro.name : productUnitMeasureFromJson(_currentUnitMeasure!).toString(),
                         );
 
-                        ClientVatService vatService = ClientVatService();
-                        Response performUpdateProduct = await vatService.performUpdateProduct(
-                            product: productModel
-                        );
-                        if(performUpdateProduct != null && performUpdateProduct.statusCode == 200){
-                          List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
-                          dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                          buildSnackBar(text: 'Prodotto ' + productModel.nome + ' aggiornato correttamente', color: Colors.green.shade700);
-                          Navigator.of(context).pop();
+
+                        if(updateProdRespo.isSuccessful){
+                          print('Prodotto aggiornato!');
+                          buildSnackBar(text: 'Prodotto aggiornato.', color: LightColors.kGreen);
                         }else{
-                          buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: kPinaColor);
+                          buildSnackBar(text: 'Errore durante l\'aggiornamento del prodotto. Err: ' + updateProdRespo.error!.toString(), color: LightColors.kRed);
                         }
+
+
                       }
                     },
-                    text: 'Modifica', textColor: kPrimaryColor,
+                    text: 'Modifica', textColor: Colors.white,
                   ),
                 ),
               appBar: AppBar(
@@ -131,31 +126,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
                     child: IconButton(
                       onPressed: () async {
-                        ProductModel productModel = ProductModel(
-                          pkProductId: widget.product.pkProductId,
-                          nome: _nameController.text,
-                          categoria: _categoryController.text,
-                          codice: const Uuid().v1(),
-                          descrizione: _descriptionController.text,
-                          iva_applicata: int.parse(_currentIva),
-                          prezzo_lordo: double.parse(_priceController.text),
-                          unita_misura: _currentUnitMeasure == 'Altro' ? _unitMeasureController.text : _currentUnitMeasure, fkSupplierId: 0, orderItems: 0
-                        );
 
-                        print(productModel.toMap().toString());
-
-                        ClientVatService vatService = ClientVatService();
-                        Response perforDelteProduct = await vatService.performDeleteProduct(
-                            product: productModel
-                        );
-                        if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
-                          List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
-                          dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                          buildSnackBar(text: 'Prodotto eliminato correttamente', color: Colors.green.shade700);
-                          Navigator.of(context).pop();
-                        }else{
-                          buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: LightColors.kRed);
-                        }
+             //          if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
+             //            List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
+             //            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
+             //            buildSnackBar(text: 'Prodotto eliminato correttamente', color: Colors.green.shade700);
+             //            Navigator.of(context).pop();
+             //          }else{
+             //            buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: LightColors.kRed);
+             //          }
                       },
                       icon: SvgPicture.asset('assets/icons/Trash.svg', color: LightColors.kRed, height: getProportionateScreenHeight(29)),
                     ),

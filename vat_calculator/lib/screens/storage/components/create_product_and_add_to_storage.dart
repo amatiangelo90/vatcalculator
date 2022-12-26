@@ -1,26 +1,23 @@
 import 'dart:io';
 
+import 'package:chopper/chopper.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vat_calculator/components/light_colors.dart';
-import '../../../client/vatservice/model/response_fornitori.dart';
-import '../../../client/vatservice/model/product_model.dart';
-import '../../../client/vatservice/model/save_product_into_storage_request.dart';
+
 import '../../../components/default_button.dart';
 import '../../../constants.dart';
 import '../../../models/databundlenotifier.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 import '../../suppliers/components/add_suppliers/add_supplier_choice.dart';
 
 class CreateAndAddProductScreen extends StatefulWidget {
-  const CreateAndAddProductScreen({Key? key, required this.callBackFunction}) : super(key: key);
-
-  final Function callBackFunction;
+  const CreateAndAddProductScreen({Key? key}) : super(key: key);
 
   static String routeName = 'createandaddproductscreen';
   @override
@@ -38,7 +35,8 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
   String currentUnitMeasure = 'Seleziona unità di misura';
   String currentIva = 'Seleziona aliquota applicata';
 
-  String _selectedSupplier = 'Seleziona Fornitore';
+  String _selectedSupplierName = 'Seleziona Fornitore';
+  Supplier _supplierSelected = Supplier(supplierId: 0);
 
 
   @override
@@ -59,7 +57,7 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                     child: SizedBox(
                       width: getProportionateScreenWidth(330),
                       child: CupertinoButton(
-                        color: LightColors.kBlue,
+                        color: Colors.green,
                         onPressed: () async {
                           if(_nameController.text.isEmpty || _nameController.text == ''){
                             buildSnackBar(text: 'Inserire il nome del prodotto', color: LightColors.kRed);
@@ -73,56 +71,38 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                             buildSnackBar(text: 'Specificare unità di misura', color: LightColors.kRed);
                           }else if(currentIva == 'Seleziona aliquota applicata'){
                             buildSnackBar(text: 'Selezionare un valore per Aliquota', color: LightColors.kRed);
-                          }else if(_selectedSupplier == 'Seleziona Fornitore'){
+                          }else if(_selectedSupplierName == 'Seleziona Fornitore' && _supplierSelected.supplierId == 0){
                             buildSnackBar(text: 'Selezionare un fornitore a cui associare il prodotto da creare', color: LightColors.kRed);
                           } else{
-
-                            SupplierModel currentSupplierToSaveProduct = dataBundleNotifier.retrieveSupplierFromSupplierListByIdName(_selectedSupplier)!;
-                            ProductModel productModel = ProductModel(
-                                nome: _nameController.text,
-                                categoria: _categoryController.text,
-                                codice: const Uuid().v1(),
-                                descrizione: _descriptionController.text,
-                                iva_applicata: int.parse(currentIva),
-                                prezzo_lordo: double.parse(_priceController.text.replaceAll(",", ".")),
-                                unita_misura: currentUnitMeasure == 'Altro' ? _unitMeasureController.text : currentUnitMeasure,
-                                fkSupplierId: currentSupplierToSaveProduct.pkSupplierId, pkProductId: 0, orderItems: 0
+                            Response apiV1AppProductsSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppProductsSavePost(
+                              name: _nameController.text,
+                              category: _categoryController.text,
+                              code: const Uuid().v1(),
+                              description: _descriptionController.text,
+                              vatApplied: int.parse(currentIva),
+                              price: double.parse(_priceController.text.replaceAll(',', '.')),
+                              unitMeasureOTH: _unitMeasureController.text,
+                              unitMeasure: productUnitMeasureFromJson(currentUnitMeasure).name!.toUpperCase(),
+                              supplierId: _supplierSelected.supplierId!.toInt(),
                             );
 
-                            print(productModel.toMap().toString());
+                            if(apiV1AppProductsSavePost.isSuccessful){
+                              buildSnackBar(text: 'Prodotto creato correttamente', color: Colors.green);
+                              Product prodResponse = apiV1AppProductsSavePost.body;
 
-                            Response performSaveProduct = await dataBundleNotifier.getclientServiceInstance().performSaveProduct(
-                                product: productModel
-                            );
-                            sleep(const Duration(milliseconds: 600));
+                              Response apiV1AppStorageInsertproductGet = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageInsertproductGet(
+                                  storageId: dataBundleNotifier.getCurrentStorage().storageId!.toInt(),
+                                  productId: prodResponse.productId!.toInt());
 
-
-                            if(performSaveProduct != null && performSaveProduct.statusCode == 200){
-                              List<ProductModel> retrieveProductsBySupplier = await dataBundleNotifier.getclientServiceInstance().retrieveProductsBySupplier(currentSupplierToSaveProduct);
-                              dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                              clearAll();
-
-
-                              dataBundleNotifier.getclientServiceInstance().performSaveProductIntoStorage(
-                                  saveProductToStorageRequest: SaveProductToStorageRequest(
-                                      fkStorageId: dataBundleNotifier.currentStorage.pkStorageId,
-                                      fkProductId: performSaveProduct.data,
-                                      available: 'true',
-                                      stock: 0,
-                                      dateTimeCreation: DateTime.now().millisecondsSinceEpoch,
-                                      dateTimeEdit: DateTime.now().millisecondsSinceEpoch,
-                                      pkStorageProductCreationModelId: 0,
-                                      user: dataBundleNotifier.userDetailsList[0].firstName
-                                  )
-                              );
-                              dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-                              buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + currentSupplierToSaveProduct.nome + ' ed inserito nel magazzino ${dataBundleNotifier.currentStorage.name}', color: Colors.green.shade700);
-                              dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
-                              widget.callBackFunction();
+                              if(apiV1AppStorageInsertproductGet.isSuccessful){
+                                buildSnackBar(text: 'Prodotto aggiunto correttamente ', color: LightColors.kGreen);
+                              }else{
+                                buildSnackBar(text: 'Errore durante la creazione del prodotto. Err: ' + apiV1AppProductsSavePost.error.toString(), color: LightColors.kRed);
+                              }
+                              Navigator.of(context).pop();
                             }else{
-                              buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
+                              buildSnackBar(text: 'Errore durante la creazione del prodotto. Err: ' + apiV1AppProductsSavePost.error.toString(), color: LightColors.kRed);
                             }
-
                           }
                         },
                         child: Text('Crea ' + _nameController.text),
@@ -141,17 +121,22 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
               title: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(dataBundleNotifier.currentStorage.name, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
-                  Text('  --  Crea ed aggiungi prodotti al magazzino  --  ', textAlign: TextAlign.center, style: TextStyle(color: LightColors.kLightYellow2, fontSize: getProportionateScreenHeight(10)),),
+                  Text(dataBundleNotifier.getCurrentStorage()!.name!, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(17)),),
+                  Text('  --  Crea ed aggiungi prodotti al magazzino  --  ',  style: TextStyle(color: LightColors.kLightYellow2, fontSize: getProportionateScreenHeight(10)),),
                 ],
               ),
+              actions: [
+                Text('')
+              ],
             ),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Column(
                 children: [
-                  dataBundleNotifier.currentListSuppliers.isEmpty ? Padding(
+                  dataBundleNotifier.getCurrentBranch().suppliers!.isEmpty ? Padding(
                     padding: const EdgeInsets.all(18.0),
                     child: Column(
                       children: [
@@ -201,9 +186,10 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
     });
   }
 
-  void setCurrentSupplier(String supplier, DataBundleNotifier dataBundleNotifier) {
+  void setCurrentSupplier(Supplier supplier) {
     setState(() {
-      _selectedSupplier = supplier;
+      _selectedSupplierName = supplier.name!;
+      _supplierSelected = supplier;
     });
   }
 
@@ -220,12 +206,13 @@ class _CreateAndAddProductScreenState extends State<CreateAndAddProductScreen> {
               title: 'Seleziona Fornitore',
               placeHolder: 'Ricerca Fornitore',
               disabled: false,
-              items: dataBundleNotifier.currentListSuppliers.map((SupplierModel supplier) {
-                return supplier.pkSupplierId.toString() + ' - ' + supplier.nome;
+              items: dataBundleNotifier.getCurrentBranch().suppliers!.map((Supplier supplier) {
+                return supplier.name;
               }).toList(),
-              selected: _selectedSupplier,
-              onChanged: (storage) {
-                setCurrentSupplier(storage, dataBundleNotifier);
+              selected: _selectedSupplierName,
+              onChanged: (Supplier supplier) {
+                setCurrentSupplier(supplier);
+
               }, label: '',
             ),
           ),

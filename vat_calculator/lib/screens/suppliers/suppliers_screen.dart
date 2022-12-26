@@ -1,19 +1,18 @@
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
-import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
-import '../../client/vatservice/model/response_fornitori.dart';
+
 import '../../constants.dart';
 import '../../size_config.dart';
-import '../main_page.dart';
+import '../../swagger/swagger.enums.swagger.dart';
+import '../../swagger/swagger.models.swagger.dart';
+import '../home/main_page.dart';
 import 'components/edit_supplier_screen.dart';
 
 class SuppliersScreen extends StatelessWidget {
@@ -27,8 +26,8 @@ class SuppliersScreen extends StatelessWidget {
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
         bottomSheet:
-            dataBundleNotifier.currentBranch == null || dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? SizedBox(width: 0,) :
-            dataBundleNotifier.currentListSuppliers.isNotEmpty ? Container(
+            dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const SizedBox(width: 0,) :
+            dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty ? Container(
               color: Colors.transparent,
               child: Padding(
                 padding: EdgeInsets.all(Platform.isAndroid ? 13.0 : 20.0),
@@ -38,7 +37,7 @@ class SuppliersScreen extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 40,
                       child: CupertinoButton(
-                        color: Colors.lightBlueAccent,
+                        color: kPrimaryColor,
                           child: const Text('Aggiungi nuovo fornitore'), onPressed: () {
                         Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                       }),
@@ -52,11 +51,10 @@ class SuppliersScreen extends StatelessWidget {
           leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
-                    dataBundleNotifier.onItemTapped(0);
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
-          iconTheme: const IconThemeData(color: Colors.white),
-          backgroundColor: kPrimaryColor,
+          iconTheme: const IconThemeData(color: kPrimaryColor),
+          backgroundColor: Colors.white,
           centerTitle: true,
           title: Column(
             children: [
@@ -64,73 +62,53 @@ class SuppliersScreen extends StatelessWidget {
                 'Fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
+                  color: kPrimaryColor,
+                  fontWeight: FontWeight.w600
                 ),
               ),
               Text(
-                'Pagina gestione fornitori',
+                'Gestione fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: Colors.lightBlueAccent,
+                  color: kPrimaryColor,
                 ),
               ),
             ],
           ),
-          elevation: 5,
+          elevation: 0,
         ),
         body: Container(
           color: Colors.white,
-          child: dataBundleNotifier.currentBranch == null
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: getProportionateScreenWidth(13),
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 30,
-                    ),
-                    SizedBox(
-                      width: SizeConfig.screenWidth * 0.6,
-                      child: CreateBranchButton(),
-                    ),
-                  ],
-                )
-              : dataBundleNotifier.currentListSuppliers.isNotEmpty
+          child: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
                   ? buildListSuppliers(dataBundleNotifier, context)
                   : Center(
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          Text(''),
                           Text(
                             "Non hai ancora creato nessun fornitore. ",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: getProportionateScreenWidth(13),
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: kPrimaryColor,
                             ),
                           ),
-                          const SizedBox(
-                            height: 30,
-                          ),
-                          SizedBox(
-                            height: 100,
-                            width: SizeConfig.screenWidth * 0.9,
-                            child: DefaultButton(
-                              color: kCustomGreenAccent,
-                              text: "Crea Fornitore",
-                              press: () async {
-                                Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
-                              }, textColor: kPrimaryColor,
+
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 30),
+                            child: SizedBox(
+                              height: 80,
+                              width: SizeConfig.screenWidth * 0.9,
+                              child: DefaultButton(
+                                color: kCustomGreen,
+                                text: "Crea Fornitore",
+                                press: () async {
+                                  Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
+                                }, textColor: kCustomWhite,
+                              ),
                             ),
                           ),
                         ],
@@ -161,17 +139,10 @@ class SuppliersScreen extends StatelessWidget {
     listout.add(
         Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
     );
-    dataBundleNotifier.currentListSuppliersDuplicated.forEach((supplier) {
+    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!) {
       listout.add(
         GestureDetector(
           onTap: () async {
-
-            List<ProductModel> retrieveProductsBySupplier =
-                await dataBundleNotifier
-                    .getclientServiceInstance()
-                    .retrieveProductsBySupplier(supplier);
-
-            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
 
             Navigator.push(
               context,
@@ -185,7 +156,7 @@ class SuppliersScreen extends StatelessWidget {
           child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
         ),
       );
-    });
+    }
 
     listout.add(SizedBox(
       height: getProportionateScreenHeight(100),
@@ -199,7 +170,7 @@ class SuppliersScreen extends StatelessWidget {
   }
 
 
-  buildSupplierRow(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, Color color) {
+  buildSupplierRow(DataBundleNotifier dataBundleNotifier, Supplier supplier, Color color) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
       child: Container(
@@ -226,7 +197,7 @@ class SuppliersScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        supplier.nome,
+                        supplier.name!,
                         style: TextStyle(
                             color: kPrimaryColor,
                             fontSize: getProportionateScreenWidth(17),
@@ -241,7 +212,7 @@ class SuppliersScreen extends StatelessWidget {
                             color: color,
                             width: getProportionateScreenWidth(20),
                           ),
-                          Text('  #' + supplier.extra,
+                          Text('  #' + supplier.code!,
                               style: TextStyle(
                                   color: color,
                                   fontSize: getProportionateScreenWidth(12),

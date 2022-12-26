@@ -22,7 +22,7 @@ import 'package:vat_calculator/size_config.dart';
 
 import '../../../client/vatservice/model/response_fornitori.dart';
 import '../../../client/vatservice/model/move_product_between_storage_model.dart';
-import '../../main_page.dart';
+import '../../home/main_page.dart';
 
 class OrderCompletionScreen extends StatefulWidget {
   const OrderCompletionScreen({Key? key,required this.orderModel,required this.productList, }) : super(key: key);
@@ -106,7 +106,6 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                       dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName);
 
                                   dataBundleNotifier.removeFromUnderWorkingOrdersTheOnesUpdateAsReceived(widget.orderModel.pk_order_id);
-                                  dataBundleNotifier.onItemTapped(0);
                                   Navigator.pushNamed(context, HomeScreenMain.routeName);
                                 }else{
                                   StorageModel storageModel = dataBundleNotifier.getStorageFromCurrentStorageListByStorageId(widget.orderModel.fk_storage_id)!;
@@ -149,7 +148,6 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             'per ${dataBundleNotifier.currentBranch.companyName}.',
                                         'Ordine ${widget.orderModel.code} Ricevuto',DateTime.now().millisecondsSinceEpoch.toString());
 
-                                    dataBundleNotifier.onItemTapped(0);
                                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                                   }else{
                                     ScaffoldMessenger.of(context)
@@ -407,7 +405,6 @@ class _OrderCompletionScreenState extends State<OrderCompletionScreen> {
                                             'per ${dataBundleNotifier.currentBranch.companyName}.',
                                         'Ordine ${widget.orderModel.code} NON Ricevuto', DateTime.now().millisecondsSinceEpoch.toString());
 
-                                    dataBundleNotifier.onItemTapped(0);
                                     Navigator.pushNamed(context, HomeScreenMain.routeName);
 
                                   context.loaderOverlay.hide();

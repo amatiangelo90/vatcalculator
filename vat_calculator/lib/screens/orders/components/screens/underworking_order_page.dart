@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -209,24 +208,11 @@ class _UnderWorkingOrderPageState extends State<UnderWorkingOrderPage> {
 
   Map<DateTime, List<OrderModel>> buildListEvent(List<OrderModel> eventsList) {
     Map<DateTime, List<OrderModel>> map1 = Map();
-    eventsList.forEach((element) {
 
-      if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date))))){
-        map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))]!.add(element);
-      }else{
-        List<OrderModel> listToAdd = [element];
-        map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))] = listToAdd;
-
-      }
-    });
     return map1;
   }
 
-  DateTime buildDateKeyFromDate(Timestamp date) {
 
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
-    return DateTime.utc(dateTime.year, dateTime.month, dateTime.day, 0 ,0 ,0 ,0, 0);
-  }
 
   Future<List<Widget>> buildUnderWorkingOrderList(ValueNotifier<List<OrderModel>> selectedEvents,
       DataBundleNotifier dataBundleNotifier) async {

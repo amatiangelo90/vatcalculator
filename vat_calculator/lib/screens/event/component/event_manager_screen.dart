@@ -14,7 +14,7 @@ import 'package:vat_calculator/size_config.dart';
 import '../../../client/vatservice/model/move_product_between_storage_model.dart';
 import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
-import '../../main_page.dart';
+import '../../home/main_page.dart';
 import 'expence_event_edit_card.dart';
 
 class EventManagerScreen extends StatefulWidget {
@@ -52,7 +52,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () {
-                  dataBundleNotifier.onItemTapped(0);
                   Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
               iconTheme: const IconThemeData(color: Colors.white),
@@ -370,7 +369,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         SizedBox(
           width: getProportionateScreenWidth(300),
           child: CupertinoButton(
-              color: kCustomGreenAccent,
+              color: kCustomGreen,
               child: const Text('Salva impostazioni'),
               onPressed: () async {
                 if(controllerEventName.text == null || controllerEventName.text == ''){
@@ -519,9 +518,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                           event.closed = 'Y';
                                           await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
                                           dataBundleNotifier.cleanExtraArgsListProduct();
-                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
 
-                                          dataBundleNotifier.onItemTapped(0);
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
@@ -672,8 +670,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                     event.eventName + ' Eliminato. Merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}'),
                                           ));
 
-                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                                          dataBundleNotifier.onItemTapped(0);
+                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
 
                                         }catch(e){

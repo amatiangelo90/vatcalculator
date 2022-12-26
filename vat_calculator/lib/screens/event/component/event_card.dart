@@ -75,7 +75,7 @@ class EventCard extends StatelessWidget {
                                   style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite),),
                                 Text(
                                   eventModel.location,
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kPalePink, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: kCustomGreen, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -87,7 +87,7 @@ class EventCard extends StatelessWidget {
                                   dataBundleNotifier.retrieveStorageById(eventModel.fkStorageId),
                                   textAlign: TextAlign.justify,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: LightColors.kPalePink, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13),  color: kCustomGreen, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -99,7 +99,7 @@ class EventCard extends StatelessWidget {
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).day.toString() + '/' +
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).month.toString() + '/' +
                                   DateTime.fromMillisecondsSinceEpoch(eventModel.eventDate).year.toString(),
-                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: LightColors.kPalePink, fontWeight: FontWeight.bold),),
+                                  style: TextStyle(fontSize: getProportionateScreenHeight(13), color: kCustomGreen, fontWeight: FontWeight.bold),),
                               ],
                             ),
                             Row(
@@ -124,13 +124,13 @@ class EventCard extends StatelessWidget {
                 Divider(
                   indent: 20,
                   endIndent: 20,
-                  color: LightColors.kPalePink,
+                  color: kCustomGreen,
                   height: getProportionateScreenHeight(40),
                 ),
                 showButton ? SizedBox(
                   width: getProportionateScreenWidth(400),
                   child: CupertinoButton(
-                    color: LightColors.kPalePink,
+                    color: kCustomGreen,
                     onPressed: () async {
 
                       List<WorkstationModel> workstationModelList = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(eventModel);

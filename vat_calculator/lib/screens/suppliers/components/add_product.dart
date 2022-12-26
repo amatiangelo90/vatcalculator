@@ -1,24 +1,23 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/product_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/light_colors.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/swagger/swagger.enums.swagger.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.models.swagger.dart';
+import 'package:chopper/chopper.dart';
 
 class AddProductScreen extends StatefulWidget {
   static String routeName = 'addproduct';
   const AddProductScreen({Key? key, required this.supplier}) : super(key: key);
 
-  final SupplierModel supplier;
+  final Supplier supplier;
 
 
   @override
@@ -27,11 +26,23 @@ class AddProductScreen extends StatefulWidget {
 
 class _AddProductScreenState extends State<AddProductScreen> {
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _unitMeasureController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _unitMeasureController;
+  late TextEditingController _priceController;
+  late TextEditingController _categoryController;
+  late TextEditingController _descriptionController;
+
+  @override
+  void initState() {
+    _nameController = TextEditingController();
+    _unitMeasureController = TextEditingController();
+    _priceController = TextEditingController();
+    _categoryController = TextEditingController();
+    _descriptionController = TextEditingController();
+    //dropdownvalue = productUnitMeasureToJson(ProductUnitMeasure.pacchi)!;
+    super.initState();
+  }
+  //String dropdownvalue = 'PACCHI';
 
   String currentUnitMeasure = 'Seleziona unità di misura';
   String currentIva = 'Seleziona aliquota applicata';
@@ -51,8 +62,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     Navigator.of(context).pop(),
                   }
               ),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              iconTheme: const IconThemeData(color: kPrimaryColor),
+              backgroundColor: kCustomWhite,
               centerTitle: true,
               title: Column(
                 children: [
@@ -60,12 +71,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     'Crea nuovo prodotto',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(19),
-                      color: Colors.white,
+                      color: kPrimaryColor,
                     ),
                   ),
                 ],
               ),
-              elevation: 2,
+              elevation: 0,
             ),
             body: SingleChildScrollView(
               child: Column(
@@ -105,83 +116,83 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(
                               Colors.white),),
                           onPressed: (){
-                          showModalBottomSheet(
-                              shape: const RoundedRectangleBorder( // <-- SEE HERE
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(25.0),
+                            showModalBottomSheet(
+                                shape: const RoundedRectangleBorder( // <-- SEE HERE
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(25.0),
+                                  ),
                                 ),
-                              ),
-                              context: context,
-                              builder: (context) {
-                                return Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: Icon(FontAwesomeIcons.weightHanging, color: kPrimaryColor),
-                                      title: Text('Kg', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
-                                      onTap: () {
-                                        setState(() {
-                                          currentUnitMeasure = 'Kg';
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(FontAwesomeIcons.box, color: kPrimaryColor),
-                                      title: Text('Pezzi', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
-                                      onTap: () {
-                                        setState(() {
-                                          currentUnitMeasure = 'Pezzi';
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(FontAwesomeIcons.boxes, color: kPrimaryColor),
-                                      title: Text('Cartoni', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
-                                      onTap: () {
-                                        setState(() {
-                                          currentUnitMeasure = 'Cartoni';
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(FontAwesomeIcons.wineBottle, color: kPrimaryColor),
-                                      title: const Text('Bottiglia', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
-                                      onTap: () {
-                                        setState(() {
-                                          currentUnitMeasure = 'Bottiglia';
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
-                                      title: const Text('Unita', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
-                                      onTap: () {
-                                        setState(() {
-                                          currentUnitMeasure = 'Unita';
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: Icon(FontAwesomeIcons.adn, color: kPrimaryColor),
-                                      title: Text('Altro', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
-                                      onTap: () {
-                                        setState(() {
-                                          currentUnitMeasure = 'Altro';
-                                        });
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                    SizedBox(height: 30,)
-                                  ],
-                                );
-                              });
+                                context: context,
+                                builder: (context) {
+                                  return Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      ListTile(
+                                        leading: Icon(FontAwesomeIcons.weightHanging, color: kPrimaryColor),
+                                        title: Text(ProductUnitMeasure.kg.name, style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                        onTap: () {
+                                          setState(() {
+                                            currentUnitMeasure = ProductUnitMeasure.kg.name;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Icon(FontAwesomeIcons.box, color: kPrimaryColor),
+                                        title: Text(ProductUnitMeasure.pezzi.name, style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                        onTap: () {
+                                          setState(() {
+                                            currentUnitMeasure = ProductUnitMeasure.pezzi.name;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Icon(FontAwesomeIcons.boxes, color: kPrimaryColor),
+                                        title: Text(ProductUnitMeasure.cartoni.name, style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                        onTap: () {
+                                          setState(() {
+                                            currentUnitMeasure = ProductUnitMeasure.cartoni.name;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(FontAwesomeIcons.wineBottle, color: kPrimaryColor),
+                                        title: Text(ProductUnitMeasure.bottiglia.name, style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                        onTap: () {
+                                          setState(() {
+                                            currentUnitMeasure = ProductUnitMeasure.bottiglia.name;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
+                                        title: Text(ProductUnitMeasure.unita.name, style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                        onTap: () {
+                                          setState(() {
+                                            currentUnitMeasure = ProductUnitMeasure.unita.name;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: Icon(FontAwesomeIcons.adn, color: kPrimaryColor),
+                                        title: Text(ProductUnitMeasure.altro.name, style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                        onTap: () {
+                                          setState(() {
+                                            currentUnitMeasure = ProductUnitMeasure.altro.name;
+                                          });
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      SizedBox(height: 30,)
+                                    ],
+                                  );
+                                });
 
-                      }, child: Row(
+                          }, child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
@@ -191,7 +202,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       )),
                     ),
                   ),
-                  currentUnitMeasure == 'Altro' ? Padding(
+                  currentUnitMeasure == ProductUnitMeasure.altro.name ? Padding(
                     padding: const EdgeInsets.fromLTRB(20, 8, 20, 0),
                     child: SizedBox(
                       height: MediaQuery.of(context).size.height *0.05,
@@ -220,7 +231,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         },
                         controller: _priceController,
                         textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.numberWithOptions(signed: false, decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(signed: false, decimal: true),
                         clearButtonMode: OverlayVisibilityMode.editing,
                         autocorrect: false,
                       ),
@@ -353,7 +364,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             ),
             bottomSheet: Padding(
               padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-              child: DefaultButton(color: LightColors.kBlue,
+              child: DefaultButton(color: kPrimaryColor,
                 press: () async {
                   if(_nameController.text.isEmpty || _nameController.text == ''){
                     buildSnackBar(text: 'Inserire il nome del prodotto', color: LightColors.kRed);
@@ -361,7 +372,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text, color: LightColors.kRed);
                   }else if(currentUnitMeasure == 'Seleziona unità di misura'){
                     buildSnackBar(text: 'Selezionare unità di misura valida', color: LightColors.kRed);
-                  }else if(currentUnitMeasure == 'Altro' && (_unitMeasureController.text == '' || _unitMeasureController.text.isEmpty)){
+                  }else if(currentUnitMeasure == ProductUnitMeasure.altro.name && (_unitMeasureController.text == '' || _unitMeasureController.text.isEmpty)){
                     buildSnackBar(text: 'Specificare unità di misura', color: LightColors.kRed);
                   }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
                     buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: LightColors.kRed);
@@ -369,42 +380,28 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     buildSnackBar(text: 'Selezionare un valore per Aliquota', color: LightColors.kRed);
                   } else{
 
-                    //EasyLoading.show();
-                    ProductModel productModel = ProductModel(
-                        nome: _nameController.text,
-                        categoria: _categoryController.text,
-                        codice: const Uuid().v1(),
-                        descrizione: _descriptionController.text,
-                        iva_applicata: int.parse(currentIva),
-                        prezzo_lordo: double.parse(_priceController.text.replaceAll(',', '.')),
-                        unita_misura: currentUnitMeasure == 'Altro' ? _unitMeasureController.text : currentUnitMeasure,
-                        fkSupplierId: widget.supplier.pkSupplierId, pkProductId: 0, orderItems: 0
+                    Response apiV1AppProductsSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppProductsSavePost(
+                      name: _nameController.text,
+                      category: _categoryController.text,
+                      code: const Uuid().v1(),
+                      description: _descriptionController.text,
+                      vatApplied: int.parse(currentIva),
+                      price: double.parse(_priceController.text.replaceAll(',', '.')),
+                      unitMeasureOTH: _unitMeasureController.text,
+                      unitMeasure: productUnitMeasureFromJson(currentUnitMeasure).name!.toUpperCase(),
+                      supplierId: widget.supplier.supplierId!.toInt(),
                     );
 
-                    print(productModel.toMap().toString());
-
-                    ClientVatService vatService = ClientVatService();
-                    Response performSaveProduct = await vatService.performSaveProduct(
-                        product: productModel
-                    );
-                    sleep(const Duration(seconds: 1));
-
-
-                    if(performSaveProduct != null && performSaveProduct.statusCode == 200){
-
-                      List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
-                      dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-                      //EasyLoading.dismiss();
-                      clearAll();
-                      buildSnackBar(text: 'Prodotto ' + productModel.nome + ' salvato per fornitore ' + widget.supplier.nome, color: Colors.green.shade700);
+                    if(apiV1AppProductsSavePost.isSuccessful){
+                      buildSnackBar(text: 'Prodotto creato correttamente', color: Colors.green);
+                      dataBundleNotifier.refreshCurrentBranchData();
+                      Navigator.of(context).pop();
                     }else{
-                      //EasyLoading.dismiss();
-                      buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveProduct.toString(), color: kPinaColor);
+                      buildSnackBar(text: 'Errore durante la creazione del prodotto. Err: ' + apiV1AppProductsSavePost.error.toString(), color: LightColors.kRed);
                     }
-
                   }
                 },
-                text: 'Crea ' + _nameController.text, textColor: kPrimaryColor,
+                text: 'Crea ' + _nameController.text, textColor: Colors.white,
               ),
             ),
           ),

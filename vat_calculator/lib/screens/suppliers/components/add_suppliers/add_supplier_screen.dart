@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
+import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
 
@@ -49,7 +51,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width - 50,
                       child: CupertinoButton(
-                          color: kCustomGreenAccent,
+                          color: kCustomGreen,
                           child: const Text('Salva Fornitore'),
                           onPressed: () async {
                             if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
@@ -76,7 +78,43 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                             }else{
                               KeyboardUtil.hideKeyboard(context);
                               try{
-                                saveProviderData(dataBundleNotifier, context);
+                                Response apiV1AppSuppliersSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersSavePost(
+                                    supplierId: 0,
+                                    cap: controllerCap.text,
+                                    city: controllerCity.text,
+                                    address: controllerAddress.text,
+                                    email: controllerEmail.text,
+                                    name: controllerSupplierName.text,
+                                    pec: '',
+                                    cf: '',
+                                    country: 'ITALIA',
+                                    vatNumber: controllerPIva.text,
+                                    phoneNumber: controllerMobileNo.text,
+                                    branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt()
+                                );
+
+                                if(apiV1AppSuppliersSavePost.isSuccessful){
+                                  final snackBar = SnackBar(
+                                      duration: const Duration(seconds: 2),
+                                      backgroundColor: Colors.green,
+                                      content: Text('Fornitore ' + controllerSupplierName.text +' creato',
+                                      )
+                                  );
+
+                                  dataBundleNotifier.refreshCurrentBranchData();
+
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  Navigator.pushNamed(context, SuppliersScreen.routeName);
+                                  clearControllers();
+                                }else{
+                                  final snackBar = SnackBar(
+                                      duration: const Duration(seconds: 4),
+                                      backgroundColor: Colors.redAccent,
+                                      content: Text('Errore durante la creazione del fornitore. Riprovare fra 2 minuti o contattare l\'amministratore del sistema. Err: ' + apiV1AppSuppliersSavePost.error.toString(),
+                                      )
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                }
                               }catch(e){
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
@@ -99,8 +137,8 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     Navigator.pushNamed(context, SuppliersScreen.routeName),
                   }
               ),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              iconTheme: const IconThemeData(color: kPrimaryColor),
+              backgroundColor: Colors.white,
               centerTitle: true,
               title: Column(
                 children: [
@@ -108,12 +146,12 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     'Crea Nuovo Fornitore',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(19),
-                      color: Colors.white,
+                      color: kPrimaryColor,
                     ),
                   ),
                 ],
               ),
-              elevation: 2,
+              elevation: 0,
             ),
             body: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -229,54 +267,6 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
             ),
           );
         });
-  }
-
-
-  Future<void> saveProviderData(DataBundleNotifier dataBundleNotifier, context) async {
-
-    if(true){
-      SupplierModel supplier = SupplierModel(
-        pkSupplierId: 0,
-        cf: '',
-        extra: getUniqueCustomId(),
-        fax: '',
-        id: dataBundleNotifier.userDetailsList[0].id.toString(),
-        indirizzo_cap: controllerCap.text,
-        indirizzo_citta: controllerCity.text,
-        indirizzo_extra: '',
-        indirizzo_provincia: '',
-        indirizzo_via: controllerAddress.text,
-        mail: controllerEmail.text,
-        nome: controllerSupplierName.text,
-        paese: 'Italia',
-        pec: '',
-        piva: controllerPIva.text,
-        referente: '',
-        tel: controllerMobileNo.text,
-        fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-      );
-      clearControllers();
-
-      print(supplier.toMap());
-      await dataBundleNotifier.getclientServiceInstance().performSaveSupplier(
-          anagraficaFornitore: supplier
-      );
-
-      List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
-
-      dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
-      dataBundleNotifier.clearAndUpdateMapBundle();
-      final snackBar =
-      SnackBar(
-          duration: const Duration(seconds: 3),
-          backgroundColor: Colors.green,
-          content: Text('Fornitore ' + controllerSupplierName.text +' creato',
-          )
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      Navigator.pushNamed(context, SuppliersScreen.routeName);
-    }
   }
 
   getUniqueCustomId() {

@@ -5,7 +5,7 @@ import 'package:vat_calculator/client/vatservice/model/storage_product_model.dar
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../constants.dart';
-import '../../main_page.dart';
+import '../../home/main_page.dart';
 import 'order_build_from_storage_widget.dart';
 
 class OrderFromStorageComunicationPage extends StatelessWidget {
@@ -33,8 +33,7 @@ class OrderFromStorageComunicationPage extends StatelessWidget {
               ),),
               color: Colors.green,
               onPressed: () {
-                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                dataBundleNotifier.onItemTapped(0);
+                dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
                 dataBundleNotifier.refreshExtraFieldsIntoDuplicatedProductList();
 
                 Navigator.pushNamed(context, HomeScreenMain.routeName);

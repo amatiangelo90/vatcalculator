@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/constants.dart';
-import 'package:vat_calculator/screens/main_page.dart';
+import 'package:vat_calculator/screens/home/main_page.dart';
 import 'package:vat_calculator/size_config.dart';
 import '../../../../../client/vatservice/model/order_model.dart';
 import '../../../../../client/vatservice/model/utils/order_state.dart';
 import '../../../../../models/databundlenotifier.dart';
+import '../../../../../swagger/swagger.models.swagger.dart';
 
 class OrderErrorDetailsScreen extends StatelessWidget {
   const OrderErrorDetailsScreen({Key? key,required this.message,required this.number,required this.mail,
@@ -20,7 +20,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
   final String message;
   final String number;
   final String mail;
-  final SupplierModel supplier;
+  final Supplier supplier;
   final int performSaveOrderId;
   final String code;
   final DateTime deliveryDate;
@@ -50,7 +50,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                       Center(child:
                       Padding(
                         padding: const EdgeInsets.all(6.0),
-                        child: Text('Errore invio ordine al fornitore [${supplier.nome}] tramite \nemail [$mail]', overflow: TextOverflow.visible, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18),
+                        child: Text('Errore invio ordine al fornitore [${supplier.name!}] tramite \nemail [$mail]', overflow: TextOverflow.visible, textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18),
                         ),),
                       ),),),
                     ),
@@ -62,7 +62,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                     child: Column(
                       children: [
                         Text('E\' stato riscontrato un errore durate l\''
-                            'invio dell\'ordine. Controlla che la mail ['+ supplier.mail +'] sia corretta oppure riprova fra '
+                            'invio dell\'ordine. Controlla che la mail ['+ supplier.email! +'] sia corretta oppure riprova fra '
                             'un paio di minuti.\n\n' , textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                         Divider(height: 1, indent: 20, endIndent: 20, color: Colors.grey.withOpacity(0.3)),
 
@@ -141,7 +141,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 Column(
                                   children: [
                                     const Text('INOLTRA CON WHAT\'S APP', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                                    Text('AL NUMERO ${supplier.tel}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                                    Text('AL NUMERO ${supplier.phoneNumber!}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                                 IconButton(
@@ -207,7 +207,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                                 Column(
                                   children: [
                                     Text('INOLTRA CON SMS', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                                    Text('AL NUMERO ${supplier.tel}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                                    Text('AL NUMERO ${supplier.phoneNumber!}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                                 IconButton(
@@ -392,7 +392,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
                   child: const Text('Torna alla home'),
                   onPressed: () {
 
-                    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
+                    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
                     Navigator.of(context).pop();
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
 
@@ -418,8 +418,7 @@ class OrderErrorDetailsScreen extends StatelessWidget {
             closedby: dataBundleNotifier
                 .retrieveNameLastNameCurrentUser(), code: '', total: 0, fk_user_id: 0, fk_supplier_id: 0, fk_storage_id: 0, fk_branch_id: 0, details: '', creation_date: ''));
 
-    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-    dataBundleNotifier.onItemTapped(0);
+    dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
   }
 
   void performFinalAction(DataBundleNotifier dataBundleNotifier, context) {
@@ -428,11 +427,11 @@ class OrderErrorDetailsScreen extends StatelessWidget {
     Navigator.pushNamed(context, HomeScreenMain.routeName);
   }
 
-  void sendOrderPushNotification(DataBundleNotifier dataBundleNotifier, SupplierModel supplier, DateTime currentDate, StorageModel currentStorageModel) {
+  void sendOrderPushNotification(DataBundleNotifier dataBundleNotifier, Supplier supplier, DateTime currentDate, StorageModel currentStorageModel) {
     String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
 
     dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
-        'Ordine per fornitore ${supplier.nome} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
+        'Ordine per fornitore ${supplier.name} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
 
   }
 }

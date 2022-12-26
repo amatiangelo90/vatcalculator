@@ -17,10 +17,6 @@ class LandingScreen extends StatelessWidget {
       overlayOpacity: 0.9,
       overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati...',),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: kPrimaryColor,
-          leading: const SizedBox(),
-        ),
         body: LandingBody(email: email,),
       ),
     );

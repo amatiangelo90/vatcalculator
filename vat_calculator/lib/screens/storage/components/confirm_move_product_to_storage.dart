@@ -13,7 +13,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../client/vatservice/model/move_product_between_storage_model.dart';
-import '../../main_page.dart';
+import '../../home/main_page.dart';
 
 class ProductMoveToOtherStorageConfirmationScreen extends StatefulWidget {
   const ProductMoveToOtherStorageConfirmationScreen({Key? key,required this.currentSupplier, required this.storageList}) : super(key: key);
@@ -96,7 +96,6 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
                               backgroundColor: Colors.green,
                               duration: Duration(milliseconds: 1200),
                               content: Text('Prodotti spostati correttamente da magazzino ${dataBundleNotifier.currentStorage.name} a ${currentStorageModel.name}')));
-                          dataBundleNotifier.onItemTapped(1);
                           Navigator.pushNamed(context, HomeScreenMain.routeName);
                         }else{
                           ScaffoldMessenger.of(context)
@@ -108,7 +107,7 @@ class _ProductMoveToOtherStorageConfirmationScreenState extends State<ProductMov
                         context.loaderOverlay.hide();
                   }
                 },
-                color: kCustomGreenAccent, textColor: kPrimaryColor,
+                color: kCustomGreen, textColor: kPrimaryColor,
               ),
             ),
             appBar: AppBar(

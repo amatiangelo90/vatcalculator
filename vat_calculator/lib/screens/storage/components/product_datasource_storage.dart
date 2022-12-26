@@ -35,7 +35,7 @@ class ProductDataSourceStorage extends DataTableSource {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(product.productName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15), color: kPrimaryColor)),
-                  Text(product.unitMeasure, style: TextStyle(fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold, color: kCustomGreenAccent)),
+                  Text(product.unitMeasure, style: TextStyle(fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold, color: kCustomGreen)),
                 ],
             )),
           DataCell(Text(product.stock.toStringAsFixed(2).replaceAll('.00',''), style: TextStyle( fontSize: getProportionateScreenHeight(15), color: product.stock <= 0 ? Colors.red : kPrimaryColor, fontWeight: FontWeight.bold),)),

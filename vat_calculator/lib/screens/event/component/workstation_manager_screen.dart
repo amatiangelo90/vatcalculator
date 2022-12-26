@@ -461,7 +461,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
                                     },
                                     child: Text('Aggiungi'),
-                                    color: kCustomGreenAccent,
+                                    color: kCustomGreen,
                                   ),
                                 ),
                               ],
@@ -542,14 +542,14 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                     child: Container(
                                         padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                                         decoration: const BoxDecoration(
-                                          color: kCustomGreenAccent,
+                                          color: kCustomGreen,
                                           borderRadius: BorderRadius.only(
                                               bottomLeft: Radius.circular(25.0),
                                               bottomRight: Radius.circular(25.0)),
                                         ),
                                         child: SizedBox(
                                           width: getProportionateScreenWidth(300),
-                                          child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomGreenAccent, onPressed: () async {
+                                          child: CupertinoButton(child: const Text('Configura', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomGreen, onPressed: () async {
 
                                             if (double.tryParse(loadPaxController.text.replaceAll(",", ".")) != null) {
                                               double currentValue = double.parse(loadPaxController.text.replaceAll(",", "."));
@@ -939,7 +939,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                     }
 
                   },
-                  color: kCustomGreenAccent, textColor: Color(0xff121212),
+                  color: kCustomGreen, textColor: Color(0xff121212),
                 ),
               ),
             ],
@@ -1021,7 +1021,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 60,
                     child: CupertinoButton(
-                        color: kCustomGreenAccent,
+                        color: kCustomGreen,
                         child: const Text('Salva Impostazioni'),
                         onPressed: () async {
                           if(controllerWorkStationName.text == null || controllerWorkStationName.text == ''){

@@ -1,13 +1,13 @@
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
-import '../main_page.dart';
+import '../../swagger/swagger.enums.swagger.dart';
+import '../home/main_page.dart';
 
 class CreationBranchScreen extends StatefulWidget {
 
@@ -35,10 +35,10 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
 
-        if(dataBundleNotifier.userDetailsList.isEmpty){
+        if(dataBundleNotifier.getUserEntity().email == ''){
           controllerEmail = TextEditingController();
         }else{
-          controllerEmail = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
+          controllerEmail = TextEditingController(text: dataBundleNotifier.getUserEntity().email);
         }
         void buildShowErrorDialog(String text) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -50,9 +50,9 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
 
         return Scaffold(
           key: _scaffoldKey,
-          backgroundColor: kPrimaryColor,
+          backgroundColor: Colors.white,
           bottomSheet: Container(
-            color: kPrimaryColor,
+            color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -63,7 +63,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoButton(
-                          color: kCustomGreenAccent,
+                          color: kCustomGreen,
                           child: const Text('CREA'),
                           onPressed: () async {
                             if(controllerCompanyName.text == null || controllerCompanyName.text == ''){
@@ -82,33 +82,31 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                               print('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
                               buildShowErrorDialog('Il cap è errato. Inserire un numero corretto formato da 5 cifre.');
                             }else{
-                              BranchModel company = BranchModel(
-                                  eMail: controllerEmail.text,
+
+                              Response apiV1AppBranchesSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppBranchesSavePost(
+                                  email: controllerEmail.text,
                                   phoneNumber: controllerMobileNo.text,
                                   address: controllerAddress.text,
-                                  apiKeyOrUser: '',
-                                  apiUidOrPassword: '',
-                                  companyName: controllerCompanyName.text,
-                                  cap: int.parse(controllerCap.text),
+                                  name: controllerCompanyName.text,
+                                  cap: controllerCap.text,
                                   city: controllerCity.text,
-                                  providerFatture: '',
                                   vatNumber: controllerPIva.text,
-                                  pkBranchId: 0,
-                                  accessPrivilege: Privileges.OWNER, token: ''
+                                  branchId: 0,
+                                  userId: dataBundleNotifier.getUserEntity().userId!.toInt(),
+                                  userPriviledge: branchUserPriviledgeToJson(BranchUserPriviledge.superAdmin),
+                                  token: ''
                               );
 
-                              ClientVatService clientService = dataBundleNotifier.getclientServiceInstance();
-                              await clientService.performSaveBranch(company);
+                              if(apiV1AppBranchesSavePost.isSuccessful){
+                                Response response = await dataBundleNotifier.getSwaggerClient().apiV1AppUsersFindbyemailGet(email: controllerEmail.text);
+                                dataBundleNotifier.setUser(response.body);
 
-                              List<BranchModel> _branchList
-                              = await clientService.retrieveBranchesByUserId(dataBundleNotifier.userDetailsList[0].id);
-                              dataBundleNotifier.addBranches(_branchList);
-
-
-                              dataBundleNotifier.onItemTapped(0);
-                              Navigator.pushNamed(context, HomeScreenMain.routeName);
+                                print('User : ' + response.body.toString());
+                                Navigator.pushNamed(context, HomeScreenMain.routeName);
+                              }else{
+                                buildShowErrorDialog(apiV1AppBranchesSavePost.error.toString());
+                              }
                             }
-
                           }),
                     ),
                   ),
@@ -117,22 +115,22 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
             ),
           ),
           appBar: AppBar(
-            elevation: 5,
+            elevation: 0,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
+                color: kPrimaryColor,
               ),
             ),
             centerTitle: true,
             title: Text('Crea nuova attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: Colors.white,
+                color: kPrimaryColor,
               ),
             ),
-            backgroundColor: kPrimaryColor,
+            backgroundColor: Colors.white,
           ),
           body: Container(
             child: Padding(
@@ -144,7 +142,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                     children: <Widget>[
                       Row(
                         children: const [
-                          Text('Email*', style: TextStyle(color: kCustomWhite),),
+                          Text('Email*', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -159,7 +157,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Nome*', style: TextStyle(color: kCustomWhite),),
+                          Text('Nome*', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -173,7 +171,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Cellulare*', style: TextStyle(color: kCustomWhite),),
+                          Text('Cellulare*', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -187,7 +185,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Partita Iva', style: TextStyle(color: kCustomWhite),),
+                          Text('Partita Iva', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -201,7 +199,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Indirizzo', style: TextStyle(color: kCustomWhite),),
+                          Text('Indirizzo', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -215,7 +213,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Città', style: TextStyle(color: kCustomWhite),),
+                          Text('Città', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -229,7 +227,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Cap', style: TextStyle(color: kCustomWhite),),
+                          Text('Cap', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(

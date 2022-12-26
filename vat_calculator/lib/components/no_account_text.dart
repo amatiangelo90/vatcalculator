@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vat_calculator/screens/sign_up/sign_up_screen.dart';
 import '../constants.dart';
 import '../size_config.dart';
 
@@ -16,15 +15,6 @@ class NoAccountText extends StatelessWidget {
         Text(
           "Non hai ancora un account? ",
           style: TextStyle(fontSize: getProportionateScreenWidth(16)),
-        ),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, SignUpScreen.routeName),
-          child: Text(
-            "Registrati",
-            style: TextStyle(
-                fontSize: getProportionateScreenWidth(16),
-                color: kPrimaryColor),
-          ),
         ),
       ],
     );

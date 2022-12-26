@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,21 +7,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/src/overlay_controller_widget_extension.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/product_order_amount_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
-import 'package:vat_calculator/screens/event/component/event_card.dart';
-import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
-import 'package:vat_calculator/screens/marketing/marketing_screen.dart';
-import 'package:vat_calculator/screens/orders/components/order_card.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
-import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.enums.swagger.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 import '../../branch_registration/branch_update.dart';
 import '../../event/event_home.dart';
+import '../../orders/components/screens/order_creation/order_create_screen.dart';
+import '../../storage/storage_screen.dart';
+import '../../suppliers/suppliers_screen.dart';
 
 class HomePageBody extends StatefulWidget {
   const HomePageBody({Key? key}) : super(key: key);
@@ -31,15 +30,16 @@ class HomePageBody extends StatefulWidget {
 
 class _HomePageBodyState extends State<HomePageBody> {
 
-  int currentOrderIndex = 0;
-  int currentEventIndex = 0;
+
 
   @override
   Widget build(BuildContext context) {
+
+    double width = MediaQuery.of(context).size.width;
+
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
-        if (dataBundleNotifier.userDetailsList.isEmpty ||
-            dataBundleNotifier.userDetailsList[0].companyList.isEmpty) {
+        if (dataBundleNotifier.getUserEntity().branchList!.isEmpty) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -51,7 +51,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(13),
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(
@@ -66,432 +66,34 @@ class _HomePageBodyState extends State<HomePageBody> {
           );
         } else {
           return RefreshIndicator(
-            color: kPrimaryColor,
+            color: kCustomWhite,
             onRefresh: () {
-              dataBundleNotifier
-                  .setCurrentBranch(dataBundleNotifier.currentBranch);
               setState(() {});
               return Future.delayed(const Duration(milliseconds: 500));
             },
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
+            child: Container(
+              color: kCustomBlack,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    height: getProportionateScreenHeight(56),
-                    child: buildGestureDetectorBranchSelector(
-                        context, dataBundleNotifier),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: getProportionateScreenWidth(10),
-                            ),
-                            Text(
-                              'Ordini in arrivo oggi: ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: getProportionateScreenWidth(12)),
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(28),
-                              width: dataBundleNotifier
-                                          .currentListSuppliers.length >
-                                      90
-                                  ? getProportionateScreenWidth(35)
-                                  : getProportionateScreenWidth(28),
-                              child: Card(
-                                color: kPrimaryColor,
-                                child: Center(
-                                  child: Text(
-                                    retrieveTodayOrdersList(dataBundleNotifier
-                                            .currentUnderWorkingOrdersList)
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        CupertinoButton(
-                          onPressed: () {
-                            dataBundleNotifier.onItemTapped(2);
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                'Dettaglio Ordini',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: getProportionateScreenWidth(12),
-                                    color: Colors.grey),
-                              ),
-                              Icon(Icons.arrow_forward_ios,
-                                  size: getProportionateScreenWidth(15),
-                                  color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  FutureBuilder(
-                      initialData: <Widget>[
-                        const Center(
-                            child: CircularProgressIndicator(
-                          color: kPinaColor,
-                        )),
-                        const SizedBox(),
-                        Column(
-                          children: const [
-                            Center(
-                              child: Text(
-                                'Caricamento Ordini..',
-                                style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: kPrimaryColor,
-                                    fontFamily: 'LoraFont'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                      future: populateProductsListForTodayOrders(
-                          dataBundleNotifier),
-                      builder: (context, snapshot) {
-                        return Column(
-                          children: [
-                            retrieveTodayOrderList(dataBundleNotifier.currentUnderWorkingOrdersList).isEmpty
-                                ? Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      width: getProportionateScreenWidth(400),
-                                      child: CupertinoButton(
-                                        color: kPrimaryColor,
-                                        onPressed: () {
-                                          Navigator.pushNamed(context,
-                                              CreateOrderScreen.routeName);
-                                        },
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(''),
-                                            Text(
-                                              'Effettua Ordine',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize:
-                                                      getProportionateScreenWidth(
-                                                          17)),
-                                            ),
-                                            Stack(
-                                              children: [
-                                                IconButton(
-                                                  icon: SvgPicture.asset(
-                                                    'assets/icons/receipt.svg',
-                                                    color: kCustomWhite,
-                                                    width: 25,
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pushNamed(context,
-                                                        CreateOrderScreen.routeName);
-                                                  },
-                                                ),
-                                                Positioned(
-                                                  top: 26.0,
-                                                  right: 9.0,
-                                                  child: Stack(
-                                                    children: const <Widget>[
-                                                      Icon(
-                                                        Icons.brightness_1,
-                                                        size: 18,
-                                                        color: kPrimaryColor,
-                                                      ),
-                                                      Positioned(
-                                                        right: 2.5,
-                                                        top: 2.5,
-                                                        child: Center(
-                                                          child: Icon(
-                                                            Icons
-                                                                .add_circle_outline,
-                                                            size: 13,
-                                                            color:
-                                                                kCustomGreenAccent,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )
-                                : SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Row(
-                                    children: snapshot.data!,
-                                  ),
-                                ),
-                            Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                    retrieveTodayOrdersList(dataBundleNotifier
-                                            .currentUnderWorkingOrdersList)
-                                        .length,
-                                    (index) => buildDot(index: index),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                  Padding(
-                    padding: const EdgeInsets.all(0.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: getProportionateScreenWidth(10),
-                            ),
-                            Text(
-                              'Eventi in programma oggi: ',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: getProportionateScreenWidth(12)),
-                            ),
-                            SizedBox(
-                              height: getProportionateScreenHeight(28),
-                              width: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).length >
-                                  90
-                                  ? getProportionateScreenWidth(35)
-                                  : getProportionateScreenWidth(28),
-                              child: Card(
-                                color: kPrimaryColor,
-                                child: Center(
-                                  child: Text(
-                                    dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())
-                                        .length
-                                        .toString(),
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                        color: Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        CupertinoButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                context, EventHomeScreen.routeName);
-                          },
-                          child: Row(
-                            children: [
-                              Text(
-                                'Gestione Eventi',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: getProportionateScreenWidth(12),
-                                    color: Colors.grey),
-                              ),
-                              Icon(Icons.arrow_forward_ios,
-                                  size: getProportionateScreenWidth(15),
-                                  color: Colors.grey),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).isEmpty ?
-                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? const Padding(
-                    padding: EdgeInsets.all(28.0),
-                    child: Text('Non hai eventi in programma oggi'),
-                  ) : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: getProportionateScreenWidth(400),
-                      child: CupertinoButton(
-                        color: kPrimaryColor,
-                        onPressed: () {
-                          Navigator.pushNamed(context,
-                              EventCreateScreen.routeName);
-                        },
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(''),
-                            Text(
-                              'Crea Evento',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize:
-                                  getProportionateScreenWidth(
-                                      17)),
-                            ),
-                            Stack(
-                              children: [
-                                IconButton(
-                                  icon: SvgPicture.asset(
-                                    'assets/icons/party.svg',
-                                    color: kCustomWhite,
-                                    width: 50,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context,
-                                        EventCreateScreen.routeName);
-                                  },
-                                ),
-                                Positioned(
-                                  top: 26.0,
-                                  right: 9.0,
-                                  child: Stack(
-                                    children: const <Widget>[
-                                      Icon(
-                                        Icons.brightness_1,
-                                        size: 18,
-                                        color: kPrimaryColor,
-                                      ),
-                                      Positioned(
-                                        right: 2.5,
-                                        top: 2.5,
-                                        child: Center(
-                                          child: Icon(
-                                            Icons
-                                                .add_circle_outline,
-                                            size: 13,
-                                            color:
-                                            kCustomGreenAccent,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ) :
-                  SizedBox(
-                    height: getProportionateScreenHeight(240),
-                    child: PageView.builder(
-                      onPageChanged: (value) {
-                        setState(() {
-                          currentEventIndex = value;
-                        });
-                      },
-                      itemCount: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now()).length,
-                      itemBuilder: (context, index) =>
-                          EventCard(
-                            eventModel: dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())[index],
-                            showButton: true,
-                            showArrow: false,
-                          ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          dataBundleNotifier.retrieveEventsForCurrentDate(DateTime.now())
-                              .length,
-                              (index) => buildDotEvent(index: index),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: getProportionateScreenWidth(10),
-                      ),
-                      Text(
-                        'Marketing',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: getProportionateScreenWidth(12)),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 20,),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                      width: getProportionateScreenWidth(400),
-                      child: CupertinoButton(
-                        color: kCustomBordeaux,
-                        onPressed: () {
-                          Navigator.pushNamed(context,
-                              MarketingScreen.routeName);
-                        },
-                        child: Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(''),
-                            Text(
-                              'Area marketing',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize:
-                                  getProportionateScreenWidth(
-                                      17)),
-                            ),
-                            IconButton(
-                              icon: SvgPicture.asset(
-                                'assets/icons/activity.svg',
-                                color: kCustomWhite,
-                                width: 25,
-                              ),
-                              onPressed: () {
-                                Navigator.pushNamed(context,
-                                    MarketingScreen.routeName);
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: getProportionateScreenHeight(dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? 280 : 100),),
+                  buildGestureDetectorBranchSelector(
+                      context, dataBundleNotifier),
+
+                  buildOrderButton('ORDINI', (){
+                    Navigator.pushNamed(context, CreateOrderScreen.routeName);
+                  }, dataBundleNotifier),
+
+                  buildSuppliersStorageButton(width, dataBundleNotifier),
+                  buildCateringButton('CATERING', (){
+                    Navigator.pushNamed(context, EventHomeScreen.routeName);
+
+                  }, dataBundleNotifier,),
+                  const SizedBox(height: 5,),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text('Developed by A.A.', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(9))),
                   ),
-                  SizedBox(height: getProportionateScreenHeight(200),),
+                  SizedBox(height: getProportionateScreenHeight(20),),
                 ],
               ),
             ),
@@ -501,95 +103,102 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  GestureDetector buildGestureDetectorBranchSelector(
+  Widget buildGestureDetectorBranchSelector(
       BuildContext context, DataBundleNotifier dataBundleNotifier) {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(25.0),
-              ),
-            ),
-            context: context,
-            builder: (context) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: SizedBox(
-                  height: getProportionateScreenHeight(550),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: Container(
+          width: getProportionateScreenWidth(500),
+          height:  getProportionateScreenWidth(75),
+          child: OutlinedButton(
+            onPressed: (){
+              showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(25.0),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) {
+                    return SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: SizedBox(
+                        height: getProportionateScreenHeight(550),
+                        child: Column(
                           children: [
-                            Text('        Seleziona attività', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kPrimaryColor, fontWeight: FontWeight.w900)),
-                            IconButton(icon: Icon(Icons.clear, size: getProportionateScreenHeight(30)), color: kPrimaryColor, onPressed: (){
-                              Navigator.of(context).pop();
-                            },)
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text('        Seleziona attività', style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kPrimaryColor, fontWeight: FontWeight.w900)),
+                                  IconButton(icon: Icon(Icons.clear, size: getProportionateScreenHeight(30)), color: kPrimaryColor, onPressed: (){
+                                    Navigator.of(context).pop();
+                                  },)
+                                ],
+                              ),
+                            ),
+                            Column(
+                              children: buildListBranches(dataBundleNotifier),
+                            ),
+
+                            SizedBox(height: 10),
                           ],
                         ),
                       ),
-                      Column(
-                        children: buildListBranches(dataBundleNotifier),
-                      ),
-
-                      SizedBox(height: 10),
-                    ],
-                  ),
-                ),
-              );
-            });
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        color: kPrimaryColor,
-        elevation: 7,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(13, 0, 13, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 6),
-                child: Text(
-                  '' + dataBundleNotifier.currentBranch.companyName,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: getProportionateScreenWidth(15),
-                      fontWeight: FontWeight.bold),
-                ),
-              ),
-              Row(
+                    );
+                  });
+            },
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.resolveWith((states) => 5),
+              backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+              side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(0.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) :
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                    child: IconButton(
+                  branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? SizedBox(height: 0,) : Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                      child: IconButton(
                         icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                         onPressed: (){
                           Navigator.pushNamed(context, UpdateBranchScreen.routeName);
                         },
-                    )
+                      )
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(dataBundleNotifier.getCurrentBranch()!.name!, style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          getProportionateScreenWidth(
+                              17)),),
+                      Text(dataBundleNotifier.getCurrentBranch()!.address! + ', ' + dataBundleNotifier.getCurrentBranch()!.city!, style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          getProportionateScreenWidth(
+                              11)),),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 4, 0, 0),
                     child: Icon(
                       Icons.keyboard_arrow_down_rounded,
-                      color: Colors.white,
+                      color: kCustomWhite,
                       size: getProportionateScreenWidth(30),
                     ),
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          )
       ),
     );
   }
@@ -599,107 +208,41 @@ class _HomePageBodyState extends State<HomePageBody> {
     branchWidgetList.add(
         Divider(color: Colors.grey, height: 10,)
     );
-    dataBundleNotifier.userDetailsList[0].companyList.forEach((currentBranch) {
+    for (var currentBranch in dataBundleNotifier.getUserEntity().branchList!) {
       branchWidgetList.add(
         ListTile(
-          title: Text(currentBranch.companyName, style: TextStyle(color: dataBundleNotifier.currentBranch.pkBranchId ==
-              currentBranch.pkBranchId ? LightColors.kPalePink : Colors.grey, fontSize: getProportionateScreenHeight(18), fontWeight: FontWeight.w800)),
-          leading: dataBundleNotifier.currentBranch.pkBranchId ==
-              currentBranch.pkBranchId ? Icon(FontAwesomeIcons.checkCircle, color: LightColors.kPalePink,) : SizedBox(height: 0),
-          onTap: () async {
-            if(dataBundleNotifier.currentBranch.pkBranchId ==
-                currentBranch.pkBranchId){
+          title: Text(currentBranch.name!, style: TextStyle(color: dataBundleNotifier.getCurrentBranch().branchId ==
+              currentBranch.branchId ? kCustomGreen : Colors.grey, fontSize: getProportionateScreenHeight(18), fontWeight: FontWeight.w800)),
+          leading: dataBundleNotifier.getCurrentBranch().branchId ==
+              currentBranch.branchId ? const Icon(FontAwesomeIcons.checkCircle, color: kCustomGreen,) : const SizedBox(height: 0),
+          onTap: () {
+            if(dataBundleNotifier.getCurrentBranch().branchId ==
+                currentBranch.branchId){
               Navigator.pop(context);
             }else{
               context.loaderOverlay.show();
               Navigator.pop(context);
-              await dataBundleNotifier.setCurrentBranch(currentBranch);
+              dataBundleNotifier.setBranch(currentBranch);
               context.loaderOverlay.hide();
             }
           },
         ),
       );
-    });
+    }
     branchWidgetList.add(
-      Divider(color: Colors.grey, height: 10,)
+        Divider(color: Colors.grey, height: 10,)
     );
     branchWidgetList.add(
-      ListTile(
-        leading: Icon(FontAwesomeIcons.plus, color: kPrimaryColor,),
-        title: Text('Crea Nuova Attività', style: TextStyle(fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.w900)),
-        onTap: (){
-          Navigator.of(context).pop();
-          Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-        },
-      )
+        ListTile(
+          leading: Icon(FontAwesomeIcons.plus, color: kPrimaryColor,),
+          title: Text('Crea Nuova Attività', style: TextStyle(fontSize: getProportionateScreenHeight(20), fontWeight: FontWeight.w900)),
+          onTap: (){
+            Navigator.of(context).pop();
+            Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
+          },
+        )
     );
     return branchWidgetList;
-  }
-
-  AnimatedContainer buildDot({int? index}) {
-    return AnimatedContainer(
-      duration: kAnimationDuration,
-      margin: const EdgeInsets.only(right: 5),
-      height: 8,
-      width: currentOrderIndex == index ? 20 : 6,
-      decoration: BoxDecoration(
-        color: currentOrderIndex == index
-            ? kPrimaryColor
-            : const Color(0xFFD8D8D8),
-        borderRadius: BorderRadius.circular(3),
-      ),
-    );
-  }
-
-  AnimatedContainer buildDotEvent({int? index}) {
-    return AnimatedContainer(
-      duration: kAnimationDuration,
-      margin: const EdgeInsets.only(right: 5),
-      height: 8,
-      width: currentEventIndex == index ? 20 : 6,
-      decoration: BoxDecoration(
-        color: currentEventIndex == index
-            ? kPrimaryColor
-            : const Color(0xFFD8D8D8),
-        borderRadius: BorderRadius.circular(3),
-      ),
-    );
-  }
-
-  Future<List<Widget>> populateProductsListForTodayOrders(
-      DataBundleNotifier dataBundleNotifier) async {
-
-    List<OrderCard> orderCardList = [];
-
-    await Future.forEach(dataBundleNotifier.currentUnderWorkingOrdersList, (OrderModel orderModel) async {
-      if (isToday(dateFormat.parse(orderModel.delivery_date))) {
-        List<ProductOrderAmountModel> list = await dataBundleNotifier
-            .getclientServiceInstance()
-            .retrieveProductByOrderId(
-          OrderModel(
-            pk_order_id: orderModel.pk_order_id,
-              code: '',
-              closedby: '',
-              creation_date: '',
-              delivery_date: '',
-              details: '',
-              fk_branch_id: 0,
-              fk_storage_id: 0,
-              fk_supplier_id: 0,
-              fk_user_id: 0,
-              paid: '',
-              status: '',
-              total: 0),
-        );
-        orderCardList.add(OrderCard(
-          order: orderModel,
-          showExpandedTile: false,
-          orderIdProductList: list,
-        ));
-      }
-    });
-
-    return orderCardList;
   }
 
   String normalizeCalendarValue(int day) {
@@ -736,6 +279,340 @@ class _HomePageBodyState extends State<HomePageBody> {
       }
     });
     return list;
+  }
+
+
+  buildOrderButton(String name, Null Function() param1, DataBundleNotifier dataBundleNotifier) {
+    return Expanded(
+      flex: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            image: DecorationImage(
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+              image: AssetImage("assets/images/orders.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: OutlinedButton(
+            onPressed: param1,
+            style: ButtonStyle(
+              elevation: MaterialStateProperty.resolveWith((states) => 5),
+              backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+              side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset('assets/icons/receipt.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(name,style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          getProportionateScreenWidth(
+                              17)),),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          'Ordini in arrivo oggi: ',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: getProportionateScreenWidth(12)),
+                        ),
+                        SizedBox(
+                          height: getProportionateScreenHeight(35),
+                          width: getProportionateScreenHeight(35),
+                          child: Card(
+                            color: kCustomGreen,
+                            child: Center(
+                              child: Text(dataBundleNotifier.getCurrentBranch().orders!.length.toString(),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    CupertinoButton(
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, EventHomeScreen.routeName);
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            'Ordini',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: getProportionateScreenWidth(12),
+                                color: Colors.grey),
+                          ),
+                          Icon(Icons.arrow_forward_ios,
+                              size: getProportionateScreenWidth(15),
+                              color: Colors.grey),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  buildCateringButton(String name, Null Function() param1, DataBundleNotifier dataBundleNotifier) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.only(top: 15, bottom: 4, right: 8, left: 8),
+        child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: DecorationImage(
+                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                image: const AssetImage("assets/images/party.jpg"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            height:  getProportionateScreenWidth(150),
+            child: OutlinedButton(
+              onPressed: param1,
+              style: ButtonStyle(
+                elevation: MaterialStateProperty.resolveWith((states) => 5),
+                backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+                side: MaterialStateProperty.resolveWith((states) => const BorderSide(width: 0.5, color: Colors.grey),),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/icons/party.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(name,style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            getProportionateScreenWidth(
+                                17)),),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'Eventi in programma oggi: ',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: getProportionateScreenWidth(12)),
+                          ),
+                          SizedBox(
+                            height: getProportionateScreenHeight(35),
+                            width: getProportionateScreenHeight(35),
+                            child: Card(
+                              color: kCustomGreen,
+                              child: Center(
+                                child: Text(dataBundleNotifier.getCurrentBranch().events!.length.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      CupertinoButton(
+                        onPressed: () {
+                          Navigator.pushNamed(
+                              context, EventHomeScreen.routeName);
+                        },
+                        child: Row(
+                          children: [
+                            Text(
+                              '',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: getProportionateScreenWidth(12),
+                                  color: Colors.grey),
+                            ),
+
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )
+        ),
+      ),
+    );
+  }
+
+  buildSuppliersStorageButton(double width, DataBundleNotifier dataBundleNotifier) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                    image: AssetImage("assets/images/supplier.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height:  width * 3/7,
+                child: OutlinedButton(
+                  onPressed: (){
+                    Navigator.pushNamed(context, SuppliersScreen.routeName);
+                  },
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.resolveWith((states) => 5),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: SvgPicture.asset('assets/icons/supplier.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
+                            ),
+                            Text('FORNITORI',style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                getProportionateScreenWidth(
+                                    17)),),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8, top: 8),
+                              child: const Icon(Icons.circle, color: kCustomGreen, size: 5,),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(dataBundleNotifier.getCurrentBranch().suppliers!.length.toString(), style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: getProportionateScreenWidth(50),
+                            color: Colors.white),),
+                      ),
+                      Text('')
+                    ],
+                  ),
+                )
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 2,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8, left: 4, top: 5),
+            child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  image: DecorationImage(
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                    image: AssetImage("assets/images/magazzino.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                height:  width * 3/7,
+                child: OutlinedButton(
+                  onPressed: (){
+                    Navigator.pushNamed(context, StorageScreen.routeName);
+                  },
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.resolveWith((states) => 5),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
+                            ),
+                            Text('MAGAZZINI',style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                getProportionateScreenWidth(
+                                    17)),),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8, top: 8),
+                              child: const Icon(Icons.circle, color: kCustomGreen, size: 5,),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(dataBundleNotifier.getCurrentBranch().storages!.length.toString(), style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: getProportionateScreenWidth(50),
+                            color: Colors.white),),
+                      ),
+                      Text(''),
+                    ],
+                  ),
+                )
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
 }

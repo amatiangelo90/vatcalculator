@@ -41,7 +41,7 @@ class ArchiviedEventPage extends StatelessWidget {
                       dataBundleNotifier.currentBranch.companyName,
                       style: TextStyle(
                         fontSize: getProportionateScreenWidth(11),
-                        color: kCustomGreenAccent,
+                        color: kCustomGreen,
                       ),
                     ),
                   ],

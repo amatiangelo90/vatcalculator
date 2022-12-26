@@ -4,6 +4,9 @@ import 'package:vat_calculator/size_config.dart';
 
 const String kVersionApp = '1.0.82';
 const Color kPrimaryColor = Color(0XFF0A2227);
+const Color kCustomBlack = Color(0xff121212);
+const Color kCustomGreen =  Color(0xff398564);
+const Color kCustomGrey = Color(0xff1C1C1E);
 
 const Color kCustomGreyBlue = Color(0XFF41414A);
 const Color kPrimaryColorLight = Color(0XFF1c7701);
@@ -12,7 +15,6 @@ const Color kCustomBordeaux = Color(0xFF7c1228);
 const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF235789);
-const Color kCustomGreenAccent = Color(0xFF187436);
 const Color kCustomPinkAccent = Color(0xFFe8175d);
 Color kCustomOrange = Colors.yellow.shade700.withOpacity(0.8);
 const Color kCustomPurple = Color(0xFF9924ff);
@@ -23,7 +25,7 @@ const kTextColor = Color(0xFF757575);
 
 const kAnimationDuration = Duration(milliseconds: 200);
 
-DateFormat dateFormat = DateFormat("dd-MM-yyyy");
+DateFormat dateFormat = DateFormat("yyyy-MM-dd");
 
 
 final headingStyle = TextStyle(

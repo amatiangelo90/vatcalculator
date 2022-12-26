@@ -1,22 +1,20 @@
 import 'dart:io';
+
+import 'package:chopper/chopper.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
 import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/order_state.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/orders/components/screens/orders_utils.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
-import '../../../../main_page.dart';
-import 'order_error_details_screen.dart';
+import '../../../../../swagger/swagger.enums.swagger.dart';
+import '../../../../../swagger/swagger.models.swagger.dart';
+import '../orders_utils.dart';
 import 'order_sent_details_screen.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
@@ -24,7 +22,7 @@ class OrderConfirmationScreen extends StatefulWidget {
 
   static String routeName = 'orderconfirmationscreen';
 
-  final SupplierModel currentSupplier;
+  final Supplier currentSupplier;
 
   @override
   State<OrderConfirmationScreen> createState() => _OrderConfirmationScreenState();
@@ -32,9 +30,8 @@ class OrderConfirmationScreen extends StatefulWidget {
 
 class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
-  String code = DateTime.now().microsecondsSinceEpoch.toString().substring(3,16);
   String _selectedStorage = 'Seleziona Magazzino';
-  StorageModel currentStorageModel = StorageModel(pkStorageId: 0, name: '', code: '', creationDate: DateTime.now(), address: '', city: '', cap: '0', fkBranchId: 0);
+  Storage currentStorageModel = Storage(storageId: 0, name: '', creationDate: '', address: '', city: '', cap: '0');
 
   DateTime currentDate = DateTime.now();
 
@@ -54,146 +51,104 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 text: ''
                     'Conferma ed Invia',
                 press: () async {
-                  context.loaderOverlay.show();
+
                   print('Performing send order ...');
                   if(_selectedStorage == 'Seleziona Magazzino'){
                     context.loaderOverlay.hide();
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.redAccent.withOpacity(0.8),
-                        duration: Duration(milliseconds: 800),
-                        content: Text('Selezionare il magazzino')));
-                  }else if(currentStorageModel == null){
+                        duration: const Duration(milliseconds: 800),
+                        content: const Text('Selezionare il magazzino')));
+                  }else if(currentStorageModel.storageId == 0){
                     context.loaderOverlay.hide();
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.redAccent.withOpacity(0.8),
-                        duration: Duration(milliseconds: 800),
-                        content: Text('Selezionare il magazzino')));
-                  }else if(currentDate == null) {
-                    context.loaderOverlay.hide();
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(
-                        backgroundColor: Colors.redAccent.withOpacity(0.8),
-                        duration: Duration(milliseconds: 800),
-                        content: Text('Selezionare la data di consegna')));
-                  }else{
+                        duration: const Duration(milliseconds: 800),
+                        content: const Text('Selezionare il magazzino')));
+                  } else{
 
-                      Response sendEmailResponse = await dataBundleNotifier.getEmailServiceInstance().sendEmailServiceApi(
-                          supplierName: widget.currentSupplier.nome,
-                          branchName: dataBundleNotifier.currentBranch.companyName,
-                          message: OrderUtils.buildMessageFromCurrentOrderList(
-                            branchName: dataBundleNotifier.currentBranch.companyName,
-                              orderId: code,
-                              productList: dataBundleNotifier.currentProductModelListForSupplierDuplicated,
-                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                              supplierName: widget.currentSupplier.nome,
-                              currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                              storageAddress: currentStorageModel.address,
-                              storageCap: currentStorageModel.cap,
-                              storageCity: currentStorageModel.city,
-                          ),
-                          orderCode: code,
-                          supplierEmail: widget.currentSupplier.mail,
-                          userEmail: dataBundleNotifier.userDetailsList[0].email,
-                          userName: dataBundleNotifier.userDetailsList[0].firstName,
-                          addressBranch: currentStorageModel.address,
-                          addressBranchCap: currentStorageModel.cap,
-                          addressBranchCity: currentStorageModel.city,
-                          branchNumber: dataBundleNotifier.userDetailsList[0].phone,
-                          deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString());
+                    context.loaderOverlay.show();
+                    try{
+                      Response sendOrderReponse = await dataBundleNotifier.getSwaggerClient().apiV1AppOrderSendPost(
+                          orderEntity: OrderEntity(
+                            branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt(),
+                            supplierId: widget.currentSupplier.supplierId!.toInt(),
+                            creationDate: dateFormat.format(DateTime.now()),
+                            deliveryDate: dateFormat.format(currentDate),
+                            details: '',
+                            closedBy: '',
+                            products: dataBundleNotifier.basket,
+                            code: '',
+                            total: dataBundleNotifier.calculateTotalFromBasket()!,
+                            senderUser: dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!,
+                            storageId: currentStorageModel.storageId!.toInt(),
+                          )
+                      );
 
-                      print('Response from email service ' + sendEmailResponse.data.toString());
-
-                      if (sendEmailResponse.statusCode == 200) {
-                        Response performSaveOrderId = await dataBundleNotifier.getclientServiceInstance().performSaveOrder(
-                            orderModel: OrderModel(
-                                code: code,
-                                details: 'Ordine eseguito da ' + dataBundleNotifier.userDetailsList[0].firstName + ' ' +
-                                    dataBundleNotifier.userDetailsList[0].lastName + ' per ' +
-                                    dataBundleNotifier.currentBranch.companyName + '. Da consegnare in ${dataBundleNotifier.currentStorage.address} a ${dataBundleNotifier.currentStorage.city} CAP: ${dataBundleNotifier.currentStorage.cap.toString()}.',
-                                total: 0.0,
-                                status: OrderState.SENT,
-                                creation_date: dateFormat.format(DateTime.now()),
-                                delivery_date: dateFormat.format(currentDate),
-                                fk_branch_id: dataBundleNotifier.currentBranch.pkBranchId,
-                                fk_storage_id: dataBundleNotifier.currentStorage.pkStorageId,
-                                fk_user_id: dataBundleNotifier.userDetailsList[0].id,
-                                pk_order_id: 0,
-                                fk_supplier_id: widget.currentSupplier.pkSupplierId,
-                                paid: 'false', closedby: ''
-                            ),
-                        );
-
-                        print('Save product for order with id: ' + performSaveOrderId.toString());
-
-                        if(performSaveOrderId != null){
-                          dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((element) async {
-                            await dataBundleNotifier.getclientServiceInstance().performSaveProductIntoOrder(
-                                element.orderItems,
-                                element.pkProductId,
-                                performSaveOrderId.data
-                            );
-                          });
-                        }
-                        if(performSaveOrderId != null){
-
-                          context.loaderOverlay.hide();
-                          dataBundleNotifier.onItemTapped(0);
-                          Navigator.pushNamed(context, HomeScreenMain.routeName);
-
-                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.currentBranch);
-                          String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
-
-                          dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
-                              'Ordine per fornitore ${widget.currentSupplier.nome} da ricevere $eventDatePretty in via ${currentStorageModel.address} (${currentStorageModel.city})', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo ordine', '');
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderSentDetailsScreen(
-                              mail: widget.currentSupplier.mail,
-                              supplierName: widget.currentSupplier.nome,
-                              number: widget.currentSupplier.tel,
-                              message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
-                                branchName: dataBundleNotifier.currentBranch.companyName,
-                                orderId: code,
-                                productList: dataBundleNotifier.currentProductModelListForSupplier,
-                                deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                                supplierName: widget.currentSupplier.nome,
-                                currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                                storageAddress: currentStorageModel.address,
-                                storageCap: currentStorageModel.cap,
-                                storageCity: currentStorageModel.city,
-                              )),
-                          ),
-                          );
+                      if(sendOrderReponse.isSuccessful){
+                        OrderEntity orderSaved = sendOrderReponse.body;
+                        if(orderSaved.orderStatus == OrderEntityOrderStatus.inviato){
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderSentDetailsScreen(
+                                  mail: widget.currentSupplier.email!,
+                                  message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                                    branchName: dataBundleNotifier.getCurrentBranch().name!,
+                                    orderId: orderSaved.orderId.toString(),
+                                    productList: dataBundleNotifier.basket,
+                                    deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                                    supplierName: widget.currentSupplier.name!,
+                                    storageAddress: currentStorageModel.address!,
+                                    storageCity: currentStorageModel.city!,
+                                    storageCap: currentStorageModel.cap!,
+                                    currentUserName: dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!,
+                                  ),
+                                  number: widget.currentSupplier.phoneNumber!,
+                                  supplierName: widget.currentSupplier.name!,
+                                ),
+                              ));
                         }else{
-                          context.loaderOverlay.hide();
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => OrderErrorDetailsScreen(
-                            mail: widget.currentSupplier.mail,
-                            supplier: widget.currentSupplier,
-                            number: widget.currentSupplier.tel,
-                            performSaveOrderId : performSaveOrderId.data,
-                            code: code,
-                            deliveryDate: currentDate,
-                            storageModel: currentStorageModel,
-                            message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
-                              branchName: dataBundleNotifier.currentBranch.companyName,
-                              orderId: code,
-                              productList: dataBundleNotifier.currentProductModelListForSupplier,
-                              deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
-                              supplierName: widget.currentSupplier.nome,
-                              currentUserName: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                              storageAddress: currentStorageModel.address,
-                              storageCap: currentStorageModel.cap,
-                              storageCity: currentStorageModel.city,
-                            ),
-
-                          ),
-                          ),
-                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => OrderSentDetailsScreen(
+                                  mail: widget.currentSupplier.email!,
+                                  message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
+                                    branchName: dataBundleNotifier.getCurrentBranch().name!,
+                                    orderId: '',
+                                    productList: dataBundleNotifier.basket,
+                                    deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
+                                    supplierName: widget.currentSupplier.name!,
+                                    storageAddress: currentStorageModel.address!,
+                                    storageCity: currentStorageModel.city!,
+                                    storageCap: currentStorageModel.cap!,
+                                    currentUserName: dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!,
+                                  ),
+                                  number: widget.currentSupplier.phoneNumber!,
+                                  supplierName: widget.currentSupplier.name!,
+                                ),
+                              ));
                         }
-                      }
+                      }else{
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                            backgroundColor: Colors.redAccent.withOpacity(0.8),
+                            duration: const Duration(milliseconds: 2800),
+                            content: Text('Impossibile inviare ordine. Errore : ' + sendOrderReponse.error!.toString())));
+                            print(sendOrderReponse.error.toString());
                   }
+                  }catch(e){
+                  print(e.toString());
+                  }finally{
+                  context.loaderOverlay.hide();
+                  }
+
+                }
                 },
-                color: kCustomGreenAccent, textColor: Color(0xff121212),
+                color: kCustomGreen, textColor: Colors.white,
               ),
             ),
             appBar: AppBar(
@@ -202,54 +157,20 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   onPressed: () => {
                     Navigator.of(context).pop(),
                   }),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              iconTheme: const IconThemeData(color: kPrimaryColor),
+              backgroundColor: Colors.white,
               centerTitle: true,
               title: Text(
                 'Conferma Ordine',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(19),
-                  color: Colors.white,
+                  color: kPrimaryColor,
                 ),
               ),
-              elevation: 2,
+              elevation: 0,
             ),
-            body: FutureBuilder(
-              initialData: <Widget>[
-                const Center(
-                    child: CircularProgressIndicator(
-                      color: kPinaColor,
-                    )),
-                const SizedBox(),
-                Column(
-                  children: const [
-                    Center(
-                      child: Text(
-                        'Caricamento prodotti..',
-                        style: TextStyle(
-                            fontSize: 16.0,
-                            color: kPrimaryColor,
-                            fontFamily: 'LoraFont'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-              future: buildProductPage(dataBundleNotifier, widget.currentSupplier),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: ListView(
-                      primary: false,
-                      shrinkWrap: true,
-                      children: snapshot.data,
-                    ),
-                  );
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              },
+            body: Column(
+              children: buildProductPage(dataBundleNotifier, widget.currentSupplier),
             ),
           ),
         );
@@ -257,230 +178,206 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
     );
   }
 
-  Future buildProductPage(DataBundleNotifier dataBundleNotifier, SupplierModel supplier) async {
+  buildProductPage(DataBundleNotifier dataBundleNotifier, Supplier supplier) {
     List<Widget> list = [];
-    try{
-      list.add( Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.95,
-            child: Card(
-              child: Column(
-                children: [
-                  Text(widget.currentSupplier.nome, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25),
-                      color: kPrimaryColor),),
-                  Text('#' + code!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
-                  const Divider(endIndent: 40, indent: 40,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('  Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(dataBundleNotifier.userDetailsList[0]!.firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('  In data: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                      Text(buildDateFromMilliseconds(DateTime.now().millisecondsSinceEpoch)
-                          + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                    ],
-                  ),
-                  SizedBox(height: 20,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Selezionare il magazzino a cui consegnare l\'ordine: ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900.withOpacity(0.6), fontSize: 7),),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Center(
-                      child: DropdownWithSearch(
-                        title: 'Seleziona Magazzino',
-                        placeHolder: 'Ricerca Magazzino',
-                        disabled: false,
-                        items: dataBundleNotifier.currentStorageList.map((StorageModel storageModel) {
-                          return storageModel.pkStorageId.toString() + ' - ' + storageModel.name;
-                        }).toList(),
-                        selected: _selectedStorage,
-                        onChanged: (storage) {
-                          setCurrentStorage(storage, dataBundleNotifier);
-                        }, label: '',
-                      ),
-                    ),
-                  ),
-                  Divider(endIndent: 40, indent: 40, height: getProportionateScreenHeight(30),),
-                  _selectedStorage == 'Seleziona Magazzino' ? SizedBox(height: 0,) : Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('  Da consegnare a: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          dataBundleNotifier.currentBranch == null ? Text('') : Text(dataBundleNotifier.currentBranch.companyName + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('  In via: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          currentStorageModel == null ? Text('') : Text(currentStorageModel.address + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('  Città: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          currentStorageModel == null ? Text('') : Text(currentStorageModel.city + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text('  CAP : ', style: TextStyle(fontWeight: FontWeight.bold),),
-                          currentStorageModel == null ? Text('') : Text(currentStorageModel.cap.toString() + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
-                        ],
-                      ),
-                      Divider(endIndent: 40, indent: 40, height: getProportionateScreenHeight(30),),
-                    ],
-                  ),
-                  Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        currentDate == null ? SizedBox(
-                          width: getProportionateScreenHeight(350),
-                          child: CupertinoButton(
-                            child:
-                            const Text('Seleziona data consegna'),
-                            color: kPrimaryColor,
-                            onPressed: () => _selectDate(context),
-                          ),
-                        ) : SizedBox(height: 0,),
-                        currentDate == null
-                            ? const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Text(''),
-                        )
-                            : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            CupertinoButton(
-                              child:
-                              Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                              color: kPrimaryColor,
-                              onPressed: () => _selectDate(context),
-                            )
-                          ],
-                        ),
-                        currentDate != null && currentStorageModel != null ?
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Una volta confermato l\'ordine verrà inviata una mail a ${widget.currentSupplier.mail}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, ),),
-                        ) : const Text('  '),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 10,),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),);
-      if(dataBundleNotifier.currentProductModelListForSupplier.isEmpty){
-        list.add(Column(
-          children: [
-            SizedBox(height: MediaQuery.of(context).size.height*0.3,),
-            const Center(child: Text('Nessun prodotto registrato')),
-          ],
-        ),);
-        return list;
-      }
-      list.add(Card(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
-            ),
-            CupertinoButton(
-              child: const Text('Modifica', style: TextStyle(color: Colors.black54),),
-              onPressed: (){
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        ),
-      ));
-      dataBundleNotifier.currentProductModelListForSupplierDuplicated.forEach((currentProduct) {
-        TextEditingController controller = TextEditingController(text: currentProduct.orderItems.toString());
 
-        if(currentProduct.orderItems != 0){
-          list.add(
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
-                child: Row(
+    list.add( Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.95,
+          child: Card(
+            child: Column(
+              children: [
+                Text(widget.currentSupplier.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25),
+                    color: kPrimaryColor),),
+                const Divider(endIndent: 40, indent: 40,),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    const Text('  Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text(dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('  In data: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                    Text(buildDateFromMilliseconds(DateTime.now().millisecondsSinceEpoch)
+                        + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                  ],
+                ),
+                SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Selezionare il magazzino a cui consegnare l\'ordine: ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900.withOpacity(0.6), fontSize: 7),),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: DropdownWithSearch(
+                      title: 'Seleziona Magazzino',
+                      placeHolder: 'Ricerca Magazzino',
+                      disabled: false,
+                      items: dataBundleNotifier.getCurrentBranch().storages!.map((Storage storageModel) {
+                        return storageModel!.name!;
+                      }).toList(),
+                      selected: _selectedStorage,
+                      onChanged: (storage) {
+                        setCurrentStorage(dataBundleNotifier.getCurrentBranch().storages!.where((element) => element.name == storage).first);
+                      }, label: '',
+                    ),
+                  ),
+                ),
+                Divider(endIndent: 40, indent: 40, height: getProportionateScreenHeight(30),),
+                _selectedStorage == 'Seleziona Magazzino' ? const SizedBox(height: 0,) : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(currentProduct.nome, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
-                        Text(currentProduct.unita_misura, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                        const Text('  Da consegnare a: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(dataBundleNotifier.getCurrentBranch().name!, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                       ],
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        ConstrainedBox(
-                          constraints: BoxConstraints.loose(Size(
-                              getProportionateScreenWidth(70),
-                              getProportionateScreenWidth(60))),
-                          child: CupertinoTextField(
-                            controller: controller,
-                            enabled: false,
-                            textInputAction: TextInputAction.next,
-                            keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true, signed: true),
-                            clearButtonMode: OverlayVisibilityMode.never,
-                            textAlign: TextAlign.center,
-                            autocorrect: false,
-                          ),
-                        ),
-
+                        const Text('  In via: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(dataBundleNotifier.getCurrentBranch()!.address!, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('  Città: ', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(dataBundleNotifier.getCurrentBranch().city! + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('  CAP : ', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(dataBundleNotifier.getCurrentBranch().cap! + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                      ],
+                    ),
+                    Divider(endIndent: 40, indent: 40, height: getProportionateScreenHeight(30),),
                   ],
                 ),
-              )
-          );
-        }
-      });
-
-      list.add(Column(
-        children: const [
-          SizedBox(height: 80,),
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      currentDate == null ? SizedBox(
+                        width: getProportionateScreenHeight(350),
+                        child: CupertinoButton(
+                          child:
+                          const Text('Seleziona data consegna'),
+                          color: kPrimaryColor,
+                          onPressed: () => _selectDate(context),
+                        ),
+                      ) : SizedBox(height: 0,),
+                      currentDate == null
+                          ? const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(''),
+                      )
+                          : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          CupertinoButton(
+                            child:
+                            Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                            color: kPrimaryColor,
+                            onPressed: () => _selectDate(context),
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text('Una volta confermato l\'ordine verrà inviata una mail a ${widget.currentSupplier.email}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, ),),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10,),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),);
+    list.add(Card(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
+          ),
+          CupertinoButton(
+            child: const Text('Modifica', style: TextStyle(color: Colors.black54),),
+            onPressed: (){
+              Navigator.of(context).pop();
+            },
+          ),
         ],
-      ));
-    }catch(e){
-      print(e);
+      ),
+    ));
+    for (var currentProduct in dataBundleNotifier.basket) {
+      TextEditingController controller = TextEditingController(text: currentProduct.amount.toString());
+
+      if(currentProduct.amount != 0){
+        list.add(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(currentProduct.productName!, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
+                      Text(currentProduct.unitMeasure!, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      ConstrainedBox(
+                        constraints: BoxConstraints.loose(Size(
+                            getProportionateScreenWidth(70),
+                            getProportionateScreenWidth(60))),
+                        child: CupertinoTextField(
+                          controller: controller,
+                          enabled: false,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true, signed: true),
+                          clearButtonMode: OverlayVisibilityMode.never,
+                          textAlign: TextAlign.center,
+                          autocorrect: false,
+                        ),
+                      ),
+//
+                    ],
+                  ),
+                ],
+              ),
+            )
+        );
+      }
     }
-
-
 
     return list;
   }
 
-  void setCurrentStorage(String storage, DataBundleNotifier dataBundleNotifier) {
+  void setCurrentStorage(Storage storage) {
     setState(() {
-      _selectedStorage = storage;
+      _selectedStorage = storage.name!;
+      currentStorageModel = storage;
     });
-
-    currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage)!;
-
   }
 
   Future<void> _selectDate(BuildContext context) async {

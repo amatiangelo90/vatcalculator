@@ -11,7 +11,9 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../components/light_colors.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
-import '../main_page.dart';
+import '../../swagger/swagger.enums.swagger.dart';
+import '../../swagger/swagger.models.swagger.dart';
+import '../home/main_page.dart';
 import 'component/archivied_events_screen.dart';
 import 'component/event_body.dart';
 import 'component/event_create_screen.dart';
@@ -42,7 +44,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                 child: SizedBox(
                   width: getProportionateScreenWidth(400),
                   child: CupertinoButton(
-                    color: kCustomGreenAccent,
+                    color: kCustomGreen,
                     child: Text('CREA EVENTO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15))),
                     onPressed: (){
                       Navigator.pushNamed(context,
@@ -55,7 +57,6 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
-                      dataBundleNotifier.onItemTapped(0);
                       Navigator.pushNamed(context, HomeScreenMain.routeName);
                     }),
                 iconTheme: const IconThemeData(color: Colors.white),
@@ -73,10 +74,10 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           ),
                         ),
                         Text(
-                          dataBundleNotifier.currentBranch.companyName,
+                          dataBundleNotifier.getCurrentBranch().name!,
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(13),
-                            color: LightColors.kPalePink,
+                            color: kCustomGreen,
                           ),
                         ),
                       ],
@@ -84,7 +85,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                   ],
                 ),
                 actions: [
-                  dataBundleNotifier.currentBranch.accessPrivilege == Privileges.EMPLOYEE ? const SizedBox(width: 5) : Padding(
+                  branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? const SizedBox(width: 5) : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: IconButton(
                         icon: SvgPicture.asset(
@@ -97,7 +98,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                         }),
                   ),
                   const SizedBox(width: 5),
-                  dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
+                  branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? SizedBox(height: 0,) : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                     child: Stack(
                       children: [
@@ -131,7 +132,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                                         .add_circle_outline,
                                     size: 13,
                                     color:
-                                    kCustomGreenAccent,
+                                    kCustomGreen,
                                   ),
                                 ),
                               ),

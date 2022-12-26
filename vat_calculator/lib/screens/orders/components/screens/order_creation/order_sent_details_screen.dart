@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vat_calculator/constants.dart';
-import 'package:vat_calculator/screens/main_page.dart';
+import 'package:vat_calculator/screens/home/main_page.dart';
 import 'package:vat_calculator/size_config.dart';
 
 class OrderSentDetailsScreen extends StatelessWidget {
@@ -29,10 +29,9 @@ class OrderSentDetailsScreen extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(2.0),
+                padding: const EdgeInsets.all(0.0),
                 child: SizedBox(
                   width: getProportionateScreenWidth(400),
-
                   child: Card(color: Colors.green,child:
                   Center(child:
                   Padding(
@@ -55,7 +54,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                     height: getProportionateScreenHeight(300),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                      color: kPrimaryColor,
+                      color: kCustomWhite,
                       border: Border.all(
                         color: Colors.grey,
                         width: 1.0,
@@ -65,7 +64,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       child: Text(
                         message.replaceAll('%0a', '\n'),
-                        style: TextStyle(color: kCustomWhite),
+                        style: TextStyle(color: kPrimaryColor),
                       ),
                     ),
                   ),
@@ -113,7 +112,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                 },
                 child: Card(
                   elevation: 5,
-                  color: kPrimaryColor,
+                  color: kCustomWhite,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -167,7 +166,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                   launch('sms:${refactorNumber(number)}?body=$message');
                 },
                 child: Card(
-                  color: kPrimaryColor,
+                  color: kCustomWhite,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/constants.dart';
-import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/size_config.dart';
+
+import '../landing/landing_page.dart';
 
 class SplashAnim extends StatefulWidget {
   static String routeName = 'splash_anim';
@@ -42,7 +43,7 @@ class _SecondClassState extends State<SecondClass>
         if (status == AnimationStatus.completed) {
           Navigator.of(context).pushReplacement(
             ThisIsFadeRoute(
-              route: SignInScreen(), page: Text(''),
+              route: const LandingScreen(email: 'amati.angelo90@gmailò.asddsa'), page: Text(''),
             ),
           );
           Timer(
@@ -93,7 +94,7 @@ class _SecondClassState extends State<SecondClass>
             height: _value ? 50 : 200,
             width: _value ? 50 : 200,
             decoration: BoxDecoration(
-              color: kPrimaryColor,
+              color: kCustomGrey,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Stack(
@@ -102,8 +103,8 @@ class _SecondClassState extends State<SecondClass>
                   child: Container(
                     width: 650,
                     height: 450,
-                    decoration: BoxDecoration(
-                        color: kPrimaryColor, shape: BoxShape.circle),
+                    decoration: const BoxDecoration(
+                        color: kCustomGrey, shape: BoxShape.circle),
                     child: AnimatedBuilder(
                       animation: scaleAnimation,
                       builder: (c, child) => Transform.scale(
@@ -111,7 +112,7 @@ class _SecondClassState extends State<SecondClass>
                         child: Container(
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: kPrimaryColor,
+                            color: kCustomBlack,
                           ),
                         ),
                       ),

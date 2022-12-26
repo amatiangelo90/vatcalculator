@@ -1,21 +1,18 @@
 import 'dart:io';
-import 'package:dio/dio.dart';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 
 class AddStorageScreen extends StatelessWidget {
   const AddStorageScreen({Key? key,required this.branch}) : super(key: key);
 
-  final BranchModel branch;
+  final Branch branch;
   static String routeName = "/addstoragescreen";
 
   @override
@@ -44,18 +41,18 @@ class AddStorageScreen extends StatelessWidget {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Scaffold(
-          backgroundColor: kPrimaryColor,
+          backgroundColor: Colors.white,
           bottomSheet: Container(
-            color: kPrimaryColor,
+            color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width - 30,
+                    width: MediaQuery.of(context).size.width - 50,
                     child: DefaultButton(
-                    color: kCustomGreenAccent,
+                    color: kCustomGreen,
                     text: 'Crea Magazzino',
                     press: () async {
                       if(_nameController.text.isEmpty || _nameController.text == ''){
@@ -66,46 +63,26 @@ class AddStorageScreen extends StatelessWidget {
                         buildSnackBar(text: 'Inserire la città', color: kPinaColor);
                       }else if(_capController.text.isEmpty || _capController.text == ''){
                         buildSnackBar(text: 'Inserire il cap', color: kPinaColor);
-                      }else if(dataBundleNotifier.retrieveListStoragesName().contains(_nameController.text)){
-                        buildSnackBar(text: 'Esiste già un magazzino con questo nome : ' + _nameController.text, color: kPinaColor);
                       }else{
 
-                        //EasyLoading.show();
-
-                        ClientVatService vatService = ClientVatService();
-                        StorageModel storageModel = StorageModel(
-                            name: _nameController.text,
-                            fkBranchId: branch.pkBranchId,
-                            address: _addressController.text,
-                            cap: _capController.text,
-                            city: _cityController.text,
-                            code: Uuid().v1().toString(),
-                            creationDate: DateTime.now(),
-                            pkStorageId: 0
+                        Response apiV1AppStorageSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageSavePost(
+                          name: _nameController.text,
+                          branchId: branch.branchId!.toInt(),
+                          address: _addressController.text,
+                          cap: _capController.text,
+                          city: _cityController.text,
                         );
 
-                        Response performSaveStorage = await vatService.performSaveStorage(
-                            storageModel: storageModel
-                        );
-                        //sleep(const Duration(seconds: 1));
-
-
-                        if(performSaveStorage != null && performSaveStorage.statusCode == 200){
-
-                          List<StorageModel> retrievedStorageList = await vatService.retrieveStorageListByBranch(branch);
-                          dataBundleNotifier.addCurrentStorageList(retrievedStorageList);
-                          dataBundleNotifier.clearAndUpdateMapBundle();
-                          //EasyLoading.dismiss();
-                          buildSnackBar(text: 'Magazzino ' + _nameController.text + ' creato per  ' + branch.companyName, color: Colors.green.shade700);
+                        if(apiV1AppStorageSavePost.isSuccessful){
+                          buildSnackBar(text: 'Magazzino creato con successo', color: Colors.green);
+                          dataBundleNotifier.getCurrentBranch().storages!.add(apiV1AppStorageSavePost.body);
                         }else{
-                          //EasyLoading.dismiss();
-                          buildSnackBar(text: 'Si sono verificati problemi durante il salvataggio. Risposta servizio: ' + performSaveStorage.toString(), color: kPinaColor);
+                          buildSnackBar(text: 'Errore. ' + apiV1AppStorageSavePost.error.toString(), color: kPinaColor);
                         }
-                        dataBundleNotifier.onItemTapped(1);
                         Navigator.pop(context);
                       }
 
-                    }, textColor: kPrimaryColor,),
+                    }, textColor: Colors.white,),
                   ),
                 ),
               ],
@@ -113,7 +90,7 @@ class AddStorageScreen extends StatelessWidget {
           ),
           appBar: AppBar(
             leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: kCustomWhite,),
+                icon: const Icon(Icons.arrow_back_ios, color: kPrimaryColor,),
                 onPressed: () => {
                   Navigator.of(context).pop(),
                 }
@@ -122,22 +99,21 @@ class AddStorageScreen extends StatelessWidget {
             title: Text('Crea Magazzino',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kCustomGreenAccent,
+                color: kPrimaryColor,
               ),
             ),
-            elevation: 5,
-            backgroundColor: kPrimaryColor,
+            elevation: 0,
+            backgroundColor: Colors.white,
           ),
           body: SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: Column(
-
               children: [
                 const SizedBox(height: 20,),
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Nome*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Nome*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -157,7 +133,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Indirizzo*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Indirizzo*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -177,7 +153,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Città*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Città*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -197,7 +173,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Cap*', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Cap*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(

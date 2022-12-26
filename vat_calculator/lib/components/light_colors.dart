@@ -9,7 +9,6 @@ class LightColors  {
   static const Color kLightYellow = Color(0xFFFFF9EC);
   static const Color kLightYellow2 = Color(0xFFFFE4C7);
   static const Color kDarkYellow = Color(0xFFF9BE7C);
-  static const Color kPalePink = Color(0xFFd68447);
 
   static const Color kRed = Color(0xFFE46472);
   static const Color kLavender = Color(0xFFc0a1f0);
@@ -19,7 +18,7 @@ class LightColors  {
 
   static const Color kDarkBlue = Color(0xFF0D253F);
 
-  static const List<Color> colors = [kPalePink, kRed, kBlue, kGreen, kDarkBlue, kLightGreen];
+  static const List<Color> colors = [kRed, kBlue, kGreen, kDarkBlue, kLightGreen];
   static Color getRandomColor(){
     return colors[_random.nextInt(colors.length)];
   }

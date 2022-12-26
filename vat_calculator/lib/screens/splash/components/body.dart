@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vat_calculator/screens/sign_in/sign_in_screen.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../components/splash_content.dart';
@@ -67,7 +66,6 @@ class _BodyState extends State<Body> {
                     DefaultButton(
                       text: "Continua",
                       press: () {
-                        Navigator.pushNamed(context, SignInScreen.routeName);
                       }, textColor: kCustomBlue, color: kPrimaryColor,
                     ),
                     const Spacer(),

@@ -11,11 +11,11 @@ class CreateBranchButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultButton(
-      color: kCustomGreenAccent,
+      color: kCustomGreen,
       text: "Crea Attività",
       press: () async {
         Navigator.pushNamed(context, BranchChoiceCreationEnjoy.routeName);
-      }, textColor: Color(0xff121212),
+      }, textColor: kPrimaryLightColor,
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -82,7 +81,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
               initialData: <Widget>[
                 const Center(
                     child: CircularProgressIndicator(
-                      color: kCustomGreenAccent,
+                      color: kCustomGreen,
                     )),
                 const SizedBox(),
                 Column(
@@ -114,7 +113,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
                           formatButtonTextStyle:  const TextStyle(fontSize: 14.0, color: kCustomWhite),
                           titleTextStyle:  const TextStyle(fontSize: 14.0, color: Colors.white),
                           formatButtonDecoration: BoxDecoration(
-                            color: kCustomGreenAccent,
+                            color: kCustomGreen,
                             borderRadius: BorderRadius.circular(22.0),
                           ),
                           leftChevronIcon: Icon(
@@ -423,27 +422,7 @@ class _ArchiviedOrderPageState extends State<ArchiviedOrderPage> {
   Map<DateTime, List<OrderModel>> buildListEvent(List<OrderModel> eventsList) {
 
     Map<DateTime, List<OrderModel>> map1 = Map();
-
-    eventsList.forEach((element) {
-      print('Codice ordinedsd: ' + element.delivery_date.toString());
-
-      if(element.delivery_date != null){
-        if(map1.containsKey(buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date))))){
-          map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))]!.add(element);
-        }else{
-          List<OrderModel> listToAdd = [element];
-          map1[buildDateKeyFromDate(Timestamp.fromDate(dateFormat.parse(element.delivery_date)))] = listToAdd;
-        }
-      }
-
-    });
     return map1;
-  }
-
-  DateTime buildDateKeyFromDate(Timestamp date) {
-
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date.millisecondsSinceEpoch);
-    return DateTime.utc(dateTime.year, dateTime.month, dateTime.day, 0 ,0 ,0 ,0, 0);
   }
 
   Future<List<Widget>> buildUnderWorkingOrderList(ValueNotifier<List<OrderModel>> selectedEvents,

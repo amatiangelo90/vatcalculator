@@ -6,7 +6,7 @@ import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
-import '../main_page.dart';
+import '../home/main_page.dart';
 
 class UpdateBranchScreen extends StatefulWidget {
 
@@ -25,18 +25,18 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
 
-        TextEditingController controllerPIva2 = TextEditingController(text: dataBundleNotifier.currentBranch.vatNumber.toString());
-        TextEditingController controllerCompanyName2 = TextEditingController(text: dataBundleNotifier.currentBranch.companyName);
-        TextEditingController controllerAddress2 = TextEditingController(text: dataBundleNotifier.currentBranch.address);
-        TextEditingController controllerCity2 = TextEditingController(text: dataBundleNotifier.currentBranch.city);
-        TextEditingController controllerCap2 = TextEditingController(text: dataBundleNotifier.currentBranch.cap.toString());
-        TextEditingController controllerMobileNo2 = TextEditingController(text: dataBundleNotifier.currentBranch.phoneNumber);
+        TextEditingController controllerPIva2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().vatNumber.toString());
+        TextEditingController controllerCompanyName2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().name);
+        TextEditingController controllerAddress2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().address);
+        TextEditingController controllerCity2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().city);
+        TextEditingController controllerCap2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().cap.toString());
+        TextEditingController controllerMobileNo2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().phoneNumber);
         TextEditingController controllerEmail2;
 
-        if(dataBundleNotifier.userDetailsList.isEmpty){
+        if(dataBundleNotifier.getUserEntity().email == ''){
           controllerEmail2 = TextEditingController();
         }else{
-          controllerEmail2 = TextEditingController(text: dataBundleNotifier.userDetailsList[0].email);
+          controllerEmail2 = TextEditingController(text: dataBundleNotifier.getCurrentBranch().email);
         }
 
         void buildShowErrorDialog(String text) {
@@ -116,9 +116,9 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
         }
 
         return Scaffold(
-          backgroundColor: kPrimaryColor,
+          backgroundColor: Colors.white,
           bottomSheet: Container(
-            color: kPrimaryColor,
+            color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -129,7 +129,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CupertinoButton(
-                          color: kCustomGreenAccent,
+                          color: kCustomGreen,
                           child: const Text('AGGIORNA'),
                           onPressed: () async {
                             if(controllerCompanyName2.text == null || controllerCompanyName2.text == ''){
@@ -165,7 +165,6 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                               );
 
                               await dataBundleNotifier.getclientServiceInstance().performUpdateBranch(company);
-                              dataBundleNotifier.onItemTapped(0);
                               Navigator.pushNamed(context, HomeScreenMain.routeName);
                             }
 
@@ -177,22 +176,22 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
             ),
           ),
           appBar: AppBar(
-            elevation: 5,
+            elevation: 0,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
                 Icons.arrow_back_ios,
-                color: Colors.white,
+                color: kPrimaryColor,
               ),
             ),
             centerTitle: true,
             title: Text('Aggiorna dettagli attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: Colors.white,
+                color: kPrimaryColor,
               ),
             ),
-            backgroundColor: kPrimaryColor,
+            backgroundColor: Colors.white,
           ),
           body: Container(
             child: Padding(
@@ -204,7 +203,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                     children: <Widget>[
                       Row(
                         children: const [
-                          Text('Email*', style: TextStyle(color: kCustomWhite),),
+                          Text('Email*', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -219,7 +218,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Nome*', style: TextStyle(color: kCustomWhite),),
+                          Text('Nome*', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -233,7 +232,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Cellulare*', style: TextStyle(color: kCustomWhite),),
+                          Text('Cellulare*', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -247,7 +246,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Partita Iva', style: TextStyle(color: kCustomWhite),),
+                          Text('Partita Iva', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -261,7 +260,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Indirizzo', style: TextStyle(color: kCustomWhite),),
+                          Text('Indirizzo', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -275,7 +274,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Città', style: TextStyle(color: kCustomWhite),),
+                          Text('Città', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
@@ -289,7 +288,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Cap', style: TextStyle(color: kCustomWhite),),
+                          Text('Cap', style: TextStyle(color: kPrimaryColor),),
                         ],
                       ),
                       CupertinoTextField(
