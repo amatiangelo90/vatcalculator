@@ -66,16 +66,18 @@ class AddStorageScreen extends StatelessWidget {
                       }else{
 
                         Response apiV1AppStorageSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageSavePost(
-                          name: _nameController.text,
-                          branchId: branch.branchId!.toInt(),
-                          address: _addressController.text,
-                          cap: _capController.text,
-                          city: _cityController.text,
+                          storage: Storage(
+                            name: _nameController.text,
+                            branchId: branch.branchId!.toInt(),
+                            address: _addressController.text,
+                            cap: _capController.text,
+                            city: _cityController.text,
+                          )
                         );
 
                         if(apiV1AppStorageSavePost.isSuccessful){
+                          dataBundleNotifier.refreshCurrentBranchData();
                           buildSnackBar(text: 'Magazzino creato con successo', color: Colors.green);
-                          dataBundleNotifier.getCurrentBranch().storages!.add(apiV1AppStorageSavePost.body);
                         }else{
                           buildSnackBar(text: 'Errore. ' + apiV1AppStorageSavePost.error.toString(), color: kPinaColor);
                         }
@@ -90,7 +92,7 @@ class AddStorageScreen extends StatelessWidget {
           ),
           appBar: AppBar(
             leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: kPrimaryColor,),
+                icon: const Icon(Icons.arrow_back_ios, color: kCustomGrey,),
                 onPressed: () => {
                   Navigator.of(context).pop(),
                 }
@@ -99,7 +101,7 @@ class AddStorageScreen extends StatelessWidget {
             title: Text('Crea Magazzino',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kPrimaryColor,
+                color: kCustomGrey,
               ),
             ),
             elevation: 0,
@@ -113,7 +115,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Nome*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Nome*', style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -133,7 +135,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Indirizzo*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Indirizzo*', style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -153,7 +155,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Città*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Città*', style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(
@@ -173,7 +175,7 @@ class AddStorageScreen extends StatelessWidget {
                 Row(
                   children: [
                     const SizedBox(width: 11,),
-                    Text('   Cap*', style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
+                    Text('   Cap*', style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(12), fontWeight: FontWeight.bold)),
                   ],
                 ),
                 Padding(

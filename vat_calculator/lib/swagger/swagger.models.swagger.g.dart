@@ -119,6 +119,7 @@ Product _$ProductFromJson(Map<String, dynamic> json) => Product(
       name: json['name'] as String?,
       price: (json['price'] as num?)?.toDouble(),
       productId: json['productId'] as num?,
+      supplierId: json['supplierId'] as num?,
       unitMeasure: productUnitMeasureFromJson(json['unitMeasure']),
       unitMeasureOTH: json['unitMeasureOTH'] as String?,
       vatApplied: json['vatApplied'] as int?,
@@ -131,6 +132,7 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'name': instance.name,
       'price': instance.price,
       'productId': instance.productId,
+      'supplierId': instance.supplierId,
       'unitMeasure': productUnitMeasureToJson(instance.unitMeasure),
       'unitMeasureOTH': instance.unitMeasureOTH,
       'vatApplied': instance.vatApplied,
@@ -146,6 +148,7 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
       name: json['name'] as String?,
       phone: json['phone'] as String?,
       userId: json['userId'] as num?,
+      userType: userEntityUserTypeFromJson(json['userType']),
     );
 
 Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
@@ -156,6 +159,7 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'name': instance.name,
       'phone': instance.phone,
       'userId': instance.userId,
+      'userType': userEntityUserTypeToJson(instance.userType),
     };
 
 ExpenceEvent _$ExpenceEventFromJson(Map<String, dynamic> json) => ExpenceEvent(
@@ -174,6 +178,7 @@ Map<String, dynamic> _$ExpenceEventToJson(ExpenceEvent instance) =>
     };
 
 Workstation _$WorkstationFromJson(Map<String, dynamic> json) => Workstation(
+      eventId: json['eventId'] as num?,
       extra: json['extra'] as String?,
       name: json['name'] as String?,
       products: (json['products'] as List<dynamic>?)
@@ -189,6 +194,7 @@ Workstation _$WorkstationFromJson(Map<String, dynamic> json) => Workstation(
 
 Map<String, dynamic> _$WorkstationToJson(Workstation instance) =>
     <String, dynamic>{
+      'eventId': instance.eventId,
       'extra': instance.extra,
       'name': instance.name,
       'products': instance.products?.map((e) => e.toJson()).toList(),
@@ -205,7 +211,7 @@ OrderEntity _$OrderEntityFromJson(Map<String, dynamic> json) => OrderEntity(
       creationDate: json['creationDate'] as String?,
       deliveryDate: json['deliveryDate'] as String?,
       details: json['details'] as String?,
-      errorStatus: json['errorStatus'] as String?,
+      errorMessage: json['errorMessage'] as String?,
       orderId: json['orderId'] as num?,
       orderStatus: orderEntityOrderStatusFromJson(json['orderStatus']),
       paid: json['paid'] as bool?,
@@ -227,7 +233,7 @@ Map<String, dynamic> _$OrderEntityToJson(OrderEntity instance) =>
       'creationDate': instance.creationDate,
       'deliveryDate': instance.deliveryDate,
       'details': instance.details,
-      'errorStatus': instance.errorStatus,
+      'errorMessage': instance.errorMessage,
       'orderId': instance.orderId,
       'orderStatus': orderEntityOrderStatusToJson(instance.orderStatus),
       'paid': instance.paid,
@@ -315,6 +321,8 @@ Map<String, dynamic> _$BranchToJson(Branch instance) => <String, dynamic>{
 
 Event _$EventFromJson(Map<String, dynamic> json) => Event(
       branchId: json['branchId'] as num?,
+      cardColor: json['cardColor'] as String?,
+      createdBy: json['createdBy'] as String?,
       dateCreation: json['dateCreation'] as String?,
       dateEvent: json['dateEvent'] as String?,
       eventId: json['eventId'] as num?,
@@ -334,6 +342,8 @@ Event _$EventFromJson(Map<String, dynamic> json) => Event(
 
 Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'branchId': instance.branchId,
+      'cardColor': instance.cardColor,
+      'createdBy': instance.createdBy,
       'dateCreation': instance.dateCreation,
       'dateEvent': instance.dateEvent,
       'eventId': instance.eventId,

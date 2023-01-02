@@ -22,7 +22,7 @@ class ROrderProduct {
       _$ROrderProductFromJson(json);
 
   @JsonKey(name: 'amount')
-  final double? amount;
+  double? amount;
   @JsonKey(name: 'orderProductId')
   final num? orderProductId;
   @JsonKey(name: 'price')
@@ -557,6 +557,7 @@ class Product {
     this.name,
     this.price,
     this.productId,
+    this.supplierId,
     this.unitMeasure,
     this.unitMeasureOTH,
     this.vatApplied,
@@ -577,6 +578,8 @@ class Product {
   final double? price;
   @JsonKey(name: 'productId')
   final num? productId;
+  @JsonKey(name: 'supplierId')
+  final num? supplierId;
   @JsonKey(
     name: 'unitMeasure',
     toJson: productUnitMeasureToJson,
@@ -610,6 +613,9 @@ class Product {
             (identical(other.productId, productId) ||
                 const DeepCollectionEquality()
                     .equals(other.productId, productId)) &&
+            (identical(other.supplierId, supplierId) ||
+                const DeepCollectionEquality()
+                    .equals(other.supplierId, supplierId)) &&
             (identical(other.unitMeasure, unitMeasure) ||
                 const DeepCollectionEquality()
                     .equals(other.unitMeasure, unitMeasure)) &&
@@ -632,6 +638,7 @@ class Product {
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(price) ^
       const DeepCollectionEquality().hash(productId) ^
+      const DeepCollectionEquality().hash(supplierId) ^
       const DeepCollectionEquality().hash(unitMeasure) ^
       const DeepCollectionEquality().hash(unitMeasureOTH) ^
       const DeepCollectionEquality().hash(vatApplied) ^
@@ -646,6 +653,7 @@ extension $ProductExtension on Product {
       String? name,
       double? price,
       num? productId,
+      num? supplierId,
       enums.ProductUnitMeasure? unitMeasure,
       String? unitMeasureOTH,
       int? vatApplied}) {
@@ -656,6 +664,7 @@ extension $ProductExtension on Product {
         name: name ?? this.name,
         price: price ?? this.price,
         productId: productId ?? this.productId,
+        supplierId: supplierId ?? this.supplierId,
         unitMeasure: unitMeasure ?? this.unitMeasure,
         unitMeasureOTH: unitMeasureOTH ?? this.unitMeasureOTH,
         vatApplied: vatApplied ?? this.vatApplied);
@@ -668,6 +677,7 @@ extension $ProductExtension on Product {
       Wrapped<String?>? name,
       Wrapped<double?>? price,
       Wrapped<num?>? productId,
+      Wrapped<num?>? supplierId,
       Wrapped<enums.ProductUnitMeasure?>? unitMeasure,
       Wrapped<String?>? unitMeasureOTH,
       Wrapped<int?>? vatApplied}) {
@@ -679,6 +689,7 @@ extension $ProductExtension on Product {
         name: (name != null ? name.value : this.name),
         price: (price != null ? price.value : this.price),
         productId: (productId != null ? productId.value : this.productId),
+        supplierId: (supplierId != null ? supplierId.value : this.supplierId),
         unitMeasure:
             (unitMeasure != null ? unitMeasure.value : this.unitMeasure),
         unitMeasureOTH: (unitMeasureOTH != null
@@ -697,6 +708,7 @@ class UserEntity {
     this.name,
     this.phone,
     this.userId,
+    this.userType,
   });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>
@@ -714,6 +726,12 @@ class UserEntity {
   final String? phone;
   @JsonKey(name: 'userId')
   final num? userId;
+  @JsonKey(
+    name: 'userType',
+    toJson: userEntityUserTypeToJson,
+    fromJson: userEntityUserTypeFromJson,
+  )
+  final enums.UserEntityUserType? userType;
   static const fromJsonFactory = _$UserEntityFromJson;
   static const toJsonFactory = _$UserEntityToJson;
   Map<String, dynamic> toJson() => _$UserEntityToJson(this);
@@ -735,7 +753,10 @@ class UserEntity {
             (identical(other.phone, phone) ||
                 const DeepCollectionEquality().equals(other.phone, phone)) &&
             (identical(other.userId, userId) ||
-                const DeepCollectionEquality().equals(other.userId, userId)));
+                const DeepCollectionEquality().equals(other.userId, userId)) &&
+            (identical(other.userType, userType) ||
+                const DeepCollectionEquality()
+                    .equals(other.userType, userType)));
   }
 
   @override
@@ -749,6 +770,7 @@ class UserEntity {
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(phone) ^
       const DeepCollectionEquality().hash(userId) ^
+      const DeepCollectionEquality().hash(userType) ^
       runtimeType.hashCode;
 }
 
@@ -759,14 +781,16 @@ extension $UserEntityExtension on UserEntity {
       String? lastname,
       String? name,
       String? phone,
-      num? userId}) {
+      num? userId,
+      enums.UserEntityUserType? userType}) {
     return UserEntity(
         branchList: branchList ?? this.branchList,
         email: email ?? this.email,
         lastname: lastname ?? this.lastname,
         name: name ?? this.name,
         phone: phone ?? this.phone,
-        userId: userId ?? this.userId);
+        userId: userId ?? this.userId,
+        userType: userType ?? this.userType);
   }
 
   UserEntity copyWithWrapped(
@@ -775,14 +799,16 @@ extension $UserEntityExtension on UserEntity {
       Wrapped<String?>? lastname,
       Wrapped<String?>? name,
       Wrapped<String?>? phone,
-      Wrapped<num?>? userId}) {
+      Wrapped<num?>? userId,
+      Wrapped<enums.UserEntityUserType?>? userType}) {
     return UserEntity(
         branchList: (branchList != null ? branchList.value : this.branchList),
         email: (email != null ? email.value : this.email),
         lastname: (lastname != null ? lastname.value : this.lastname),
         name: (name != null ? name.value : this.name),
         phone: (phone != null ? phone.value : this.phone),
-        userId: (userId != null ? userId.value : this.userId));
+        userId: (userId != null ? userId.value : this.userId),
+        userType: (userType != null ? userType.value : this.userType));
   }
 }
 
@@ -869,6 +895,7 @@ extension $ExpenceEventExtension on ExpenceEvent {
 @JsonSerializable(explicitToJson: true)
 class Workstation {
   Workstation({
+    this.eventId,
     this.extra,
     this.name,
     this.products,
@@ -880,6 +907,8 @@ class Workstation {
   factory Workstation.fromJson(Map<String, dynamic> json) =>
       _$WorkstationFromJson(json);
 
+  @JsonKey(name: 'eventId')
+  final num? eventId;
   @JsonKey(name: 'extra')
   final String? extra;
   @JsonKey(name: 'name')
@@ -904,6 +933,9 @@ class Workstation {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is Workstation &&
+            (identical(other.eventId, eventId) ||
+                const DeepCollectionEquality()
+                    .equals(other.eventId, eventId)) &&
             (identical(other.extra, extra) ||
                 const DeepCollectionEquality().equals(other.extra, extra)) &&
             (identical(other.name, name) ||
@@ -927,6 +959,7 @@ class Workstation {
 
   @override
   int get hashCode =>
+      const DeepCollectionEquality().hash(eventId) ^
       const DeepCollectionEquality().hash(extra) ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(products) ^
@@ -938,13 +971,15 @@ class Workstation {
 
 extension $WorkstationExtension on Workstation {
   Workstation copyWith(
-      {String? extra,
+      {num? eventId,
+      String? extra,
       String? name,
       List<RWorkstationProduct>? products,
       String? responsable,
       num? workstationId,
       enums.WorkstationWorkstationType? workstationType}) {
     return Workstation(
+        eventId: eventId ?? this.eventId,
         extra: extra ?? this.extra,
         name: name ?? this.name,
         products: products ?? this.products,
@@ -954,13 +989,15 @@ extension $WorkstationExtension on Workstation {
   }
 
   Workstation copyWithWrapped(
-      {Wrapped<String?>? extra,
+      {Wrapped<num?>? eventId,
+      Wrapped<String?>? extra,
       Wrapped<String?>? name,
       Wrapped<List<RWorkstationProduct>?>? products,
       Wrapped<String?>? responsable,
       Wrapped<num?>? workstationId,
       Wrapped<enums.WorkstationWorkstationType?>? workstationType}) {
     return Workstation(
+        eventId: (eventId != null ? eventId.value : this.eventId),
         extra: (extra != null ? extra.value : this.extra),
         name: (name != null ? name.value : this.name),
         products: (products != null ? products.value : this.products),
@@ -983,7 +1020,7 @@ class OrderEntity {
     this.creationDate,
     this.deliveryDate,
     this.details,
-    this.errorStatus,
+    this.errorMessage,
     this.orderId,
     this.orderStatus,
     this.paid,
@@ -1009,8 +1046,8 @@ class OrderEntity {
   final String? deliveryDate;
   @JsonKey(name: 'details')
   final String? details;
-  @JsonKey(name: 'errorStatus')
-  final String? errorStatus;
+  @JsonKey(name: 'errorMessage')
+  final String? errorMessage;
   @JsonKey(name: 'orderId')
   final num? orderId;
   @JsonKey(
@@ -1018,7 +1055,7 @@ class OrderEntity {
     toJson: orderEntityOrderStatusToJson,
     fromJson: orderEntityOrderStatusFromJson,
   )
-  final enums.OrderEntityOrderStatus? orderStatus;
+  enums.OrderEntityOrderStatus? orderStatus;
   @JsonKey(name: 'paid')
   final bool? paid;
   @JsonKey(name: 'products', defaultValue: <ROrderProduct>[])
@@ -1056,9 +1093,9 @@ class OrderEntity {
             (identical(other.details, details) ||
                 const DeepCollectionEquality()
                     .equals(other.details, details)) &&
-            (identical(other.errorStatus, errorStatus) ||
+            (identical(other.errorMessage, errorMessage) ||
                 const DeepCollectionEquality()
-                    .equals(other.errorStatus, errorStatus)) &&
+                    .equals(other.errorMessage, errorMessage)) &&
             (identical(other.orderId, orderId) ||
                 const DeepCollectionEquality()
                     .equals(other.orderId, orderId)) &&
@@ -1094,7 +1131,7 @@ class OrderEntity {
       const DeepCollectionEquality().hash(creationDate) ^
       const DeepCollectionEquality().hash(deliveryDate) ^
       const DeepCollectionEquality().hash(details) ^
-      const DeepCollectionEquality().hash(errorStatus) ^
+      const DeepCollectionEquality().hash(errorMessage) ^
       const DeepCollectionEquality().hash(orderId) ^
       const DeepCollectionEquality().hash(orderStatus) ^
       const DeepCollectionEquality().hash(paid) ^
@@ -1114,7 +1151,7 @@ extension $OrderEntityExtension on OrderEntity {
       String? creationDate,
       String? deliveryDate,
       String? details,
-      String? errorStatus,
+      String? errorMessage,
       num? orderId,
       enums.OrderEntityOrderStatus? orderStatus,
       bool? paid,
@@ -1130,7 +1167,7 @@ extension $OrderEntityExtension on OrderEntity {
         creationDate: creationDate ?? this.creationDate,
         deliveryDate: deliveryDate ?? this.deliveryDate,
         details: details ?? this.details,
-        errorStatus: errorStatus ?? this.errorStatus,
+        errorMessage: errorMessage ?? this.errorMessage,
         orderId: orderId ?? this.orderId,
         orderStatus: orderStatus ?? this.orderStatus,
         paid: paid ?? this.paid,
@@ -1148,7 +1185,7 @@ extension $OrderEntityExtension on OrderEntity {
       Wrapped<String?>? creationDate,
       Wrapped<String?>? deliveryDate,
       Wrapped<String?>? details,
-      Wrapped<String?>? errorStatus,
+      Wrapped<String?>? errorMessage,
       Wrapped<num?>? orderId,
       Wrapped<enums.OrderEntityOrderStatus?>? orderStatus,
       Wrapped<bool?>? paid,
@@ -1166,8 +1203,8 @@ extension $OrderEntityExtension on OrderEntity {
         deliveryDate:
             (deliveryDate != null ? deliveryDate.value : this.deliveryDate),
         details: (details != null ? details.value : this.details),
-        errorStatus:
-            (errorStatus != null ? errorStatus.value : this.errorStatus),
+        errorMessage:
+            (errorMessage != null ? errorMessage.value : this.errorMessage),
         orderId: (orderId != null ? orderId.value : this.orderId),
         orderStatus:
             (orderStatus != null ? orderStatus.value : this.orderStatus),
@@ -1516,6 +1553,8 @@ extension $BranchExtension on Branch {
 class Event {
   Event({
     this.branchId,
+    this.cardColor,
+    this.createdBy,
     this.dateCreation,
     this.dateEvent,
     this.eventId,
@@ -1531,6 +1570,10 @@ class Event {
 
   @JsonKey(name: 'branchId')
   final num? branchId;
+  @JsonKey(name: 'cardColor')
+  final String? cardColor;
+  @JsonKey(name: 'createdBy')
+  final String? createdBy;
   @JsonKey(name: 'dateCreation')
   final String? dateCreation;
   @JsonKey(name: 'dateEvent')
@@ -1564,6 +1607,12 @@ class Event {
             (identical(other.branchId, branchId) ||
                 const DeepCollectionEquality()
                     .equals(other.branchId, branchId)) &&
+            (identical(other.cardColor, cardColor) ||
+                const DeepCollectionEquality()
+                    .equals(other.cardColor, cardColor)) &&
+            (identical(other.createdBy, createdBy) ||
+                const DeepCollectionEquality()
+                    .equals(other.createdBy, createdBy)) &&
             (identical(other.dateCreation, dateCreation) ||
                 const DeepCollectionEquality()
                     .equals(other.dateCreation, dateCreation)) &&
@@ -1598,6 +1647,8 @@ class Event {
   @override
   int get hashCode =>
       const DeepCollectionEquality().hash(branchId) ^
+      const DeepCollectionEquality().hash(cardColor) ^
+      const DeepCollectionEquality().hash(createdBy) ^
       const DeepCollectionEquality().hash(dateCreation) ^
       const DeepCollectionEquality().hash(dateEvent) ^
       const DeepCollectionEquality().hash(eventId) ^
@@ -1613,6 +1664,8 @@ class Event {
 extension $EventExtension on Event {
   Event copyWith(
       {num? branchId,
+      String? cardColor,
+      String? createdBy,
       String? dateCreation,
       String? dateEvent,
       num? eventId,
@@ -1624,6 +1677,8 @@ extension $EventExtension on Event {
       List<Workstation>? workstations}) {
     return Event(
         branchId: branchId ?? this.branchId,
+        cardColor: cardColor ?? this.cardColor,
+        createdBy: createdBy ?? this.createdBy,
         dateCreation: dateCreation ?? this.dateCreation,
         dateEvent: dateEvent ?? this.dateEvent,
         eventId: eventId ?? this.eventId,
@@ -1637,6 +1692,8 @@ extension $EventExtension on Event {
 
   Event copyWithWrapped(
       {Wrapped<num?>? branchId,
+      Wrapped<String?>? cardColor,
+      Wrapped<String?>? createdBy,
       Wrapped<String?>? dateCreation,
       Wrapped<String?>? dateEvent,
       Wrapped<num?>? eventId,
@@ -1648,6 +1705,8 @@ extension $EventExtension on Event {
       Wrapped<List<Workstation>?>? workstations}) {
     return Event(
         branchId: (branchId != null ? branchId.value : this.branchId),
+        cardColor: (cardColor != null ? cardColor.value : this.cardColor),
+        createdBy: (createdBy != null ? createdBy.value : this.createdBy),
         dateCreation:
             (dateCreation != null ? dateCreation.value : this.dateCreation),
         dateEvent: (dateEvent != null ? dateEvent.value : this.dateEvent),
@@ -1995,6 +2054,72 @@ List<enums.ProductUnitMeasure>? productUnitMeasureNullableListFromJson(
 
   return productUnitMeasure
       .map((e) => productUnitMeasureFromJson(e.toString()))
+      .toList();
+}
+
+String? userEntityUserTypeToJson(enums.UserEntityUserType? userEntityUserType) {
+  return enums.$UserEntityUserTypeMap[userEntityUserType];
+}
+
+enums.UserEntityUserType userEntityUserTypeFromJson(
+  Object? userEntityUserType, [
+  enums.UserEntityUserType? defaultValue,
+]) {
+  if (userEntityUserType is String) {
+    return enums.$UserEntityUserTypeMap.entries
+        .firstWhere(
+            (element) =>
+                element.value.toLowerCase() == userEntityUserType.toLowerCase(),
+            orElse: () => const MapEntry(
+                enums.UserEntityUserType.swaggerGeneratedUnknown, ''))
+        .key;
+  }
+
+  final parsedResult = defaultValue == null
+      ? null
+      : enums.$UserEntityUserTypeMap.entries
+          .firstWhereOrNull((element) => element.value == defaultValue)
+          ?.key;
+
+  return parsedResult ??
+      defaultValue ??
+      enums.UserEntityUserType.swaggerGeneratedUnknown;
+}
+
+List<String> userEntityUserTypeListToJson(
+    List<enums.UserEntityUserType>? userEntityUserType) {
+  if (userEntityUserType == null) {
+    return [];
+  }
+
+  return userEntityUserType
+      .map((e) => enums.$UserEntityUserTypeMap[e]!)
+      .toList();
+}
+
+List<enums.UserEntityUserType> userEntityUserTypeListFromJson(
+  List? userEntityUserType, [
+  List<enums.UserEntityUserType>? defaultValue,
+]) {
+  if (userEntityUserType == null) {
+    return defaultValue ?? [];
+  }
+
+  return userEntityUserType
+      .map((e) => userEntityUserTypeFromJson(e.toString()))
+      .toList();
+}
+
+List<enums.UserEntityUserType>? userEntityUserTypeNullableListFromJson(
+  List? userEntityUserType, [
+  List<enums.UserEntityUserType>? defaultValue,
+]) {
+  if (userEntityUserType == null) {
+    return defaultValue;
+  }
+
+  return userEntityUserType
+      .map((e) => userEntityUserTypeFromJson(e.toString()))
       .toList();
 }
 

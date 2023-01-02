@@ -1,28 +1,17 @@
 import 'dart:io';
+import 'package:chopper/chopper.dart';
 import 'package:csc_picker/dropdown_with_search.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/client_vatservice.dart';
-import 'package:vat_calculator/client/vatservice/model/event_model.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_product_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/components/default_button.dart';
-import 'package:vat_calculator/components/light_colors.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/event/component/product_datasource_events.dart';
-import 'package:vat_calculator/screens/home/main_page.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
-import '../event_home.dart';
 
 class EventCreateScreen extends StatefulWidget {
   const EventCreateScreen({Key? key}) : super(key: key);
@@ -45,12 +34,6 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
   int _barPositionCounter = 0;
   int _champagneriePositionCounter = 0;
 
-  int _rowsPerPage = 10;
-  int _rowsPerPageChamp = 10;
-
-  List<StorageProductModel> currentStorageProductModelListBar = [];
-  List<StorageProductModel> currentStorageProductModelListChampagnerie = [];
-
   @override
   void initState() {
     super.initState();
@@ -63,22 +46,21 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     super.dispose();
   }
 
-  Future<void> setCurrentStorage(String storage,
+  Future<void> setCurrentStorage(String storageName,
       DataBundleNotifier dataBundleNotifier) async {
     setState(() {
-      _selectedStorage = storage;
+      _selectedStorage = storageName;
+      currentStorageModel = dataBundleNotifier.getCurrentBranch()!.storages!.where((element) => element.name == storageName).first;
       _barPositionCounter = 0;
       _champagneriePositionCounter = 0;
     });
-    //currentStorageProductModelListChampagnerie.clear();
-    //currentStorageProductModelListBar.clear();
-    //currentStorageModel = dataBundleNotifier.retrieveStorageFromStorageListByIdName(storage)!;
-    //currentStorageProductModelListBar = await retrieveProductListFromChoicedStorage(currentStorageModel);
-    //currentStorageProductModelListChampagnerie = await retrieveProductListFromChoicedStorage(currentStorageModel);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    double width = MediaQuery.of(context).size.width;
+
     return LoaderOverlay(
       useDefaultLoading: false,
       overlayOpacity: 0.9,
@@ -93,11 +75,11 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                 backgroundColor: kCustomGrey,
                 appBar: AppBar(
                   leading: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios),
+                      icon: const Icon(Icons.arrow_back_ios, color: kCustomWhite),
                       onPressed: () {
-                      Navigator.pushNamed(context, HomeScreenMain.routeName);
+                        Navigator.of(context).pop();
                       }),
-                  iconTheme: const IconThemeData(color: Colors.white),
+                  iconTheme: const IconThemeData(color: kCustomWhite),
                   backgroundColor: kCustomGrey,
                   centerTitle: true,
                   title: Column(
@@ -109,14 +91,14 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: getProportionateScreenWidth(19),
-                              color: Colors.white,
+                              color: kCustomWhite,
                             ),
                           ),
                           Text(
                             'Pagina creazione eventi',
                             style: TextStyle(
                               fontSize: getProportionateScreenWidth(11),
-                              color: kCustomGreen,
+                              color: kCustomWhite,
                             ),
                           ),
                         ],
@@ -134,7 +116,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         Row(
                           children: [
                             const SizedBox(width: 11,),
-                            Text('  Nome Evento', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(16))),
+                            Text('  Nome Evento', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(16))),
                           ],
                         ),
                         Padding(
@@ -147,13 +129,13 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             clearButtonMode: OverlayVisibilityMode.editing,
                             autocorrect: false,
                             placeholder: 'Nome Evento',
-                            style: TextStyle(color: kCustomBlack, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(25)),
+                            style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(20)),
                           ),
                         ),
                         Row(
                           children: [
                             const SizedBox(width: 11,),
-                            Text('  Location', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(16))),
+                            Text('  Location', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(16))),
                           ],
                         ),
                         Padding(
@@ -166,10 +148,9 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             clearButtonMode: OverlayVisibilityMode.editing,
                             autocorrect: false,
                             placeholder: 'Location Evento',
-                            style: TextStyle(color: kCustomBlack, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(25)),
+                            style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(20)),
                           ),
                         ),
-
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Center(
@@ -207,7 +188,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         Row(
                           children: [
                             const SizedBox(width: 11,),
-                            Text('  Seleziona il magazzino di riferimento', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                            Text('  Seleziona il magazzino di riferimento', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                           ],
                         ),
                         Padding(
@@ -220,7 +201,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                               disabled: false,
                               itemStyle: TextStyle(color: kCustomBlack, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(20)),
 
-                            items: dataBundleNotifier.getCurrentBranch().storages!.map((Storage storageModel) {
+                              items: dataBundleNotifier.getCurrentBranch().storages!.map((Storage storageModel) {
                                 return storageModel.name;
                               }).toList(),
                               selected: _selectedStorage,
@@ -230,167 +211,194 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text('Configura Workstations', textAlign: TextAlign.center, style: TextStyle(color: LightColors.kLightYellow, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(15))),
+                        _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text('Configura Workstations', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(15))),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                      image: AssetImage("assets/png/bar.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  height: getProportionateScreenWidth(250),
+                                  width: getProportionateScreenWidth(600),
+                                  child: OutlinedButton(
+                                    onPressed: (){
+
+                                    },
+                                    style: ButtonStyle(
+                                      elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomGreen),),
+                                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 10),
+                                          child: Text('BAR',style: TextStyle(
+                                              color: kCustomWhite,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize:
+                                              getProportionateScreenWidth(
+                                                  17)),),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white, width: 2, style: BorderStyle.solid)),
+                                                child: FloatingActionButton(
+                                                  heroTag: "btn11112",
+                                                  onPressed: (){
+                                                    setState(() {
+                                                      if (_barPositionCounter <= 0) {
+                                                      } else {
+                                                        _barPositionCounter--;
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(Icons.remove, color: Colors.white, size: getProportionateScreenWidth(30)),
+                                                  backgroundColor: Colors.white.withOpacity(0.1),
+                                                ),
+                                              ),
+                                              Text(_barPositionCounter.toString(), style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: getProportionateScreenWidth(60),
+                                                  color: kCustomWhite),),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white, width: 2, style: BorderStyle.solid)),
+                                                child: FloatingActionButton(
+                                                  heroTag: "btnbar121",
+                                                  onPressed: (){
+                                                    setState(() {
+                                                      _barPositionCounter++;
+                                                    });
+                                                  },
+                                                  child: Icon(Icons.add, color: Colors.white, size: getProportionateScreenWidth(30)),
+                                                  backgroundColor: Colors.white.withOpacity(0.1),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text('')
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+                              child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    image: DecorationImage(
+                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                      image: AssetImage("assets/png/champagnerie.png"),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  height: getProportionateScreenWidth(250),
+                                  width: getProportionateScreenWidth(600),
+                                  child: OutlinedButton(
+                                    onPressed: (){
+
+                                    },
+                                    style: ButtonStyle(
+                                      elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomPinkAccent),),
+                                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(top: 10),
+                                          child: Text('CHAMPAGNERIE',style: TextStyle(
+                                              color: kCustomWhite,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize:
+                                              getProportionateScreenWidth(
+                                                  17)),),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                            children: [
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white, width: 2, style: BorderStyle.solid)),
+                                                child: FloatingActionButton(
+                                                  heroTag: "btn98786543",
+                                                  onPressed: (){
+                                                    setState(() {
+                                                      if (_champagneriePositionCounter <= 0) {
+                                                      } else {
+                                                        _champagneriePositionCounter--;
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(Icons.remove, color: Colors.white, size: getProportionateScreenWidth(30)),
+                                                  backgroundColor: Colors.white.withOpacity(0.1),
+                                                ),
+                                              ),
+                                              Text(_champagneriePositionCounter.toString(), style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: getProportionateScreenWidth(60),
+                                                  color: kCustomWhite),),
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                        color: Colors.white, width: 2, style: BorderStyle.solid)),
+                                                child: FloatingActionButton(
+                                                  heroTag: "btn14323481z123",
+                                                  onPressed: (){
+                                                    setState(() {
+                                                      _champagneriePositionCounter++;
+                                                    });
+                                                  },
+                                                  child: Icon(Icons.add, color: Colors.white, size: getProportionateScreenWidth(30)),
+                                                  backgroundColor: Colors.white.withOpacity(0.1),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text('')
+                                      ],
+                                    ),
+                                  )
+                              ),
+                            ),
+
+                            const Divider(height: 25, endIndent: 50, indent: 50,),
+                            const SizedBox(height: 100,),
+                          ],
                         ),
 
-                        _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('  Bar', style: TextStyle(color: kCustomGreen, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(15))),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (_barPositionCounter <= 0) {
-                                        } else {
-                                          _barPositionCounter--;
-                                        }
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        FontAwesomeIcons.minus,
-                                        color: kPinaColor,
-                                        size: getProportionateScreenWidth(30),
-                                      ),
-                                    ),
-                                  ),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints.loose(Size(
-                                        getProportionateScreenWidth(60),
-                                        getProportionateScreenWidth(60))),
-                                    child: CupertinoTextField(
-                                      controller: TextEditingController(text: _barPositionCounter.toString()),
-                                      textInputAction: TextInputAction.next,
-                                      enabled: false,
-                                      keyboardType: const TextInputType.numberWithOptions(
-                                          decimal: true, signed: true),
-                                      clearButtonMode: OverlayVisibilityMode.never,
-                                      textAlign: TextAlign.center,
-                                      autocorrect: false,
-                                      style: TextStyle(color: kCustomBlack, fontSize: getProportionateScreenWidth(30)),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _barPositionCounter = _barPositionCounter + 1;
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(FontAwesomeIcons.plus,
-                                          color: LightColors.kLightGreen,
-                                        size: getProportionateScreenWidth(30),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        _barPositionCounter == 0 ? SizedBox() : Row(
-                          children: const [
-                            Text('    Lista prodotti per carico bar', style: TextStyle(color: LightColors.kLightYellow),),
-                          ],
-                        ),
-                        _barPositionCounter == 0 ? const SizedBox() : PaginatedDataTable(
-                          rowsPerPage: _rowsPerPage,
-                          availableRowsPerPage: const <int>[5, 10, 20, 25],
-                          onRowsPerPageChanged: (int? value) {
-                            setState(() {
-                              _rowsPerPage = value!;
-                            });
-                          },
-                          columns: kTableColumns,
-                          source: ProductDataSourceEvents(currentStorageProductModelListBar),
-                        ),
-                        _selectedStorage == 'Seleziona Magazzino' ? SizedBox(width: 0,) : Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('  Champagnerie',
-                                  style: TextStyle(color: kCustomGreen,fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(15))),
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        if (_champagneriePositionCounter <= 0) {
-                                        } else {
-                                          _champagneriePositionCounter--;
-                                        }
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(
-                                        FontAwesomeIcons.minus,
-                                        color: kPinaColor,
-                                        size: getProportionateScreenWidth(30),
-                                      ),
-                                    ),
-                                  ),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints.loose(Size(
-                                        getProportionateScreenWidth(60),
-                                        getProportionateScreenWidth(60))),
-                                    child: CupertinoTextField(
-                                      controller: TextEditingController(text: _champagneriePositionCounter.toString()),
-                                      enabled: false,
-                                      textInputAction: TextInputAction.next,
-                                      keyboardType: const TextInputType.numberWithOptions(
-                                          decimal: true, signed: true),
-                                      clearButtonMode: OverlayVisibilityMode.never,
-                                      textAlign: TextAlign.center,
-                                      autocorrect: false,
-                                      style: TextStyle(color: kCustomBlack, fontSize: getProportionateScreenWidth(30)),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      setState(() {
-                                        _champagneriePositionCounter = _champagneriePositionCounter + 1;
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(FontAwesomeIcons.plus,
-                                          color: LightColors.kLightGreen,
-                                        size: getProportionateScreenWidth(30),),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        _champagneriePositionCounter == 0 ? SizedBox() : Row(
-                          children: const [
-                            Text('    Lista prodotti per carico champagnerie', style: TextStyle(color: kCustomBlack),),
-                          ],
-                        ),
-                        _champagneriePositionCounter == 0 ? const SizedBox() : PaginatedDataTable(
-                          rowsPerPage: _rowsPerPageChamp,
-                          availableRowsPerPage: const <int>[5, 10, 20, 25],
-                          onRowsPerPageChanged: (int? value) {
-                            setState(() {
-                              _rowsPerPageChamp = value!;
-                            });
-                          },
-                          columns: kTableColumns,
-                          source: ProductDataSourceEvents(currentStorageProductModelListChampagnerie),
-                        ),
-                        const Divider(height: 25, endIndent: 50, indent: 50,),
-                        const SizedBox(height: 100,),
                       ],
                     ),
                   ),
@@ -426,104 +434,66 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           try{
                             context.loaderOverlay.show();
 
-                            Event event = Event(
-                              storageId: currentStorageModel.storageId,
-                              branchId: dataBundleNotifier.getCurrentBranch().branchId,
-                              name: controllerEventName.text,
-                              dateEvent: dateFormat.format(currentDate),
-                              dateCreation: dateFormat.format(DateTime.now()),
-                              eventId: 0,
-                              eventStatus: EventEventStatus.aperto,
-                              expenceEvents: [],
-                              location: controllerLocation.text,
-                              workstations: buildWorkstationsList()
+                            print(Event(
+                                storageId: currentStorageModel.storageId,
+                                branchId: dataBundleNotifier.getCurrentBranch().branchId,
+                                name: controllerEventName.text,
+                                dateEvent: dateFormat.format(currentDate),
+                                dateCreation: dateFormat.format(DateTime.now()),
+                                eventId: 0,
+                                createdBy: dataBundleNotifier.getUserEntity().name! + ' ' + dataBundleNotifier.getUserEntity().lastname!,
+                                cardColor: '0xff398564',
+                                eventStatus: EventEventStatus.aperto,
+                                expenceEvents: [],
+                                location: controllerLocation.text,
+                                workstations: buildWorkstationsList()
+                            ).toJson().toString());
+                            Response apiV1AppEventSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppEventSavePost(
+                              event: Event(
+                                  storageId: currentStorageModel.storageId,
+                                  branchId: dataBundleNotifier.getCurrentBranch().branchId,
+                                  name: controllerEventName.text,
+                                  dateEvent: dateFormat.format(currentDate),
+                                  dateCreation: dateFormat.format(DateTime.now()),
+                                  eventId: 0,
+                                  createdBy: dataBundleNotifier.getUserEntity().name! + ' ' + dataBundleNotifier.getUserEntity().lastname!,
+                                  cardColor: '0xff398564',
+                                  eventStatus: EventEventStatus.aperto,
+                                  expenceEvents: [],
+                                  location: controllerLocation.text,
+                                  workstations: buildWorkstationsList()
+                              ),
                             );
-                       //     Response performSaveEventId = await dataBundleNotifier.getclientServiceInstance().performCreateEvent(
-                       //         eventModel: EventModel(
-                       //             owner: dataBundleNotifier.userDetailsList[0].firstName + ' ' + dataBundleNotifier.userDetailsList[0].lastName,
-                       //             fkStorageId: currentStorageModel.pkStorageId,
-                       //             fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                       //             eventName: controllerEventName.value.text,
-                       //             creationDate: DateTime.now().millisecondsSinceEpoch,
-                       //             eventDate: currentDate.millisecondsSinceEpoch,
-                       //             closed: 'N',
-                       //             location: controllerLocation.value.text,
-                       //             pkEventId: 0
-                       //         )
-                       //     );
-//
-                       //     print('Event saved. Id event on db: ' + performSaveEventId.data.toString());
-//
-                       //     List<WorkstationModel> workstationModelList = [];
-                       //     List<WorkstationModel> workstationChampModelList = [];
-                       //     if(performSaveEventId != null && performSaveEventId.data > 0){
-                       //       print('Populate with bar workstation model the workstations list for event with id ${performSaveEventId.data.toString()}');
-                       //       for(int counter = 0; counter < _barPositionCounter; counter ++){
-                       //         workstationModelList.add(WorkstationModel(
-                       //             closed: 'N',
-                       //             extra: '',
-                       //             fkEventId: performSaveEventId.data,
-                       //             pkWorkstationId: 0,
-                       //             name: 'Bar ' + (counter + 1).toString(),
-                       //             responsable: '',
-                       //             type: WORKSTATION_TYPE_BAR
-                       //         ));
-                       //       }
-                       //       print('Populate with champagnerie workstation model the workstations list for event with id ${performSaveEventId.data.toString()}');
-//
-                       //       for(int counter = 0; counter < _champagneriePositionCounter; counter ++){
-                       //         workstationChampModelList.add(WorkstationModel(
-                       //             closed: 'N',
-                       //             extra: '',
-                       //             fkEventId: performSaveEventId.data,
-                       //             pkWorkstationId: 0,
-                       //             name: 'Champagnerie ' + (counter + 1).toString(),
-                       //             responsable: '',
-                       //             type: WORKSTATION_TYPE_CHAMP
-                       //         ));
-                       //       }
-                       //     }
-                       //     Response listpout = await dataBundleNotifier.getclientServiceInstance().createWorkstations(workstationModelList);
-                       //     Response listpoutChamps = await dataBundleNotifier.getclientServiceInstance().createWorkstations(workstationChampModelList);
-//
-                       //     print('Create relation between storageproduct and workstations');
-                       //     if(listpout != null && listpout.data != null && listpout.data.length > 0){
-                       //       await dataBundleNotifier
-                       //           .getclientServiceInstance()
-                       //           .createRelationBetweenWorkstationsAndProductStorage(listpout.data, getIdsListFromCurrentStorageProductList(currentStorageProductModelListBar));
-                       //     }
-                       //     if(listpoutChamps != null && listpoutChamps.data != null && listpoutChamps.data.length > 0){
-                       //       await dataBundleNotifier
-                       //           .getclientServiceInstance()
-                       //           .createRelationBetweenWorkstationsAndProductStorage(listpoutChamps.data, getIdsListFromCurrentStorageProductList(currentStorageProductModelListChampagnerie));
-                       //     }
-                       //     if(dataBundleNotifier.currentBranch != null){
-                       //       List<EventModel> _eventModelList = await dataBundleNotifier.getclientServiceInstance().retrieveEventsListByBranchId(dataBundleNotifier.currentBranch);
-                       //       dataBundleNotifier.addCurrentEventsList(_eventModelList);
-                       //     }
-//
-                       //     String eventDatePretty = '${getDayFromWeekDay(currentDate.weekday)} ${currentDate.day.toString()} ${getMonthFromMonthNumber(currentDate.month)} ${currentDate.year.toString()}';
-//
-                       //     dataBundleNotifier.getclientMessagingFirebase().sendNotificationToTopic('branch-${dataBundleNotifier.currentBranch.pkBranchId.toString()}',
-                       //       'Evento ${controllerEventName.value.text} in programma $eventDatePretty a ${controllerLocation.value.text}', '${dataBundleNotifier.userDetailsList[0].firstName} ha creato un nuovo evento', '');
-//
-                       //     Navigator.pushNamed(context, EventHomeScreen.routeName);
-                       //     context.loaderOverlay.hide();
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                duration: const Duration(milliseconds: 800),
-                                content: Text('Evento ${controllerEventName.value.text} creato')));
-                            }catch(e){
-                              print('Exception: ' + e.toString());
+
+                            if(apiV1AppEventSavePost.isSuccessful){
+                              dataBundleNotifier.refreshCurrentBranchData();
+
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(SnackBar(
-                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                  duration: Duration(milliseconds: 2800),
-                                  content: Text(e.toString())));
+                                  duration: const Duration(milliseconds: 800),
+                                  content: Text('Evento ${controllerEventName.value.text} creato correttamente')));
+                              Navigator.of(context).pop();
+                            }else{
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                  duration: const Duration(milliseconds: 800),
+                                  content: Text('Errore durante il salvataggio dell\'evento ${controllerEventName.value.text}. Err: ' + apiV1AppEventSavePost.error!.toString())));
                             }
+
+                          }catch(e){
+                            print('Exception: ' + e.toString());
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                backgroundColor: Colors.redAccent.withOpacity(0.8),
+                                duration: Duration(milliseconds: 2800),
+                                content: Text(e.toString())));
+                          }finally{
+                            context.loaderOverlay.hide();
                           }
-                        },
-                      color: kCustomGreen, textColor: Colors.white,
+                        }
+                      },
+                      color: kCustomGreen, textColor: kCustomWhite,
                     ),
                   ),
                 ),
@@ -576,58 +546,18 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
     return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
   }
 
-  List<DataColumn> kTableColumns = <DataColumn>[
-    const DataColumn(
-      label: Text('Prodotto'),
-    ),
-    const DataColumn(
-      label: Text('Giacenza'),
-      numeric: true,
-    ),
-    const DataColumn(
-      label: Text('Q/100'),
-      numeric: true,
-    ),
-  ];
 
-  Future<List<StorageProductModel>> retrieveProductListFromChoicedStorage(StorageModel currentStorageModel) async {
-    ClientVatService clientVatService = ClientVatService();
 
-    List<StorageProductModel> storageProductModelList = await clientVatService.retrieveRelationalModelProductsStorage(currentStorageModel.pkStorageId);
-    return storageProductModelList;
-  }
-
-  List<int> getIdsListFromCurrentStorageProductList(List<StorageProductModel> currentStorageProductModelList) {
-
-    List<int> ids = [];
-    currentStorageProductModelList.forEach((currentStorageProdutct) {
-      if(currentStorageProdutct.selected){
-        ids.add(currentStorageProdutct.pkStorageProductId);
-      }
-    });
-    return ids;
-  }
-
-  int getNumberElementsFromProductList(List<StorageProductModel> currentStorageProductModelList) {
-    int counter = 0;
-
-    currentStorageProductModelList.forEach((currentStorageProdutct) {
-      if(currentStorageProdutct.selected){
-        counter = counter + 1;
-      }
-    });
-    return counter;
-  }
 
   List<Workstation> buildWorkstationsList() {
     List<Workstation> output = [];
     for(int i = 0; i < _barPositionCounter; i++){
       output.add(Workstation(
-        name: 'Bar ' + i.toString(),
-        products: [],
-        extra: '',
-        responsable: '',
-        workstationType: WorkstationWorkstationType.bar
+          name: 'Bar ' + i.toString(),
+          products: [],
+          extra: '',
+          responsable: '',
+          workstationType: WorkstationWorkstationType.bar
       ));
     }
 
@@ -643,6 +573,57 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
 
 
     return output;
+  }
+
+  buildListProduct(DataBundleNotifier dataBundleNotifier) {
+    List<Widget> listWidget = [
+    ];
+    for (var product in dataBundleNotifier.getListBarProduct()) {
+      listWidget.add(
+        Padding(
+          padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBlack, fontSize: getProportionateScreenHeight(17)),),
+                  Text(product.unitMeasure.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGrey, fontWeight: FontWeight.bold,),),
+                ],
+              ),
+              IconButton(onPressed: () async {
+                dataBundleNotifier.removeProdFromBarListProduct(product);
+              }, icon: Icon(Icons.delete, color: kRed, size: getProportionateScreenHeight(25)),
+
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: getProportionateScreenWidth(900),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 30),
+          child: Column(children: listWidget,),
+        ),
+      ),
+    );
+  }
+
+  List<num> getIds(DataBundleNotifier dataBundleNotifier) {
+    List<num> ids = [];
+
+    dataBundleNotifier.getListBarProduct().forEach((element) {
+      ids.add(element.productId!);
+    });
+
+    return ids;
   }
 }
 

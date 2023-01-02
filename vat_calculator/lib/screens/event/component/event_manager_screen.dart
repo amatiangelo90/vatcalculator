@@ -1,26 +1,24 @@
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/event_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_model.dart';
-import 'package:vat_calculator/client/vatservice/model/workstation_type.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/expence_event_reg_card.dart';
-import 'package:vat_calculator/screens/event/component/recap_workstations_expences_widget.dart';
-import 'package:vat_calculator/screens/event/component/workstation_card.dart';
+import 'package:vat_calculator/screens/event/component/workstation_manager_screen.dart';
 import 'package:vat_calculator/size_config.dart';
-import '../../../client/vatservice/model/move_product_between_storage_model.dart';
-import '../../../client/vatservice/model/utils/privileges.dart';
 import '../../../constants.dart';
+import '../../../swagger/swagger.enums.swagger.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 import '../../home/main_page.dart';
-import 'expence_event_edit_card.dart';
 
 class EventManagerScreen extends StatefulWidget {
 
   static String routeName = 'eventmanagerscreen';
+  final Event event;
 
+  const EventManagerScreen({super.key, required this.event});
   @override
   State<EventManagerScreen> createState() => _EventManagerScreenState();
 }
@@ -31,51 +29,423 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   @override
   Widget build(BuildContext context) {
 
+    double width = MediaQuery.of(context).size.width;
+
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-        return DefaultTabController(
-          length: 4,
-          child: Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
 
-              bottom: TabBar(
-                indicatorColor: Colors.white,
-                indicatorWeight: 2,
-                tabs: [
-                  Tab(icon: SvgPicture.asset('assets/icons/party.svg', width: getProportionateScreenHeight(34),color: Colors.white,)),
-                  Tab(icon: SvgPicture.asset('assets/icons/soldiout_white.svg', width: getProportionateScreenHeight(27),)),
-                  Tab(icon: SvgPicture.asset('assets/icons/soldiout_white_orange.svg', width: getProportionateScreenHeight(27),)),
-                  Tab(icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white,)),
-                ],
-              ),
-              leading: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                  Navigator.pushNamed(context, HomeScreenMain.routeName);
-                  }),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
-              centerTitle: true,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(dataBundleNotifier.currentEventModel.eventName,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(20), color: Colors.white, fontWeight: FontWeight.bold),),
-                  Text(
-                    'Creato da: ' + dataBundleNotifier.currentEventModel.owner,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(11), color: Colors.white, fontWeight: FontWeight.bold),),
-                ],
-              ),
-              elevation: 5,
-            ),
-            backgroundColor: Colors.white,
-            body: TabBarView(
+        Iterable<Workstation> barList = dataBundleNotifier.getCurrentEvent()
+            .workstations!.where((element) => element.workstationType == WorkstationWorkstationType.bar);
+
+
+        return Scaffold(
+          bottomSheet: Container(
+            color: kCustomGrey,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                buildWorkstationsManagmentScreen(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : RecapWorkstationsWidget(),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildResocontoScreenExtraExpences(dataBundleNotifier.currentWorkstationModelList, dataBundleNotifier, dataBundleNotifier.currentEventModel, context),
-                dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? getPriviledgeWarningContainer() : buildEventSettingsScreen(dataBundleNotifier.currentEventModel, dataBundleNotifier, dataBundleNotifier.currentWorkstationModelList),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(dataBundleNotifier.getCurrentEvent().location!, textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                ),
+              ],
+            ),
+          ),
+          key: _scaffoldKey,
+          appBar: AppBar(
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomWhite, height: getProportionateScreenWidth(30)),
+              ),
+            ],
+            leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  Navigator.pushNamed(context, HomeScreenMain.routeName);
+                }),
+            iconTheme: const IconThemeData(color: kCustomWhite),
+            backgroundColor: kCustomGrey,
+            centerTitle: true,
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(dataBundleNotifier.getCurrentEvent().name!,
+                  style: TextStyle(fontSize: getProportionateScreenHeight(26), color: kCustomWhite, fontWeight: FontWeight.bold),),
+                Text(
+                  'Creato da: ' + dataBundleNotifier.getCurrentEvent().createdBy!,
+                  style: TextStyle(fontSize: getProportionateScreenHeight(11), color: kCustomWhite, fontWeight: FontWeight.bold),),
+              ],
+            ),
+            elevation: 0,
+          ),
+          floatingActionButton: Container(
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                    color: Colors.white, width: 1, style: BorderStyle.solid)),
+            child: FloatingActionButton(
+              heroTag: "btn1",
+              onPressed: (){
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog (
+                      backgroundColor:  kCustomGrey,
+                      contentPadding: EdgeInsets.zero,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.all(
+                              Radius.circular(10.0))),
+                      content: Builder(
+                        builder: (context) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10.0),
+                                        topLeft: Radius.circular(10.0) ),
+                                    color: kCustomGrey,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('  Crea postazione',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: getProportionateScreenWidth(15),
+                                            fontWeight: FontWeight.bold,
+                                            color: kCustomWhite,
+                                          )),
+                                      IconButton(icon: const Icon(
+                                        Icons.clear,
+                                        color: kCustomWhite,
+                                      ), onPressed: () { Navigator.pop(context); },),
+
+                                    ],
+                                  ),
+                                ),
+
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+                                      child: Container(
+                                        width: getProportionateScreenWidth(500),
+                                          height: getProportionateScreenHeight(120),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            image: DecorationImage(
+                                              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                              image: const AssetImage("assets/png/bar.png"),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          child: OutlinedButton(
+                                            onPressed: () async {
+                                              Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
+                                                workstationType: WorkstationWorkstationType.bar,
+                                                eventId: dataBundleNotifier.getCurrentEvent().eventId!,
+                                                responsable: '',
+                                                name: 'NUOVO BAR',
+                                                products: [],
+                                                extra: '',
+                                              ));
+
+                                              if(createWorkstationResponse.isSuccessful){
+                                                Navigator.of(context).pop();
+                                                dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: kCustomGreen,
+                                                    duration: Duration(milliseconds: 1000),
+                                                    content: Text('Postazione bar creata correttamente'
+                                                    )));
+                                              }else{
+                                                Navigator.of(context).pop();
+                                                dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: kRed,
+                                                    duration: Duration(milliseconds: 3000),
+                                                    content: Text('Errore durante la creazione della postazione bar. Riprova fra 2 minuti.'
+                                                    )));
+                                              }
+
+                                            },
+                                            style: ButtonStyle(
+                                              elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                              backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                              side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomGreen),),
+                                              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10),
+                                                  child: Text('CREA POSTAZIONE BAR',style: TextStyle(
+                                                      color: kCustomWhite,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize:
+                                                      getProportionateScreenWidth(
+                                                          15)),),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 4, left: 8, top: 5, bottom: 20),
+                                      child: Container(
+                                        width: getProportionateScreenWidth(500),
+                                          height: getProportionateScreenHeight(120),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(20),
+                                            image: DecorationImage(
+                                              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                              image: AssetImage("assets/png/champagnerie.png"),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          child: OutlinedButton(
+                                            onPressed: () async {
+                                              Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
+                                                workstationType: WorkstationWorkstationType.champagnerie,
+                                                eventId: dataBundleNotifier.getCurrentEvent().eventId!,
+                                                responsable: '',
+                                                name: 'NUOVA CHAMPAGNERIE',
+                                                products: [],
+                                                extra: '',
+                                              ));
+
+                                              if(createWorkstationResponse.isSuccessful){
+                                                Navigator.of(context).pop();
+                                                dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                    backgroundColor: kCustomPinkAccent,
+                                                    duration: Duration(milliseconds: 1000),
+                                                    content: Text('Postazione champagnerie creata correttamente'
+                                                    )));
+                                              }else{
+                                                Navigator.of(context).pop();
+                                                dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    backgroundColor: kRed,
+                                                    duration: Duration(milliseconds: 3000),
+                                                    content: Text('Errore durante la creazione della postazione champagnerie. Riprova fra 2 minuti.'
+                                                    )));
+                                              }
+                                            },
+                                            style: ButtonStyle(
+                                              elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                              backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                              side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomPinkAccent),),
+                                              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.all(10),
+                                                  child: Text('CREA CHAMPAGNERIE',style: TextStyle(
+                                                      color: kCustomWhite,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize:
+                                                      getProportionateScreenWidth(
+                                                          15)),),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                );
+              },
+              child: Icon(Icons.add, color: Colors.white, size: getProportionateScreenWidth(30)),
+              backgroundColor: Colors.white.withOpacity(0.1),
+            ),
+          ),
+          backgroundColor: kCustomGrey,
+          body: Container(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                image: AssetImage("assets/png/bar.png"),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            height:  width * 3/7,
+                            child: OutlinedButton(
+                              onPressed: (){
+                                showModalBottomSheet(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(25.0),
+                                      ),
+                                    ),
+                                    context: context,
+                                    builder: (context) {
+                                      return Builder(
+                                        builder: (context) {
+
+                                          return SizedBox(
+                                            width: getProportionateScreenWidth(900),
+                                            height: getProportionateScreenHeight(600),
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    decoration: const BoxDecoration(
+                                                      borderRadius: BorderRadius.only(
+                                                          topRight: Radius.circular(10.0),
+                                                          topLeft: Radius.circular(10.0)),
+                                                      color: kCustomGrey,
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Text(
+                                                          '  Lista Bar',
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                            getProportionateScreenWidth(17),
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                        IconButton(
+                                                          icon: const Icon(
+                                                            Icons.clear,
+                                                            color: Colors.white,
+                                                          ),
+                                                          onPressed: () {
+                                                            Navigator.pop(context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Column(
+                                                    children: buildWorkstationListWidget(barList),
+                                                  ),
+                                                  const SizedBox(height: 40),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      );
+                                    });
+                              },
+                              style: ButtonStyle(
+                                elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomGreen),),
+                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Text('BAR',style: TextStyle(
+                                        color: kCustomWhite,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                        getProportionateScreenWidth(
+                                            17)),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(dataBundleNotifier.getCurrentEvent()
+                                        .workstations!.where((element) => element.workstationType == WorkstationWorkstationType.bar).length.toString(), style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: getProportionateScreenWidth(50),
+                                        color: kCustomWhite),),
+                                  ),
+                                  Text('')
+                                ],
+                              ),
+                            )
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 8, left: 4, top: 5),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              image: DecorationImage(
+                                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                image: AssetImage("assets/png/champagnerie.png"),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            height:  width * 3/7,
+                            child: OutlinedButton(
+                              onPressed: (){
+                              },
+                              style: ButtonStyle(
+                                elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomPinkAccent),),
+                                shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10),
+                                    child: Text('CHAMPAGNERIE',style: TextStyle(
+                                        color: kCustomWhite,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                        getProportionateScreenWidth(
+                                            17)),),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(dataBundleNotifier.getCurrentEvent()
+                                        .workstations!.where((element) => element.workstationType == WorkstationWorkstationType.champagnerie).length.toString(), style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: getProportionateScreenWidth(50),
+                                        color: kCustomWhite),),
+                                  ),
+                                  Text(''),
+                                ],
+                              ),
+                            )
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -84,11 +454,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  buildWorkstationsManagmentScreen(List<WorkstationModel> workstationModelList, DataBundleNotifier dataBundleNotifier, EventModel event) {
+  buildWorkstationsManagmentScreen(List<Workstation> workstationModelList, DataBundleNotifier dataBundleNotifier, Event event) {
     List<Widget> listWgBar = [];
 
-    if(dataBundleNotifier.currentPrivilegeType != Privileges.EMPLOYEE){
-      listWgBar.add(dataBundleNotifier.currentEventModel.closed == 'Y' ? SizedBox(width: 0,) : Container(
+    if(dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee){
+      listWgBar.add(dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.chiuso ? SizedBox(width: 0,) : Container(
         color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -96,35 +466,35 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             SizedBox(
               width: getProportionateScreenWidth(180),
               child: Card(
-                shadowColor: kCustomOrange,
+                shadowColor: kPinaColor,
                 elevation: 5,
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: kPrimaryColor,
+                    backgroundColor: kCustomGrey,
                   ),
                   child: Column(
                     children: [
                       Stack(
                         children: [ SvgPicture.asset(
                           'assets/icons/bartender.svg',
-                          color: kCustomOrange,
+                          color: kPinaColor,
                           width: 25,
                         ),
                           Positioned(
                             top: 26.0,
                             right: 9.0,
                             child: Stack(
-                              children: <Widget>[
-                                const Icon(
+                              children: const <Widget>[
+                                Icon(
                                   Icons.brightness_1,
                                   size: 18,
-                                  color: kPrimaryColor,
+                                  color: kCustomGrey,
                                 ),
                                 Positioned(
                                   right: 2.5,
                                   top: 2.5,
                                   child: Center(
-                                    child: Icon(Icons.add_circle_outline, size: 13, color: kCustomOrange,),
+                                    child: Icon(Icons.add_circle_outline, size: 13, color: kPinaColor,),
                                   ),
                                 ),
                               ],
@@ -136,22 +506,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     ],
                   ),
                   onPressed: () async {
-                    await dataBundleNotifier.getclientServiceInstance().createWorkstations([
-                      WorkstationModel(
-                          closed: 'N',
-                          extra: '',
-                          fkEventId: dataBundleNotifier.currentEventModel.pkEventId,
-                          pkWorkstationId: 0,
-                          name: 'Nuovo Bar',
-                          responsable: '',
-                          type: WORKSTATION_TYPE_BAR
-                      )
-                    ]);
 
-                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(dataBundleNotifier.currentEventModel);
-
-                    dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
-                    dataBundleNotifier.workstationsProductsMapCalculate();
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
@@ -168,7 +523,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 elevation: 5,
                 child: TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: kPrimaryColor,
+                    backgroundColor: kCustomGrey,
                   ),
                   child: Column(
                     children: [
@@ -187,7 +542,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                 Icon(
                                   Icons.brightness_1,
                                   size: 18,
-                                  color: kPrimaryColor,
+                                  color: kCustomGrey,
                                 ),
                                 Positioned(
                                   right: 2.5,
@@ -205,22 +560,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     ],
                   ),
                   onPressed: () async {
-                    await dataBundleNotifier.getclientServiceInstance().createWorkstations([
-                      WorkstationModel(
-                          closed: 'N',
-                          extra: '',
-                          fkEventId: dataBundleNotifier.currentEventModel.pkEventId,
-                          pkWorkstationId: 0,
-                          name: 'Nuova Champagnerie',
-                          responsable: '',
-                          type: WORKSTATION_TYPE_CHAMP
-                      )
-                    ]);
 
-                    List<WorkstationModel> workstationModelListNew = await dataBundleNotifier.getclientServiceInstance().retrieveWorkstationListByEventId(dataBundleNotifier.currentEventModel);
-
-                    dataBundleNotifier.setCurrentWorkstationModelList(workstationModelListNew);
-                    dataBundleNotifier.workstationsProductsMapCalculate();
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
                         backgroundColor: Colors.green.withOpacity(0.8),
@@ -237,7 +577,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
 
 
-    if(event.closed == 'Y'){
+    if(event.eventStatus == EventEventStatus.chiuso){
       listWgBar.add(
         SizedBox(
           width: getProportionateScreenWidth(500),
@@ -248,65 +588,21 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ),
       );
     }
-    workstationModelList.where((element) => element.type == WORKSTATION_TYPE_BAR).forEach((wkStation) {
-      listWgBar.add(WorkstationCard(
-        eventModel: dataBundleNotifier.currentEventModel,
-        workstationModel: wkStation,
-        isBarType : true,
-      ),);
-    });
-    List<Widget> listWgChamp = [];
-    workstationModelList.where((element) => element.type == WORKSTATION_TYPE_CHAMP).forEach((wkStation) {
-      listWgChamp.add(WorkstationCard(
-        eventModel: dataBundleNotifier.currentEventModel,
-        workstationModel: wkStation,
-        isBarType : false,
-      ),);
-    });
-
     return SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(children: [
-          Column(
-            children: listWgBar.isNotEmpty ? listWgBar : [
-              Padding(
-                padding: const EdgeInsets.all(38.0),
-                child: Column(
-                  children: listWgChamp.isNotEmpty ? listWgChamp : [
-                    Center(
-                      child: Text('Nessuna postazione Bar presente',textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenHeight(16))),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Column(
-            children: listWgChamp.isNotEmpty ? listWgChamp : [
-              Padding(
-                padding: const EdgeInsets.all(38.0),
-                child: Column(
-                  children: listWgChamp.isNotEmpty ? listWgChamp : [
-                    Center(
-                      child: Text('Nessuna postazione Champagnerie presente',textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenHeight(16))),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
 
           SizedBox(height: 50),
         ])
     );
   }
 
-  buildEventSettingsScreen(EventModel event, DataBundleNotifier dataBundleNotifier, workstationModelList) {
+  buildEventSettingsScreen(Event event, DataBundleNotifier dataBundleNotifier, workstationModelList) {
 
-    TextEditingController controllerEventName = TextEditingController(text: event.eventName);
+    TextEditingController controllerEventName = TextEditingController(text: event.name);
     TextEditingController controllerLocation = TextEditingController(text: event.location);
     List<Widget> widgetList = [];
-    if(event.closed == 'Y'){
+    if(event.eventStatus == EventEventStatus.chiuso){
       widgetList.add(SizedBox(
         width: getProportionateScreenWidth(500),
         child: Container(color: kCustomBordeaux, child: Padding(
@@ -334,7 +630,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           controller: controllerEventName,
           clearButtonMode: OverlayVisibilityMode.editing,
           autocorrect: false,
-          enabled: dataBundleNotifier.currentEventModel.closed != 'Y' ? true : false,
+          enabled: event.eventStatus == EventEventStatus.chiuso ? true : false,
           placeholder: 'Nome Evento',
         ),
       ),
@@ -355,7 +651,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           controller: controllerLocation,
           clearButtonMode: OverlayVisibilityMode.editing,
           autocorrect: false,
-          enabled: dataBundleNotifier.currentEventModel.closed != 'Y' ? true : false,
+          enabled: event.eventStatus == EventEventStatus.chiuso ? true : false,
           placeholder: 'Location',
         ),
       ),
@@ -364,7 +660,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     widgetList.add(
       SizedBox(height: 20),
     );
-    if(dataBundleNotifier.currentEventModel.closed != 'Y'){
+    if(event.eventStatus == EventEventStatus.aperto){
       widgetList.add(
         SizedBox(
           width: getProportionateScreenWidth(300),
@@ -388,10 +684,10 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   ));
                 }else{
 
-                  event.location = controllerLocation.text;
-                  event.eventName = controllerEventName.text;
+                  //event.location = controllerLocation.text;
+                  //event.eventName = controllerEventName.text;
 
-                  dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
+                  //dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
 
                 }
               }),
@@ -407,7 +703,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
 
     List<Widget> widgetListButtons = [
-      event.closed == 'N' ? SizedBox(
+      event.eventStatus == EventEventStatus.aperto ? SizedBox(
         width: getProportionateScreenWidth(300),
         child: CupertinoButton(
             color: Colors.redAccent,
@@ -427,15 +723,16 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Chiudi Evento?', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                          const Text('Chiudi Evento?', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),
-                                child: Text('Chiudendo l\'evento ${event.eventName} i tuoi dipendenti non potranno più accedervi. '
-                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'. La merce residua verrà caricata nel magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                child: Text('Chiudendo l\'evento ${event.name} i tuoi dipendenti non potranno più accedervi. '
+                                    'Puoi, in seguito, consultare gli eventi chiusi andando nella sezione \'ARCHIVIO EVENTI\'. La merce residua verrà caricata nel magazzino ${dataBundleNotifier.getCurrentBranch().storages!
+                                    .where((element) => dataBundleNotifier.getCurrentEvent().storageId == element.storageId).first.name!}', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
                               ),
                               SizedBox(height: 40),
                               InkWell(
@@ -451,82 +748,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       width: getProportionateScreenWidth(300),
                                       child: CupertinoButton(child: const Text('CHIUDI EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent, onPressed: () async {
                                         try{
-                                          await dataBundleNotifier.getclientServiceInstance().performSetNullAllProductsWithNegativeValueForStockStorage(dataBundleNotifier.getStorageModelById(dataBundleNotifier.currentEventModel.fkStorageId!)!);
 
-                                          Map<int, SupportTableObj> supportTableObjList = {};
-
-                                          supportTableObjList.clear();
-                                          supportTableObjList = {};
-
-                                          Set<int> idsProductsPresent = Set();
-
-                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
-                                            dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
-                                              listProducts.forEach((product) {
-                                                idsProductsPresent.add(product.fkProductId);
-                                              });
-                                            });
-                                          }
-
-                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
-                                            idsProductsPresent.forEach((productId) {
-
-                                              dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
-                                                listProducts.forEach((product) {
-
-                                                  if(product.fkProductId == productId){
-
-                                                    if(supportTableObjList.containsKey(productId)){
-                                                      supportTableObjList[productId]!.amountout = supportTableObjList[productId]!.amountout + product.consumed;
-                                                      supportTableObjList[productId]!.amountin = supportTableObjList[productId]!.amountin + product.refillStock;
-
-                                                    }else{
-                                                      supportTableObjList[productId] = SupportTableObj(
-                                                          id: productId,
-                                                          amountin: product.refillStock,
-                                                          amountout: product.consumed,
-                                                          productName: product.productName,
-                                                          price: product.productPrice,
-                                                          unitMeasure: product.unitMeasure
-                                                      );
-                                                    }
-                                                  }
-                                                });
-                                              });
-                                            });
-                                          }
-                                          
-                                          
-                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
-                                            List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
-
-                                            supportTableObjList.forEach((prodId, value) {
-                                              listMoveProductBetweenStorageModel.add(
-                                                  MoveProductBetweenStorageModel(
-                                                      amount: value.amountout,
-                                                      pkProductId: prodId,
-                                                      storageIdFrom: 0,
-                                                      storageIdTo: dataBundleNotifier.currentEventModel.fkStorageId
-                                                  )
-                                              );
-                                            });
-                                            await dataBundleNotifier.getclientServiceInstance()
-                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
-                                            );
-                                          }
-
-                                          event.closed = 'Y';
-                                          await dataBundleNotifier.getclientServiceInstance().updateEventModel(event);
-                                          dataBundleNotifier.cleanExtraArgsListProduct();
-                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
-
-                                          Navigator.pushNamed(context, HomeScreenMain.routeName);
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Evento ' +
-                                                    event.eventName + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}'),
+                                                    event.name! + ' chiuso. Residuo merce caricata in magazzino ${dataBundleNotifier.getCurrentBranch().storages!
+                                                    .where((element) => dataBundleNotifier.getCurrentEvent().storageId == element.storageId).first.name!}'),
                                           ));
                                         }catch(e){
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -534,7 +763,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Impossibile chiudere evento ' +
-                                                    event.eventName + '. ' + e.toString()),
+                                                    event.name! + '. ' + e.toString()),
                                           ));
                                         }
                                       }
@@ -572,15 +801,16 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text('Elimina Evento?', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
+                          const Text('Elimina Evento?', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),
-                                child: Text('Eliminando l\'evento ${event.eventName} tutta la merce caricata nelle postazioni lavorative verrà reinserita nel magazzino di riferimento  '
-                                    '${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                child: Text('Eliminando l\'evento ${event.name!} tutta la merce caricata nelle postazioni lavorative verrà reinserita nel magazzino di riferimento  '
+                                    '${dataBundleNotifier.getCurrentBranch().storages!
+                                    .where((element) => dataBundleNotifier.getCurrentEvent().storageId == element.storageId).first.name!}.', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
                               ),
                               SizedBox(height: 60),
                               InkWell(
@@ -597,80 +827,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       child: CupertinoButton(child: const Text('ELIMINA EVENTO', style: TextStyle(fontWeight: FontWeight.bold)), color: kCustomBordeaux, onPressed: () async {
                                         try{
 
-                                          Map<int, SupportTableObj> supportTableObjList = {};
-
-                                          supportTableObjList.clear();
-                                          supportTableObjList = {};
-
-                                          Set<int> idsProductsPresent = Set();
-
-                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
-                                            dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
-                                              listProducts.forEach((product) {
-                                                idsProductsPresent.add(product.fkProductId);
-                                              });
-                                            });
-                                          }
-
-                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
-                                            idsProductsPresent.forEach((productId) {
-
-                                              dataBundleNotifier.workstationsProductsMap.forEach((workstationId, listProducts) {
-                                                listProducts.forEach((product) {
-
-                                                  if(product.fkProductId == productId){
-
-                                                    if(supportTableObjList.containsKey(productId)){
-                                                      supportTableObjList[productId]!.amountout = supportTableObjList[productId]!.amountout + product.consumed;
-                                                      supportTableObjList[productId]!.amountin = supportTableObjList[productId]!.amountin + product.refillStock;
-
-                                                    }else{
-                                                      supportTableObjList[productId] = SupportTableObj(
-                                                          id: productId,
-                                                          amountin: product.refillStock,
-                                                          amountout: product.consumed,
-                                                          productName: product.productName,
-                                                          price: product.productPrice,
-                                                          unitMeasure: product.unitMeasure
-                                                      );
-                                                    }
-                                                  }
-                                                });
-                                              });
-                                            });
-                                          }
-
-                                          if(dataBundleNotifier.workstationsProductsMap != null || dataBundleNotifier.workstationsProductsMap.isNotEmpty){
-                                            List<MoveProductBetweenStorageModel> listMoveProductBetweenStorageModel = [];
-
-                                            supportTableObjList.forEach((prodId, value) {
-                                              listMoveProductBetweenStorageModel.add(
-                                                  MoveProductBetweenStorageModel(
-                                                      amount: value.amountin,
-                                                      pkProductId: prodId,
-                                                      storageIdFrom: 0,
-                                                      storageIdTo: dataBundleNotifier.currentStorage.pkStorageId
-                                                  )
-                                              );
-                                            });
-                                            await dataBundleNotifier.getclientServiceInstance()
-                                                .moveProductBetweenStorage(listMoveProductBetweenStorageModel: listMoveProductBetweenStorageModel
-                                            );
-                                          }
-
-
-
-                                          await dataBundleNotifier.getclientServiceInstance().deleteEventModel(event);
-                                          dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
                                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                             backgroundColor: Colors.redAccent,
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Evento ' +
-                                                    event.eventName + ' Eliminato. Merce caricata in magazzino ${dataBundleNotifier.getStorageModelById(event.fkStorageId)!.name}'),
+                                                    event.name! + ' Eliminato. Merce caricata in magazzino ${dataBundleNotifier.getCurrentBranch().storages!
+                                                    .where((element) => dataBundleNotifier.getCurrentEvent().storageId == element.storageId).first.name!}'),
                                           ));
-
-                                          dataBundleNotifier.setCurrentBranch(dataBundleNotifier.getCurrentBranch());
                                           Navigator.pushNamed(context, HomeScreenMain.routeName);
 
                                         }catch(e){
@@ -679,7 +843,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                             duration: const Duration(milliseconds: 3000),
                                             content: Text(
                                                 'Impossibile eliminare evento ' +
-                                                    event.eventName + '. ' + e.toString()),
+                                                    event.name! + '. ' + e.toString()),
                                           ));
                                         }
                                       }
@@ -694,13 +858,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     ),
                   )
               );
-
-
             }),
       ),
     ];
     return Container(
-      color: kPrimaryColor,
+      color: kCustomGrey,
       child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -717,8 +879,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  buildResocontoScreenExtraExpences(List<WorkstationModel> workstationModelList,
-      DataBundleNotifier dataBundleNotifier, EventModel event, context) {
+  buildResocontoScreenExtraExpences(List<Workstation> workstationModelList,
+      DataBundleNotifier dataBundleNotifier, Event event, context) {
     return FutureBuilder(
       initialData: const Center(
           child: CircularProgressIndicator(
@@ -731,9 +893,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  Future<Widget> retrieveDataToBuildRecapWidgetExtraExpences(List<WorkstationModel> workstationModelList,
+  Future<Widget> retrieveDataToBuildRecapWidgetExtraExpences(List<Workstation> workstationModelList,
       DataBundleNotifier dataBundleNotifier,
-      EventModel event, context) async {
+      Event event, context) async {
 
     double totalExpenceEvent = 0.0;
 
@@ -753,125 +915,15 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       ]),
     ];
 
-    dataBundleNotifier.listExpenceEvent.forEach((expence) {
-      totalExpenceEvent = totalExpenceEvent + (expence.amount * expence.cost);
-      rowsExpenceEvent.add(TableRow( children: [
-        GestureDetector(
-          onTap: (){
-
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  scrollable: true,
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: EditingExpenceEventCard(
-                    expenceEventModel: expence,
-                  ),
-                ));
-
-          },
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 0, 0),
-                child: Text(expence.description, textAlign: TextAlign.start, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(13)),),
-              ),
-            ],
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  scrollable: true,
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: EditingExpenceEventCard(
-                    expenceEventModel: expence,
-                  ),
-                ));
-
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 10),
-            child: Text(expence.amount.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  scrollable: true,
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: EditingExpenceEventCard(
-                    expenceEventModel: expence,
-                  ),
-                ));
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
-            child: Text('x', textAlign: TextAlign.center, style: TextStyle( color: Colors.blue, fontSize: getProportionateScreenHeight(20)),),
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  scrollable: true,
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: EditingExpenceEventCard(
-                    expenceEventModel: expence,
-                  ),
-                ));
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-            child: Text(expence.cost.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-          ),
-        ),
-        GestureDetector(
-          onTap: (){
-            showDialog(
-                context: context,
-                builder: (_) => AlertDialog(
-                  scrollable: true,
-                  contentPadding: EdgeInsets.zero,
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10.0))),
-                  content: EditingExpenceEventCard(
-                    expenceEventModel: expence,
-                  ),
-                ));
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-            child: Text((expence.amount * expence.cost).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center, style: TextStyle( color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-          ),
-        ),
-      ]),);
-    });
-
     return Container(
-      color: kPrimaryColor,
+      color: kCustomGrey,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
-              event.closed == 'Y' ? SizedBox(
+              event.eventStatus == EventEventStatus.chiuso ? SizedBox(
                 width: getProportionateScreenWidth(500),
                 child: Container(color: kCustomBordeaux, child: Padding(
                   padding: const EdgeInsets.all(18.0),
@@ -915,11 +967,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                   shape: const RoundedRectangleBorder(
                                       borderRadius: BorderRadius.all(Radius.circular(10.0))),
                                   content: ExpenceEventCard(
-                                    eventModel: dataBundleNotifier.currentEventModel,
+                                    eventModel: dataBundleNotifier.getCurrentEvent(),
                                   ),
                                 ));
-
-
                           }
                       ),
                     ),
@@ -955,7 +1005,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ),
               Divider(
                 height: 44,
-                color: kPrimaryColor,
+                color: kCustomGrey,
               ),
               SizedBox(height: 50),
             ],
@@ -968,15 +1018,15 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   getPriviledgeWarningContainer() {
     return Container(
-      color: kPrimaryColor,
+      color: kCustomGrey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
             children: [
-              SvgPicture.asset('assets/icons/warning.svg', color: kCustomOrange, height: 100,),
-              Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kCustomOrange)),                        ],
+              SvgPicture.asset('assets/icons/warning.svg', color: kPinaColor, height: 100,),
+              Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kPinaColor)),                        ],
           ),
           Center(child: SizedBox(
               width: getProportionateScreenWidth(350),
@@ -988,6 +1038,36 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         ],
       ),
     );
+  }
+
+  buildWorkstationListWidget(Iterable<Workstation> barList) {
+    List<Widget> listout = [];
+
+    for (Workstation workstation in barList) {
+      listout.add(
+        ListTile(
+          leading: CircleAvatar(
+            backgroundColor: kCustomGreen,
+            child: Text(workstation.workstationId!.toString()),
+          ),
+          onTap: (){
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => WorkstationManagerScreen(
+                    workstationModel: workstation,
+                ),
+              ),
+            );
+          },
+          title: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(workstation.name!),
+          ),
+        ),
+      );
+    }
+    return listout;
   }
 }
 

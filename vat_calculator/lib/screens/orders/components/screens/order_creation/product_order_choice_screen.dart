@@ -1,17 +1,14 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import '../../../../../client/vatservice/model/utils/privileges.dart';
 import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../../../swagger/swagger.enums.swagger.dart';
 import '../../../../../swagger/swagger.models.swagger.dart';
-import '../../../../suppliers/components/add_product.dart';
 import 'order_confirm_screen.dart';
 import 'order_create_screen.dart';
 
@@ -59,13 +56,13 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                               Row(
                                 children: [
                                   Text('Prodotti: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
-                                  Text(dataBundleNotifier.getProdNumberFromBasket(), textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
+                                  Text(dataBundleNotifier.getProdNumberFromBasket(), textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(14)),),
                                 ],
                               ),
-                              dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Row(
+                              dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : Row(
                                 children: [
                                   Text('Prezzo: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
-                                  Text(dataBundleNotifier.calculateTotalFromBasket()!.toString() + ' €', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(14)),),
+                                  Text(dataBundleNotifier.calculateTotalFromBasket()!.toString() + ' €', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(14)),),
                                 ],
                               ),
                             ],
@@ -85,7 +82,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                             );
 
                           },
-                          color: kPrimaryColor,
+                          color: kCustomGrey,
                         ),
                       ],
                     ),
@@ -97,14 +94,14 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                       onPressed: () => {
                         Navigator.pushNamed(context, CreateOrderScreen.routeName),
                       }),
-                  iconTheme: const IconThemeData(color: kPrimaryColor),
+                  iconTheme: const IconThemeData(color: kCustomGrey),
                   backgroundColor: Colors.white,
                   actions: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Stack(
                         children: [
-                          const Icon(Icons.shopping_basket, color: kPrimaryColor,),
+                          const Icon(Icons.shopping_basket, color: kCustomGrey,),
                           dataBundleNotifier.getProdNumberFromBasket() == '0' ? Text('') : Positioned(
                               left: 10,
                               top: 1,
@@ -124,14 +121,14 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(18),
-                          color: kPrimaryColor,
+                          color: kCustomGrey,
                         ),
                       ),
                       Text(
                         'Immetti quantità per prodotti',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(10),
-                          color: kPrimaryColor,
+                          color: kCustomGrey,
                         ),
                       ),
                     ],
@@ -160,22 +157,12 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
           SizedBox(height: MediaQuery.of(context).size.height*0.3,),
           const Center(child: Text('Nessun prodotto registrato per il presente fornitore', textAlign: TextAlign.center,)),
           SizedBox(height: 20,),
-          SizedBox(
-            width: getProportionateScreenWidth(300),
-            child: DefaultButton(
-              textColor: Colors.white,
-              text: 'Crea prodotto',
-              press: () async {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
-              },
-              color: kPrimaryColor,
-            ),
-          ),
+
         ],
       ),);
       return list;
     }
-    list.add(Center(child: Text(supplier.name!, textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18)),)));
+    list.add(Center(child: Text(supplier.name!, textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(18)),)));
     list.add(
       Padding(
         padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -186,7 +173,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
           clearButtonMode: OverlayVisibilityMode.editing,
           placeholder: 'Ricerca prodotto',
           onChanged: (currentText) {
-            dataBundleNotifier.filterCurrentListProductByName(currentText);
+
           },
         ),
       ),
@@ -203,7 +190,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(currentProduct.productName!, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.w700),),
+                    Text(currentProduct.productName!, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.w700),),
                     Row(
                       children: [
                         Text(
@@ -264,7 +251,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                         },
                         textInputAction: TextInputAction.next,
                         style: TextStyle(
-                          color: kPrimaryColor,
+                          color: kCustomGrey,
                           fontWeight: FontWeight.w600,
                           fontSize: getProportionateScreenHeight(22),
                         ),
@@ -310,5 +297,9 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
         duration: const Duration(milliseconds: 2000),
         backgroundColor: color,
         content: Text(text, style: const TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+  }
+
+  refresh() {
+    setState((){});
   }
 }

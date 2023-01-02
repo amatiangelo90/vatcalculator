@@ -1,9 +1,28 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vat_calculator/size_config.dart';
 
+final _random = Random();
+
+const Color kLightYellow = Color(0xFFFFF9EC);
+const Color kLightYellow2 = Color(0xFFFFE4C7);
+const Color kDarkYellow = Color(0xFFF9BE7C);
+
+const Color kRed = Color(0xFFE46472);
+const Color kLavender = Color(0xFFc0a1f0);
+const Color kBlue = Color(0xFF6488E4);
+
+const Color kDarkBlue = Color(0xFF0D253F);
+
+// TODO quando chiudi l'evento mettere 0xFFE46472 come colore della card
+const List<String> colors = ['0xFFE46472', '0xFF0D253F'];
+String getRandomColor(){
+return colors[_random.nextInt(colors.length)];
+}
+
 const String kVersionApp = '1.0.82';
-const Color kPrimaryColor = Color(0XFF0A2227);
 const Color kCustomBlack = Color(0xff121212);
 const Color kCustomGreen =  Color(0xff398564);
 const Color kCustomGrey = Color(0xff1C1C1E);
@@ -16,26 +35,13 @@ const Color kBeigeColor = Color(0XFF80602F);
 const Color kCustomWhite = Color(0xFFF5F6F9);
 const Color kCustomBlue = Color(0xFF235789);
 const Color kCustomPinkAccent = Color(0xFFe8175d);
-Color kCustomOrange = Colors.yellow.shade700.withOpacity(0.8);
-const Color kCustomPurple = Color(0xFF9924ff);
 const Color kCustomEvidenziatoreGreen = Color(0xFF0ABB9C);
 
 const kPrimaryLightColor = Color(0xFFFFECDF);
 const kTextColor = Color(0xFF757575);
 
 const kAnimationDuration = Duration(milliseconds: 200);
-
 DateFormat dateFormat = DateFormat("yyyy-MM-dd");
-
-
-final headingStyle = TextStyle(
-  fontSize: getProportionateScreenWidth(28),
-  fontWeight: FontWeight.bold,
-  color: Colors.black,
-  height: 1.5,
-);
-
-const defaultDuration = Duration(milliseconds: 250);
 
 // Form Error
 final RegExp emailValidatorRegExp =

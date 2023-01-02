@@ -11,10 +11,18 @@ import '../../../../../swagger/swagger.models.swagger.dart';
 import '../../../../home/main_page.dart';
 import 'product_order_choice_screen.dart';
 
-class CreateOrderScreen extends StatelessWidget {
+class CreateOrderScreen extends StatefulWidget {
   const CreateOrderScreen({Key? key}) : super(key: key);
 
   static String routeName = 'create_order_screen';
+
+  @override
+  State<CreateOrderScreen> createState() => _CreateOrderScreenState();
+}
+
+class _CreateOrderScreenState extends State<CreateOrderScreen> {
+
+  String _filter = '';
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +36,7 @@ class CreateOrderScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
-              iconTheme: const IconThemeData(color: kPrimaryColor),
+              iconTheme: const IconThemeData(color: kCustomGrey),
               backgroundColor: kCustomWhite,
               centerTitle: true,
 
@@ -40,7 +48,7 @@ class CreateOrderScreen extends StatelessWidget {
                         'Crea Ordine',
                         style: TextStyle(
                           fontSize: getProportionateScreenWidth(19),
-                          color: kPrimaryColor,
+                          color: kCustomGrey,
                         ),
                       ),
                       Text(
@@ -107,12 +115,14 @@ class CreateOrderScreen extends StatelessWidget {
           clearButtonMode: OverlayVisibilityMode.editing,
           placeholder: 'Ricerca Fornitore per nome o codice',
           onChanged: (currentText) {
-            dataBundleNotifier.filterCurrentListSupplierByName(currentText);
+            setState((){
+              _filter = currentText;
+            });
           },
         ),
       ),
     );
-    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!) {
+    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.name!.contains(_filter))) {
       listout.add(
         GestureDetector(
           onTap: () async {
@@ -133,9 +143,9 @@ class CreateOrderScreen extends StatelessWidget {
               padding: const EdgeInsets.only(left: 12.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
-                color: kPrimaryColor,
+                color: kCustomGrey,
               ),
-              child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
+              child: buildSupplierRow(dataBundleNotifier, supplier, kCustomGrey),
             ),
           ),
         ),
@@ -174,7 +184,7 @@ class CreateOrderScreen extends StatelessWidget {
                   Text(
                     supplier.name!,
                     style: TextStyle(
-                        color: kPrimaryColor,
+                        color: kCustomGrey,
                         fontSize: getProportionateScreenWidth(17),
                         overflow: TextOverflow.fade,
                         fontWeight: FontWeight.bold
@@ -201,7 +211,7 @@ class CreateOrderScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 25, 30, 25),
-            child: Icon(Icons.arrow_forward_ios, size: getProportionateScreenHeight(25), color: kPrimaryColor),
+            child: Icon(Icons.arrow_forward_ios, size: getProportionateScreenHeight(25), color: kCustomGrey),
           ),
         ],
       ),

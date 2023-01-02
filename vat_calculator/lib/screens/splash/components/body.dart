@@ -66,7 +66,7 @@ class _BodyState extends State<Body> {
                     DefaultButton(
                       text: "Continua",
                       press: () {
-                      }, textColor: kCustomBlue, color: kPrimaryColor,
+                      }, textColor: kCustomBlue, color: kCustomGrey,
                     ),
                     const Spacer(),
                   ],
@@ -86,7 +86,7 @@ class _BodyState extends State<Body> {
       height: 10,
       width: currentPage == index ? 20 : 6,
       decoration: BoxDecoration(
-        color: currentPage == index ? kPrimaryColor : const Color(0xFFD8D8D8),
+        color: currentPage == index ? kCustomGrey : const Color(0xFFD8D8D8),
         borderRadius: BorderRadius.circular(3),
       ),
     );

@@ -30,7 +30,7 @@ class LoaderOverlayWidget extends StatelessWidget {
                       SizedBox(height: getProportionateScreenHeight(15),),
                       SpinKitRing(
                         lineWidth: 3,
-                        color: kPrimaryColor,
+                        color: kCustomGrey,
                         size: getProportionateScreenHeight(50),
                       ),
                       SizedBox(height: getProportionateScreenHeight(4),),

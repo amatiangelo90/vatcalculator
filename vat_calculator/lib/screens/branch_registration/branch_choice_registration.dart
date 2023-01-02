@@ -25,14 +25,14 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
           onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(
             Icons.arrow_back_ios,
-            color: kPrimaryColor,
+            color: kCustomGrey,
           ),
         ),
         centerTitle: true,
         title: Text('Registra la tua attività',
           style: TextStyle(
             fontSize: getProportionateScreenWidth(19),
-            color: kPrimaryColor,
+            color: kCustomGrey,
           ),
         ),
         backgroundColor: kCustomWhite,
@@ -52,7 +52,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                     SizedBox(height: 20,),
                     const Padding(
                       padding: EdgeInsets.all(18.0),
-                      child: Text('Gestisci la tua attività dal tuo smartphone.', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor),),
+                      child: Text('Gestisci la tua attività dal tuo smartphone.', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey),),
                     ),
 
                     Padding(
@@ -69,7 +69,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                                 const SizedBox(width: 5,),
                                 Text('Crea una nuova attività', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: getProportionateScreenWidth(16),
-                                      fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                      fontWeight: FontWeight.bold, color: kCustomGrey),),
                               ],
                             ),
                             color: Colors.white,
@@ -88,7 +88,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                     const Padding(
                       padding: EdgeInsets.all(18.0),
                       child: Text('Sei un socio oppure un dipendente?'
-                          ' Associa il tuo account con una attività già esistente.', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor),),
+                          ' Associa il tuo account con una attività già esistente.', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey),),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -104,7 +104,7 @@ class _BranchChoiceCreationEnjoyState extends State<BranchChoiceCreationEnjoy> {
                                 const SizedBox(width: 5,),
                                 Text('Unisciti ad una esistente', overflow: TextOverflow.ellipsis, textAlign: TextAlign.center,
                                   style: TextStyle(fontSize: getProportionateScreenWidth(16),
-                                    fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                    fontWeight: FontWeight.bold, color: kCustomGrey),),
                               ],
                             ),
                             color: Colors.white,

@@ -20,7 +20,7 @@ class SplashContent extends StatelessWidget {
           "20m2",
           style: TextStyle(
             fontSize: getProportionateScreenWidth(36),
-            color: kPrimaryColor,
+            color: kCustomGrey,
             fontWeight: FontWeight.bold,
           ),
         ),

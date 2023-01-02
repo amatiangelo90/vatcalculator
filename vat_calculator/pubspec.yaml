@@ -80,6 +80,8 @@ flutter:
           weight: 300
   assets:
     - assets/images/
+    - assets/imagescalendar/
+    - assets/png/
     - assets/icons/
     - assets/logo/
 

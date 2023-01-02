@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/constants.dart';
@@ -25,12 +24,12 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
     return Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Container(
-                child: dataBundleNotifier.currentListSuppliers.isEmpty ? Padding(
+                child: dataBundleNotifier.getUserEntity().branchList!.isEmpty ? Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      dataBundleNotifier.currentBranch == null ?
+                      dataBundleNotifier.getCurrentBranch().branchId == 0 ?
                       Column(
                         children: [
                           Text(
@@ -67,32 +66,16 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                               text: "Crea Fornitore",
                               press: () async {
                                 Navigator.pushNamed(context, AddSupplierScreen.routeName);
-                              }, textColor: kCustomBlue, color: kPrimaryColor,
+                              }, textColor: kCustomBlue, color: kCustomGrey,
                             ),
                           ),
                         ],
                       ),
                     ],
                   ),
-                ) : SingleChildScrollView(
-                  child: buildListFornitori(dataBundleNotifier.currentListSuppliers),
-                  scrollDirection: Axis.vertical,
-                ),
+                ) : Text('empty list')
             );
           }
         );
-  }
-
-  buildListFornitori(List<SupplierModel> currentListSuppliers) {
-
-    List<Widget> list = [];
-    currentListSuppliers.forEach((element) {
-      list.add(Text(element.nome));
-    });
-
-    return Column(
-      children: list,
-    );
-
   }
 }

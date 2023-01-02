@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
@@ -79,18 +77,21 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                               KeyboardUtil.hideKeyboard(context);
                               try{
                                 Response apiV1AppSuppliersSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersSavePost(
-                                    supplierId: 0,
-                                    cap: controllerCap.text,
-                                    city: controllerCity.text,
-                                    address: controllerAddress.text,
-                                    email: controllerEmail.text,
-                                    name: controllerSupplierName.text,
-                                    pec: '',
-                                    cf: '',
-                                    country: 'ITALIA',
-                                    vatNumber: controllerPIva.text,
-                                    phoneNumber: controllerMobileNo.text,
-                                    branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt()
+                                    supplier: Supplier(
+                                        supplierId: 0,
+                                        cap: controllerCap.text,
+                                        city: controllerCity.text,
+                                        address: controllerAddress.text,
+                                        email: controllerEmail.text,
+                                        name: controllerSupplierName.text,
+                                        pec: '',
+                                        cf: '',
+                                        createdByUserId: dataBundleNotifier.getUserEntity().userId,
+                                        country: 'ITALIA',
+                                        vatNumber: controllerPIva.text,
+                                        phoneNumber: controllerMobileNo.text,
+                                        branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt()
+                                    )
                                 );
 
                                 if(apiV1AppSuppliersSavePost.isSuccessful){
@@ -137,7 +138,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     Navigator.pushNamed(context, SuppliersScreen.routeName),
                   }
               ),
-              iconTheme: const IconThemeData(color: kPrimaryColor),
+              iconTheme: const IconThemeData(color: kCustomGrey),
               backgroundColor: Colors.white,
               centerTitle: true,
               title: Column(
@@ -146,7 +147,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     'Crea Nuovo Fornitore',
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(19),
-                      color: kPrimaryColor,
+                      color: kCustomGrey,
                     ),
                   ),
                 ],

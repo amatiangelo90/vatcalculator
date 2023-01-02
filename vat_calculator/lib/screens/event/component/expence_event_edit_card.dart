@@ -1,16 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 
 class EditingExpenceEventCard extends StatefulWidget {
-  const EditingExpenceEventCard({Key? key,required this.expenceEventModel}) : super(key: key);
+  const EditingExpenceEventCard({Key? key}) : super(key: key);
 
-  final ExpenceEventModel expenceEventModel;
 
   @override
   _EditingExpenceEventCardState createState() => _EditingExpenceEventCardState();
@@ -24,9 +22,9 @@ class _EditingExpenceEventCardState extends State<EditingExpenceEventCard> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
 
-        TextEditingController expenceController = TextEditingController(text: widget.expenceEventModel.cost.toStringAsFixed(2));
-        TextEditingController casualeExpenceController = TextEditingController(text: widget.expenceEventModel.description);
-        TextEditingController amountController = TextEditingController(text: widget.expenceEventModel.amount.toStringAsFixed(2));
+        TextEditingController expenceController = TextEditingController(text: '');
+        TextEditingController casualeExpenceController = TextEditingController(text: '');
+        TextEditingController amountController = TextEditingController(text: '');
 
         return Container(
           width: MediaQuery.of(context).size.width,
@@ -36,7 +34,7 @@ class _EditingExpenceEventCardState extends State<EditingExpenceEventCard> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                color: kPrimaryColor,
+                color: kCustomGrey,
                 elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -217,22 +215,6 @@ class _EditingExpenceEventCardState extends State<EditingExpenceEventCard> {
                                   } else {
                                     try {
 
-                                      dataBundleNotifier.getclientServiceInstance().updateEventExpenceModel(
-                                          ExpenceEventModel(
-                                              pkEventExpenceId: widget.expenceEventModel.pkEventExpenceId,
-                                              description: casualeExpenceController.text,
-                                              amount: double.parse(amountController.text.replaceAll(",", ".")),
-                                              cost: double.parse(expenceController.text.replaceAll(",", ".")),
-                                              dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
-                                              fkEventId: widget.expenceEventModel.fkEventId));
-
-                                      dataBundleNotifier.updateExpenceEventItem(ExpenceEventModel(
-                                          pkEventExpenceId: widget.expenceEventModel.pkEventExpenceId,
-                                          description: casualeExpenceController.text,
-                                          amount: double.parse(amountController.text.replaceAll(",", ".")),
-                                          cost: double.parse(expenceController.text.replaceAll(",", ".")),
-                                          dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
-                                          fkEventId: widget.expenceEventModel.fkEventId));
 
                                     } catch (e) {
                                       ScaffoldMessenger.of(context).showSnackBar(
@@ -285,22 +267,6 @@ class _EditingExpenceEventCardState extends State<EditingExpenceEventCard> {
                                 try {
                                   KeyboardUtil.hideKeyboard(context);
                                     try {
-                                      dataBundleNotifier.getclientServiceInstance().deleteEventExpenceModel(
-                                          ExpenceEventModel(
-                                              pkEventExpenceId: widget.expenceEventModel.pkEventExpenceId,
-                                              description: casualeExpenceController.text,
-                                              amount: double.parse(amountController.text.replaceAll(",", ".")),
-                                              cost: double.parse(expenceController.text.replaceAll(",", ".")),
-                                              dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
-                                              fkEventId: widget.expenceEventModel.fkEventId));
-
-                                      dataBundleNotifier.removeExpenceEventItem(ExpenceEventModel(
-                                          pkEventExpenceId: widget.expenceEventModel.pkEventExpenceId,
-                                          description: casualeExpenceController.text,
-                                          amount: double.parse(amountController.text.replaceAll(",", ".")),
-                                          cost: double.parse(expenceController.text.replaceAll(",", ".")),
-                                          dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
-                                          fkEventId: widget.expenceEventModel.fkEventId));
 
                                     } catch (e) {
                                       ScaffoldMessenger.of(context).showSnackBar(

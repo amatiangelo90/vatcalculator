@@ -1,19 +1,15 @@
 import 'dart:io';
-
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/product_order_choice_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_product.dart';
-
-import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
@@ -64,9 +60,11 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
               child: DefaultButton(
                 text: 'Crea Prodotto',
                 press: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => AddProductScreen(supplier: widget.currentSupplier,),),);
+
+                  Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                      AddProductScreen(supplier: widget.currentSupplier),),);
                 },
-                color: kPrimaryColor, textColor: Colors.white,
+                color: kCustomGreen, textColor: Colors.white,
               ),
             ) : const SizedBox(height: 0,),
             body: Column(
@@ -92,7 +90,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                     ),
                   );
                 },
-                color: Colors.deepOrangeAccent.shade700.withOpacity(0.6), textColor: kPrimaryColor,
+                color: kCustomGreen, textColor: Colors.white,
               ),
             ),
             body: const Center(child: Text('Ordini')),
@@ -113,7 +111,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       height: 50.0,
 
                       decoration: BoxDecoration(
-                        color: LightColors.kLavender,
+                        color: kLavender,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: TextButton(
@@ -150,7 +148,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                     width: MediaQuery.of(context).size.width - 40,
                     child: DefaultButton(
                       text: 'Modifica Fornitore',
-                      color: Colors.orange.shade700.withOpacity(0.8),
+                      color: kCustomGreen,
                       press: () async {
                         if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
                           print('Il nome del fornitore è obbligatorio');
@@ -165,23 +163,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           KeyboardUtil.hideKeyboard(context);
                           try{
 
-                            await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersUpdatePut(
-                              supplierId: widget.currentSupplier.supplierId!.toInt(),
-                              cf: '',
-                              cap: controllerCap.text,
-                              city: controllerCity.text,
-                              address: controllerAddress.text,
-                              email: controllerEmail.text,
-                              name: controllerSupplierName.text,
-                              country: 'Italia',
-                              pec: '',
-                              vatNumber: controllerPIva.text,
-                              phoneNumber: controllerMobileNo.text,
-                            );
-                            List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
 
-                            dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
-                            dataBundleNotifier.clearAndUpdateMapBundle();
                             final snackBar =
                             SnackBar(
                                 duration: const Duration(seconds: 3),
@@ -190,7 +172,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                 )
                             );
 
-                            clearControllers();
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             Navigator.pushNamed(context, SuppliersScreen.routeName);
                           }catch(e){
@@ -202,7 +183,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           }
                         }
 
-                      }, textColor: kPrimaryColor,),
+                      }, textColor: Colors.white,),
                   ),
                 ),
               ],
@@ -350,7 +331,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       }
                   ),
                   iconTheme: const IconThemeData(color: Colors.white),
-                  backgroundColor: kPrimaryColor,
+                  backgroundColor: kCustomGrey,
                   title: Text(
                     widget.currentSupplier.name!,
                     style: TextStyle(
@@ -378,8 +359,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         onPressed: () {
                           print(whatsappUrl);
                           launch(whatsappUrl);
-
-
                         }
                     ),
                     dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : IconButton(
@@ -390,7 +369,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ),
                         onPressed: () async {
                           Widget cancelButton = TextButton(
-                            child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+                            child: const Text("Indietro", style: TextStyle(color: kCustomGrey),),
                             onPressed:  () {
                               Navigator.of(context).pop();
                             },
@@ -399,14 +378,17 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           Widget continueButton = TextButton(
                             child: const Text("Elimina", style: TextStyle(color: kPinaColor)),
                             onPressed:  () async {
+                              print('asdasdasdasd');
 
                               Response supplierDeleted = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersDeleteDelete(
-                                  branchId: widget.currentSupplier.branchId!.toInt(),
-                                  supplierId: widget.currentSupplier.supplierId!.toInt()
+                                  supplier: Supplier(
+                                      branchId: widget.currentSupplier.branchId!.toInt(),
+                                      supplierId: widget.currentSupplier.supplierId!.toInt()
+                                  )
                               );
 
                               if(supplierDeleted.isSuccessful){
-
+                                dataBundleNotifier.refreshCurrentBranchData();
                                 Navigator.pushNamed(context, SuppliersScreen.routeName);
                               }else{
 
@@ -448,7 +430,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                                 borderRadius: BorderRadius.only(
                                                     topRight: Radius.circular(10.0),
                                                     topLeft: Radius.circular(10.0) ),
-                                                color: kPrimaryColor,
+                                                color: kCustomGrey,
                                               ),
                                               child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -470,8 +452,11 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                             ),
                                             const Text(''),
                                             const Text(''),
-                                            Center(
-                                              child: Text('Vuoi davvero eliminare il fornitore ' + widget.currentSupplier.name! + '?', textAlign: TextAlign.center,),
+                                            Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Center(
+                                                child: Text('Eliminare il fornitore ' + widget.currentSupplier.name! + '?', textAlign: TextAlign.center,),
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -548,8 +533,8 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
             if(dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee){
               Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(
                   product: currentProduct
-              ),
-              ),
+                  ),
+                ),
               );
             }
           },
@@ -561,7 +546,9 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(currentProduct.name!, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenWidth(17), fontWeight: FontWeight.w800),),
+                    SizedBox(
+                        width: getProportionateScreenWidth(200),
+                        child: Text(currentProduct.name!, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800),)),
                     Text(productUnitMeasureToJson(currentProduct.unitMeasure).toString(), style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.w800)),
                   ],
                 ),
@@ -597,7 +584,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
   }
   void buildShowErrorDialog(String text) {
     Widget cancelButton = TextButton(
-      child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+      child: const Text("Indietro", style: TextStyle(color: kCustomGrey),),
       onPressed:  () {
         Navigator.of(context).pop();
       },

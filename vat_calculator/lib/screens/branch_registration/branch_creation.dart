@@ -84,17 +84,19 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                             }else{
 
                               Response apiV1AppBranchesSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppBranchesSavePost(
-                                  email: controllerEmail.text,
-                                  phoneNumber: controllerMobileNo.text,
-                                  address: controllerAddress.text,
-                                  name: controllerCompanyName.text,
-                                  cap: controllerCap.text,
-                                  city: controllerCity.text,
-                                  vatNumber: controllerPIva.text,
-                                  branchId: 0,
-                                  userId: dataBundleNotifier.getUserEntity().userId!.toInt(),
-                                  userPriviledge: branchUserPriviledgeToJson(BranchUserPriviledge.superAdmin),
-                                  token: ''
+                                  branch: Branch(
+                                      email: controllerEmail.text,
+                                      phoneNumber: controllerMobileNo.text,
+                                      address: controllerAddress.text,
+                                      name: controllerCompanyName.text,
+                                      cap: controllerCap.text,
+                                      city: controllerCity.text,
+                                      vatNumber: controllerPIva.text,
+                                      branchId: 0,
+                                      userId: dataBundleNotifier.getUserEntity().userId!.toInt(),
+                                      userPriviledge: BranchUserPriviledge.superAdmin,
+                                      token: ''
+                                  )
                               );
 
                               if(apiV1AppBranchesSavePost.isSuccessful){
@@ -120,14 +122,14 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
               onPressed: () => Navigator.of(context).pop(),
               icon: const Icon(
                 Icons.arrow_back_ios,
-                color: kPrimaryColor,
+                color: kCustomGrey,
               ),
             ),
             centerTitle: true,
             title: Text('Crea nuova attività',
               style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kPrimaryColor,
+                color: kCustomGrey,
               ),
             ),
             backgroundColor: Colors.white,
@@ -142,7 +144,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                     children: <Widget>[
                       Row(
                         children: const [
-                          Text('Email*', style: TextStyle(color: kPrimaryColor),),
+                          Text('Email*', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(
@@ -157,7 +159,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Nome*', style: TextStyle(color: kPrimaryColor),),
+                          Text('Nome*', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(
@@ -171,7 +173,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Cellulare*', style: TextStyle(color: kPrimaryColor),),
+                          Text('Cellulare*', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(
@@ -185,7 +187,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Partita Iva', style: TextStyle(color: kPrimaryColor),),
+                          Text('Partita Iva', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(
@@ -199,7 +201,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: [
-                          Text('Indirizzo', style: TextStyle(color: kPrimaryColor),),
+                          Text('Indirizzo', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(
@@ -213,7 +215,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Città', style: TextStyle(color: kPrimaryColor),),
+                          Text('Città', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(
@@ -227,7 +229,7 @@ class _CreationBranchScreenState extends State<CreationBranchScreen> {
                       ),
                       Row(
                         children: const [
-                          Text('Cap', style: TextStyle(color: kPrimaryColor),),
+                          Text('Cap', style: TextStyle(color: kCustomGrey),),
                         ],
                       ),
                       CupertinoTextField(

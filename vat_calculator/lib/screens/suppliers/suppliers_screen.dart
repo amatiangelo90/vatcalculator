@@ -15,13 +15,21 @@ import '../../swagger/swagger.models.swagger.dart';
 import '../home/main_page.dart';
 import 'components/edit_supplier_screen.dart';
 
-class SuppliersScreen extends StatelessWidget {
+class SuppliersScreen extends StatefulWidget {
   const SuppliersScreen({Key? key}) : super(key: key);
 
   static String routeName = 'suppliers';
 
   @override
+  State<SuppliersScreen> createState() => _SuppliersScreenState();
+}
+
+class _SuppliersScreenState extends State<SuppliersScreen> {
+  String _filter = '';
+
+  @override
   Widget build(BuildContext context) {
+
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
@@ -37,7 +45,7 @@ class SuppliersScreen extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 40,
                       child: CupertinoButton(
-                        color: kPrimaryColor,
+                        color: kCustomGreen ,
                           child: const Text('Aggiungi nuovo fornitore'), onPressed: () {
                         Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
                       }),
@@ -46,15 +54,15 @@ class SuppliersScreen extends StatelessWidget {
                 ),
               ),
             ) : const Text(''),
-        backgroundColor: Colors.white,
+        backgroundColor: kCustomWhite,
         appBar: AppBar(
           leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
-          iconTheme: const IconThemeData(color: kPrimaryColor),
-          backgroundColor: Colors.white,
+          iconTheme: const IconThemeData(color: kCustomGrey),
+          backgroundColor: kCustomWhite,
           centerTitle: true,
           title: Column(
             children: [
@@ -62,7 +70,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(20),
-                  color: kPrimaryColor,
+                  color: kCustomGrey,
                   fontWeight: FontWeight.w600
                 ),
               ),
@@ -70,7 +78,7 @@ class SuppliersScreen extends StatelessWidget {
                 'Gestione fornitori',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
-                  color: kPrimaryColor,
+                  color: kCustomGrey,
                 ),
               ),
             ],
@@ -78,7 +86,7 @@ class SuppliersScreen extends StatelessWidget {
           elevation: 0,
         ),
         body: Container(
-          color: Colors.white,
+          color: kCustomWhite,
           child: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
                   ? buildListSuppliers(dataBundleNotifier, context)
                   : Center(
@@ -93,7 +101,7 @@ class SuppliersScreen extends StatelessWidget {
                             style: TextStyle(
                               fontSize: getProportionateScreenWidth(13),
                               fontWeight: FontWeight.bold,
-                              color: kPrimaryColor,
+                              color: kCustomGrey,
                             ),
                           ),
 
@@ -131,7 +139,9 @@ class SuppliersScreen extends StatelessWidget {
           clearButtonMode: OverlayVisibilityMode.editing,
           placeholder: 'Ricerca Fornitore per nome o codice',
           onChanged: (currentText) {
-            dataBundleNotifier.filterCurrentListSupplierByName(currentText);
+            setState((){
+              _filter = currentText;
+            });
           },
         ),
       ),
@@ -139,21 +149,23 @@ class SuppliersScreen extends StatelessWidget {
     listout.add(
         Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
     );
-    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!) {
+    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.name!.contains(_filter))) {
       listout.add(
-        GestureDetector(
-          onTap: () async {
-
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditSuppliersScreen(
-                  currentSupplier: supplier,
+        Padding(
+          padding: const EdgeInsets.only(top: 2, left: 5, right: 5),
+          child: GestureDetector(
+            onTap: () async {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EditSuppliersScreen(
+                    currentSupplier: supplier,
+                  ),
                 ),
-              ),
-            );
-          },
-          child: buildSupplierRow(dataBundleNotifier, supplier, kPrimaryColor),
+              );
+            },
+            child: buildSupplierRow(dataBundleNotifier, supplier, kCustomGrey),
+          ),
         ),
       );
     }
@@ -169,7 +181,6 @@ class SuppliersScreen extends StatelessWidget {
     );
   }
 
-
   buildSupplierRow(DataBundleNotifier dataBundleNotifier, Supplier supplier, Color color) {
     return Padding(
       padding: const EdgeInsets.all(3.0),
@@ -177,7 +188,7 @@ class SuppliersScreen extends StatelessWidget {
         padding: const EdgeInsets.only(left: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: kPrimaryColor,
+          color: kCustomGreen,
         ),
         child: Container(
           decoration: const BoxDecoration(
@@ -199,7 +210,7 @@ class SuppliersScreen extends StatelessWidget {
                       Text(
                         supplier.name!,
                         style: TextStyle(
-                            color: kPrimaryColor,
+                            color: kCustomGrey,
                             fontSize: getProportionateScreenWidth(17),
                             overflow: TextOverflow.fade,
                             fontWeight: FontWeight.bold
@@ -215,7 +226,7 @@ class SuppliersScreen extends StatelessWidget {
                           Text('  #' + supplier.code!,
                               style: TextStyle(
                                   color: color,
-                                  fontSize: getProportionateScreenWidth(12),
+                                  fontSize: getProportionateScreenWidth(8),
                                   fontWeight: FontWeight.bold
                               )),
                         ],
@@ -226,7 +237,7 @@ class SuppliersScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 25, 10, 25),
-                child: Icon(Icons.arrow_forward_ios, size: getProportionateScreenHeight(25), color: kPrimaryColor),
+                child: Icon(Icons.arrow_forward_ios, size: getProportionateScreenHeight(25), color: kCustomGrey),
               ),
             ],
           ),

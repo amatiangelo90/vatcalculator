@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/components/light_colors.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
@@ -67,8 +66,8 @@ class _LandingBodyState extends State<LandingBody> {
                   ),
                 ],
               ),
-              SizedBox(height: getProportionateScreenHeight(110),),
-              Text(kVersionApp, style: TextStyle(fontSize: getProportionateScreenHeight(12))),
+              SizedBox(height: getProportionateScreenHeight(20),),
+              Text('v. ' + kVersionApp, style: TextStyle(fontSize: getProportionateScreenHeight(12))),
 
               dataBundleNotifier.isLandingButtonPressed ? Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 40),
@@ -81,29 +80,37 @@ class _LandingBodyState extends State<LandingBody> {
                 ),
               ) : Padding(
                 padding: EdgeInsets.all(Platform.isAndroid ? 10.0 : 30.0),
-                child: SizedBox(
-                  width: getProportionateScreenWidth(500),
-                  child: CupertinoButton(
-                    child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                    color: kCustomGreen,
-                    onPressed: () async {
-                      setState((){
-                        _currentValue=100;
-                      });
-                      dataBundleNotifier.switchLandingButton();
-                      Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
-                      Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: widget.email);
-                      if(response.isSuccessful){
-                        dataBundleNotifier.setUser(response.body);
-                        Navigator.pushNamed(context, HomeScreenMain.routeName);
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: getProportionateScreenWidth(500),
+                      child: CupertinoButton(
+                        child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
+                        color: kCustomGreen,
+                        onPressed: () async {
+                          setState((){
+                            _currentValue=100;
+                          });
+                          dataBundleNotifier.switchLandingButton();
+                          Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
+                          Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: widget.email);
+                          if(response.isSuccessful){
+                            dataBundleNotifier.setUser(response.body);
+                            Navigator.pushNamed(context, HomeScreenMain.routeName);
 
-                      }else{
-                        print(response.error);
-                        print(response.base.headers.toString());
-                      }
-                      dataBundleNotifier.switchLandingButton();
-                    },
-                  ),
+                          }else{
+                            print(response.error);
+                            print(response.base.headers.toString());
+                          }
+                          dataBundleNotifier.switchLandingButton();
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text('Developed by Angelo Amati - All right reserved', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(6))),
+                    ),
+                  ],
                 ),
               ),
             ],

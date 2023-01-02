@@ -17,7 +17,7 @@ class AddElementWidget extends StatelessWidget {
         List<Widget> listWidget = [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Seleziona i prodotti non ancora presenti dal catalogo dei fornitori', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontSize: getProportionateScreenHeight(10)),),
+            child: Text('Seleziona i prodotti non ancora presenti dal catalogo dei fornitori', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(10)),),
           )
         ];
 
@@ -29,8 +29,8 @@ class AddElementWidget extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(13, 5, 13, 2),
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: kPrimaryColor,
+                    borderRadius: BorderRadius.circular(14),
+                    color: kCustomGreen,
                   ),
                   width: MediaQuery.of(context).size.width,
                   child: Text(dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.supplierId == key).first.name!, textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomWhite),),
@@ -48,8 +48,10 @@ class AddElementWidget extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(element.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(17)),),
-                          Text(productUnitMeasureToJson(element.unitMeasure)!, style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kPrimaryColor, fontWeight: FontWeight.bold,),),
+                          SizedBox(
+                              width: getProportionateScreenWidth(250),
+                              child: Text(element.name!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey,fontSize: getProportionateScreenHeight(17)),)),
+                          Text(productUnitMeasureToJson(element.unitMeasure)!, style: TextStyle(fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold,),),
                         ],
                       ),
                       IconButton(onPressed: () async {
@@ -70,7 +72,7 @@ class AddElementWidget extends StatelessWidget {
                             content: Text('Ho riscontrato degli errori durante il salvagaggio. Error: ' + apiV1AppStorageInsertproductGet.error.toString()),
                           ));
                         }
-                      }, icon: Icon(Icons.arrow_forward_sharp, color: kPrimaryColor, size: getProportionateScreenHeight(20)),
+                      }, icon: Icon(Icons.arrow_forward_sharp, color: kCustomGrey, size: getProportionateScreenHeight(20)),
 
                       ),
                     ],

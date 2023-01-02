@@ -2,12 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-import '../../../../client/vatservice/model/response_fornitori.dart';
 import '../../../../constants.dart';
 import '../../../../models/databundlenotifier.dart';
 import '../../../../size_config.dart';
 import 'add_supplier_screen.dart';
-import 'join_other_suppliers.dart';
 import 'join_supplier.dart';
 
 class SupplierChoiceCreationEnjoy extends StatefulWidget {
@@ -42,12 +40,12 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
                 color: Colors.white,
               ),
             ),
-            backgroundColor: kPrimaryColor,
+            backgroundColor: kCustomGrey,
           ),
           body: Stack(
             children: [
               Container(
-                color: kPrimaryColor,
+                color: kCustomGrey,
               ),
               SingleChildScrollView(
                 scrollDirection: Axis.vertical,
@@ -76,7 +74,7 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
                                     SizedBox(width: 5,),
                                     Text('Crea Fornitore', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: getProportionateScreenWidth(18),
-                                          fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                          fontWeight: FontWeight.bold, color: kCustomGrey),),
                                   ],
                                 ),
                                 color: kCustomWhite,
@@ -112,7 +110,7 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
                                     SizedBox(width: 5,),
                                     Text('Associa Fornitore', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: getProportionateScreenWidth(18),
-                                          fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                          fontWeight: FontWeight.bold, color: kCustomGrey),),
                                   ],
                                 ),
                                 color: kCustomWhite,
@@ -145,30 +143,12 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
                                     SizedBox(width: 5,),
                                     Text('I tuoi fornitori', overflow: TextOverflow.visible, textAlign: TextAlign.center,
                                       style: TextStyle(fontSize: getProportionateScreenWidth(18),
-                                          fontWeight: FontWeight.bold, color: kPrimaryColor),),
+                                          fontWeight: FontWeight.bold, color: kCustomGrey),),
                                   ],
                                 ),
                                 color: kCustomWhite,
                                 onPressed: () async {
-                                  Map<int, List<SupplierModel>> mapListSupplierForBranch = {};
 
-                                  await Future.forEach(dataBundleNotifier.userDetailsList[0].companyList, (branch) async {
-                                    if(branch.pkBranchId != dataBundleNotifier.currentBranch.pkBranchId){
-                                      print('Retrieve list supplier for current branch with id ' + branch.pkBranchId.toString());
-                                      List<SupplierModel> _suppliersModelList = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByBranch(branch);
-                                      mapListSupplierForBranch[branch.pkBranchId] = _suppliersModelList;
-                                    }
-                                  });
-                                  print('mapListSupplierForBranch: ' + mapListSupplierForBranch.toString());
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => JoinSupplierAlreadyRegisteredScreen(
-                                        mapListSupplierForBranch: mapListSupplierForBranch,
-                                      ),
-                                    ),
-                                  );
                                 },
                               ),
                             ),

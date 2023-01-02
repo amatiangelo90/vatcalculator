@@ -6,7 +6,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import '../../../components/light_colors.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
@@ -57,38 +56,40 @@ class _EditProductScreenState extends State<EditProductScreen> {
               backgroundColor: kCustomWhite,
               bottomSheet: Padding(
                   padding: const EdgeInsets.fromLTRB(15, 4, 15, 20),
-                  child: DefaultButton(color: LightColors.kGreen,
+                  child: DefaultButton(color: kCustomGreen,
                     press: () async {
                       if(_nameController.text.isEmpty || _nameController.text == ''){
-                        buildSnackBar(text: 'Inserire il nome del prodotto', color: LightColors.kRed);
+                        buildSnackBar(text: 'Inserire il nome del prodotto', color: kRed);
                       }else if(_currentUnitMeasure == 'Seleziona unità di misura'){
-                        buildSnackBar(text: 'Selezionare unità di misura valida', color: LightColors.kRed);
+                        buildSnackBar(text: 'Selezionare unità di misura valida', color: kRed);
                       }else if(_currentUnitMeasure == 'Altro' && (_unitMeasureController.text == '' || _unitMeasureController.text.isEmpty)){
-                        buildSnackBar(text: 'Specificare unità di misura', color: LightColors.kRed);
+                        buildSnackBar(text: 'Specificare unità di misura', color: kRed);
                       }else if(_priceController.text.isEmpty || _priceController.text == ''){
-                        buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text, color: LightColors.kRed);
+                        buildSnackBar(text: 'Immettere il prezzo per ' + _nameController.text, color: kRed);
                       }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
-                        buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: LightColors.kRed);
+                        buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kRed);
                       } else{
 
                         Response updateProdRespo = await dataBundleNotifier.getSwaggerClient().apiV1AppProductsUpdatePut(
-                          productId: widget.product.productId!.toInt(),
-                          name: _nameController.text,
-                          category: _categoryController.text,
-                          code: widget.product.code,
-                          description: _descriptionController.text,
-                          vatApplied: int.parse(_currentIva),
-                          price: double.parse(_priceController.text.replaceAll(',', '.')),
-                          unitMeasureOTH: _currentUnitMeasure == 'Altro' ? _currentUnitMeasure : '',
-                          unitMeasure: _currentUnitMeasure == 'Altro' ? ProductUnitMeasure.altro.name : productUnitMeasureFromJson(_currentUnitMeasure!).toString(),
+                          product: Product(
+                            productId: widget.product.productId!.toInt(),
+                            name: _nameController.text,
+                            category: _categoryController.text,
+                            code: widget.product.code,
+                            description: _descriptionController.text,
+                            vatApplied: int.parse(_currentIva),
+                            price: double.parse(_priceController.text.replaceAll(',', '.')),
+                            unitMeasureOTH: _currentUnitMeasure == 'Altro' ? _currentUnitMeasure : '',
+                            unitMeasure: _currentUnitMeasure == 'Altro' ? ProductUnitMeasure.altro : productUnitMeasureFromJson(_currentUnitMeasure!),
+                          )
                         );
 
 
                         if(updateProdRespo.isSuccessful){
                           print('Prodotto aggiornato!');
-                          buildSnackBar(text: 'Prodotto aggiornato.', color: LightColors.kGreen);
+                          buildSnackBar(text: 'Prodotto aggiornato.', color: kCustomGreen);
                         }else{
-                          buildSnackBar(text: 'Errore durante l\'aggiornamento del prodotto. Err: ' + updateProdRespo.error!.toString(), color: LightColors.kRed);
+                          buildSnackBar(text: 'Errore durante l\'aggiornamento del prodotto. Err: ' + updateProdRespo.error!.toString(), color: kRed);
                         }
 
 
@@ -106,7 +107,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
 
                 iconTheme: const IconThemeData(color: Colors.white),
-                backgroundColor: kPrimaryColor,
+                backgroundColor: kCustomGrey,
                 centerTitle: true,
                 title: Column(
                   children: [
@@ -136,7 +137,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
              //            buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: LightColors.kRed);
              //          }
                       },
-                      icon: SvgPicture.asset('assets/icons/Trash.svg', color: LightColors.kRed, height: getProportionateScreenHeight(29)),
+                      icon: SvgPicture.asset('assets/icons/Trash.svg', color: kRed, height: getProportionateScreenHeight(29)),
                     ),
                   ),
                 ],
@@ -148,7 +149,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     Row(
                       children: [
                         const SizedBox(width: 11,),
-                        Text('   Nome', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                        Text('   Nome', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                       ],
                     ),
                     Padding(
@@ -167,7 +168,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     Row(
                       children: [
                         const SizedBox(width: 11,),
-                        Text('   Unità di Misura', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                        Text('   Unità di Misura', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                       ],
                     ),
 
@@ -192,8 +193,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         ListTile(
-                                          leading: Icon(FontAwesomeIcons.weightHanging, color: kPrimaryColor),
-                                          title: Text('Kg', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          leading: Icon(FontAwesomeIcons.weightHanging, color: kCustomGrey),
+                                          title: Text('Kg', style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
                                           onTap: () {
                                             setState(() {
                                               _currentUnitMeasure = 'Kg';
@@ -202,8 +203,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: Icon(FontAwesomeIcons.box, color: kPrimaryColor),
-                                          title: Text('Pezzi', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          leading: Icon(FontAwesomeIcons.box, color: kCustomGrey),
+                                          title: Text('Pezzi', style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
                                           onTap: () {
                                             setState(() {
                                               _currentUnitMeasure = 'Pezzi';
@@ -212,8 +213,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: Icon(FontAwesomeIcons.boxes, color: kPrimaryColor),
-                                          title: Text('Cartoni', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          leading: Icon(FontAwesomeIcons.boxes, color: kCustomGrey),
+                                          title: Text('Cartoni', style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
                                           onTap: () {
                                             setState(() {
                                               _currentUnitMeasure = 'Cartoni';
@@ -222,8 +223,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: const Icon(FontAwesomeIcons.wineBottle, color: kPrimaryColor),
-                                          title: const Text('Bottiglia', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          leading: const Icon(FontAwesomeIcons.wineBottle, color: kCustomGrey),
+                                          title: const Text('Bottiglia', style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
                                           onTap: () {
                                             setState(() {
                                               _currentUnitMeasure = 'Bottiglia';
@@ -232,8 +233,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kPrimaryColor),
-                                          title: const Text('Unita', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kCustomGrey),
+                                          title: const Text('Unita', style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
                                           onTap: () {
                                             setState(() {
                                               _currentUnitMeasure = 'Unita';
@@ -242,8 +243,8 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: Icon(FontAwesomeIcons.adn, color: kPrimaryColor),
-                                          title: Text('Altro', style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor)),
+                                          leading: Icon(FontAwesomeIcons.adn, color: kCustomGrey),
+                                          title: Text('Altro', style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
                                           onTap: () {
                                             setState(() {
                                               _currentUnitMeasure = 'Altro';
@@ -259,9 +260,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             }, child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
-                            Text(_currentUnitMeasure, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
-                            Icon(Icons.keyboard_arrow_down_sharp, color: kPrimaryColor,)
+                            Text('', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w700),),
+                            Text(_currentUnitMeasure, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w700),),
+                            Icon(Icons.keyboard_arrow_down_sharp, color: kCustomGrey,)
                           ],
                         )),
                       ),
@@ -282,7 +283,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     Row(
                       children: [
                         const SizedBox(width: 11,),
-                        Text('   Prezzo Lordo', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                        Text('   Prezzo Lordo', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                       ],
                     ),Padding(
                       padding: const EdgeInsets.fromLTRB(20, 4, 20, 0),
@@ -300,7 +301,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     Row(
                       children: [
                         const SizedBox(width: 11,),
-                        Text('   Iva Applicata', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                        Text('   Iva Applicata', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                       ],
                     ),
                     Padding(
@@ -324,7 +325,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         ListTile(
-                                          leading: Text('4%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          leading: Text('4%',style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey, fontSize: getProportionateScreenHeight(22))),
                                           title: Text(''),
                                           onTap: () {
                                             setState(() {
@@ -334,7 +335,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: Text('5%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          leading: Text('5%',style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey, fontSize: getProportionateScreenHeight(22))),
                                           title: Text(''),
                                           onTap: () {
                                             setState(() {
@@ -344,7 +345,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: Text('10%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          leading: Text('10%',style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey, fontSize: getProportionateScreenHeight(22))),
                                           title: Text(''),
                                           onTap: () {
                                             setState(() {
@@ -354,7 +355,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                                           },
                                         ),
                                         ListTile(
-                                          leading: Text('22%',style: TextStyle(fontWeight: FontWeight.w800, color: kPrimaryColor, fontSize: getProportionateScreenHeight(22))),
+                                          leading: Text('22%',style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey, fontSize: getProportionateScreenHeight(22))),
                                           title: Text(''),
                                           onTap: () {
                                             setState(() {
@@ -371,9 +372,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
                             }, child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
-                            Text(_currentIva, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.w700),),
-                            Icon(Icons.keyboard_arrow_down_sharp, color: kPrimaryColor,)
+                            Text('', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w700),),
+                            Text(_currentIva, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w700),),
+                            Icon(Icons.keyboard_arrow_down_sharp, color: kCustomGrey,)
                           ],
                         )),
                       ),
@@ -381,7 +382,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     Row(
                       children: [
                         const SizedBox(width: 11,),
-                        Text('   Categoria', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                        Text('   Categoria', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                       ],
                     ),
                     Padding(
@@ -400,7 +401,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     Row(
                       children: [
                         const SizedBox(width: 11,),
-                        Text('   Descrizione', style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                        Text('   Descrizione', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                       ],
                     ),
                     Padding(

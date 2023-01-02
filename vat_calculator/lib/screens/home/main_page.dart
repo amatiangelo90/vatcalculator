@@ -34,23 +34,21 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
           backgroundColor: kCustomBlack,
-          drawer: Drawer(
-            backgroundColor: kCustomGrey,
-            child: Column(
-              children: [Padding(
-                padding: const EdgeInsets.only(top: 70, bottom: 50),
-                child: Image.asset('assets/logo/logo_home_white.png', height: getProportionateScreenHeight(100)),
-              ),],
-            ),
-          ),
           appBar: AppBar(
             iconTheme: const IconThemeData(color: kCustomWhite),
+            leading: IconButton(
+              onPressed: (){
+
+              },
+              icon: Icon(Icons.login_outlined, size: getProportionateScreenHeight(30)),
+              color: kRed,
+            ),
             backgroundColor: kCustomBlack,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: IconButton(
-                  icon: SvgPicture.asset('assets/icons/Settings.svg', color: Colors.white, height: getProportionateScreenHeight(30),),
+                  icon: SvgPicture.asset('assets/icons/User.svg', color: Colors.white, height: getProportionateScreenHeight(35),),
                   onPressed: (){
                   },
                 )

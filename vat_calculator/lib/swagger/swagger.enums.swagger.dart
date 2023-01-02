@@ -43,6 +43,20 @@ const $ProductUnitMeasureMap = {
   ProductUnitMeasure.altro: 'ALTRO'
 };
 
+enum UserEntityUserType {
+  @JsonValue('swaggerGeneratedUnknown')
+  swaggerGeneratedUnknown,
+  @JsonValue('entrepreneur')
+  entrepreneur,
+  @JsonValue('supplier')
+  supplier
+}
+
+const $UserEntityUserTypeMap = {
+  UserEntityUserType.entrepreneur: 'entrepreneur',
+  UserEntityUserType.supplier: 'supplier'
+};
+
 enum WorkstationWorkstationType {
   @JsonValue('swaggerGeneratedUnknown')
   swaggerGeneratedUnknown,
@@ -62,6 +76,10 @@ enum OrderEntityOrderStatus {
   swaggerGeneratedUnknown,
   @JsonValue('INVIATO')
   inviato,
+  @JsonValue('INVIATO_TRAMITE_WHATS_APP')
+  inviatoTramiteWhatsApp,
+  @JsonValue('INVIATO_TRAMITE_SMS')
+  inviatoTramiteSms,
   @JsonValue('NON_INVIATO')
   nonInviato,
   @JsonValue('RICEVUTO')
@@ -72,6 +90,8 @@ enum OrderEntityOrderStatus {
 
 const $OrderEntityOrderStatusMap = {
   OrderEntityOrderStatus.inviato: 'INVIATO',
+  OrderEntityOrderStatus.inviatoTramiteWhatsApp: 'INVIATO_TRAMITE_WHATS_APP',
+  OrderEntityOrderStatus.inviatoTramiteSms: 'INVIATO_TRAMITE_SMS',
   OrderEntityOrderStatus.nonInviato: 'NON_INVIATO',
   OrderEntityOrderStatus.ricevuto: 'RICEVUTO',
   OrderEntityOrderStatus.nonRicevuto: 'NON_RICEVUTO'

@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -14,7 +13,6 @@ import '../../../../../constants.dart';
 import '../../../../../size_config.dart';
 import '../../../../../swagger/swagger.enums.swagger.dart';
 import '../../../../../swagger/swagger.models.swagger.dart';
-import '../orders_utils.dart';
 import 'order_sent_details_screen.dart';
 
 class OrderConfirmationScreen extends StatefulWidget {
@@ -88,12 +86,16 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       );
 
                       if(sendOrderReponse.isSuccessful){
+
                         OrderEntity orderSaved = sendOrderReponse.body;
+
+                        print(orderSaved.orderStatus.toString());
                         if(orderSaved.orderStatus == OrderEntityOrderStatus.inviato){
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => OrderSentDetailsScreen(
+                                  orderSent: orderSaved,
                                   mail: widget.currentSupplier.email!,
                                   message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
                                     branchName: dataBundleNotifier.getCurrentBranch().name!,
@@ -106,19 +108,24 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                     storageCap: currentStorageModel.cap!,
                                     currentUserName: dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!,
                                   ),
+                                  orderStatus: orderSaved.orderStatus!,
+                                  orderStatusMessage: orderSaved.errorMessage!,
                                   number: widget.currentSupplier.phoneNumber!,
                                   supplierName: widget.currentSupplier.name!,
                                 ),
                               ));
+
+                          dataBundleNotifier.refreshCurrentBranchData();
                         }else{
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => OrderSentDetailsScreen(
+                                  orderSent: orderSaved,
                                   mail: widget.currentSupplier.email!,
                                   message: OrderUtils.buildWhatsAppMessageFromCurrentOrderList(
                                     branchName: dataBundleNotifier.getCurrentBranch().name!,
-                                    orderId: '',
+                                    orderId: orderSaved.orderId.toString(),
                                     productList: dataBundleNotifier.basket,
                                     deliveryDate: getDayFromWeekDay(currentDate.weekday) + ' ' + currentDate.day.toString() + '/' + currentDate.month.toString() + '/' + currentDate.year.toString(),
                                     supplierName: widget.currentSupplier.name!,
@@ -127,10 +134,18 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                     storageCap: currentStorageModel.cap!,
                                     currentUserName: dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!,
                                   ),
+                                  orderStatus: orderSaved.orderStatus!,
+                                  orderStatusMessage: orderSaved.errorMessage!,
                                   number: widget.currentSupplier.phoneNumber!,
                                   supplierName: widget.currentSupplier.name!,
                                 ),
                               ));
+                          dataBundleNotifier.refreshCurrentBranchData();
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(
+                              backgroundColor: Colors.redAccent.withOpacity(0.8),
+                              duration: const Duration(milliseconds: 2800),
+                              content: Text('Impossibile inviare ordine. Errore : ' + orderSaved.errorMessage!.toString())));
                         }
                       }else{
                         ScaffoldMessenger.of(context)
@@ -157,14 +172,14 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   onPressed: () => {
                     Navigator.of(context).pop(),
                   }),
-              iconTheme: const IconThemeData(color: kPrimaryColor),
+              iconTheme: const IconThemeData(color: kCustomGrey),
               backgroundColor: Colors.white,
               centerTitle: true,
               title: Text(
                 'Conferma Ordine',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(19),
-                  color: kPrimaryColor,
+                  color: kCustomGrey,
                 ),
               ),
               elevation: 0,
@@ -190,7 +205,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             child: Column(
               children: [
                 Text(widget.currentSupplier.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(25),
-                    color: kPrimaryColor),),
+                    color: kCustomGrey),),
                 const Divider(endIndent: 40, indent: 40,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -274,7 +289,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         child: CupertinoButton(
                           child:
                           const Text('Seleziona data consegna'),
-                          color: kPrimaryColor,
+                          color: kCustomGrey,
                           onPressed: () => _selectDate(context),
                         ),
                       ) : SizedBox(height: 0,),
@@ -290,7 +305,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                           CupertinoButton(
                             child:
                             Text(buildDateFromMilliseconds(currentDate.millisecondsSinceEpoch), style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                            color: kPrimaryColor,
+                            color: kCustomGrey,
                             onPressed: () => _selectDate(context),
                           )
                         ],
@@ -390,10 +405,10 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               colorScheme: const ColorScheme.dark(
                 onSurface: Colors.white,
                 primary: Colors.white,
-                secondary: kPrimaryColor,
-                onSecondary: kPrimaryColor,
-                background: kPrimaryColor,
-                onBackground: kPrimaryColor,
+                secondary: kCustomGrey,
+                onSecondary: kCustomGrey,
+                background: kCustomGrey,
+                onBackground: kCustomGrey,
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
@@ -420,5 +435,32 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
   String buildDateFromMilliseconds(int date) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(date);
     return getDayFromWeekDay(dateTime.weekday) + ' ' + dateTime.day.toString() + ' ' + getMonthFromMonthNumber(dateTime.month) + ' ' + dateTime.year.toString();
+  }
+}
+
+class OrderUtils{
+
+  static buildWhatsAppMessageFromCurrentOrderList({
+    required List<ROrderProduct> productList,
+    required String branchName,
+    required String orderId,
+    required String supplierName,
+    required String storageAddress,
+    required String storageCity,
+    required String storageCap,
+    required String deliveryDate,
+    required String currentUserName}) {
+
+    String orderString = 'Ciao $supplierName,%0a%0aOrdine #$orderId%0a%0aCarrello%0a----------------%0a';
+    productList.forEach((currentProductOrderAmount) {
+      if(currentProductOrderAmount.amount != 0){
+        orderString = orderString + currentProductOrderAmount.productName! +
+            ' x ' + currentProductOrderAmount.amount.toString() + ' ${currentProductOrderAmount.unitMeasure} %0a';
+      }
+    });
+    orderString = orderString + '----------------';
+    orderString = orderString + '%0a%0aDa consegnare $deliveryDate%0aa $storageCity ($storageCap)%0ain via: $storageAddress.';
+    orderString = orderString + '%0a%0aCordiali Saluti%0a${currentUserName}%0a%0a$branchName';
+    return orderString;
   }
 }

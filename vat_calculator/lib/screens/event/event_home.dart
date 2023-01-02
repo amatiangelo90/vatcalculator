@@ -1,20 +1,15 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/components/loader_overlay_widget.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import '../../components/light_colors.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../../swagger/swagger.enums.swagger.dart';
 import '../../swagger/swagger.models.swagger.dart';
 import '../home/main_page.dart';
-import 'component/archivied_events_screen.dart';
 import 'component/event_body.dart';
 import 'component/event_create_screen.dart';
 
@@ -38,29 +33,23 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
       child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Scaffold(
-              backgroundColor: Colors.white,
-              bottomSheet: dataBundleNotifier.currentPrivilegeType == Privileges.EMPLOYEE ? SizedBox(height: 0,) : Padding(
-                padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-                child: SizedBox(
-                  width: getProportionateScreenWidth(400),
-                  child: CupertinoButton(
-                    color: kCustomGreen,
-                    child: Text('CREA EVENTO', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(15))),
-                    onPressed: (){
-                      Navigator.pushNamed(context,
-                          EventCreateScreen.routeName);
-                    },
-                  ),
-                ),
-              ),
+              backgroundColor: kCustomWhite,
+              floatingActionButton: dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ?
+              FloatingActionButton(
+                  heroTag: "bt123541b12b3123",
+                  backgroundColor: kCustomPinkAccent,
+                  child: Icon(Icons.add, color: Colors.white, size: getProportionateScreenWidth(30)),
+                  onPressed: (){
+                Navigator.pushNamed(context, EventCreateScreen.routeName);
+              }) : Text(''),
               appBar: AppBar(
                 leading: IconButton(
                     icon: const Icon(Icons.arrow_back_ios),
                     onPressed: () {
                       Navigator.pushNamed(context, HomeScreenMain.routeName);
                     }),
-                iconTheme: const IconThemeData(color: Colors.white),
-                backgroundColor: kPrimaryColor,
+                iconTheme: const IconThemeData(color: kCustomGrey),
+                backgroundColor: kCustomWhite,
                 centerTitle: true,
                 title: Column(
                   children: [
@@ -70,15 +59,22 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           'Area Eventi',
                           style: TextStyle(
                             fontSize: getProportionateScreenWidth(18),
-                            color: Colors.white,
+                            color: kCustomGrey,
+                            fontWeight: FontWeight.bold
                           ),
                         ),
-                        Text(
-                          dataBundleNotifier.getCurrentBranch().name!,
-                          style: TextStyle(
-                            fontSize: getProportionateScreenWidth(13),
-                            color: kCustomGreen,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              dataBundleNotifier.getCurrentBranch().name!,
+                              style: TextStyle(
+                                fontSize: getProportionateScreenWidth(13),
+                                color: kCustomGrey,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -91,60 +87,14 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                         icon: SvgPicture.asset(
                           "assets/icons/archive.svg",
                           width: 25,
-                          color: kCustomWhite,
+                          color: kCustomGrey,
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(context, ArchiviedEventPage.routeName);
                         }),
-                  ),
-                  const SizedBox(width: 5),
-                  branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? SizedBox(height: 0,) : Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                    child: Stack(
-                      children: [
-                        IconButton(
-                          icon: SvgPicture.asset(
-                            'assets/icons/party.svg',
-                            color: Colors.white,
-                            width: 50,
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context,
-                                EventCreateScreen.routeName);
-                          },
-                        ),
-                        Positioned(
-                          top: 26.0,
-                          right: 9.0,
-                          child: Stack(
-                            children:  const <Widget>[
-                              Icon(
-                                Icons.brightness_1,
-                                size: 18,
-                                color: kPrimaryColor,
-                              ),
-                              Positioned(
-                                right: 2.5,
-                                top: 2.5,
-                                child: Center(
-                                  child: Icon(
-                                    Icons
-                                        .add_circle_outline,
-                                    size: 13,
-                                    color:
-                                    kCustomGreen,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                   SizedBox(width: 5),
                 ],
-                elevation: 2,
+                elevation: 0,
               ),
               body: EventsBodyWidget(),
             );

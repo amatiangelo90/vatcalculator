@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/event_model.dart';
-import 'package:vat_calculator/client/vatservice/model/expence_event_model.dart';
 import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.models.swagger.dart';
 
 class ExpenceEventCard extends StatefulWidget {
   const ExpenceEventCard({Key? key, required this.eventModel}) : super(key: key);
 
-  final EventModel eventModel;
+  final Event eventModel;
 
   @override
   _ExpenceEventCardState createState() => _ExpenceEventCardState();
@@ -41,7 +40,7 @@ class _ExpenceEventCardState extends State<ExpenceEventCard> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15.0),
                 ),
-                color: kPrimaryColor,
+                color: kCustomGrey,
                 elevation: 5,
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -221,22 +220,22 @@ class _ExpenceEventCardState extends State<ExpenceEventCard> {
                                             )));
                                   } else {
                                     try {
-                                      dataBundleNotifier.getclientServiceInstance().createEventExpenceModel(
-                                        ExpenceEventModel(
-                                            pkEventExpenceId: 0,
-                                            description: casualeExpenceController.text,
-                                            amount: double.parse(amountController.text.replaceAll(",", ".")),
-                                            cost: double.parse(expenceController.text.replaceAll(",", ".")),
-                                            dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
-                                            fkEventId: widget.eventModel.pkEventId)
-                                      );
-                                      dataBundleNotifier.addExpenceEventItem(ExpenceEventModel(
-                                          pkEventExpenceId: 0,
-                                          description: casualeExpenceController.text,
-                                          amount: double.parse(amountController.text.replaceAll(",", ".")),
-                                          cost: double.parse(expenceController.text.replaceAll(",", ".")),
-                                          dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
-                                          fkEventId: widget.eventModel.pkEventId));
+                              //       dataBundleNotifier.getclientServiceInstance().createEventExpenceModel(
+                              //         ExpenceEventModel(
+                              //             pkEventExpenceId: 0,
+                              //             description: casualeExpenceController.text,
+                              //             amount: double.parse(amountController.text.replaceAll(",", ".")),
+                              //             cost: double.parse(expenceController.text.replaceAll(",", ".")),
+                              //             dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
+                              //             fkEventId: widget.eventModel.eventId)
+                              //       );
+                              //       dataBundleNotifier.addExpenceEventItem(ExpenceEventModel(
+                              //           pkEventExpenceId: 0,
+                              //           description: casualeExpenceController.text,
+                              //           amount: double.parse(amountController.text.replaceAll(",", ".")),
+                              //           cost: double.parse(expenceController.text.replaceAll(",", ".")),
+                              //           dateTimeInsert: DateTime.now().millisecondsSinceEpoch,
+                              //           fkEventId: widget.eventModel.eventId));
 
                                     } catch (e) {
                                       ScaffoldMessenger.of(context).showSnackBar(

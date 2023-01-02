@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import '../../../../constants.dart';
@@ -33,7 +32,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            backgroundColor: kPrimaryColor,
+            backgroundColor: kCustomGrey,
 
             appBar: AppBar(
 
@@ -44,7 +43,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                   }
               ),
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kPrimaryColor,
+              backgroundColor: kCustomGrey,
               centerTitle: true,
               title: Text(
                 'Associa Fornitore',
@@ -91,7 +90,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               animationType: AnimationType.fade,
               textStyle: const TextStyle(color: Colors.black),
               pinTheme: PinTheme(
-                inactiveColor: kPrimaryColor,
+                inactiveColor: kCustomGrey,
                 selectedColor: Colors.lightBlueAccent,
                 activeColor: Colors.white,
                 shape: PinCodeFieldShape.box,
@@ -116,239 +115,6 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               onCompleted: (code) async {
                 formKey.currentState?.validate();
                 print('Retrieve Supplier model by code : ' + code);
-                List<SupplierModel> retrieveSuppliersListByCode = await dataBundleNotifier.getclientServiceInstance().retrieveSuppliersListByCode(
-                    code: code
-                );
-                bool alreadyPresent = false;
-                if(retrieveSuppliersListByCode != null && retrieveSuppliersListByCode.isNotEmpty){
-                  if(retrieveSuppliersListByCode.length == 1){
-                    dataBundleNotifier.currentListSuppliers.forEach((alreadyPresentSupplier) {
-                      if(alreadyPresentSupplier.pkSupplierId == retrieveSuppliersListByCode[0].pkSupplierId){
-                        alreadyPresent = true;
-                      }
-                    });
-
-                    if(alreadyPresent){
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog (
-                            contentPadding: EdgeInsets.zero,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(
-                                    Radius.circular(10.0))),
-                            content: Builder(
-                              builder: (context) {
-                                var height = MediaQuery.of(context).size.height;
-                                var width = MediaQuery.of(context).size.width;
-                                return SizedBox(
-                                  height: getProportionateScreenHeight(340),
-                                  width: width - 90,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10.0),
-                                                topLeft: Radius.circular(10.0) ),
-                                            color: kPinaColor,
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Text('    Attenzione',style: TextStyle(
-                                                      fontSize: getProportionateScreenWidth(15),
-                                                      fontWeight: FontWeight.bold,
-                                                      color: kCustomWhite,
-                                                    ),),
-                                                    IconButton(icon: const Icon(
-                                                      Icons.clear,
-                                                      color: kCustomWhite,
-                                                    ), onPressed: () {
-                                                      Navigator.pop(context);
-                                                      },),
-
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              Text('Il seguente fornitore ', style: TextStyle(fontSize: getProportionateScreenWidth(13)), textAlign: TextAlign.center,),
-                                              SizedBox(width: getProportionateScreenHeight(30),),
-                                              Card(child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text('' + retrieveSuppliersListByCode[0].nome, style: TextStyle(fontSize: getProportionateScreenWidth(25)), textAlign: TextAlign.center,),
-                                              )),
-                                              SizedBox(width: getProportionateScreenHeight(30),),
-                                              Text('con codice ', style: TextStyle(fontSize: getProportionateScreenWidth(13)), textAlign: TextAlign.center,),
-                                              Card(child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Text(code, style: TextStyle(fontSize: getProportionateScreenWidth(25)), textAlign: TextAlign.center,),
-                                              )),
-
-                                              SizedBox(width: getProportionateScreenHeight(30),),
-                                              Text('risulta già associato alla tua attività.', style: TextStyle(fontSize: getProportionateScreenWidth(13)), textAlign: TextAlign.center,),
-
-                                              SizedBox(width: getProportionateScreenHeight(30),),
-                                              SizedBox(width: 0,),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                      );
-                    }else{
-
-                      Widget cancelButton = TextButton(
-                        child: const Text("Indietro", style: TextStyle(color: kPinaColor),),
-                        onPressed:  () {
-                          clearControllers();
-                          Navigator.of(context).pop();
-                        },
-                      );
-                      Widget continueButton = TextButton(
-                        child: const Text("Aggiungi", style: TextStyle(color: Colors.green)),
-                        onPressed:  () async {
-
-                          print('Adding retrieved supplier ' + retrieveSuppliersListByCode[0].nome + ' to branch ' +
-                              dataBundleNotifier.currentBranch.companyName + ' with id ' + dataBundleNotifier.currentBranch.pkBranchId.toString());
-
-                          SupplierModel supplierRetrievedByCodeToUpdateRelationTableBranchSupplier = retrieveSuppliersListByCode[0];
-
-
-                          SupplierModel supplierModel = SupplierModel(
-                            tel: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.tel,
-                            referente: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.referente,
-                            piva: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.piva,
-                            paese: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.paese,
-                            nome: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.nome,
-                            mail: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.mail,
-                            indirizzo_via: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_via,
-                            indirizzo_provincia: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_provincia,
-                            indirizzo_extra: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_extra,
-                            indirizzo_citta: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_citta,
-                            indirizzo_cap: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.indirizzo_cap,
-                            id: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.id,
-                            fkBranchId: dataBundleNotifier.currentBranch.pkBranchId,
-                            fax: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.fax,
-                            extra: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.extra,
-                            cf: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.cf,
-                            pec: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.pec,
-                            pkSupplierId: supplierRetrievedByCodeToUpdateRelationTableBranchSupplier.pkSupplierId
-                          );
-
-                          await dataBundleNotifier.getclientServiceInstance().addSupplierToCurrentBranch(
-                              supplierRetrievedByCodeToUpdateRelationTableBranchSupplier: supplierModel
-                          );
-
-                          List<SupplierModel> _suppliersList = await dataBundleNotifier.getclientServiceInstance()
-                              .retrieveSuppliersListByBranch(dataBundleNotifier.currentBranch);
-                          dataBundleNotifier.addCurrentSuppliersList(_suppliersList);
-                          dataBundleNotifier.clearAndUpdateMapBundle();
-                          clearControllers();
-                          Navigator.pushNamed(context, SuppliersScreen.routeName);
-                        },
-                      );
-
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog (
-                            actions: [
-                              ButtonBar(
-                                alignment: MainAxisAlignment.spaceAround,
-                                children: [
-                                  cancelButton,
-                                  continueButton,
-                                ],
-                              ),
-                            ],
-                            contentPadding: EdgeInsets.zero,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(
-                                    Radius.circular(10.0))),
-                            content: Builder(
-                              builder: (context) {
-                                var height = MediaQuery.of(context).size.height;
-                                var width = MediaQuery.of(context).size.width;
-                                return SizedBox(
-                                  height: getProportionateScreenHeight(300),
-                                  width: width - 90,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10.0),
-                                                topLeft: Radius.circular(10.0) ),
-                                            color: kPrimaryColor,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text('    Aggiungi Fornitore',style: TextStyle(
-                                                    fontSize: getProportionateScreenWidth(15),
-                                                    fontWeight: FontWeight.bold,
-                                                    color: kCustomWhite,
-                                                  ),),
-                                                  IconButton(icon: const Icon(
-                                                    Icons.clear,
-                                                    color: kCustomWhite,
-                                                  ), onPressed: () { Navigator.pop(context); },),
-
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Column(
-                                          children: [
-                                            const Text('Aggiungere alla tua lista il seguente fornitore?', textAlign: TextAlign.center,),
-                                            SizedBox(width: getProportionateScreenHeight(20),),
-                                            Text('' + retrieveSuppliersListByCode[0].nome, style: TextStyle(fontSize: getProportionateScreenWidth(25)), textAlign: TextAlign.center,),
-                                            const SizedBox(width: 0,),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                      );
-                    }
-                  }else{
-
-                  }
-                }else{
-                  ScaffoldMessenger.of(context)
-                      .showSnackBar(SnackBar(
-                      backgroundColor: Colors.redAccent.withOpacity(0.8),
-                      duration: Duration(milliseconds: 3000),
-                      content: Text('Nessun fornitore trovato con il seguente codice: ' + supplierCodeControllerSearch.text)));
-                  clearControllers();
-                }
               },
               onChanged: (value) {
                 setState(() {
@@ -382,7 +148,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
 
   void buildShowErrorDialog(String text) {
     Widget cancelButton = TextButton(
-      child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+      child: const Text("Indietro", style: TextStyle(color: kCustomGrey),),
       onPressed:  () {
         Navigator.of(context).pop();
       },

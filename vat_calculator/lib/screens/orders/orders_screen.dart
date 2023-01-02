@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../size_config.dart';
-import 'components/screens/underworking_order_page.dart';
 
 class OrdersScreen extends StatefulWidget {
 
@@ -19,7 +18,7 @@ class _OrdersScreenState extends State<OrdersScreen>
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Container(
-          child: dataBundleNotifier.currentBranch == null ? Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
@@ -37,7 +36,7 @@ class _OrdersScreenState extends State<OrdersScreen>
                 child: const CreateBranchButton(),
               ),
             ],
-          ) : const UnderWorkingOrderPage(),
+          )
         );
       },
     );

@@ -1,18 +1,14 @@
 import 'dart:async';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/client/vatservice/model/branch_model.dart';
-import 'package:vat_calculator/client/vatservice/model/order_model.dart';
-import 'package:vat_calculator/client/vatservice/model/storage_model.dart';
-import 'package:vat_calculator/client/vatservice/model/utils/privileges.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:chopper/chopper.dart';
 import 'package:vat_calculator/swagger/swagger.enums.swagger.dart';
+
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../../swagger/swagger.models.swagger.dart';
@@ -45,7 +41,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child){
         return Container(
-          color: kPrimaryColor,
+          color: kCustomGrey,
           child: Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -53,14 +49,14 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(
                   Icons.arrow_back_ios,
-                  color: kPrimaryColor,
+                  color: kCustomGrey,
                 ),
               ),
               centerTitle: true,
               title: Text('Unisciti ad una attività',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(19),
-                  color: kPrimaryColor,
+                  color: kCustomGrey,
                 ),
               ),
               backgroundColor: Colors.white,
@@ -76,7 +72,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                     children: [
                       const Padding(
                         padding: EdgeInsets.all(38.0),
-                        child: Center(child: Text('Aggiungi attività tramite codice', style: TextStyle(color: kPrimaryColor),)),
+                        child: Center(child: Text('Aggiungi attività tramite codice', style: TextStyle(color: kCustomGrey),)),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -91,7 +87,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                 animationType: AnimationType.fade,
                                 textStyle: const TextStyle(color: Colors.black),
                                 pinTheme: PinTheme(
-                                  inactiveColor: kPrimaryColor,
+                                  inactiveColor: kCustomGrey,
                                   selectedColor: Colors.green,
                                   activeColor: Colors.white,
                                   shape: PinCodeFieldShape.box,
@@ -118,14 +114,13 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                   formKey.currentState!.validate();
 
                                   Widget cancelButton = TextButton(
-                                    child: const Text("Indietro", style: TextStyle(color: kPrimaryColor),),
+                                    child: const Text("Indietro", style: TextStyle(color: kCustomGrey),),
                                     onPressed:  () {
                                       Navigator.of(context).pop();
                                     },
                                   );
-                                  List<BranchModel> retrieveBranchByBranchId;
-                                  try{
 
+                                  try{
                                     Response response = await dataBundleNotifier.getSwaggerClient().apiV1AppBranchesRetrievebranchbycodeGet(branchcode: code);
 
                                     if(response.isSuccessful){
@@ -176,7 +171,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                                   borderRadius: BorderRadius.only(
                                                                       topRight: Radius.circular(10.0),
                                                                       topLeft: Radius.circular(10.0) ),
-                                                                  color: kPrimaryColor,
+                                                                  color: kCustomGrey,
                                                                 ),
                                                                 child: Row(
                                                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -261,7 +256,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                             borderRadius: BorderRadius.only(
                                                                 topRight: Radius.circular(10.0),
                                                                 topLeft: Radius.circular(10.0) ),
-                                                            color: kPrimaryColor,
+                                                            color: kCustomGrey,
                                                           ),
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -345,7 +340,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                             borderRadius: BorderRadius.only(
                                                                 topRight: Radius.circular(10.0),
                                                                 topLeft: Radius.circular(10.0) ),
-                                                            color: kPrimaryColor,
+                                                            color: kCustomGrey,
                                                           ),
                                                           child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -386,7 +381,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                         GestureDetector(
                                                           onTap: () {
                                                             launch('https://api.whatsapp.com/send/?phone=+393454937047&text=Ciao, ho avuto dei problemi in fase di creazione/associazione attività con il seguente codice [$code]. '
-                                                                'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.userDetailsList[0].firstName}');
+                                                                'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.getUserEntity().name!}');
                                                           },
                                                           child: Card(
                                                             elevation: 6,
@@ -450,7 +445,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                           borderRadius: BorderRadius.only(
                                                               topRight: Radius.circular(10.0),
                                                               topLeft: Radius.circular(10.0) ),
-                                                          color: kPrimaryColor,
+                                                          color: kCustomGrey,
                                                         ),
                                                         child: Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -491,7 +486,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                       GestureDetector(
                                                         onTap: () {
                                                           launch('https://api.whatsapp.com/send/?phone=+393454937047&text=Ciao, ho avuto dei problemi in fase di creazione/associazione attività con il seguente codice [$code]. '
-                                                              'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.userDetailsList[0].firstName}');
+                                                              'Mi daresti una mano a risolvere il problema? Grazie mille. ${dataBundleNotifier.getUserEntity().name!}');
                                                         },
                                                         child: Card(
                                                           elevation: 6,

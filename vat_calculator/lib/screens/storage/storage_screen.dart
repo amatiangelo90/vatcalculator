@@ -5,23 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/client/vatservice/model/response_fornitori.dart';
-import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/components/default_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
-import 'package:vat_calculator/screens/storage/components/move_produt_to_storage.dart';
 import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
-
-import '../../client/vatservice/model/storage_product_model.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../../swagger/swagger.enums.swagger.dart';
 import 'components/add_storage_screen.dart';
 import 'components/add_widget_element.dart';
 import 'components/create_product_and_add_to_storage.dart';
-import 'load_unload_screens/load_screen.dart';
-import 'load_unload_screens/unload_screen.dart';
-import 'orders/order_from_storage_screen.dart';
 
 class StorageScreen extends StatefulWidget{
 
@@ -50,368 +42,12 @@ class _StorageScreenState extends State<StorageScreen> {
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              child: ButtonBar(
-
-                alignment: MainAxisAlignment.spaceAround,
-                children: [
-                  dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') : SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.pinkAccent.shade400,
-                      ),
-                      child: Center(child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('CREA ED AGGIUNGI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                          Text('NUOVO PRODOTTO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                        ],
-                      )),
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateAndAddProductScreen(
-                        ),),);
-                      },
-                    ),
-                  ),
-                  dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') : SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.deepOrangeAccent.shade200,
-                      ),
-                      child: Center(child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('AGGIUNGI PRODOTTI DA ', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                          Text('CATALOGO FORNITORI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                        ],
-                      )),
-                      onPressed: () async {
-                        showModalBottomSheet(
-                            shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(25.0),
-                              ),
-                            ),
-                            context: context,
-                            builder: (context) {
-                              return Builder(
-                                builder: (context) {
-
-                                  return SizedBox(
-                                    width: getProportionateScreenWidth(900),
-                                    height: getProportionateScreenHeight(600),
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            decoration: const BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                  topRight: Radius.circular(10.0),
-                                                  topLeft: Radius.circular(10.0)),
-                                              color: kPrimaryColor,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  '  Lista Prodotti',
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                    getProportionateScreenWidth(17),
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                IconButton(
-                                                  icon: const Icon(
-                                                    Icons.clear,
-                                                    color: Colors.white,
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          const AddElementWidget(),
-                                          const SizedBox(height: 40),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                            });
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: kCustomOrange,
-                      ),
-                      child: Center(child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('EFFETTUA', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
-                          Text('ORDINE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold),),
-                        ],
-                      )),
-                      onPressed: () {
-                        Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.purple,
-                      ),
-                      child: Center(child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('SPOSTA PRODOTTI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                          Text('IN ALTRO MAGAZZINO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                        ],
-                      )),
-                      onPressed: () {
-                        Navigator.pushNamed(context, MoveProductToStorageScreen.routeName);
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.lightGreen,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                            Text('CARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                          ],
-                        ),
-                        onPressed: (){
-                          Navigator.pushNamed(context, LoadStorageScreen.routeName);
-                        }
-                    ),
-                  ),
-                  SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: kCustomBordeaux,
-                        ),
-                        child: Column(
-                          children: [
-                            Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                            Text('SCARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                          ],
-                        ),
-                        onPressed: (){
-                          Navigator.pushNamed(context, UnloadStorageScreen.routeName);
-                        }
-                    ),
-                  ),
-                  dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.lightBlueAccent,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text('CONFIGURA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                          Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                        ],
-                      ),
-                      onPressed: (){
-
-                      },
-                    ),
-                  ),
-                  SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('SVUOTA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                            Text('MAGAZZINO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                          ],
-                        ),
-                        onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                                backgroundColor: kCustomWhite,
-                                contentPadding: EdgeInsets.only(top: 10.0),
-                                elevation: 30,
-
-                                content: SizedBox(
-                                  height: getProportionateScreenHeight(240),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text('Svuota Magazzino?', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text('Impostare la giacenza per tutti i prodotti presenti in ${dataBundleNotifier.currentStorage.name} a 0?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
-                                          ),
-                                          SizedBox(height: 40),
-                                          InkWell(
-                                            child: Container(
-                                                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                                decoration: const BoxDecoration(
-                                                  color: Colors.redAccent,
-                                                  borderRadius: BorderRadius.only(
-                                                      bottomLeft: Radius.circular(25.0),
-                                                      bottomRight: Radius.circular(25.0)),
-                                                ),
-                                                child: SizedBox(
-                                                  width: getProportionateScreenWidth(300),
-                                                  child: CupertinoButton(child: const Text('SVUOTA MAGAZZINO',
-                                                      style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent,
-                                                      onPressed: () async {
-                                                        try{
-                                                            ScaffoldMessenger.of(context)
-                                                                .showSnackBar(const SnackBar(
-                                                                backgroundColor: Colors.green,
-                                                                duration: Duration(milliseconds: 1000),
-                                                                content: Text('Magazzino svuotato')));
-                                                        } catch(e){
-                                                          print('Errore');
-                                                        }
-
-                                                      }
-                                                  ),
-                                                )
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                          );
-                        }),
-                  ),
-                  SizedBox(
-                    width: getProportionateScreenWidth(170),
-                    height: getProportionateScreenHeight(60),
-                    child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.red.shade700,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('IMPOSTA GIACENZA 0',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
-                            Text('I PRODOTTI IN NEGATIVO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
-                          ],
-                        ),
-                        onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                                backgroundColor: kCustomWhite,
-                                contentPadding: EdgeInsets.only(top: 10.0),
-                                elevation: 30,
-
-                                content: SizedBox(
-                                  height: getProportionateScreenHeight(270),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: const Text('', textAlign: TextAlign.center, style: TextStyle(color: kPrimaryColor, fontWeight: FontWeight.bold),),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.all(8.0),
-                                            child: Text('Impostare la giacenza a 0 per tutti i prodotti presenti in ${dataBundleNotifier.currentStorage.name} che abbiamo un valore per la giacenza in negativo?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
-                                          ),
-                                          SizedBox(height: 40),
-                                          InkWell(
-                                            child: Container(
-                                                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.red.shade700,
-                                                  borderRadius: BorderRadius.only(
-                                                      bottomLeft: Radius.circular(25.0),
-                                                      bottomRight: Radius.circular(25.0)),
-                                                ),
-                                                child: SizedBox(
-                                                  width: getProportionateScreenWidth(300),
-                                                  child: CupertinoButton(child: const Text('PROCEDI',
-                                                      style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.red.shade700,
-                                                      onPressed: () async {
-                                                        try{
-                                                        } catch(e){
-                                                          print('Errore');
-                                                        }
-                                                      }
-                                                  ),
-                                                )
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                          );
-                        }),
-                  ),
-                ],
-              ),
+              child: dataBundleNotifier.getCurrentBranch().storages!.isEmpty ? Text('') : getButtonBottonBar(dataBundleNotifier)
             ),
           ),
           appBar: AppBar(
             elevation: 0,
-            iconTheme: const IconThemeData(color: kPrimaryColor),
+            iconTheme: const IconThemeData(color: kCustomGrey),
             actions: [
               GestureDetector(
                 onTap: () {
@@ -422,7 +58,7 @@ class _StorageScreenState extends State<StorageScreen> {
                     IconButton(
                       icon: SvgPicture.asset(
                         'assets/icons/storage.svg',
-                        color: kPrimaryColor,
+                        color: kCustomGrey,
                         width: getProportionateScreenHeight(28),
                       ),
                       onPressed: () {
@@ -458,49 +94,28 @@ class _StorageScreenState extends State<StorageScreen> {
             centerTitle: true,
             title: dataBundleNotifier.getCurrentBranch().storages!.isEmpty ? Text('Area Magazzini' , style: TextStyle(
                 fontSize: getProportionateScreenWidth(17),
-                color: kPrimaryColor
+                color: kCustomGrey
             ),) : Column(
               children: [
                 Text(
                   dataBundleNotifier.getCurrentStorage().name!,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(17),
-                    color: kPrimaryColor,
+                    color: kCustomGrey,
                   ),
                 ),
                 Text(
                   'Area gestione magazzini',
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(11),
-                    color: kPrimaryColor,
+                    color: kCustomGrey,
                   ),
                 ),
               ],
             ),
           ),
           backgroundColor: Colors.white,
-          body: dataBundleNotifier.getUserEntity().branchList!.isEmpty
-              ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Sembra che tu non abbia configurato ancora nessuna attività. ",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(13),
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                width: SizeConfig.screenWidth * 0.6,
-                child: const CreateBranchButton(),
-              ),
-            ],
-          ) : dataBundleNotifier.getCurrentBranch().storages!.isEmpty
+          body: dataBundleNotifier.getCurrentBranch().storages!.isEmpty
               ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -514,7 +129,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(13),
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: kCustomGrey,
                   ),
                 ),
               ),
@@ -534,7 +149,7 @@ class _StorageScreenState extends State<StorageScreen> {
                         ),
                       ),
                     );
-                  }, textColor: Colors.white, color: kPrimaryColor,
+                  }, textColor: Colors.white, color: kCustomGreen,
                 ),
               ),
             ],
@@ -543,7 +158,6 @@ class _StorageScreenState extends State<StorageScreen> {
               builder: (context, dataBundleNotifier, child) {
                 return RefreshIndicator(
                   onRefresh: () {
-                    dataBundleNotifier.setCurrentStorage(dataBundleNotifier.currentStorage);
                     setState(() {});
                     return Future.delayed(const Duration(milliseconds: 500));
                   },
@@ -571,7 +185,6 @@ class _StorageScreenState extends State<StorageScreen> {
                             ),
                           ),
                         ),
-                        //buildCurrentListProductTable(dataBundleNotifier, context),
                         SizedBox(
                           height: getProportionateScreenHeight(550),
                           child: ListView.builder(
@@ -609,8 +222,9 @@ class _StorageScreenState extends State<StorageScreen> {
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
-                                              Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(20))),
-
+                                              SizedBox(
+                                                  width: getProportionateScreenWidth(200),
+                                                  child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
                                             ],
                                           ),
                                           Container(
@@ -622,8 +236,8 @@ class _StorageScreenState extends State<StorageScreen> {
                                                     padding: const EdgeInsets.all(4.0),
                                                     child: Column(
                                                       children: [
-                                                        Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(20))),
-                                                        Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kPrimaryColor, fontSize: getProportionateScreenHeight(11))),
+                                                        Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(20))),
+                                                        Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
                                                       ],
                                                     ),
                                                   ))),
@@ -649,14 +263,10 @@ class _StorageScreenState extends State<StorageScreen> {
     );
   }
 
-  refreshPage(DataBundleNotifier dataBundleNotifier) {
-    dataBundleNotifier.refreshProductListAfterInsertProductIntoStorage();
-  }
-
-  retrieveListSuppliersBis(List<SupplierModel> currentListSuppliers) {
+  retrieveListSuppliersBis(List<Supplier> currentListSuppliers) {
     List<String> currentListNameSuppliers = [];
     currentListSuppliers.forEach((element) {
-      currentListNameSuppliers.add(element.nome);
+      currentListNameSuppliers.add(element.name!);
     });
     return currentListNameSuppliers;
   }
@@ -670,7 +280,7 @@ class _StorageScreenState extends State<StorageScreen> {
             decoration: BoxDecoration(
               color: dataBundleNotifier.getCurrentStorage().name ==
                   currentStorageElement.name
-                  ? kPrimaryColor
+                  ? kCustomGrey
                   : Colors.white,
               border: const Border(
                 bottom: BorderSide(width: 1.0, color: Colors.grey),
@@ -684,7 +294,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   Row(
                     children: [
                       IconButton(icon: SvgPicture.asset('assets/icons/storage.svg', color: dataBundleNotifier.getCurrentStorage().name ==
-                          currentStorageElement.name ? Colors.green : kPrimaryColor, width: getProportionateScreenWidth(25),), onPressed: () {  }, ),
+                          currentStorageElement.name ? Colors.green : kCustomGrey, width: getProportionateScreenWidth(25),), onPressed: () {  }, ),
                       Text(
                         '   ' + currentStorageElement!.name!,
                         style: TextStyle(
@@ -772,13 +382,13 @@ class _StorageScreenState extends State<StorageScreen> {
                           style: TextStyle(
                             fontSize:
                             getProportionateScreenWidth(17),
-                            color: kPrimaryColor,
+                            color: kCustomGrey,
                           ),
                         ),
                         IconButton(
                           icon: const Icon(
                             Icons.clear,
-                            color: kPrimaryColor,
+                            color: kCustomGrey,
                           ),
                           onPressed: () {
                             Navigator.pop(context);
@@ -812,5 +422,365 @@ class _StorageScreenState extends State<StorageScreen> {
     });
     return listFiltered;
 
+  }
+
+  getButtonBottonBar(DataBundleNotifier dataBundleNotifier) {
+    return ButtonBar(
+
+      alignment: MainAxisAlignment.spaceAround,
+      children: [
+        dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') : SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.pinkAccent.shade400,
+            ),
+            child: Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('CREA ED AGGIUNGI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                Text('NUOVO PRODOTTO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+              ],
+            )),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateAndAddProductScreen(
+              ),),);
+            },
+          ),
+        ),
+        dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') : SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.deepOrangeAccent.shade200,
+            ),
+            child: Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('AGGIUNGI PRODOTTI DA ', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                Text('CATALOGO FORNITORI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+              ],
+            )),
+            onPressed: () async {
+              showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(25.0),
+                    ),
+                  ),
+                  context: context,
+                  builder: (context) {
+                    return Builder(
+                      builder: (context) {
+
+                        return SizedBox(
+                          width: getProportionateScreenWidth(900),
+                          height: getProportionateScreenHeight(600),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              children: [
+                                Container(
+                                  decoration: const BoxDecoration(
+                                    borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(10.0),
+                                        topLeft: Radius.circular(10.0)),
+                                    color: kCustomGrey,
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '  Lista Prodotti',
+                                        style: TextStyle(
+                                          fontSize:
+                                          getProportionateScreenWidth(17),
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.clear,
+                                          color: Colors.white,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const AddElementWidget(),
+                                const SizedBox(height: 40),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  });
+            },
+          ),
+        ),
+        SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: kPinaColor,
+            ),
+            child: Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('EFFETTUA', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
+                Text('ORDINE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold),),
+              ],
+            )),
+            onPressed: () {
+              //Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
+            },
+          ),
+        ),
+        SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.purple,
+            ),
+            child: Center(child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('SPOSTA PRODOTTI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+                Text('IN ALTRO MAGAZZINO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
+              ],
+            )),
+            onPressed: () {
+              //Navigator.pushNamed(context, MoveProductToStorageScreen.routeName);
+            },
+          ),
+        ),
+        SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+
+          child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.lightGreen,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                  Text('CARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                ],
+              ),
+              onPressed: (){
+                //Navigator.pushNamed(context, LoadStorageScreen.routeName);
+              }
+          ),
+        ),
+        SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+
+          child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: kCustomBordeaux,
+              ),
+              child: Column(
+                children: [
+                  Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                  Text('SCARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                ],
+              ),
+              onPressed: (){
+                //Navigator.pushNamed(context, UnloadStorageScreen.routeName);
+              }
+          ),
+        ),
+        dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              backgroundColor: Colors.lightBlueAccent,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('CONFIGURA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+              ],
+            ),
+            onPressed: (){
+
+            },
+          ),
+        ),
+        SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('SVUOTA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
+                  Text('MAGAZZINO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
+                ],
+              ),
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                      backgroundColor: kCustomWhite,
+                      contentPadding: EdgeInsets.only(top: 10.0),
+                      elevation: 30,
+
+                      content: SizedBox(
+                        height: getProportionateScreenHeight(240),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Svuota Magazzino?', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text('Impostare la giacenza per tutti i prodotti presenti in ${dataBundleNotifier.getCurrentStorage().name} a 0?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                ),
+                                SizedBox(height: 40),
+                                InkWell(
+                                  child: Container(
+                                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                      decoration: const BoxDecoration(
+                                        color: Colors.redAccent,
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(25.0),
+                                            bottomRight: Radius.circular(25.0)),
+                                      ),
+                                      child: SizedBox(
+                                        width: getProportionateScreenWidth(300),
+                                        child: CupertinoButton(child: const Text('SVUOTA MAGAZZINO',
+                                            style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent,
+                                            onPressed: () async {
+                                              try{
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                    backgroundColor: Colors.green,
+                                                    duration: Duration(milliseconds: 1000),
+                                                    content: Text('Magazzino svuotato')));
+                                              } catch(e){
+                                                print('Errore');
+                                              }
+
+                                            }
+                                        ),
+                                      )
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                );
+              }),
+        ),
+        SizedBox(
+          width: getProportionateScreenWidth(170),
+          height: getProportionateScreenHeight(60),
+          child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red.shade700,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text('IMPOSTA GIACENZA 0',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
+                  Text('I PRODOTTI IN NEGATIVO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
+                ],
+              ),
+              onPressed: () async {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(25.0))),
+                      backgroundColor: kCustomWhite,
+                      contentPadding: EdgeInsets.only(top: 10.0),
+                      elevation: 30,
+
+                      content: SizedBox(
+                        height: getProportionateScreenHeight(270),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: const Text('', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text('Impostare la giacenza a 0 per tutti i prodotti presenti in ${dataBundleNotifier.getCurrentStorage().name} che abbiamo un valore per la giacenza in negativo?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
+                                ),
+                                SizedBox(height: 40),
+                                InkWell(
+                                  child: Container(
+                                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.red.shade700,
+                                        borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(25.0),
+                                            bottomRight: Radius.circular(25.0)),
+                                      ),
+                                      child: SizedBox(
+                                        width: getProportionateScreenWidth(300),
+                                        child: CupertinoButton(child: const Text('PROCEDI',
+                                            style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.red.shade700,
+                                            onPressed: () async {
+                                              try{
+                                              } catch(e){
+                                                print('Errore');
+                                              }
+                                            }
+                                        ),
+                                      )
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                );
+              }),
+        ),
+      ],
+    );
   }
 }
