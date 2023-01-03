@@ -147,6 +147,7 @@ UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(
       lastname: json['lastname'] as String?,
       name: json['name'] as String?,
       phone: json['phone'] as String?,
+      photo: json['photo'] as String?,
       userId: json['userId'] as num?,
       userType: userEntityUserTypeFromJson(json['userType']),
     );
@@ -158,6 +159,7 @@ Map<String, dynamic> _$UserEntityToJson(UserEntity instance) =>
       'lastname': instance.lastname,
       'name': instance.name,
       'phone': instance.phone,
+      'photo': instance.photo,
       'userId': instance.userId,
       'userType': userEntityUserTypeToJson(instance.userType),
     };

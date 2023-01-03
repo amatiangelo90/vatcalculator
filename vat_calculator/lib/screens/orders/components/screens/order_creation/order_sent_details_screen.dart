@@ -126,6 +126,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                         if (await canLaunch(urlString)) {
 
                           if(orderStatus == OrderEntityOrderStatus.nonInviato){
+                            //TODO qui non funziona l'aggiornamento dello stato
                             orderSent.orderStatus = OrderEntityOrderStatus.inviatoTramiteWhatsApp;
                             dataBundleNotifier.getSwaggerClient().apiV1AppOrderUpdatePut(orderEntity: orderSent);
                           }
@@ -140,6 +141,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                         }
                       }else{
                         if(orderStatus == OrderEntityOrderStatus.nonInviato){
+                          //TODO qui non funziona l'aggiornamento dello stato
                           orderSent.orderStatus = OrderEntityOrderStatus.inviatoTramiteWhatsApp;
                           dataBundleNotifier.getSwaggerClient().apiV1AppOrderUpdatePut(orderEntity: orderSent);
                         }

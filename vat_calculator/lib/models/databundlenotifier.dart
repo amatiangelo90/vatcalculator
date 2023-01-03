@@ -34,13 +34,28 @@ class DataBundleNotifier extends ChangeNotifier {
       if(branch.storages!.isNotEmpty){
         setStorage(branch.storages!.first);
       }
-
     }else{
       print(response.error);
       print(response.base.headers.toString());
     }
     notifyListeners();
   }
+
+  void refreshCurrentBranchDataWithStorageTrakingId(int storageId) async {
+    Response response = await getSwaggerClient().apiV1AppBranchesRetrievebranchbyidGet(branchid: _currentBranch.branchId!.toInt());
+    if(response.isSuccessful){
+      Branch branch = response.body;
+      setBranch(branch);
+      if(branch.storages!.isNotEmpty){
+        setStorage(branch.storages!.where((element) => element.storageId == storageId).first);
+      }
+    }else{
+      print(response.error);
+      print(response.base.headers.toString());
+    }
+    notifyListeners();
+  }
+
   void setBranch(Branch branch){
     _currentBranch = branch;
     notifyListeners();

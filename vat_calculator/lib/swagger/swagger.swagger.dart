@@ -507,6 +507,22 @@ abstract class Swagger extends ChopperService {
     @Query('productId') required int? productId,
   });
 
+  ///emptystorage
+  ///@param storageId storageId
+  Future<chopper.Response> apiV1AppStorageEmptystoragePut(
+      {required int? storageId}) {
+    return _apiV1AppStorageEmptystoragePut(storageId: storageId);
+  }
+
+  ///emptystorage
+  ///@param storageId storageId
+  @Put(
+    path: '/api/v1/app/storage/emptystorage',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppStorageEmptystoragePut(
+      {@Query('storageId') required int? storageId});
+
   ///findStorageByBranchId
   ///@param branchid branchid
   Future<chopper.Response<List<Storage>>>
@@ -560,6 +576,23 @@ abstract class Swagger extends ChopperService {
   @Post(path: '/api/v1/app/storage/save')
   Future<chopper.Response<Storage>> _apiV1AppStorageSavePost(
       {@Body() required Storage? storage});
+
+  ///setstockzerotonegativeproducts
+  ///@param storageId storageId
+  Future<chopper.Response> apiV1AppStorageSetstockzerotonegativeproductsPut(
+      {required int? storageId}) {
+    return _apiV1AppStorageSetstockzerotonegativeproductsPut(
+        storageId: storageId);
+  }
+
+  ///setstockzerotonegativeproducts
+  ///@param storageId storageId
+  @Put(
+    path: '/api/v1/app/storage/setstockzerotonegativeproducts',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppStorageSetstockzerotonegativeproductsPut(
+      {@Query('storageId') required int? storageId});
 
   ///update
   ///@param storage storage

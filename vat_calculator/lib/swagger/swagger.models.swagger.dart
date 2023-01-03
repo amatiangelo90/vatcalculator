@@ -707,6 +707,7 @@ class UserEntity {
     this.lastname,
     this.name,
     this.phone,
+    this.photo,
     this.userId,
     this.userType,
   });
@@ -724,6 +725,8 @@ class UserEntity {
   final String? name;
   @JsonKey(name: 'phone')
   final String? phone;
+  @JsonKey(name: 'photo')
+  final String? photo;
   @JsonKey(name: 'userId')
   final num? userId;
   @JsonKey(
@@ -752,6 +755,8 @@ class UserEntity {
                 const DeepCollectionEquality().equals(other.name, name)) &&
             (identical(other.phone, phone) ||
                 const DeepCollectionEquality().equals(other.phone, phone)) &&
+            (identical(other.photo, photo) ||
+                const DeepCollectionEquality().equals(other.photo, photo)) &&
             (identical(other.userId, userId) ||
                 const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.userType, userType) ||
@@ -769,6 +774,7 @@ class UserEntity {
       const DeepCollectionEquality().hash(lastname) ^
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(phone) ^
+      const DeepCollectionEquality().hash(photo) ^
       const DeepCollectionEquality().hash(userId) ^
       const DeepCollectionEquality().hash(userType) ^
       runtimeType.hashCode;
@@ -781,6 +787,7 @@ extension $UserEntityExtension on UserEntity {
       String? lastname,
       String? name,
       String? phone,
+      String? photo,
       num? userId,
       enums.UserEntityUserType? userType}) {
     return UserEntity(
@@ -789,6 +796,7 @@ extension $UserEntityExtension on UserEntity {
         lastname: lastname ?? this.lastname,
         name: name ?? this.name,
         phone: phone ?? this.phone,
+        photo: photo ?? this.photo,
         userId: userId ?? this.userId,
         userType: userType ?? this.userType);
   }
@@ -799,6 +807,7 @@ extension $UserEntityExtension on UserEntity {
       Wrapped<String?>? lastname,
       Wrapped<String?>? name,
       Wrapped<String?>? phone,
+      Wrapped<String?>? photo,
       Wrapped<num?>? userId,
       Wrapped<enums.UserEntityUserType?>? userType}) {
     return UserEntity(
@@ -807,6 +816,7 @@ extension $UserEntityExtension on UserEntity {
         lastname: (lastname != null ? lastname.value : this.lastname),
         name: (name != null ? name.value : this.name),
         phone: (phone != null ? phone.value : this.phone),
+        photo: (photo != null ? photo.value : this.photo),
         userId: (userId != null ? userId.value : this.userId),
         userType: (userType != null ? userType.value : this.userType));
   }

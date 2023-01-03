@@ -190,9 +190,32 @@ class _StorageScreenState extends State<StorageScreen> {
                           child: ListView.builder(
                             itemCount: getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter).length,
                             itemBuilder: (context, index) {
-                              final product = getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index];
+                              RStorageProduct product = getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index];
                               return Dismissible(
                                 key: Key(product.productId!.toString()),
+                                direction: DismissDirection.endToStart,
+                                confirmDismiss: (DismissDirection direction) async {
+                                  return await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Confirma operazione"),
+                                        content: const Text("Sei sicuro di voler eliminare il prodotto?"),
+                                        actions: <Widget>[
+                                          OutlinedButton(
+                                              onPressed: () => Navigator.of(context).pop(true),
+                                              child: const Text("Elimina", style: TextStyle(color: kRed),)
+                                          ),
+                                          OutlinedButton(
+                                            onPressed: () => Navigator.of(context).pop(false),
+                                            child: const Text("Indietro"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                resizeDuration: Duration(seconds: 1),
                                 onDismissed: (direction) async {
                                   print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
                                   Response apiV1AppProductsDeleteDelete = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageDeleteproductfromstorageDelete(
@@ -204,8 +227,12 @@ class _StorageScreenState extends State<StorageScreen> {
                                       dataBundleNotifier.getCurrentStorage().products!.removeWhere((element) => element.productId == getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index]!.productId!);
                                       _filter = '';
                                     });
+
                                     ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(content: Text('${product.productName} eliminato')));
+                                        .showSnackBar(SnackBar(
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: kCustomGreen,
+                                        content: Text('${product.productName} eliminato')));
                                   }else{
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(content: Text('Si è verificato un problema durante la cancellazione del prodotto. Err:'), backgroundColor: Colors.red,));
@@ -238,12 +265,13 @@ class _StorageScreenState extends State<StorageScreen> {
                                                       children: [
                                                         Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(20))),
                                                         Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
+                                                        Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
                                                       ],
                                                     ),
                                                   ))),
                                         ],
                                       ),
-                                      Divider(color: kCustomWhite, height: 2,)
+                                      const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
                                     ],
                                   ),
                                 ),
@@ -436,14 +464,7 @@ class _StorageScreenState extends State<StorageScreen> {
             style: TextButton.styleFrom(
               backgroundColor: Colors.pinkAccent.shade400,
             ),
-            child: Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('CREA ED AGGIUNGI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                Text('NUOVO PRODOTTO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-              ],
-            )),
+            child: Text('CREA ED AGGIUNGI\nNUOVO PRODOTTO', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateAndAddProductScreen(
               ),),);
@@ -457,14 +478,7 @@ class _StorageScreenState extends State<StorageScreen> {
             style: TextButton.styleFrom(
               backgroundColor: Colors.deepOrangeAccent.shade200,
             ),
-            child: Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('AGGIUNGI PRODOTTI DA ', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                Text('CATALOGO FORNITORI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-              ],
-            )),
+            child: Text('AGGIUNGI PRODOTTI DA\nCATALOGO FORNITORI', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
             onPressed: () async {
               showModalBottomSheet(
                   shape: const RoundedRectangleBorder(
@@ -534,14 +548,7 @@ class _StorageScreenState extends State<StorageScreen> {
             style: TextButton.styleFrom(
               backgroundColor: kPinaColor,
             ),
-            child: Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('EFFETTUA', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
-                Text('ORDINE', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(14), fontWeight: FontWeight.bold),),
-              ],
-            )),
+            child: Text('EFFETTUA\nORDINE', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
             onPressed: () {
               //Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
             },
@@ -554,14 +561,7 @@ class _StorageScreenState extends State<StorageScreen> {
             style: TextButton.styleFrom(
               backgroundColor: Colors.purple,
             ),
-            child: Center(child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('SPOSTA PRODOTTI', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-                Text('IN ALTRO MAGAZZINO', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
-              ],
-            )),
+            child: Text('SPOSTA PRODOTTI\nIN ALTRO MAGAZZINO', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
             onPressed: () {
               //Navigator.pushNamed(context, MoveProductToStorageScreen.routeName);
             },
@@ -575,14 +575,7 @@ class _StorageScreenState extends State<StorageScreen> {
               style: TextButton.styleFrom(
                 backgroundColor: Colors.lightGreen,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                  Text('CARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                ],
-              ),
+              child: Text('EFFETTUA\nCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
               onPressed: (){
                 //Navigator.pushNamed(context, LoadStorageScreen.routeName);
               }
@@ -596,34 +589,23 @@ class _StorageScreenState extends State<StorageScreen> {
               style: TextButton.styleFrom(
                 backgroundColor: kCustomBordeaux,
               ),
-              child: Column(
-                children: [
-                  Text('EFFETTUA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                  Text('SCARICO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                ],
-              ),
+              child: Text('EFFETTUA\nSCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
               onPressed: (){
                 //Navigator.pushNamed(context, UnloadStorageScreen.routeName);
               }
           ),
         ),
-        dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : SizedBox(
+        dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) :
+
+        SizedBox(
           width: getProportionateScreenWidth(170),
           height: getProportionateScreenHeight(60),
           child: TextButton(
             style: TextButton.styleFrom(
               backgroundColor: Colors.lightBlueAccent,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text('CONFIGURA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                Text('Q/100',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-              ],
-            ),
+            child: Text('CONFIGURA\nQ/100',textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
             onPressed: (){
-
             },
           ),
         ),
@@ -634,74 +616,43 @@ class _StorageScreenState extends State<StorageScreen> {
               style: TextButton.styleFrom(
                 backgroundColor: Colors.redAccent,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('SVUOTA',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-                  Text('MAGAZZINO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(14)), ),
-                ],
-              ),
+              child: Text('SVUOTA\nMAGAZZINO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
               onPressed: () async {
-                showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                      backgroundColor: kCustomWhite,
-                      contentPadding: EdgeInsets.only(top: 10.0),
-                      elevation: 30,
-
-                      content: SizedBox(
-                        height: getProportionateScreenHeight(240),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('Svuota Magazzino?', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text('Impostare la giacenza per tutti i prodotti presenti in ${dataBundleNotifier.getCurrentStorage().name} a 0?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
-                                ),
-                                SizedBox(height: 40),
-                                InkWell(
-                                  child: Container(
-                                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                      decoration: const BoxDecoration(
-                                        color: Colors.redAccent,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(25.0),
-                                            bottomRight: Radius.circular(25.0)),
-                                      ),
-                                      child: SizedBox(
-                                        width: getProportionateScreenWidth(300),
-                                        child: CupertinoButton(child: const Text('SVUOTA MAGAZZINO',
-                                            style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.redAccent,
-                                            onPressed: () async {
-                                              try{
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                    backgroundColor: Colors.green,
-                                                    duration: Duration(milliseconds: 1000),
-                                                    content: Text('Magazzino svuotato')));
-                                              } catch(e){
-                                                print('Errore');
-                                              }
-
-                                            }
-                                        ),
-                                      )
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Conferma operazione"),
+                      content: const Text("Impostare la giacenza a 0 per tutti i prodotti presenti in magazzino?"),
+                      actions: <Widget>[
+                        OutlinedButton(
+                            onPressed: () async {
+                              Response apiV1AppStorageEmptystoragePut = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageEmptystoragePut(storageId: dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+                              if(apiV1AppStorageEmptystoragePut.isSuccessful){
+                                dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    backgroundColor: kCustomGreen,
+                                    content: Text('Magazzino svuotato correttamente')));
+                              }else{
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    backgroundColor: kRed,
+                                    content: Text('Errore durante l\'operazione. Err: ' + apiV1AppStorageEmptystoragePut.error.toString())));
+                              }
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text("Svuota magazzino", style: TextStyle(color: kRed),)
                         ),
-                      ),
-                    )
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Indietro"),
+                        ),
+                      ],
+                    );
+                  },
                 );
               }),
         ),
@@ -712,71 +663,43 @@ class _StorageScreenState extends State<StorageScreen> {
               style: TextButton.styleFrom(
                 backgroundColor: Colors.red.shade700,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('IMPOSTA GIACENZA 0',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
-                  Text('I PRODOTTI IN NEGATIVO',style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
-                ],
-              ),
+              child: Text('IMPOSTA GIACENZA 0\nI PRODOTTI IN NEGATIVO', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(11)), ),
               onPressed: () async {
-                showDialog(
-                    context: context,
-                    builder: (_) => AlertDialog(
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(25.0))),
-                      backgroundColor: kCustomWhite,
-                      contentPadding: EdgeInsets.only(top: 10.0),
-                      elevation: 30,
-
-                      content: SizedBox(
-                        height: getProportionateScreenHeight(270),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: const Text('', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text('Impostare la giacenza a 0 per tutti i prodotti presenti in ${dataBundleNotifier.getCurrentStorage().name} che abbiamo un valore per la giacenza in negativo?', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold,fontSize: getProportionateScreenHeight(15))),
-                                ),
-                                SizedBox(height: 40),
-                                InkWell(
-                                  child: Container(
-                                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.red.shade700,
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(25.0),
-                                            bottomRight: Radius.circular(25.0)),
-                                      ),
-                                      child: SizedBox(
-                                        width: getProportionateScreenWidth(300),
-                                        child: CupertinoButton(child: const Text('PROCEDI',
-                                            style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.red.shade700,
-                                            onPressed: () async {
-                                              try{
-                                              } catch(e){
-                                                print('Errore');
-                                              }
-                                            }
-                                        ),
-                                      )
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Conferma operazione"),
+                      content: const Text("Impostare la giacenza a 0 per tutti i prodotti presenti che abbiano un valore in giacenza negativo?"),
+                      actions: <Widget>[
+                        OutlinedButton(
+                            onPressed: () async {
+                              Response apiV1AppStorageSetstockzerotonegativeproductsPut = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageSetstockzerotonegativeproductsPut(storageId: dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+                              if(apiV1AppStorageSetstockzerotonegativeproductsPut.isSuccessful){
+                                dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    backgroundColor: kCustomGreen,
+                                    content: Text('Impostazione della giacenza a 0 per i prodotti con stock in negativo eseguita correttamente')));
+                              }else{
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    backgroundColor: kRed,
+                                    content: Text('Errore durante l\'operazione. Err: ' + apiV1AppStorageSetstockzerotonegativeproductsPut.error.toString())));
+                              }
+                              Navigator.of(context).pop(false);
+                            },
+                            child: const Text("Imposta a 0", style: TextStyle(color: kCustomGreen),)
                         ),
-                      ),
-                    )
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Indietro"),
+                        ),
+                      ],
+                    );
+                  },
                 );
               }),
         ),

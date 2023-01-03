@@ -459,6 +459,22 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppStorageEmptystoragePut(
+      {required int? storageId}) {
+    final String $url = '/api/v1/app/storage/emptystorage';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'storageId': storageId
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<List<Storage>>> _apiV1AppStorageFindstoragebybranchidGet(
       {required int? branchid}) {
     final String $url = '/api/v1/app/storage/findstoragebybranchid';
@@ -505,6 +521,22 @@ class _$Swagger extends Swagger {
       body: $body,
     );
     return client.send<Storage, Storage>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiV1AppStorageSetstockzerotonegativeproductsPut(
+      {required int? storageId}) {
+    final String $url = '/api/v1/app/storage/setstockzerotonegativeproducts';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'storageId': storageId
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
   }
 
   @override

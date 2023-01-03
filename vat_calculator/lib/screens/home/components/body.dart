@@ -74,7 +74,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 children: [
                   buildGestureDetectorBranchSelector(
                       context, dataBundleNotifier),
-                  buildStaffWidget(),
+                  buildStaffWidget(dataBundleNotifier),
                   buildOrderButton('ORDINI', dataBundleNotifier),
 
                   buildSuppliersStorageButton(width, dataBundleNotifier),
@@ -657,14 +657,14 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  buildStaffWidget() {
+  buildStaffWidget(DataBundleNotifier dataBundle) {
     return Column(
       children: [
         Row(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Staff 20m2 Cisternino', style: TextStyle(
+              padding: EdgeInsets.all(8.0),
+              child: Text('Staff ' + dataBundle.getCurrentBranch().name!, style: TextStyle(
                   fontSize: getProportionateScreenWidth(10),
                   color: Colors.white),),
             ),
