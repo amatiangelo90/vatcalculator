@@ -510,6 +510,20 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppStorageLoadPut(
+      {required List<LoadUnloadModel>? loadUnloadModel}) {
+    final String $url = '/api/v1/app/storage/load';
+    final $body = loadUnloadModel;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<Storage>> _apiV1AppStorageSavePost(
       {required Storage? storage}) {
     final String $url = '/api/v1/app/storage/save';
@@ -535,6 +549,20 @@ class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiV1AppStorageUnloadPut(
+      {required List<LoadUnloadModel>? loadUnloadModel}) {
+    final String $url = '/api/v1/app/storage/unload';
+    final $body = loadUnloadModel;
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      body: $body,
     );
     return client.send<dynamic, dynamic>($request);
   }

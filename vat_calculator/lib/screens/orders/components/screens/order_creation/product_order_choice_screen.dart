@@ -99,18 +99,30 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                   actions: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Stack(
-                        children: [
-                          const Icon(Icons.shopping_basket, color: kCustomGrey,),
-                          dataBundleNotifier.getProdNumberFromBasket() == '0' ? Text('') : Positioned(
-                              left: 10,
-                              top: 1,
-                              child: Stack(children: [
-                                const Icon(Icons.circle, size: 15,color: Colors.green,),
-                                Center(child: Text( '  ' + dataBundleNotifier.getProdNumberFromBasket(), style: TextStyle(fontSize: 9))),
-                              ], )
-                          )
-                        ],
+                      child: IconButton(
+                        onPressed: (){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => OrderConfirmationScreen(
+                                  currentSupplier: widget.currentSupplier
+                              ),
+                            ),
+                          );
+                        },
+                        icon: Stack(
+                          children: [
+                            const Icon(Icons.shopping_basket, color: kCustomGrey,),
+                            dataBundleNotifier.getProdNumberFromBasket() == '0' ? Text('') : Positioned(
+                                left: 10,
+                                top: 1,
+                                child: Stack(children: [
+                                  const Icon(Icons.circle, size: 15,color: kCustomPinkAccent,),
+                                  Center(child: Text( '  ' + dataBundleNotifier.getProdNumberFromBasket(), style: TextStyle(fontSize: 9))),
+                                ], )
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -187,29 +199,32 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(currentProduct.productName!, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(18), fontWeight: FontWeight.w700),),
-                    Row(
-                      children: [
-                        Text(
-                          currentProduct.unitMeasure!,
-                          style:
-                          TextStyle(fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(Icons.circle, size: 4, color: Colors.grey),
-                        ),
-                        Text(
-                          dataBundleNotifier.getCurrentBranch().userPriviledge.toString().toLowerCase() == branchUserPriviledgeFromJson(BranchUserPriviledge.employee).toString() ? '' : currentProduct.price.toString() + ' €',
-                          style:
-                          TextStyle(fontSize: getProportionateScreenWidth(14), fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ],
+                SizedBox(
+                  width: getProportionateScreenWidth(200),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(currentProduct.productName!, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(16), fontWeight: FontWeight.w700),),
+                      Row(
+                        children: [
+                          Text(
+                            currentProduct.unitMeasure!,
+                            style:
+                            TextStyle(fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.bold),
+                          ),
+                          const Padding(
+                            padding: EdgeInsets.all(4.0),
+                            child: Icon(Icons.circle, size: 4, color: Colors.grey),
+                          ),
+                          Text(
+                            dataBundleNotifier.getCurrentBranch().userPriviledge.toString().toLowerCase() == branchUserPriviledgeFromJson(BranchUserPriviledge.employee).toString() ? '' : currentProduct.price.toString() + ' €',
+                            style:
+                            TextStyle(fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 Row(
                   children: [

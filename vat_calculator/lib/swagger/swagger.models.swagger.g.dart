@@ -69,10 +69,12 @@ RStorageProduct _$RStorageProductFromJson(Map<String, dynamic> json) =>
     RStorageProduct(
       amountHundred: (json['amountHundred'] as num?)?.toDouble(),
       available: json['available'] as bool?,
+      orderAmount: (json['orderAmount'] as num?)?.toDouble(),
       productId: json['productId'] as num?,
       productName: json['productName'] as String?,
       stock: (json['stock'] as num?)?.toDouble(),
       storageProductId: json['storageProductId'] as num?,
+      supplierId: json['supplierId'] as num?,
       unitMeasure: json['unitMeasure'] as String?,
     );
 
@@ -80,10 +82,12 @@ Map<String, dynamic> _$RStorageProductToJson(RStorageProduct instance) =>
     <String, dynamic>{
       'amountHundred': instance.amountHundred,
       'available': instance.available,
+      'orderAmount': instance.orderAmount,
       'productId': instance.productId,
       'productName': instance.productName,
       'stock': instance.stock,
       'storageProductId': instance.storageProductId,
+      'supplierId': instance.supplierId,
       'unitMeasure': instance.unitMeasure,
     };
 
@@ -136,6 +140,20 @@ Map<String, dynamic> _$ProductToJson(Product instance) => <String, dynamic>{
       'unitMeasure': productUnitMeasureToJson(instance.unitMeasure),
       'unitMeasureOTH': instance.unitMeasureOTH,
       'vatApplied': instance.vatApplied,
+    };
+
+LoadUnloadModel _$LoadUnloadModelFromJson(Map<String, dynamic> json) =>
+    LoadUnloadModel(
+      amount: (json['amount'] as num?)?.toDouble(),
+      productId: json['productId'] as num?,
+      storageId: json['storageId'] as num?,
+    );
+
+Map<String, dynamic> _$LoadUnloadModelToJson(LoadUnloadModel instance) =>
+    <String, dynamic>{
+      'amount': instance.amount,
+      'productId': instance.productId,
+      'storageId': instance.storageId,
     };
 
 UserEntity _$UserEntityFromJson(Map<String, dynamic> json) => UserEntity(

@@ -159,6 +159,20 @@ class DataBundleNotifier extends ChangeNotifier {
     return map;
   }
 
+  Map<num?, List<RStorageProduct>> getProdToGroupedBySupplierIdToPerformOrder() {
+    Map<int, List<RStorageProduct>> map = {};
+
+    for (RStorageProduct prod in getCurrentStorage().products!) {
+      if(map.containsKey(prod.supplierId)){
+        map[prod.supplierId!.toInt()]!.add(prod);
+      }else{
+        map[prod.supplierId!.toInt()] = [prod];
+      }
+    }
+    print(map.toString());
+    return map;
+  }
+
   List<num?> getIds(List<RStorageProduct>? products) {
     List<num?> ids = [];
 
@@ -228,68 +242,21 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  String getSupplierNameById(num key) {
+    String name = '';
+    for (var element in getCurrentBranch().suppliers!) {
+      if(element.supplierId == key){
+        name = element.name!;
+      }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ====================================== OLD CODE TO REMOVE ALLLLLLLL ==========================================================////////////////////////////////////
-
-
+    return name;
   }
+
+  void clearAmountOrderFromCurrentStorageProductList() {
+    for (var prod in getCurrentStorage().products!) {
+      prod.orderAmount = 0;
+    }
+    notifyListeners();
+  }
+}

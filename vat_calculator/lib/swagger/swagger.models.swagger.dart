@@ -312,10 +312,12 @@ class RStorageProduct {
   RStorageProduct({
     this.amountHundred,
     this.available,
+    this.orderAmount,
     this.productId,
     this.productName,
     this.stock,
     this.storageProductId,
+    this.supplierId,
     this.unitMeasure,
   });
 
@@ -326,6 +328,8 @@ class RStorageProduct {
   final double? amountHundred;
   @JsonKey(name: 'available')
   final bool? available;
+  @JsonKey(name: 'orderAmount')
+  double? orderAmount;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -334,6 +338,8 @@ class RStorageProduct {
   final double? stock;
   @JsonKey(name: 'storageProductId')
   final num? storageProductId;
+  @JsonKey(name: 'supplierId')
+  final num? supplierId;
   @JsonKey(name: 'unitMeasure')
   final String? unitMeasure;
   static const fromJsonFactory = _$RStorageProductFromJson;
@@ -350,6 +356,9 @@ class RStorageProduct {
             (identical(other.available, available) ||
                 const DeepCollectionEquality()
                     .equals(other.available, available)) &&
+            (identical(other.orderAmount, orderAmount) ||
+                const DeepCollectionEquality()
+                    .equals(other.orderAmount, orderAmount)) &&
             (identical(other.productId, productId) ||
                 const DeepCollectionEquality()
                     .equals(other.productId, productId)) &&
@@ -361,6 +370,9 @@ class RStorageProduct {
             (identical(other.storageProductId, storageProductId) ||
                 const DeepCollectionEquality()
                     .equals(other.storageProductId, storageProductId)) &&
+            (identical(other.supplierId, supplierId) ||
+                const DeepCollectionEquality()
+                    .equals(other.supplierId, supplierId)) &&
             (identical(other.unitMeasure, unitMeasure) ||
                 const DeepCollectionEquality()
                     .equals(other.unitMeasure, unitMeasure)));
@@ -373,10 +385,12 @@ class RStorageProduct {
   int get hashCode =>
       const DeepCollectionEquality().hash(amountHundred) ^
       const DeepCollectionEquality().hash(available) ^
+      const DeepCollectionEquality().hash(orderAmount) ^
       const DeepCollectionEquality().hash(productId) ^
       const DeepCollectionEquality().hash(productName) ^
       const DeepCollectionEquality().hash(stock) ^
       const DeepCollectionEquality().hash(storageProductId) ^
+      const DeepCollectionEquality().hash(supplierId) ^
       const DeepCollectionEquality().hash(unitMeasure) ^
       runtimeType.hashCode;
 }
@@ -385,33 +399,41 @@ extension $RStorageProductExtension on RStorageProduct {
   RStorageProduct copyWith(
       {double? amountHundred,
       bool? available,
+      double? orderAmount,
       num? productId,
       String? productName,
       double? stock,
       num? storageProductId,
+      num? supplierId,
       String? unitMeasure}) {
     return RStorageProduct(
         amountHundred: amountHundred ?? this.amountHundred,
         available: available ?? this.available,
+        orderAmount: orderAmount ?? this.orderAmount,
         productId: productId ?? this.productId,
         productName: productName ?? this.productName,
         stock: stock ?? this.stock,
         storageProductId: storageProductId ?? this.storageProductId,
+        supplierId: supplierId ?? this.supplierId,
         unitMeasure: unitMeasure ?? this.unitMeasure);
   }
 
   RStorageProduct copyWithWrapped(
       {Wrapped<double?>? amountHundred,
       Wrapped<bool?>? available,
+      Wrapped<double?>? orderAmount,
       Wrapped<num?>? productId,
       Wrapped<String?>? productName,
       Wrapped<double?>? stock,
       Wrapped<num?>? storageProductId,
+      Wrapped<num?>? supplierId,
       Wrapped<String?>? unitMeasure}) {
     return RStorageProduct(
         amountHundred:
             (amountHundred != null ? amountHundred.value : this.amountHundred),
         available: (available != null ? available.value : this.available),
+        orderAmount:
+            (orderAmount != null ? orderAmount.value : this.orderAmount),
         productId: (productId != null ? productId.value : this.productId),
         productName:
             (productName != null ? productName.value : this.productName),
@@ -419,6 +441,7 @@ extension $RStorageProductExtension on RStorageProduct {
         storageProductId: (storageProductId != null
             ? storageProductId.value
             : this.storageProductId),
+        supplierId: (supplierId != null ? supplierId.value : this.supplierId),
         unitMeasure:
             (unitMeasure != null ? unitMeasure.value : this.unitMeasure));
   }
@@ -696,6 +719,71 @@ extension $ProductExtension on Product {
             ? unitMeasureOTH.value
             : this.unitMeasureOTH),
         vatApplied: (vatApplied != null ? vatApplied.value : this.vatApplied));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
+class LoadUnloadModel {
+  LoadUnloadModel({
+    this.amount,
+    this.productId,
+    this.storageId,
+  });
+
+  factory LoadUnloadModel.fromJson(Map<String, dynamic> json) =>
+      _$LoadUnloadModelFromJson(json);
+
+  @JsonKey(name: 'amount')
+  final double? amount;
+  @JsonKey(name: 'productId')
+  final num? productId;
+  @JsonKey(name: 'storageId')
+  final num? storageId;
+  static const fromJsonFactory = _$LoadUnloadModelFromJson;
+  static const toJsonFactory = _$LoadUnloadModelToJson;
+  Map<String, dynamic> toJson() => _$LoadUnloadModelToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is LoadUnloadModel &&
+            (identical(other.amount, amount) ||
+                const DeepCollectionEquality().equals(other.amount, amount)) &&
+            (identical(other.productId, productId) ||
+                const DeepCollectionEquality()
+                    .equals(other.productId, productId)) &&
+            (identical(other.storageId, storageId) ||
+                const DeepCollectionEquality()
+                    .equals(other.storageId, storageId)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(amount) ^
+      const DeepCollectionEquality().hash(productId) ^
+      const DeepCollectionEquality().hash(storageId) ^
+      runtimeType.hashCode;
+}
+
+extension $LoadUnloadModelExtension on LoadUnloadModel {
+  LoadUnloadModel copyWith({double? amount, num? productId, num? storageId}) {
+    return LoadUnloadModel(
+        amount: amount ?? this.amount,
+        productId: productId ?? this.productId,
+        storageId: storageId ?? this.storageId);
+  }
+
+  LoadUnloadModel copyWithWrapped(
+      {Wrapped<double?>? amount,
+      Wrapped<num?>? productId,
+      Wrapped<num?>? storageId}) {
+    return LoadUnloadModel(
+        amount: (amount != null ? amount.value : this.amount),
+        productId: (productId != null ? productId.value : this.productId),
+        storageId: (storageId != null ? storageId.value : this.storageId));
   }
 }
 

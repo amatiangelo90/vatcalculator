@@ -14,6 +14,8 @@ import '../../swagger/swagger.enums.swagger.dart';
 import 'components/add_storage_screen.dart';
 import 'components/add_widget_element.dart';
 import 'components/create_product_and_add_to_storage.dart';
+import 'components/load_unload_screen.dart';
+import 'components/order_from_storage_widget.dart';
 
 class StorageScreen extends StatefulWidget{
 
@@ -242,34 +244,67 @@ class _StorageScreenState extends State<StorageScreen> {
                                 child: ListTile(
                                   title: Column(
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                  width: getProportionateScreenWidth(200),
-                                                  child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
-                                            ],
-                                          ),
-                                          Container(
-                                            width: getProportionateScreenWidth(100),
-                                              child: Card(
-                                                  elevation: 1,
-                                                  color: Colors.white,
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.all(4.0),
-                                                    child: Column(
-                                                      children: [
-                                                        Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(20))),
-                                                        Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
-                                                        Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
-                                                      ],
-                                                    ),
-                                                  ))),
-                                        ],
+                                      GestureDetector(
+                                        onTap:(){
+                                          showModalBottomSheet(
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(25.0),
+                                                ),
+                                              ),
+                                              context: context,
+                                              builder: (context) {
+                                                return Builder(
+                                                  builder: (context) {
+                                                    return SizedBox(
+                                                      width: getProportionateScreenWidth(900),
+                                                      height: getProportionateScreenHeight(600),
+                                                      child: SingleChildScrollView(
+                                                        scrollDirection: Axis.vertical,
+                                                        child: Column(
+                                                          children: [
+                                                            Container(
+                                                              decoration: const BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10.0),
+                                                                    topLeft: Radius.circular(10.0)),
+                                                                color: kCustomGrey,
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    '  Configura prodotto',
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                      getProportionateScreenWidth(17),
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                  IconButton(
+                                                                    icon: const Icon(
+                                                                      Icons.clear,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context);
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            buildProductRow(product),
+                                                            const SizedBox(height: 40),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              });
+                                        },
+                                        child: buildProductRow(product)
                                       ),
                                       const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
                                     ],
@@ -490,7 +525,6 @@ class _StorageScreenState extends State<StorageScreen> {
                   builder: (context) {
                     return Builder(
                       builder: (context) {
-
                         return SizedBox(
                           width: getProportionateScreenWidth(900),
                           height: getProportionateScreenHeight(600),
@@ -550,7 +584,8 @@ class _StorageScreenState extends State<StorageScreen> {
             ),
             child: Text('EFFETTUA\nORDINE', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold),),
             onPressed: () {
-              //Navigator.pushNamed(context, OrderFromStorageScreen.routeName);
+              dataBundleNotifier.clearAmountOrderFromCurrentStorageProductList();
+              Navigator.pushNamed(context, OrderFromStorageWidget.routeName);
             },
           ),
         ),
@@ -577,7 +612,16 @@ class _StorageScreenState extends State<StorageScreen> {
               ),
               child: Text('EFFETTUA\nCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
               onPressed: (){
-                //Navigator.pushNamed(context, LoadStorageScreen.routeName);
+                dataBundleNotifier.clearAmountOrderFromCurrentStorageProductList();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoadUnloadScreen(
+                        isLoad: true,
+                        isUnLoad: false
+                    ),
+                  ),
+                );
               }
           ),
         ),
@@ -591,7 +635,17 @@ class _StorageScreenState extends State<StorageScreen> {
               ),
               child: Text('EFFETTUA\nSCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
               onPressed: (){
-                //Navigator.pushNamed(context, UnloadStorageScreen.routeName);
+                dataBundleNotifier.clearAmountOrderFromCurrentStorageProductList();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoadUnloadScreen(
+                      isLoad: false,
+                      isUnLoad: true
+                    ),
+                  ),
+                );
+
               }
           ),
         ),
@@ -703,6 +757,38 @@ class _StorageScreenState extends State<StorageScreen> {
                 );
               }),
         ),
+      ],
+    );
+  }
+
+  buildProductRow(RStorageProduct product) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+                width: getProportionateScreenWidth(200),
+                child: Text(' ' + product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
+          ],
+        ),
+        Container(
+            width: getProportionateScreenWidth(100),
+            child: Card(
+                elevation: 1,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    children: [
+                      Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(20))),
+                      Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
+                      Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
+                    ],
+                  ),
+                ))),
       ],
     );
   }

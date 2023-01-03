@@ -108,7 +108,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
                           Padding(
                             padding: const EdgeInsets.only(bottom: 30),
                             child: SizedBox(
-                              height: 80,
+                              height: getProportionateScreenHeight(50),
                               width: SizeConfig.screenWidth * 0.9,
                               child: DefaultButton(
                                 color: kCustomGreen,

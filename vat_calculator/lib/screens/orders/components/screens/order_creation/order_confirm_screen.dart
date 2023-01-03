@@ -211,7 +211,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('  Creato da: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                    Text(dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                    Text(dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname! + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
                   ],
                 ),
                 Row(
@@ -253,28 +253,28 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('  Da consegnare a: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(dataBundleNotifier.getCurrentBranch().name!, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                        Text(dataBundleNotifier.getCurrentBranch().name! + ' ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey),),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('  In via: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(dataBundleNotifier.getCurrentBranch()!.address!, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                        Text(dataBundleNotifier.getCurrentBranch()!.address!+ ' ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey),),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('  Città: ', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(dataBundleNotifier.getCurrentBranch().city! + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                        Text(dataBundleNotifier.getCurrentBranch().city! + ' ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey),),
                       ],
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text('  CAP : ', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text(dataBundleNotifier.getCurrentBranch().cap! + '  ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green.shade900),),
+                        Text(dataBundleNotifier.getCurrentBranch().cap! + ' ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey),),
                       ],
                     ),
                     Divider(endIndent: 40, indent: 40, height: getProportionateScreenHeight(30),),
@@ -351,12 +351,15 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(currentProduct.productName!, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
-                      Text(currentProduct.unitMeasure!, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
-                    ],
+                  SizedBox(
+                    width: getProportionateScreenWidth(220),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(currentProduct.productName!, style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15)),),
+                        Text(currentProduct.unitMeasure!, style: TextStyle( fontSize: getProportionateScreenWidth(12))),
+                      ],
+                    ),
                   ),
                   Row(
                     children: [

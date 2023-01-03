@@ -562,6 +562,19 @@ abstract class Swagger extends ChopperService {
     @Query('productId') required int? productId,
   });
 
+  ///loadAmountOnStorage
+  ///@param loadUnloadModel loadUnloadModel
+  Future<chopper.Response> apiV1AppStorageLoadPut(
+      {required List<LoadUnloadModel>? loadUnloadModel}) {
+    return _apiV1AppStorageLoadPut(loadUnloadModel: loadUnloadModel);
+  }
+
+  ///loadAmountOnStorage
+  ///@param loadUnloadModel loadUnloadModel
+  @Put(path: '/api/v1/app/storage/load')
+  Future<chopper.Response> _apiV1AppStorageLoadPut(
+      {@Body() required List<LoadUnloadModel>? loadUnloadModel});
+
   ///save
   ///@param storage storage
   Future<chopper.Response<Storage>> apiV1AppStorageSavePost(
@@ -593,6 +606,19 @@ abstract class Swagger extends ChopperService {
   )
   Future<chopper.Response> _apiV1AppStorageSetstockzerotonegativeproductsPut(
       {@Query('storageId') required int? storageId});
+
+  ///unloadAmountOnStorage
+  ///@param loadUnloadModel loadUnloadModel
+  Future<chopper.Response> apiV1AppStorageUnloadPut(
+      {required List<LoadUnloadModel>? loadUnloadModel}) {
+    return _apiV1AppStorageUnloadPut(loadUnloadModel: loadUnloadModel);
+  }
+
+  ///unloadAmountOnStorage
+  ///@param loadUnloadModel loadUnloadModel
+  @Put(path: '/api/v1/app/storage/unload')
+  Future<chopper.Response> _apiV1AppStorageUnloadPut(
+      {@Body() required List<LoadUnloadModel>? loadUnloadModel});
 
   ///update
   ///@param storage storage
