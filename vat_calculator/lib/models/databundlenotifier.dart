@@ -79,6 +79,8 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
 
+
+
   UserEntity getUserEntity(){
     return _userEntity;
   }
@@ -90,6 +92,7 @@ class DataBundleNotifier extends ChangeNotifier {
   Storage getCurrentStorage(){
     return _currentStorage;
   }
+
 
   List<ROrderProduct> buildROrderProductFromSupplierProdList(List<Product> productList) {
 
@@ -258,5 +261,10 @@ class DataBundleNotifier extends ChangeNotifier {
       prod.orderAmount = 0;
     }
     notifyListeners();
+  }
+
+  Storage getStorageById(num storageId) {
+    print('Retrieve storage by id ' + storageId.toString());
+    return getCurrentBranch().storages!.where((element) => element.storageId == storageId).first;
   }
 }

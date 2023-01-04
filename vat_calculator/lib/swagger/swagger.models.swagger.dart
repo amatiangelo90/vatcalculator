@@ -112,8 +112,105 @@ extension $ROrderProductExtension on ROrderProduct {
 }
 
 @JsonSerializable(explicitToJson: true)
+class WorkstationLoadUnloadProduct {
+  WorkstationLoadUnloadProduct({
+    this.amount,
+    this.productId,
+    this.storageId,
+    this.storageProductId,
+    this.workstationProductId,
+  });
+
+  factory WorkstationLoadUnloadProduct.fromJson(Map<String, dynamic> json) =>
+      _$WorkstationLoadUnloadProductFromJson(json);
+
+  @JsonKey(name: 'amount')
+  final double? amount;
+  @JsonKey(name: 'productId')
+  final num? productId;
+  @JsonKey(name: 'storageId')
+  final num? storageId;
+  @JsonKey(name: 'storageProductId')
+  final num? storageProductId;
+  @JsonKey(name: 'workstationProductId')
+  final num? workstationProductId;
+  static const fromJsonFactory = _$WorkstationLoadUnloadProductFromJson;
+  static const toJsonFactory = _$WorkstationLoadUnloadProductToJson;
+  Map<String, dynamic> toJson() => _$WorkstationLoadUnloadProductToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is WorkstationLoadUnloadProduct &&
+            (identical(other.amount, amount) ||
+                const DeepCollectionEquality().equals(other.amount, amount)) &&
+            (identical(other.productId, productId) ||
+                const DeepCollectionEquality()
+                    .equals(other.productId, productId)) &&
+            (identical(other.storageId, storageId) ||
+                const DeepCollectionEquality()
+                    .equals(other.storageId, storageId)) &&
+            (identical(other.storageProductId, storageProductId) ||
+                const DeepCollectionEquality()
+                    .equals(other.storageProductId, storageProductId)) &&
+            (identical(other.workstationProductId, workstationProductId) ||
+                const DeepCollectionEquality()
+                    .equals(other.workstationProductId, workstationProductId)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(amount) ^
+      const DeepCollectionEquality().hash(productId) ^
+      const DeepCollectionEquality().hash(storageId) ^
+      const DeepCollectionEquality().hash(storageProductId) ^
+      const DeepCollectionEquality().hash(workstationProductId) ^
+      runtimeType.hashCode;
+}
+
+extension $WorkstationLoadUnloadProductExtension
+    on WorkstationLoadUnloadProduct {
+  WorkstationLoadUnloadProduct copyWith(
+      {double? amount,
+      num? productId,
+      num? storageId,
+      num? storageProductId,
+      num? workstationProductId}) {
+    return WorkstationLoadUnloadProduct(
+        amount: amount ?? this.amount,
+        productId: productId ?? this.productId,
+        storageId: storageId ?? this.storageId,
+        storageProductId: storageProductId ?? this.storageProductId,
+        workstationProductId:
+            workstationProductId ?? this.workstationProductId);
+  }
+
+  WorkstationLoadUnloadProduct copyWithWrapped(
+      {Wrapped<double?>? amount,
+      Wrapped<num?>? productId,
+      Wrapped<num?>? storageId,
+      Wrapped<num?>? storageProductId,
+      Wrapped<num?>? workstationProductId}) {
+    return WorkstationLoadUnloadProduct(
+        amount: (amount != null ? amount.value : this.amount),
+        productId: (productId != null ? productId.value : this.productId),
+        storageId: (storageId != null ? storageId.value : this.storageId),
+        storageProductId: (storageProductId != null
+            ? storageProductId.value
+            : this.storageProductId),
+        workstationProductId: (workstationProductId != null
+            ? workstationProductId.value
+            : this.workstationProductId));
+  }
+}
+
+@JsonSerializable(explicitToJson: true)
 class RWorkstationProduct {
   RWorkstationProduct({
+    this.amount,
     this.amountHundred,
     this.consumed,
     this.productId,
@@ -127,6 +224,8 @@ class RWorkstationProduct {
   factory RWorkstationProduct.fromJson(Map<String, dynamic> json) =>
       _$RWorkstationProductFromJson(json);
 
+  @JsonKey(name: 'amount')
+  double? amount;
   @JsonKey(name: 'amountHundred')
   final double? amountHundred;
   @JsonKey(name: 'consumed')
@@ -136,7 +235,7 @@ class RWorkstationProduct {
   @JsonKey(name: 'productName')
   final String? productName;
   @JsonKey(name: 'stockFromStorage')
-  final double? stockFromStorage;
+  double? stockFromStorage;
   @JsonKey(name: 'storageId')
   final num? storageId;
   @JsonKey(name: 'unitMeasure')
@@ -151,6 +250,8 @@ class RWorkstationProduct {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is RWorkstationProduct &&
+            (identical(other.amount, amount) ||
+                const DeepCollectionEquality().equals(other.amount, amount)) &&
             (identical(other.amountHundred, amountHundred) ||
                 const DeepCollectionEquality()
                     .equals(other.amountHundred, amountHundred)) &&
@@ -182,6 +283,7 @@ class RWorkstationProduct {
 
   @override
   int get hashCode =>
+      const DeepCollectionEquality().hash(amount) ^
       const DeepCollectionEquality().hash(amountHundred) ^
       const DeepCollectionEquality().hash(consumed) ^
       const DeepCollectionEquality().hash(productId) ^
@@ -195,7 +297,8 @@ class RWorkstationProduct {
 
 extension $RWorkstationProductExtension on RWorkstationProduct {
   RWorkstationProduct copyWith(
-      {double? amountHundred,
+      {double? amount,
+      double? amountHundred,
       double? consumed,
       num? productId,
       String? productName,
@@ -204,6 +307,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       String? unitMeasure,
       num? workstationProductId}) {
     return RWorkstationProduct(
+        amount: amount ?? this.amount,
         amountHundred: amountHundred ?? this.amountHundred,
         consumed: consumed ?? this.consumed,
         productId: productId ?? this.productId,
@@ -216,7 +320,8 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
   }
 
   RWorkstationProduct copyWithWrapped(
-      {Wrapped<double?>? amountHundred,
+      {Wrapped<double?>? amount,
+      Wrapped<double?>? amountHundred,
       Wrapped<double?>? consumed,
       Wrapped<num?>? productId,
       Wrapped<String?>? productName,
@@ -225,6 +330,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       Wrapped<String?>? unitMeasure,
       Wrapped<num?>? workstationProductId}) {
     return RWorkstationProduct(
+        amount: (amount != null ? amount.value : this.amount),
         amountHundred:
             (amountHundred != null ? amountHundred.value : this.amountHundred),
         consumed: (consumed != null ? consumed.value : this.consumed),

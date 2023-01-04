@@ -26,8 +26,29 @@ Map<String, dynamic> _$ROrderProductToJson(ROrderProduct instance) =>
       'unitMeasure': instance.unitMeasure,
     };
 
+WorkstationLoadUnloadProduct _$WorkstationLoadUnloadProductFromJson(
+        Map<String, dynamic> json) =>
+    WorkstationLoadUnloadProduct(
+      amount: (json['amount'] as num?)?.toDouble(),
+      productId: json['productId'] as num?,
+      storageId: json['storageId'] as num?,
+      storageProductId: json['storageProductId'] as num?,
+      workstationProductId: json['workstationProductId'] as num?,
+    );
+
+Map<String, dynamic> _$WorkstationLoadUnloadProductToJson(
+        WorkstationLoadUnloadProduct instance) =>
+    <String, dynamic>{
+      'amount': instance.amount,
+      'productId': instance.productId,
+      'storageId': instance.storageId,
+      'storageProductId': instance.storageProductId,
+      'workstationProductId': instance.workstationProductId,
+    };
+
 RWorkstationProduct _$RWorkstationProductFromJson(Map<String, dynamic> json) =>
     RWorkstationProduct(
+      amount: (json['amount'] as num?)?.toDouble(),
       amountHundred: (json['amountHundred'] as num?)?.toDouble(),
       consumed: (json['consumed'] as num?)?.toDouble(),
       productId: json['productId'] as num?,
@@ -41,6 +62,7 @@ RWorkstationProduct _$RWorkstationProductFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RWorkstationProductToJson(
         RWorkstationProduct instance) =>
     <String, dynamic>{
+      'amount': instance.amount,
       'amountHundred': instance.amountHundred,
       'consumed': instance.consumed,
       'productId': instance.productId,

@@ -770,6 +770,21 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppWorkstationLoadPost(
+      {required List<WorkstationLoadUnloadProduct>?
+          workstationLoadUnloadProductList}) {
+    final String $url = '/api/v1/app/workstation/load';
+    final $body = workstationLoadUnloadProductList;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _apiV1AppWorkstationRemoveproductDelete(
       {required int? workstationProductId}) {
     final String $url = '/api/v1/app/workstation/removeproduct';
@@ -781,6 +796,21 @@ class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiV1AppWorkstationUnloadPost(
+      {required List<WorkstationLoadUnloadProduct>?
+          workstationLoadUnloadProductList}) {
+    final String $url = '/api/v1/app/workstation/unload';
+    final $body = workstationLoadUnloadProductList;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
     );
     return client.send<dynamic, dynamic>($request);
   }

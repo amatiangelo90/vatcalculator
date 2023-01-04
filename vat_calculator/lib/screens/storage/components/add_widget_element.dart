@@ -69,7 +69,7 @@ class AddElementWidget extends StatelessWidget {
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: kPinaColor,
-                            content: Text('Ho riscontrato degli errori durante il salvagaggio. Error: ' + apiV1AppStorageInsertproductGet.error.toString()),
+                            content: Text('Ho riscontrato degli errori durante il salvataggio. Error: ' + apiV1AppStorageInsertproductGet.error.toString()),
                           ));
                         }
                       }, icon: Icon(Icons.arrow_forward_sharp, color: kCustomGrey, size: getProportionateScreenHeight(20)),

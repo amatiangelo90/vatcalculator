@@ -134,7 +134,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               backgroundColor: kPinaColor,
-                              duration: Duration(milliseconds: 3000),
+                              duration: const Duration(milliseconds: 3000),
                               content: Text('Errore durante l\'invio del messaggio $urlString. Contattare il supporto'
                               )));
                           throw 'Could not launch $urlString';

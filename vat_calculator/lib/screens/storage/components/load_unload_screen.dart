@@ -160,6 +160,7 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                         ),
                       ),
                     ),
+
                     ConstrainedBox(
                       constraints: BoxConstraints.loose(Size(
                           getProportionateScreenWidth(60),
@@ -172,6 +173,9 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                           fontWeight: FontWeight.w600,
                           fontSize: getProportionateScreenHeight(22),
                         ),
+                        onChanged: (text){
+                          currentProduct.orderAmount = double.parse(text);
+                        },
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: true, signed: false),
                         clearButtonMode: OverlayVisibilityMode.never,

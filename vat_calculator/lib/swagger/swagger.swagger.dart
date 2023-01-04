@@ -842,6 +842,23 @@ abstract class Swagger extends ChopperService {
     @Query('storageId') required int? storageId,
   });
 
+  ///load
+  ///@param workstationLoadUnloadProductList workstationLoadUnloadProductList
+  Future<chopper.Response> apiV1AppWorkstationLoadPost(
+      {required List<WorkstationLoadUnloadProduct>?
+          workstationLoadUnloadProductList}) {
+    return _apiV1AppWorkstationLoadPost(
+        workstationLoadUnloadProductList: workstationLoadUnloadProductList);
+  }
+
+  ///load
+  ///@param workstationLoadUnloadProductList workstationLoadUnloadProductList
+  @Post(path: '/api/v1/app/workstation/load')
+  Future<chopper.Response> _apiV1AppWorkstationLoadPost(
+      {@Body()
+          required List<WorkstationLoadUnloadProduct>?
+              workstationLoadUnloadProductList});
+
   ///removeProductIntoStorage
   ///@param workstationProductId workstationProductId
   Future<chopper.Response> apiV1AppWorkstationRemoveproductDelete(
@@ -855,6 +872,23 @@ abstract class Swagger extends ChopperService {
   @Delete(path: '/api/v1/app/workstation/removeproduct')
   Future<chopper.Response> _apiV1AppWorkstationRemoveproductDelete(
       {@Query('workstationProductId') required int? workstationProductId});
+
+  ///unload
+  ///@param workstationLoadUnloadProductList workstationLoadUnloadProductList
+  Future<chopper.Response> apiV1AppWorkstationUnloadPost(
+      {required List<WorkstationLoadUnloadProduct>?
+          workstationLoadUnloadProductList}) {
+    return _apiV1AppWorkstationUnloadPost(
+        workstationLoadUnloadProductList: workstationLoadUnloadProductList);
+  }
+
+  ///unload
+  ///@param workstationLoadUnloadProductList workstationLoadUnloadProductList
+  @Post(path: '/api/v1/app/workstation/unload')
+  Future<chopper.Response> _apiV1AppWorkstationUnloadPost(
+      {@Body()
+          required List<WorkstationLoadUnloadProduct>?
+              workstationLoadUnloadProductList});
 
   ///updateWorkstation
   ///@param workstation workstation

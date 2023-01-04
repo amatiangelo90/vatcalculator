@@ -2,17 +2,20 @@ import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
-import 'package:vat_calculator/helper/keyboard.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import '../../../components/loader_overlay_widget.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../../swagger/swagger.models.swagger.dart';
+import 'add_prod_workstation_element.dart';
 
 class WorkstationManagerScreen extends StatefulWidget {
-  const WorkstationManagerScreen({Key? key,
-    required this.workstationModel}) : super(key: key);
-  final Workstation workstationModel;
+  const WorkstationManagerScreen({Key? key, required this.workstation}) : super(key: key);
+
+  final Workstation workstation;
 
   @override
   State<WorkstationManagerScreen> createState() => _WorkstationManagerScreenState();
@@ -36,72 +39,222 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   @override
   Widget build(BuildContext context) {
 
+
     return GestureDetector(
       onTap: (){
         FocusScope.of(context).requestFocus(FocusNode());
       },
-      child: Consumer<DataBundleNotifier>(
-        builder: (child, dataBundleNotifier, _){
+      child: LoaderOverlay(
+        useDefaultLoading: false,
+        overlayOpacity: 0.9,
+        overlayWidget: const LoaderOverlayWidget(message: 'Attendi. Sto effettuando il carico...',),
+        child: Consumer<DataBundleNotifier>(
+          builder: (child, dataBundleNotifier, _){
 
-          return DefaultTabController(
-            length: 2,
-            child: Scaffold(
-              backgroundColor: Colors.white,
-              key: _scaffoldKey,
-              appBar: AppBar(
-                bottom: const TabBar(
-                  indicatorColor: kCustomGreen,
-                  indicatorWeight: 3,
-                  tabs: [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('CARICO', style: TextStyle(color: kCustomGreen, fontWeight: FontWeight.bold),),
+            List<RStorageProduct> prodList = dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!)!.products!;
+
+            return DefaultTabController(
+              length: 2,
+              child: Scaffold(
+                bottomSheet: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: getProportionateScreenWidth(400),
+                    height: getProportionateScreenHeight(55),
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        print('Perform load product into workstation');
+                        try{
+                          context.loaderOverlay.show();
+                          List<WorkstationLoadUnloadProduct> prodLoadList = [];
+                          for (RWorkstationProduct rWorkstationProd in widget.workstation.products!) {
+                            num storageProductId = 0;
+                            if(prodList.where((prod) => prod.productId == rWorkstationProd.productId).isNotEmpty){
+                              storageProductId = prodList.where((prod) => prod.productId == rWorkstationProd.productId).first.storageProductId!;
+                            }
+
+                            if(rWorkstationProd.amount! > 0){
+                              prodLoadList.add(WorkstationLoadUnloadProduct(
+                                  productId: rWorkstationProd.productId,
+                                  storageId: rWorkstationProd.storageId,
+                                  amount: rWorkstationProd.amount,
+                                  storageProductId: storageProductId,
+                                  workstationProductId: rWorkstationProd.workstationProductId
+                              ));
+                            }
+                          }
+
+                          Response apiV1AppWorkstationLoadPost = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationLoadPost(workstationLoadUnloadProductList: prodLoadList);
+
+                          if(apiV1AppWorkstationLoadPost.isSuccessful){
+
+                            dataBundleNotifier.refreshCurrentBranchData();
+                            widget.workstation.products!.where((element) => element.amount!>0).forEach((element) {
+                              element.stockFromStorage = element.stockFromStorage! + element.amount!;
+                              element.amount = 0;
+                            });
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    duration:
+                                    Duration(milliseconds: 1000),
+                                    backgroundColor: kCustomGreen,
+                                    content: Text(
+                                      'Carico effettuato correttamente',
+                                      style: TextStyle(color: Colors.white),
+                                    )));
+
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    duration:
+                                    const Duration(milliseconds: 3000),
+                                    backgroundColor: kRed,
+                                    content: Text(
+                                      'Errore durante il carico prodotti. Err: ' + apiV1AppWorkstationLoadPost.error.toString(),
+                                      style: const TextStyle(color: Colors.white),
+                                    )));
+                          }
+                        }catch(e){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              duration:
+                              const Duration(milliseconds: 3000),
+                              backgroundColor: kRed,
+                              content: Text(
+                                'Errore durante il carico prodotti. Err: ' + e.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              )));
+                        }finally{
+                          context.loaderOverlay.hide();
+                        }
+
+                      },
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.resolveWith((states) => 5),
+                        backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                        side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                      ),
+                      child: Text('Effettua CARICO', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text('SCARICO', style: TextStyle(color: kCustomBordeaux, fontWeight: FontWeight.bold),),
-                    ),
-                //   Padding(
-                //       padding: const EdgeInsets.all(8.0),
-                //       child: SvgPicture.asset('assets/icons/Settings.svg', color:kCustomGrey, height: getProportionateScreenHeight(25),)
-                //   ),
-                  ],
+                  ),
                 ),
-                leading: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () => {
-                      Navigator.of(context).pop(),
-                    }),
-                iconTheme: const IconThemeData(color: kCustomGrey),
-                centerTitle: true,
+                floatingActionButton: FloatingActionButton(
+                  onPressed: (){
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(25.0),
+                          ),
+                        ),
+                        context: context,
+                        builder: (context) {
+                          return Builder(
+                            builder: (context) {
+                              return SizedBox(
+                                width: getProportionateScreenWidth(900),
+                                height: getProportionateScreenHeight(600),
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topRight: Radius.circular(10.0),
+                                              topLeft: Radius.circular(10.0)),
+                                          color: kCustomGrey,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '  Lista Prodotti',
+                                              style: TextStyle(
+                                                fontSize:
+                                                getProportionateScreenWidth(17),
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(
+                                                Icons.clear,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      AddElementIntoWorkstationWidget(workstationModel: widget.workstation,),
+                                      const SizedBox(height: 40),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        });
+                  },
+                  backgroundColor: kCustomGreen,
+                  child: Icon(Icons.add),
+                ),
                 backgroundColor: Colors.white,
-                elevation: 0,
-                title: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                key: _scaffoldKey,
+                appBar: AppBar(
+                  bottom: const TabBar(
+                    indicatorColor: kCustomGreen,
+                    indicatorWeight: 3,
+                    tabs: [
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('CARICO', style: TextStyle(color: kCustomGreen, fontWeight: FontWeight.bold),),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text('SCARICO', style: TextStyle(color: kCustomBordeaux, fontWeight: FontWeight.bold),),
+                      ),
+                    ],
+                  ),
+                  leading: IconButton(
+                      icon: const Icon(Icons.arrow_back_ios),
+                      onPressed: () => {
+                        Navigator.of(context).pop(),
+                      }),
+                  iconTheme: const IconThemeData(color: kCustomGrey),
+                  centerTitle: true,
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(widget.workstation.name!,
+                        style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomGrey, fontWeight: FontWeight.bold),),
+                      Text(
+                        'Tipo workstation: ' + workstationWorkstationTypeToJson(widget.workstation.workstationType!)!,
+                        style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGreen, fontWeight: FontWeight.bold),),
+                    ],
+                  ),
+                ),
+                body: TabBarView(
                   children: [
-                    Text(widget.workstationModel.name!,
-                      style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomGrey, fontWeight: FontWeight.bold),),
-                    Text(
-                      'Tipo workstation: ' + workstationWorkstationTypeToJson(widget.workstationModel.workstationType!)!,
-                      style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGreen, fontWeight: FontWeight.bold),),
+                    buildLoadWorkstationScreen(dataBundleNotifier, widget.workstation, prodList),
+                    Text(''),
+                    //buildRefillWorkstationProductsPage(!, dataBundleNotifier),
+                    //buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!, dataBundleNotifier),
                   ],
                 ),
               ),
-              body: TabBarView(
-                children: [
-                  Text(''),
-                  Text(''),
-                  //buildRefillWorkstationProductsPage(!, dataBundleNotifier),
-                  //buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!, dataBundleNotifier),
-                ],
-              ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
-  
+
   getPriviledgeWarningContainer() {
     return Container(
       color: kCustomGrey,
@@ -112,7 +265,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
           Column(
             children: [
               SvgPicture.asset('assets/icons/warning.svg', color: kPinaColor, height: 100,),
-              Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kPinaColor)),                        ],
+              const Text('WARNING', textAlign: TextAlign.center, style: TextStyle(color: kPinaColor)),                        ],
           ),
           Center(child: SizedBox(
               width: getProportionateScreenWidth(350),
@@ -126,112 +279,146 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
     );
   }
 
-  buildConfigurationWorkstationPage(Workstation workstationModel, DataBundleNotifier dataBundleNotifier) {
+  buildLoadWorkstationScreen(DataBundleNotifier dataBundleNotifier, Workstation workstationModel, List<RStorageProduct> storageProductList) {
 
-    TextEditingController controllerWorkStationName = TextEditingController(text: widget.workstationModel.name);
-    TextEditingController controllerResponsible = TextEditingController(text: widget.workstationModel.responsable);
 
-    return Padding(
-      padding: const EdgeInsets.all(20.0),
+    List<Widget> listWidget = [];
+
+    for (RWorkstationProduct prod in workstationModel.products!) {
+      listWidget.add(
+        buildProductRow(prod, storageProductList),
+      );
+    }
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 100),
+        child: Column(
+          children: listWidget,
+        ),
+      ),
+    );
+  }
+
+  buildProductRow(RWorkstationProduct product, List<RStorageProduct> prodList) {
+    TextEditingController controller = TextEditingController(text: product.amount!.toString());
+
+    return Card(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            children: <Widget>[
-              Row(
-                children: const [
-                  Text('Nome Postazione*',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                            width: getProportionateScreenWidth(200),
+                            child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21)))),
+
+                        SizedBox(
+                          width: getProportionateScreenWidth(200),
+                          child: Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent, fontSize: getProportionateScreenHeight(8))),),
+
+                        prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
+                          width: getProportionateScreenWidth(200),
+                          child: Row(
+                            children: [
+                              Text('Stock in magazzino: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
+                              Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amount!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amount!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(13))),
+                            ],
+                          ),) :
+                        SizedBox(
+                          width: getProportionateScreenWidth(200),
+                          child: Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),),
+                        SizedBox(height: getProportionateScreenHeight(40)),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              CupertinoTextField(
-                textInputAction: TextInputAction.next,
-                restorationId: 'Nome Postazione',
-                keyboardType: TextInputType.text,
-                controller: controllerWorkStationName,
-                clearButtonMode: OverlayVisibilityMode.editing,
-                autocorrect: false,
-                placeholder: 'Nome Postazione',
-              ),
-              Row(
-                children: const [
-                  Text('Responsabile',style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              Column(
+                children: [
+                  SizedBox(
+                      width: getProportionateScreenWidth(100),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Column(
+                          children: [
+                            Text((product.stockFromStorage! + product.amount!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(20))),
+                            Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
+                          ],
+                        ),
+                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              if(product.amount! > 0){
+                                product.amount = product.amount! - 1;
+                              }
+                            });
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              FontAwesomeIcons.minus,
+                              color: kPinaColor,
+                            ),
+                          ),
+                        ),
+                        ConstrainedBox(
+                          constraints: BoxConstraints.loose(Size(
+                              getProportionateScreenWidth(60),
+                              getProportionateScreenWidth(80))),
+                          child: CupertinoTextField(
+                            controller: controller,
+                            onChanged: (text) {
+                              product.amount = double.parse(text);
+                            },
+                            textInputAction: TextInputAction.next,
+                            style: TextStyle(
+                              color: kCustomGrey,
+                              fontWeight: FontWeight.w600,
+                              fontSize: getProportionateScreenHeight(22),
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                                decimal: true, signed: false),
+                            clearButtonMode: OverlayVisibilityMode.never,
+                            textAlign: TextAlign.center,
+                            autocorrect: false,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              product.amount = product.amount! + 1;
+                            });
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(FontAwesomeIcons.plus,
+                                color: kCustomGreen),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-              CupertinoTextField(
-                textInputAction: TextInputAction.next,
-                restorationId: 'Responsabile',
-                keyboardType: TextInputType.text,
-                controller: controllerResponsible,
-                clearButtonMode: OverlayVisibilityMode.editing,
-                autocorrect: false,
-                placeholder: 'Responsabile',
-              ),
-              const Text('*campo obbligatorio'),
             ],
           ),
-          Column(
-            children: [
-              SizedBox(
-                width: getProportionateScreenWidth(400),
-                height: getProportionateScreenHeight(55),
-                child: OutlinedButton(
-                  onPressed: () async {
-                    if(controllerWorkStationName.text == ''){
-                      print('Il nome della postazione è obbligatorio');
 
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        backgroundColor: kPinaColor,
-                        duration: Duration(milliseconds: 600),
-                        content: Text(
-                            'Il nome della postazione è obbligatorio'),
-                      ));
-
-                    }else{
-                      KeyboardUtil.hideKeyboard(context);
-                      try{
-
-                        print('asdasdsadsad '+ controllerWorkStationName.text);
-                        print('asdasdsadsad '+ controllerResponsible.text);
-                        Response resp = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationUpdatePut(workstation: Workstation(
-                            workstationId: workstationModel.workstationId,
-                            name: controllerWorkStationName.text,
-                            responsable: controllerResponsible.text
-                        ));
-
-                        if(resp.isSuccessful){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                              duration: Duration(milliseconds: 5000),
-                              backgroundColor: kCustomGreen,
-                              content: Text('Impostazioni aggiornate', style: TextStyle(color: Colors.white),)));
-                        }else{
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              duration: const Duration(milliseconds: 5000),
-                              backgroundColor: Colors.red,
-                              content: Text('Errore durante l\'aggiornamento dei dati. Errore: ${resp.error!.toString()}', style: TextStyle(color: Colors.white),)));
-                        }
-
-                      }catch(e){
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(
-                            duration: const Duration(milliseconds: 5000),
-                            backgroundColor: Colors.red,
-                            content: Text('Errore durante l\'aggiornamento dei dati. Errore: $e', style: TextStyle(color: Colors.white),)));
-                      }
-                    }
-                  },
-                  style: ButtonStyle(
-                    elevation: MaterialStateProperty.resolveWith((states) => 5),
-                    backgroundColor: MaterialStateProperty.resolveWith((states) =>kCustomBordeaux),
-                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
-                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
-                  ),
-                  child: Text('Salva impostazioni', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
-                ),
-              ),
-            ],
-          )
         ],
       ),
     );

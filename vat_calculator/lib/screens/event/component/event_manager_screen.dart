@@ -352,7 +352,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                     ),
                                                   ),
                                                   Column(
-                                                    children: buildWorkstationListWidget(barList),
+                                                    children: buildWorkstationListWidget(barList, dataBundleNotifier),
                                                   ),
                                                   const SizedBox(height: 40),
                                                 ],
@@ -1042,7 +1042,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  buildWorkstationListWidget(Iterable<Workstation> barList) {
+  buildWorkstationListWidget(Iterable<Workstation> barList, DataBundleNotifier dataBundleNotifier) {
     List<Widget> listout = [];
 
     for (Workstation workstation in barList) {
@@ -1053,11 +1053,12 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             child: Text(workstation.workstationId!.toString()),
           ),
           onTap: (){
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => WorkstationManagerScreen(
-                    workstationModel: workstation,
+                  workstation: workstation,
                 ),
               ),
             );
