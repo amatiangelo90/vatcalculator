@@ -391,7 +391,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     );
 
                     if(apiV1AppProductsSavePost.isSuccessful){
-                      buildSnackBar(text: 'Prodotto creato correttamente', color: Colors.green);
+                      buildSnackBar(text: 'Prodotto creato correttamente', color: kCustomGreen);
                       dataBundleNotifier.addSavedProductToSupplierList(apiV1AppProductsSavePost.body, widget.supplier.supplierId!.toInt());
                       Navigator.of(context).pop();
                     }else{

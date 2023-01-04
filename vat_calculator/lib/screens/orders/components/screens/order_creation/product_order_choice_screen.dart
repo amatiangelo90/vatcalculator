@@ -287,7 +287,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(FontAwesomeIcons.plus,
-                            color: Colors.green.shade900),
+                            color: kCustomGreen),
                       ),
                     ),
                   ],

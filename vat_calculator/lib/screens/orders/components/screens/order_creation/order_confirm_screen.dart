@@ -330,7 +330,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
         children: [
           Padding(
             padding: EdgeInsets.all(10.0),
-            child: Text('Carrello', style: TextStyle(color: Colors.green.shade900.withOpacity(0.8), fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
+            child: Text('Carrello', style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.bold), ),
           ),
           CupertinoButton(
             child: const Text('Modifica', style: TextStyle(color: Colors.black54),),

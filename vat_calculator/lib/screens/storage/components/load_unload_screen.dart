@@ -70,7 +70,7 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                     },
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.resolveWith((states) => 5),
-                      backgroundColor: MaterialStateProperty.resolveWith((states) => widget.isLoad ? kCustomGreen : kRed),
+                      backgroundColor: MaterialStateProperty.resolveWith((states) => widget.isLoad ? kCustomGreen : kCustomBordeaux),
                       side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                     ),
@@ -166,20 +166,6 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                           getProportionateScreenWidth(80))),
                       child: CupertinoTextField(
                         controller: controller,
-                        onChanged: (text) {
-
-                          if(text == '' || text == '0' || text == '0.0'){
-                            for (ROrderProduct prod in dataBundleNotifier.basket) {
-                              // rimuovi dalla classe il final sul campo orderAmount
-                              currentProduct.orderAmount = 0.0;
-                            }
-                          }else{
-                            if (double.tryParse(text.replaceAll(',', '.')) != null) {
-                              currentProduct.orderAmount = double.parse(text.replaceAll(',', '.'));
-                            }
-                          }
-
-                        },
                         textInputAction: TextInputAction.next,
                         style: TextStyle(
                           color: kCustomGrey,
@@ -197,13 +183,12 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                       onTap: () {
                         setState(() {
                           currentProduct.orderAmount = currentProduct.orderAmount! + 1;
-                          //dataBundleNotifier.addProdToSetProduct(currentProduct.pkProductId);
                         });
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Icon(FontAwesomeIcons.plus,
-                            color: Colors.green.shade900),
+                            color: kCustomGreen),
                       ),
                     ),
                   ],

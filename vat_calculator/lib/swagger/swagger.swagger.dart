@@ -472,6 +472,29 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _apiV1AppProductsUpdatePut(
       {@Body() required Product? product});
 
+  ///updateAmountHundredValue
+  ///@param storageProductId storageProductId
+  ///@param qHundredAmount qHundredAmount
+  Future<chopper.Response> apiV1AppStorageAmounthundredSaveconfigurationPut({
+    required int? storageProductId,
+    required num? qHundredAmount,
+  }) {
+    return _apiV1AppStorageAmounthundredSaveconfigurationPut(
+        storageProductId: storageProductId, qHundredAmount: qHundredAmount);
+  }
+
+  ///updateAmountHundredValue
+  ///@param storageProductId storageProductId
+  ///@param qHundredAmount qHundredAmount
+  @Put(
+    path: '/api/v1/app/storage/amounthundred/saveconfiguration',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppStorageAmounthundredSaveconfigurationPut({
+    @Query('storageProductId') required int? storageProductId,
+    @Query('qHundredAmount') required num? qHundredAmount,
+  });
+
   ///delete
   ///@param storage storage
   Future<chopper.Response> apiV1AppStorageDeleteDelete(

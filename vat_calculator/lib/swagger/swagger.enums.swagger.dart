@@ -85,7 +85,9 @@ enum OrderEntityOrderStatus {
   @JsonValue('RICEVUTO')
   ricevuto,
   @JsonValue('NON_RICEVUTO')
-  nonRicevuto
+  nonRicevuto,
+  @JsonValue('RICEVUTO_E_CARICATO_IN_MAGAZZINO')
+  ricevutoECaricatoInMagazzino
 }
 
 const $OrderEntityOrderStatusMap = {
@@ -94,7 +96,9 @@ const $OrderEntityOrderStatusMap = {
   OrderEntityOrderStatus.inviatoTramiteSms: 'INVIATO_TRAMITE_SMS',
   OrderEntityOrderStatus.nonInviato: 'NON_INVIATO',
   OrderEntityOrderStatus.ricevuto: 'RICEVUTO',
-  OrderEntityOrderStatus.nonRicevuto: 'NON_RICEVUTO'
+  OrderEntityOrderStatus.nonRicevuto: 'NON_RICEVUTO',
+  OrderEntityOrderStatus.ricevutoECaricatoInMagazzino:
+      'RICEVUTO_E_CARICATO_IN_MAGAZZINO'
 };
 
 enum BranchUserPriviledge {

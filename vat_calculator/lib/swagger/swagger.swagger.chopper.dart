@@ -426,6 +426,25 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppStorageAmounthundredSaveconfigurationPut({
+    required int? storageProductId,
+    required num? qHundredAmount,
+  }) {
+    final String $url = '/api/v1/app/storage/amounthundred/saveconfiguration';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'storageProductId': storageProductId,
+      'qHundredAmount': qHundredAmount,
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _apiV1AppStorageDeleteDelete(
       {required Storage? storage}) {
     final String $url = '/api/v1/app/storage/delete';

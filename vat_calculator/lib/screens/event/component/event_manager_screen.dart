@@ -12,13 +12,13 @@ import '../../../constants.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 import '../../home/main_page.dart';
+import 'event_setting_page.dart';
 
 class EventManagerScreen extends StatefulWidget {
 
   static String routeName = 'eventmanagerscreen';
-  final Event event;
+  const EventManagerScreen({super.key});
 
-  const EventManagerScreen({super.key, required this.event});
   @override
   State<EventManagerScreen> createState() => _EventManagerScreenState();
 }
@@ -55,9 +55,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           key: _scaffoldKey,
           appBar: AppBar(
             actions: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomWhite, height: getProportionateScreenWidth(30)),
+              dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : IconButton(
+                onPressed: (){
+                  Navigator.pushNamed(context, EventSettingScreen.routeName);
+                },
+                icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomWhite, height: getProportionateScreenWidth(30)),
               ),
             ],
             leading: IconButton(
@@ -509,7 +511,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
-                        backgroundColor: Colors.green.withOpacity(0.8),
+                        backgroundColor: kCustomGreen,
                         duration: const Duration(milliseconds: 800),
                         content: const Text('Nuova postazione Bar creata')));
                   },
@@ -563,7 +565,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
                     ScaffoldMessenger.of(context)
                         .showSnackBar(SnackBar(
-                        backgroundColor: Colors.green.withOpacity(0.8),
+                        backgroundColor: kCustomGreen,
                         duration: Duration(milliseconds: 800),
                         content: Text('Nuova postazione Champagnerie creata')));
                   },
@@ -956,7 +958,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 30, 8),
                       child: IconButton(
-                          icon: Icon(Icons.add_circle, size: getProportionateScreenHeight(40), color: Colors.green),
+                          icon: Icon(Icons.add_circle, size: getProportionateScreenHeight(40), color: kCustomGreen),
                           onPressed: () {
 
                             showDialog(
@@ -995,7 +997,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(18.0),
-                    child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green, fontSize: getProportionateScreenHeight(18)),),
+                    child:  Text('TOTALE', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen, fontSize: getProportionateScreenHeight(18)),),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(18.0),

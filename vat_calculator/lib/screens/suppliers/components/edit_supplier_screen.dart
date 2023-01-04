@@ -167,7 +167,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                             final snackBar =
                             SnackBar(
                                 duration: const Duration(seconds: 3),
-                                backgroundColor: Colors.green,
+                                backgroundColor: kCustomGreen,
                                 content: Text('Fornitore ' + controllerSupplierName.text +' aggiornato',
                                 )
                             );

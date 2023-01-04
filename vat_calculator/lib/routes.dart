@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
+import 'package:vat_calculator/screens/event/component/event_setting_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/recap_order_screen.dart';
 import 'package:vat_calculator/screens/storage/components/load_unload_screen.dart';
 import 'package:vat_calculator/screens/storage/components/order_from_storage_widget.dart';
@@ -38,9 +39,10 @@ final Map<String, WidgetBuilder> routes = {
   EventCreateScreen.routeName: (context) => EventCreateScreen(),
   AmountHundredScreen.routeName: (context) => AmountHundredScreen(),
   UpdateBranchScreen.routeName: (context) => UpdateBranchScreen(),
+  EventSettingScreen.routeName: (context) => EventSettingScreen(),
   HomeScreenMain.routeName: (context) => HomeScreenMain(),
   OrderFromStorageWidget.routeName: (context) => OrderFromStorageWidget(),
   LoadUnloadScreen.routeName: (context) => LoadUnloadScreen(isLoad: false, isUnLoad: true),
   StorageScreen.routeName: (context) => StorageScreen(),
-  EventManagerScreen.routeName: (context) => EventManagerScreen(event: Event(eventId: 0)),
+  EventManagerScreen.routeName: (context) => EventManagerScreen(),
 };

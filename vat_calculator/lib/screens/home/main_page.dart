@@ -33,7 +33,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
-          backgroundColor: kCustomBlack,
+
           appBar: AppBar(
             iconTheme: const IconThemeData(color: kCustomWhite),
             leading: IconButton(

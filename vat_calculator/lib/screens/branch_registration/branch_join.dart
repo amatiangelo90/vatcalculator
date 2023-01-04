@@ -88,7 +88,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                 textStyle: const TextStyle(color: Colors.black),
                                 pinTheme: PinTheme(
                                   inactiveColor: kCustomGrey,
-                                  selectedColor: Colors.green,
+                                  selectedColor: kCustomGreen,
                                   activeColor: Colors.white,
                                   shape: PinCodeFieldShape.box,
                                   borderRadius: BorderRadius.circular(4),
@@ -126,7 +126,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                     if(response.isSuccessful){
 
                                       Widget continueButton = TextButton(
-                                        child: const Text("Unisciti", style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                                        child: const Text("Unisciti", style: TextStyle(color: kCustomGreen, fontWeight: FontWeight.bold)),
                                         onPressed:  () async {
 
                                           Branch branch = response.body;
@@ -287,7 +287,7 @@ class _BranchJoinScreenState extends State<BranchJoinScreen> {
                                                             height: getProportionateScreenWidth(40),
                                                             child: Card(
                                                               child: Center(child: Text(response.body.name,
-                                                                style: TextStyle(color: Colors.green, fontSize: getProportionateScreenWidth(20), fontWeight: FontWeight.bold),)),
+                                                                style: TextStyle(color: kCustomGreen, fontSize: getProportionateScreenWidth(20), fontWeight: FontWeight.bold),)),
                                                             ),
                                                           ),
                                                         ),

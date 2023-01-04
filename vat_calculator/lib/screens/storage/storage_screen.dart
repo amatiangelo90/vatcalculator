@@ -102,6 +102,7 @@ class _StorageScreenState extends State<StorageScreen> {
                 Text(
                   dataBundleNotifier.getCurrentStorage().name!,
                   style: TextStyle(
+                    fontWeight: FontWeight.bold,
                     fontSize: getProportionateScreenWidth(17),
                     color: kCustomGrey,
                   ),
@@ -194,6 +195,18 @@ class _StorageScreenState extends State<StorageScreen> {
                             itemBuilder: (context, index) {
                               RStorageProduct product = getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index];
                               return Dismissible(
+                                background: Container(
+                                  color: kCustomBordeaux,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 30),
+                                        child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                                      )
+                                    ],
+                                  ),
+                                ),
                                 key: Key(product.productId!.toString()),
                                 direction: DismissDirection.endToStart,
                                 confirmDismiss: (DismissDirection direction) async {
@@ -240,12 +253,12 @@ class _StorageScreenState extends State<StorageScreen> {
                                         .showSnackBar(const SnackBar(content: Text('Si è verificato un problema durante la cancellazione del prodotto. Err:'), backgroundColor: Colors.red,));
                                   }
                                 },
-                                background: Container(color: Colors.red),
                                 child: ListTile(
                                   title: Column(
                                     children: [
                                       GestureDetector(
                                         onTap:(){
+                                          TextEditingController controller = TextEditingController(text: product.amountHundred! > 0 ? product.amountHundred!.toString() : '');
                                           showModalBottomSheet(
                                               shape: const RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.vertical(
@@ -295,6 +308,98 @@ class _StorageScreenState extends State<StorageScreen> {
                                                               ),
                                                             ),
                                                             buildProductRow(product),
+                                                            const Divider(color: Colors.grey),
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: Text(
+                                                                ' Q/100 è un valore che si riferisce alla quantità (del prodotto preso in considerazione) di cui si ha bisogno per servire 100 persone. Ex: 2 Litri Aperol per 100 persone',
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                  getProportionateScreenWidth(8),
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') :
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  ' Q/100',
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                    getProportionateScreenWidth(17),
+                                                                    color: Colors.black,
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.all(8.0),
+                                                                  child: ConstrainedBox(
+                                                                    constraints: BoxConstraints.loose(Size(
+                                                                        getProportionateScreenWidth(100),
+                                                                        getProportionateScreenWidth(80))),
+                                                                    child: CupertinoTextField(
+                                                                      controller: controller,
+                                                                      onChanged: (text) {
+
+                                                                      },
+                                                                      textInputAction: TextInputAction.next,
+                                                                      style: TextStyle(
+                                                                        color: kCustomGrey,
+                                                                        fontWeight: FontWeight.w600,
+                                                                        fontSize: getProportionateScreenHeight(22),
+                                                                      ),
+                                                                      keyboardType: const TextInputType.numberWithOptions(
+                                                                          decimal: true, signed: false),
+                                                                      clearButtonMode: OverlayVisibilityMode.never,
+                                                                      textAlign: TextAlign.center,
+                                                                      autocorrect: false,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: SizedBox(
+                                                                width: getProportionateScreenWidth(400),
+                                                                height: getProportionateScreenHeight(55),
+                                                                child: OutlinedButton(
+                                                                  onPressed: () async {
+                                                                    Navigator.of(context).pop(false);
+                                                                    Response responseAmountHundredSave = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageAmounthundredSaveconfigurationPut(
+                                                                        storageProductId: product.storageProductId!.toInt(),
+                                                                        qHundredAmount: double.parse(controller.text));
+
+                                                                    if(responseAmountHundredSave.isSuccessful){
+                                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                                        backgroundColor: kCustomGreen,
+                                                                        duration: Duration(milliseconds: 1000),
+                                                                        content: Text(
+                                                                            'Operazione eseguita con successo'),
+                                                                      ));
+                                                                      dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+
+                                                                    }else{
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                        backgroundColor: kCustomGreen,
+                                                                        duration: Duration(milliseconds: 1000),
+                                                                        content: Text(
+                                                                            'Errore durante l\'operazione. Riprova fra due minuti. Err: ' + responseAmountHundredSave.error.toString()),
+                                                                      ));
+                                                                    }
+
+                                                                  },
+                                                                  style: ButtonStyle(
+                                                                    elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                                                    backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                                                                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
+                                                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                                                  ),
+                                                                  child: Text('Salva configurazione Q/100', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+                                                                ),
+                                                              ),
+                                                            ),
                                                             const SizedBox(height: 40),
                                                           ],
                                                         ),
@@ -608,7 +713,7 @@ class _StorageScreenState extends State<StorageScreen> {
 
           child: TextButton(
               style: TextButton.styleFrom(
-                backgroundColor: Colors.lightGreen,
+                backgroundColor: kCustomGreen,
               ),
               child: Text('EFFETTUA\nCARICO', textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
               onPressed: (){
@@ -647,20 +752,6 @@ class _StorageScreenState extends State<StorageScreen> {
                 );
 
               }
-          ),
-        ),
-        dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) :
-
-        SizedBox(
-          width: getProportionateScreenWidth(170),
-          height: getProportionateScreenHeight(60),
-          child: TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.lightBlueAccent,
-            ),
-            child: Text('CONFIGURA\nQ/100',textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: getProportionateScreenHeight(12)), ),
-            onPressed: (){
-            },
           ),
         ),
         SizedBox(
@@ -783,7 +874,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
                     children: [
-                      Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(20))),
+                      Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: product.stock! >= 0 ? kCustomGreen : kPinaColor, fontSize: getProportionateScreenHeight(20))),
                       Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
                       Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
                     ],
