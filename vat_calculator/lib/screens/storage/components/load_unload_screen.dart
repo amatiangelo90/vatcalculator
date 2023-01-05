@@ -115,7 +115,7 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
     if(dataBundleNotifier.getCurrentStorage().products!.isNotEmpty){
 
       dataBundleNotifier.getCurrentStorage().products!.forEach((currentProduct) {
-        TextEditingController controller = TextEditingController(text: currentProduct.orderAmount.toString());
+        TextEditingController controller = TextEditingController(text: currentProduct.orderAmount! > 0 ? currentProduct.orderAmount.toString() : '');
         listWidget.add(
           Padding(
             padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),

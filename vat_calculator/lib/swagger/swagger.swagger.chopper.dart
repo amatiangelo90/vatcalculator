@@ -817,6 +817,22 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppWorkstationRemoveworkstationDelete(
+      {required int? workstationId}) {
+    final String $url = '/api/v1/app/workstation/removeworkstation';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'workstationId': workstationId
+    };
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<List<RWorkstationProduct>>>
       _apiV1AppWorkstationRetrieveAllProductByWorkstationIdGet(
           {required int? workstationId}) {

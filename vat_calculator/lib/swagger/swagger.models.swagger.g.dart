@@ -48,8 +48,9 @@ Map<String, dynamic> _$WorkstationLoadUnloadProductToJson(
 
 RWorkstationProduct _$RWorkstationProductFromJson(Map<String, dynamic> json) =>
     RWorkstationProduct(
-      amount: (json['amount'] as num?)?.toDouble(),
       amountHundred: (json['amountHundred'] as num?)?.toDouble(),
+      amountLoad: (json['amountLoad'] as num?)?.toDouble(),
+      amountUnload: (json['amountUnload'] as num?)?.toDouble(),
       consumed: (json['consumed'] as num?)?.toDouble(),
       productId: json['productId'] as num?,
       productName: json['productName'] as String?,
@@ -62,8 +63,9 @@ RWorkstationProduct _$RWorkstationProductFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RWorkstationProductToJson(
         RWorkstationProduct instance) =>
     <String, dynamic>{
-      'amount': instance.amount,
       'amountHundred': instance.amountHundred,
+      'amountLoad': instance.amountLoad,
+      'amountUnload': instance.amountUnload,
       'consumed': instance.consumed,
       'productId': instance.productId,
       'productName': instance.productName,

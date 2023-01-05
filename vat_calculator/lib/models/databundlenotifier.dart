@@ -103,6 +103,19 @@ class DataBundleNotifier extends ChangeNotifier {
     return _currentWorkstation;
   }
 
+  void updateCurrentWorkstation(String nameWorkstaiton, String responsable) {
+    _currentWorkstation.name = nameWorkstaiton;
+    _currentWorkstation.responsable = responsable;
+    notifyListeners();
+
+  }
+
+  void configureLoadByAmountHundred(double pax) {
+    _currentWorkstation.products!.forEach((prod) {
+      prod.amountLoad = prod.amountHundred! * pax;
+    });
+    notifyListeners();
+  }
   List<ROrderProduct> buildROrderProductFromSupplierProdList(List<Product> productList) {
 
     List<ROrderProduct> returnRProdList = [];
@@ -287,5 +300,9 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeWorkstationFromEvent(num workstationId) {
+    _currentEventModel.workstations!.removeWhere((element) => element.workstationId == workstationId);
+    notifyListeners();
+  }
 
 }

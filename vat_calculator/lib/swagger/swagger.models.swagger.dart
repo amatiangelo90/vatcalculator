@@ -210,8 +210,9 @@ extension $WorkstationLoadUnloadProductExtension
 @JsonSerializable(explicitToJson: true)
 class RWorkstationProduct {
   RWorkstationProduct({
-    this.amount,
     this.amountHundred,
+    this.amountLoad,
+    this.amountUnload,
     this.consumed,
     this.productId,
     this.productName,
@@ -224,12 +225,14 @@ class RWorkstationProduct {
   factory RWorkstationProduct.fromJson(Map<String, dynamic> json) =>
       _$RWorkstationProductFromJson(json);
 
-  @JsonKey(name: 'amount')
-  double? amount;
   @JsonKey(name: 'amountHundred')
   final double? amountHundred;
+  @JsonKey(name: 'amountLoad')
+  double? amountLoad;
+  @JsonKey(name: 'amountUnload')
+  double? amountUnload;
   @JsonKey(name: 'consumed')
-  final double? consumed;
+  double? consumed;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -250,11 +253,15 @@ class RWorkstationProduct {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is RWorkstationProduct &&
-            (identical(other.amount, amount) ||
-                const DeepCollectionEquality().equals(other.amount, amount)) &&
             (identical(other.amountHundred, amountHundred) ||
                 const DeepCollectionEquality()
                     .equals(other.amountHundred, amountHundred)) &&
+            (identical(other.amountLoad, amountLoad) ||
+                const DeepCollectionEquality()
+                    .equals(other.amountLoad, amountLoad)) &&
+            (identical(other.amountUnload, amountUnload) ||
+                const DeepCollectionEquality()
+                    .equals(other.amountUnload, amountUnload)) &&
             (identical(other.consumed, consumed) ||
                 const DeepCollectionEquality()
                     .equals(other.consumed, consumed)) &&
@@ -283,8 +290,9 @@ class RWorkstationProduct {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash(amount) ^
       const DeepCollectionEquality().hash(amountHundred) ^
+      const DeepCollectionEquality().hash(amountLoad) ^
+      const DeepCollectionEquality().hash(amountUnload) ^
       const DeepCollectionEquality().hash(consumed) ^
       const DeepCollectionEquality().hash(productId) ^
       const DeepCollectionEquality().hash(productName) ^
@@ -297,8 +305,9 @@ class RWorkstationProduct {
 
 extension $RWorkstationProductExtension on RWorkstationProduct {
   RWorkstationProduct copyWith(
-      {double? amount,
-      double? amountHundred,
+      {double? amountHundred,
+      double? amountLoad,
+      double? amountUnload,
       double? consumed,
       num? productId,
       String? productName,
@@ -307,8 +316,9 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       String? unitMeasure,
       num? workstationProductId}) {
     return RWorkstationProduct(
-        amount: amount ?? this.amount,
         amountHundred: amountHundred ?? this.amountHundred,
+        amountLoad: amountLoad ?? this.amountLoad,
+        amountUnload: amountUnload ?? this.amountUnload,
         consumed: consumed ?? this.consumed,
         productId: productId ?? this.productId,
         productName: productName ?? this.productName,
@@ -320,8 +330,9 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
   }
 
   RWorkstationProduct copyWithWrapped(
-      {Wrapped<double?>? amount,
-      Wrapped<double?>? amountHundred,
+      {Wrapped<double?>? amountHundred,
+      Wrapped<double?>? amountLoad,
+      Wrapped<double?>? amountUnload,
       Wrapped<double?>? consumed,
       Wrapped<num?>? productId,
       Wrapped<String?>? productName,
@@ -330,9 +341,11 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       Wrapped<String?>? unitMeasure,
       Wrapped<num?>? workstationProductId}) {
     return RWorkstationProduct(
-        amount: (amount != null ? amount.value : this.amount),
         amountHundred:
             (amountHundred != null ? amountHundred.value : this.amountHundred),
+        amountLoad: (amountLoad != null ? amountLoad.value : this.amountLoad),
+        amountUnload:
+            (amountUnload != null ? amountUnload.value : this.amountUnload),
         consumed: (consumed != null ? consumed.value : this.consumed),
         productId: (productId != null ? productId.value : this.productId),
         productName:
@@ -1116,11 +1129,11 @@ class Workstation {
   @JsonKey(name: 'extra')
   final String? extra;
   @JsonKey(name: 'name')
-  final String? name;
+  String? name;
   @JsonKey(name: 'products', defaultValue: <RWorkstationProduct>[])
   final List<RWorkstationProduct>? products;
   @JsonKey(name: 'responsable')
-  final String? responsable;
+  String? responsable;
   @JsonKey(name: 'workstationId')
   final num? workstationId;
   @JsonKey(
