@@ -13,9 +13,8 @@ import '../../../swagger/swagger.models.swagger.dart';
 import 'add_prod_workstation_element.dart';
 
 class WorkstationManagerScreen extends StatefulWidget {
-  const WorkstationManagerScreen({Key? key, required this.workstation}) : super(key: key);
+  const WorkstationManagerScreen({Key? key}) : super(key: key);
 
-  final Workstation workstation;
 
   @override
   State<WorkstationManagerScreen> createState() => _WorkstationManagerScreenState();
@@ -67,7 +66,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         try{
                           context.loaderOverlay.show();
                           List<WorkstationLoadUnloadProduct> prodLoadList = [];
-                          for (RWorkstationProduct rWorkstationProd in widget.workstation.products!) {
+                          for (RWorkstationProduct rWorkstationProd in dataBundleNotifier.getCurrentWorkstation().products!) {
                             num storageProductId = 0;
                             if(prodList.where((prod) => prod.productId == rWorkstationProd.productId).isNotEmpty){
                               storageProductId = prodList.where((prod) => prod.productId == rWorkstationProd.productId).first.storageProductId!;
@@ -84,36 +83,47 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                             }
                           }
 
-                          Response apiV1AppWorkstationLoadPost = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationLoadPost(workstationLoadUnloadProductList: prodLoadList);
-
-                          if(apiV1AppWorkstationLoadPost.isSuccessful){
-
-                            dataBundleNotifier.refreshCurrentBranchData();
-                            widget.workstation.products!.where((element) => element.amount!>0).forEach((element) {
-                              element.stockFromStorage = element.stockFromStorage! + element.amount!;
-                              element.amount = 0;
-                            });
-
+                          if(prodLoadList.isEmpty){
                             ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     duration:
-                                    Duration(milliseconds: 1000),
-                                    backgroundColor: kCustomGreen,
+                                    Duration(milliseconds: 2000),
+                                    backgroundColor: kCustomBordeaux,
                                     content: Text(
-                                      'Carico effettuato correttamente',
+                                      'Immettere quantità di carico per almeno un prodotto',
                                       style: TextStyle(color: Colors.white),
                                     )));
-
                           }else{
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                    duration:
-                                    const Duration(milliseconds: 3000),
-                                    backgroundColor: kRed,
-                                    content: Text(
-                                      'Errore durante il carico prodotti. Err: ' + apiV1AppWorkstationLoadPost.error.toString(),
-                                      style: const TextStyle(color: Colors.white),
-                                    )));
+                            Response apiV1AppWorkstationLoadPost = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationLoadPost(workstationLoadUnloadProductList: prodLoadList);
+
+                            if(apiV1AppWorkstationLoadPost.isSuccessful){
+
+                              dataBundleNotifier.refreshCurrentBranchData();
+                              dataBundleNotifier.getCurrentWorkstation().products!.where((element) => element.amount!>0).forEach((element) {
+                                element.stockFromStorage = element.stockFromStorage! + element.amount!;
+                                element.amount = 0;
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      duration:
+                                      Duration(milliseconds: 1000),
+                                      backgroundColor: kCustomGreen,
+                                      content: Text(
+                                        'Carico effettuato correttamente',
+                                        style: TextStyle(color: Colors.white),
+                                      )));
+
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      duration:
+                                      const Duration(milliseconds: 3000),
+                                      backgroundColor: kRed,
+                                      content: Text(
+                                        'Errore durante il carico prodotti. Err: ' + apiV1AppWorkstationLoadPost.error.toString(),
+                                        style: const TextStyle(color: Colors.white),
+                                      )));
+                            }
                           }
                         }catch(e){
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -189,7 +199,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                                           ],
                                         ),
                                       ),
-                                      AddElementIntoWorkstationWidget(workstationModel: widget.workstation,),
+                                      AddElementIntoWorkstationWidget(),
                                       const SizedBox(height: 40),
                                     ],
                                   ),
@@ -200,7 +210,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                         });
                   },
                   backgroundColor: kCustomGreen,
-                  child: Icon(Icons.add),
+                  child: const Icon(Icons.add),
                 ),
                 backgroundColor: Colors.white,
                 key: _scaffoldKey,
@@ -231,17 +241,17 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(widget.workstation.name!,
+                      Text(dataBundleNotifier.getCurrentWorkstation().name!,
                         style: TextStyle(fontSize: getProportionateScreenHeight(19), color: kCustomGrey, fontWeight: FontWeight.bold),),
                       Text(
-                        'Tipo workstation: ' + workstationWorkstationTypeToJson(widget.workstation.workstationType!)!,
+                        'Tipo workstation: ' + workstationWorkstationTypeToJson(dataBundleNotifier.getCurrentWorkstation().workstationType!)!,
                         style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGreen, fontWeight: FontWeight.bold),),
                     ],
                   ),
                 ),
                 body: TabBarView(
                   children: [
-                    buildLoadWorkstationScreen(dataBundleNotifier, widget.workstation, prodList),
+                    buildLoadWorkstationScreen(dataBundleNotifier, dataBundleNotifier.getCurrentWorkstation(), prodList),
                     Text(''),
                     //buildRefillWorkstationProductsPage(!, dataBundleNotifier),
                     //buildUnloadWorkstationProductsPage(dataBundleNotifier.workstationsProductsMap[widget.workstationModel.pkWorkstationId]!, dataBundleNotifier),
@@ -281,20 +291,102 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
 
   buildLoadWorkstationScreen(DataBundleNotifier dataBundleNotifier, Workstation workstationModel, List<RStorageProduct> storageProductList) {
 
-
-    List<Widget> listWidget = [];
-
-    for (RWorkstationProduct prod in workstationModel.products!) {
-      listWidget.add(
-        buildProductRow(prod, storageProductList),
-      );
-    }
-
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 100),
-        child: Column(
-          children: listWidget,
+      child: SizedBox(
+        height: getProportionateScreenHeight(550),
+        child: ListView.builder(
+          itemCount: workstationModel.products!.length,
+          itemBuilder: (context, index) {
+            RWorkstationProduct rWorkstationProduct = workstationModel.products![index];
+            return Dismissible(
+              background: Container(
+                color: kCustomBordeaux,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 30),
+                      child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                    )
+                  ],
+                ),
+              ),
+              key: Key(rWorkstationProduct.productId!.toString()),
+              direction: DismissDirection.endToStart,
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Conferma operazione"),
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Sei sicuro di voler eliminare il"
+                            " prodotto?\nUna volta cancellato il prodotto verranno ricaricati nel magazzino \'${dataBundleNotifier.getStorageById(rWorkstationProduct.storageId!).name}\'"
+                            " n° ${rWorkstationProduct.stockFromStorage} x ${rWorkstationProduct.unitMeasure} di ${rWorkstationProduct.productName}"),
+                      ),
+                      actions: <Widget>[
+                        OutlinedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text("Elimina", style: TextStyle(color: kRed),)
+                        ),
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Indietro"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              resizeDuration: Duration(seconds: 1),
+              onDismissed: (direction) async {
+                print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
+                try {
+                  Response apiV1AppWorkstationRemoveproductDelete = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationRemoveproductDelete(workstationProductId: rWorkstationProduct.workstationProductId!.toInt());
+
+                  if(apiV1AppWorkstationRemoveproductDelete.isSuccessful){
+
+                    dataBundleNotifier.removeProductFromCurrentWorkstation(rWorkstationProduct);
+                    dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(rWorkstationProduct.storageId!.toInt());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            duration:
+                            Duration(milliseconds: 1000),
+                            backgroundColor: kCustomGreen,
+                            content: Text(
+                              'Prodotto eliminato!',
+                              style: TextStyle(color: Colors.white),
+                            )));
+                  } else{
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            duration:
+                            const Duration(milliseconds: 3000),
+                            backgroundColor: kCustomBordeaux,
+                            content: Text(
+                              'Ho riscontrato problemi durante l\'operazione. Err: ' + apiV1AppWorkstationRemoveproductDelete.error.toString(),
+                              style: TextStyle(color: Colors.white),
+                            )));
+                  }
+                } on Exception catch (e) {
+
+                }
+              },
+              child: ListTile(
+                title: Column(
+                  children: [
+                    GestureDetector(
+                        onTap:(){
+                        },
+                        child: buildProductRow(rWorkstationProduct, storageProductList),
+                    ),
+                    const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
+                  ],
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -303,124 +395,122 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen>{
   buildProductRow(RWorkstationProduct product, List<RStorageProduct> prodList) {
     TextEditingController controller = TextEditingController(text: product.amount!.toString());
 
-    return Card(
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                            width: getProportionateScreenWidth(200),
-                            child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21)))),
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          width: getProportionateScreenWidth(170),
+                          child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21)))),
 
-                        SizedBox(
-                          width: getProportionateScreenWidth(200),
-                          child: Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent, fontSize: getProportionateScreenHeight(8))),),
+                      SizedBox(
+                        width: getProportionateScreenWidth(170),
+                        child: Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent, fontSize: getProportionateScreenHeight(8))),),
 
-                        prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
-                          width: getProportionateScreenWidth(200),
-                          child: Row(
-                            children: [
-                              Text('Stock in magazzino: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
-                              Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amount!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amount!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(13))),
-                            ],
-                          ),) :
-                        SizedBox(
-                          width: getProportionateScreenWidth(200),
-                          child: Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),),
-                        SizedBox(height: getProportionateScreenHeight(40)),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  SizedBox(
-                      width: getProportionateScreenWidth(100),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Column(
+                      prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
+                        width: getProportionateScreenWidth(170),
+                        child: Row(
                           children: [
-                            Text((product.stockFromStorage! + product.amount!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(20))),
-                            Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
+                            Text('Stock in magazzino: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
+                            Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amount!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amount!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(13))),
                           ],
+                        ),) :
+                      SizedBox(
+                        width: getProportionateScreenWidth(170),
+                        child: Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),),
+                      SizedBox(height: getProportionateScreenHeight(40)),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Column(
+              children: [
+                SizedBox(
+                    width: getProportionateScreenWidth(100),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Column(
+                        children: [
+                          Text((product.stockFromStorage! + product.amount!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(20))),
+                          Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
+                        ],
+                      ),
+                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            if(product.amount! > 0){
+                              product.amount = product.amount! - 1;
+                            }
+                          });
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            FontAwesomeIcons.minus,
+                            color: kPinaColor,
+                          ),
                         ),
                       ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if(product.amount! > 0){
-                                product.amount = product.amount! - 1;
-                              }
-                            });
+                      ConstrainedBox(
+                        constraints: BoxConstraints.loose(Size(
+                            getProportionateScreenWidth(60),
+                            getProportionateScreenWidth(80))),
+                        child: CupertinoTextField(
+                          controller: controller,
+                          onChanged: (text) {
+                            product.amount = double.parse(text);
                           },
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              FontAwesomeIcons.minus,
-                              color: kPinaColor,
-                            ),
+                          textInputAction: TextInputAction.next,
+                          style: TextStyle(
+                            color: kCustomGrey,
+                            fontWeight: FontWeight.w600,
+                            fontSize: getProportionateScreenHeight(22),
                           ),
+                          keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true, signed: false),
+                          clearButtonMode: OverlayVisibilityMode.never,
+                          textAlign: TextAlign.center,
+                          autocorrect: false,
                         ),
-                        ConstrainedBox(
-                          constraints: BoxConstraints.loose(Size(
-                              getProportionateScreenWidth(60),
-                              getProportionateScreenWidth(80))),
-                          child: CupertinoTextField(
-                            controller: controller,
-                            onChanged: (text) {
-                              product.amount = double.parse(text);
-                            },
-                            textInputAction: TextInputAction.next,
-                            style: TextStyle(
-                              color: kCustomGrey,
-                              fontWeight: FontWeight.w600,
-                              fontSize: getProportionateScreenHeight(22),
-                            ),
-                            keyboardType: const TextInputType.numberWithOptions(
-                                decimal: true, signed: false),
-                            clearButtonMode: OverlayVisibilityMode.never,
-                            textAlign: TextAlign.center,
-                            autocorrect: false,
-                          ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            product.amount = product.amount! + 1;
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(FontAwesomeIcons.plus,
+                              color: kCustomGreen),
                         ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              product.amount = product.amount! + 1;
-                            });
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(FontAwesomeIcons.plus,
-                                color: kCustomGreen),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
+        ),
 
-        ],
-      ),
+      ],
     );
   }
 }

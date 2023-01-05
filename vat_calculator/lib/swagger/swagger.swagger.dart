@@ -816,27 +816,46 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _apiV1AppUsersUpdatePut(
       {@Body() required UserEntity? userEntity});
 
-  ///insertProductIntoStorage
+  ///deleteProduct
+  ///@param workstationProductId workstationProductId
+  Future<chopper.Response> apiV1AppWorkstationDeleteproductDelete(
+      {required int? workstationProductId}) {
+    return _apiV1AppWorkstationDeleteproductDelete(
+        workstationProductId: workstationProductId);
+  }
+
+  ///deleteProduct
+  ///@param workstationProductId workstationProductId
+  @Delete(path: '/api/v1/app/workstation/deleteproduct')
+  Future<chopper.Response> _apiV1AppWorkstationDeleteproductDelete(
+      {@Query('workstationProductId') required int? workstationProductId});
+
+  ///insertProductIntoWorkstation
   ///@param workstationId workstationId
   ///@param productId productId
   ///@param storageId storageId
-  Future<chopper.Response> apiV1AppWorkstationInsertproductGet({
+  Future<chopper.Response<RWorkstationProduct>>
+      apiV1AppWorkstationInsertproductGet({
     required int? workstationId,
     required int? productId,
     required int? storageId,
   }) {
+    generatedMapping.putIfAbsent(
+        RWorkstationProduct, () => RWorkstationProduct.fromJsonFactory);
+
     return _apiV1AppWorkstationInsertproductGet(
         workstationId: workstationId,
         productId: productId,
         storageId: storageId);
   }
 
-  ///insertProductIntoStorage
+  ///insertProductIntoWorkstation
   ///@param workstationId workstationId
   ///@param productId productId
   ///@param storageId storageId
   @Get(path: '/api/v1/app/workstation/insertproduct')
-  Future<chopper.Response> _apiV1AppWorkstationInsertproductGet({
+  Future<chopper.Response<RWorkstationProduct>>
+      _apiV1AppWorkstationInsertproductGet({
     @Query('workstationId') required int? workstationId,
     @Query('productId') required int? productId,
     @Query('storageId') required int? storageId,
@@ -859,7 +878,7 @@ abstract class Swagger extends ChopperService {
           required List<WorkstationLoadUnloadProduct>?
               workstationLoadUnloadProductList});
 
-  ///removeProductIntoStorage
+  ///removeProductFromWorkstation
   ///@param workstationProductId workstationProductId
   Future<chopper.Response> apiV1AppWorkstationRemoveproductDelete(
       {required int? workstationProductId}) {
@@ -867,11 +886,30 @@ abstract class Swagger extends ChopperService {
         workstationProductId: workstationProductId);
   }
 
-  ///removeProductIntoStorage
+  ///removeProductFromWorkstation
   ///@param workstationProductId workstationProductId
   @Delete(path: '/api/v1/app/workstation/removeproduct')
   Future<chopper.Response> _apiV1AppWorkstationRemoveproductDelete(
       {@Query('workstationProductId') required int? workstationProductId});
+
+  ///retrieveAllProductByWorkstationId
+  ///@param workstationId workstationId
+  Future<chopper.Response<List<RWorkstationProduct>>>
+      apiV1AppWorkstationRetrieveAllProductByWorkstationIdGet(
+          {required int? workstationId}) {
+    generatedMapping.putIfAbsent(
+        RWorkstationProduct, () => RWorkstationProduct.fromJsonFactory);
+
+    return _apiV1AppWorkstationRetrieveAllProductByWorkstationIdGet(
+        workstationId: workstationId);
+  }
+
+  ///retrieveAllProductByWorkstationId
+  ///@param workstationId workstationId
+  @Get(path: '/api/v1/app/workstation/retrieveAllProductByWorkstationId')
+  Future<chopper.Response<List<RWorkstationProduct>>>
+      _apiV1AppWorkstationRetrieveAllProductByWorkstationIdGet(
+          {@Query('workstationId') required int? workstationId});
 
   ///unload
   ///@param workstationLoadUnloadProductList workstationLoadUnloadProductList

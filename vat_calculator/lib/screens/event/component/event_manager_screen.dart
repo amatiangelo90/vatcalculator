@@ -1054,12 +1054,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           ),
           onTap: (){
 
+            dataBundleNotifier.setCurrentWorkstation(workstation);
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => WorkstationManagerScreen(
-                  workstation: workstation,
-                ),
+                builder: (context) => WorkstationManagerScreen(),
               ),
             );
           },

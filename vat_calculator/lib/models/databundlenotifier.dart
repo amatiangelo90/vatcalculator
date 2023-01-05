@@ -24,6 +24,7 @@ class DataBundleNotifier extends ChangeNotifier {
   UserEntity _userEntity = UserEntity(userId: 0);
   Branch _currentBranch = Branch(branchId: 0);
   Storage _currentStorage = Storage(storageId: 0);
+  Workstation _currentWorkstation = Workstation(workstationId: 0);
 
 
   void refreshCurrentBranchData() async {
@@ -93,6 +94,14 @@ class DataBundleNotifier extends ChangeNotifier {
     return _currentStorage;
   }
 
+  void setCurrentWorkstation(Workstation workstation) {
+    _currentWorkstation = workstation;
+    notifyListeners();
+  }
+
+  Workstation getCurrentWorkstation(){
+    return _currentWorkstation;
+  }
 
   List<ROrderProduct> buildROrderProductFromSupplierProdList(List<Product> productList) {
 
@@ -267,4 +276,16 @@ class DataBundleNotifier extends ChangeNotifier {
     print('Retrieve storage by id ' + storageId.toString());
     return getCurrentBranch().storages!.where((element) => element.storageId == storageId).first;
   }
+
+  void addRWorkstationProductToCurrentWorkstation(RWorkstationProduct rWorkstationProduct) {
+    _currentWorkstation.products!.add(rWorkstationProduct);
+    notifyListeners();
+  }
+
+  void removeProductFromCurrentWorkstation(RWorkstationProduct rWorkstationProduct) {
+    _currentWorkstation.products!.removeWhere((element) => element.workstationProductId == rWorkstationProduct.workstationProductId);
+    notifyListeners();
+  }
+
+
 }

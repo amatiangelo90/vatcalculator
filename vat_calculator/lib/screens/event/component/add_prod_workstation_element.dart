@@ -8,9 +8,7 @@ import '../../../size_config.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 
 class AddElementIntoWorkstationWidget extends StatelessWidget {
-  const AddElementIntoWorkstationWidget({Key? key, required this.workstationModel}) : super(key: key);
-
-  final Workstation workstationModel;
+  const AddElementIntoWorkstationWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +21,15 @@ class AddElementIntoWorkstationWidget extends StatelessWidget {
           )
         ];
 
+        List<num> listIds = [];
+        dataBundleNotifier.getCurrentWorkstation().products!.forEach((product) {
+          listIds.add(product.productId!);
+        });
+
         if(dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!)!.products!.isNotEmpty){
 
-          dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!)!.products!.forEach((product) {
+          dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!)!.products!.where((element)
+          => !listIds.contains(element.productId))!.forEach((product) {
             listWidget.add(
               Padding(
                 padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
@@ -50,22 +54,29 @@ class AddElementIntoWorkstationWidget extends StatelessWidget {
                     IconButton(onPressed: () async {
 
                       print('Save product into workstation. '
-                          'Product id : ${product.productId!.toInt()}, storage id ${dataBundleNotifier.getCurrentEvent().storageId!.toInt()}, workstation id : ${workstationModel.workstationId!.toInt().toString()}' );
+                          'Product id : ${product.productId!.toInt()}, storage id ${dataBundleNotifier.getCurrentEvent().storageId!.toInt()}, workstation id : ${dataBundleNotifier.getCurrentWorkstation().workstationId!.toInt().toString()}' );
                       Response apiV1AppStorageInsertproductGet = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationInsertproductGet(
-                        workstationId: workstationModel.workstationId!.toInt(),
+                        workstationId: dataBundleNotifier.getCurrentWorkstation().workstationId!.toInt(),
                         storageId: dataBundleNotifier.getCurrentEvent().storageId!.toInt(),
                         productId: product.productId!.toInt()
                       );
 
                       if(apiV1AppStorageInsertproductGet.isSuccessful){
 
+                        dataBundleNotifier.addRWorkstationProductToCurrentWorkstation(apiV1AppStorageInsertproductGet.body);
 
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: kCustomGreen,
+                          duration: Duration(seconds: 1),
+                          content: Text('Prodotto aggiunto'),
+                        ));
                       }else{
                         print(apiV1AppStorageInsertproductGet.error.toString());
 
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: kPinaColor,
+                          duration: const Duration(seconds: 3),
+                          backgroundColor: kCustomBordeaux,
                           content: Text('Ho riscontrato degli errori durante il salvataggio. Error: ' + apiV1AppStorageInsertproductGet.error.toString()),
                         ));
                       }

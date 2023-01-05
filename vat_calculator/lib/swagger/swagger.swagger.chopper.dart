@@ -749,7 +749,23 @@ class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<dynamic>> _apiV1AppWorkstationInsertproductGet({
+  Future<Response<dynamic>> _apiV1AppWorkstationDeleteproductDelete(
+      {required int? workstationProductId}) {
+    final String $url = '/api/v1/app/workstation/deleteproduct';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'workstationProductId': workstationProductId
+    };
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<RWorkstationProduct>> _apiV1AppWorkstationInsertproductGet({
     required int? workstationId,
     required int? productId,
     required int? storageId,
@@ -766,7 +782,7 @@ class _$Swagger extends Swagger {
       client.baseUrl,
       parameters: $params,
     );
-    return client.send<dynamic, dynamic>($request);
+    return client.send<RWorkstationProduct, RWorkstationProduct>($request);
   }
 
   @override
@@ -798,6 +814,25 @@ class _$Swagger extends Swagger {
       parameters: $params,
     );
     return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<List<RWorkstationProduct>>>
+      _apiV1AppWorkstationRetrieveAllProductByWorkstationIdGet(
+          {required int? workstationId}) {
+    final String $url =
+        '/api/v1/app/workstation/retrieveAllProductByWorkstationId';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'workstationId': workstationId
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client
+        .send<List<RWorkstationProduct>, RWorkstationProduct>($request);
   }
 
   @override

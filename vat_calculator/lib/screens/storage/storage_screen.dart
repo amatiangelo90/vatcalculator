@@ -214,7 +214,7 @@ class _StorageScreenState extends State<StorageScreen> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: const Text("Confirma operazione"),
+                                        title: const Text("Conferma operazione"),
                                         content: const Text("Sei sicuro di voler eliminare il prodotto?"),
                                         actions: <Widget>[
                                           OutlinedButton(
