@@ -62,7 +62,7 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
                     scrollDirection: Axis.vertical,
                     child: Column(
                       children: <Widget>[
-                        const Text('Immetti qui il codice che ti ha fornitore il fornitore', textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+                        const Text('Immetti qui il codice del fornitore', textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
                         SizedBox(height: getProportionateScreenHeight(30),),
                         _buildInputPasswordForEventWidget(dataBundleNotifier),
                         SizedBox(height: getProportionateScreenHeight(60),),

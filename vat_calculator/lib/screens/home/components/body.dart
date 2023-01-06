@@ -74,7 +74,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 children: [
                   buildGestureDetectorBranchSelector(
                       context, dataBundleNotifier),
-                  buildStaffWidget(dataBundleNotifier),
+                  //buildStaffWidget(dataBundleNotifier),
                   buildOrderButton('ORDINI', dataBundleNotifier),
 
                   buildSuppliersStorageButton(width, dataBundleNotifier),
@@ -148,7 +148,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     }
                   }, dataBundleNotifier,),
 
-                  const SizedBox(height: 5,),
+                  SizedBox(height: getProportionateScreenHeight(15),),
                 ],
               ),
             ),
@@ -326,7 +326,7 @@ class _HomePageBodyState extends State<HomePageBody> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
-              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
               image: AssetImage("assets/images/orders.jpg"),
               fit: BoxFit.cover,
             ),
@@ -432,7 +432,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                 image: const AssetImage("assets/images/party.jpg"),
                 fit: BoxFit.cover,
               ),
@@ -535,7 +535,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                     image: AssetImage("assets/images/supplier.jpg"),
                     fit: BoxFit.cover,
                   ),
@@ -598,7 +598,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
                     image: AssetImage("assets/images/magazzino.jpg"),
                     fit: BoxFit.cover,
                   ),

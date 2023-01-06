@@ -109,7 +109,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                     currentUserName: dataBundleNotifier.getUserEntity()!.name! + ' ' + dataBundleNotifier.getUserEntity()!.lastname!,
                                   ),
                                   orderStatus: orderSaved.orderStatus!,
-                                  orderStatusMessage: orderSaved.errorMessage!,
+                                  orderStatusMessage: orderSaved.errorMessage == null ? '' : orderSaved.errorMessage!,
                                   number: widget.currentSupplier.phoneNumber!,
                                   supplierName: widget.currentSupplier.name!,
                                 ),

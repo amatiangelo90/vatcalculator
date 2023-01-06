@@ -46,6 +46,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
             scrollDirection: Axis.vertical,
             child: Column(
               children: [
+                SizedBox(height: getProportionateScreenHeight(50)),
                 Container(
                   color: orderStatus == OrderEntityOrderStatus.inviato ? kCustomGreen : kRed,
                   width: getProportionateScreenWidth(400),

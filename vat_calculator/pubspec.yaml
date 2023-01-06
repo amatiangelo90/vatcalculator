@@ -63,7 +63,7 @@ dependencies:
   path_provider:
   open_file: ^3.2.1
   linked_scroll_controller:
-  rive: ^0.9.0
+  modal_bottom_sheet: ^2.1.2
 
 dev_dependencies:
   flutter_test:

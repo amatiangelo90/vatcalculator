@@ -45,9 +45,12 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             bottomSheet: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Location: ' + dataBundleNotifier.getCurrentEvent().location!,
-                  style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomGrey, fontWeight: FontWeight.bold),),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 13),
+                  child: Text(
+                    'Location: ' + dataBundleNotifier.getCurrentEvent().location!,
+                    style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomGrey, fontWeight: FontWeight.bold),),
+                ),
               ],
             ),
             key: _scaffoldKey,

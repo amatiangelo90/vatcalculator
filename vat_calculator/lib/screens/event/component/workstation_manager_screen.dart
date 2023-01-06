@@ -65,6 +65,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                   actions: [
                     IconButton(
                       onPressed: (){
+
+
                         showModalBottomSheet(
                             shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.vertical(
@@ -77,7 +79,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                                 builder: (context) {
                                   return SizedBox(
                                     width: getProportionateScreenWidth(900),
-                                    height: getProportionateScreenHeight(600),
+                                    height: getProportionateScreenHeight(900),
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
                                       child: Column(
@@ -389,7 +391,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
     return Scaffold(
       backgroundColor: kCustomWhite,
       bottomSheet: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15.0),
         child: SizedBox(
           width: getProportionateScreenWidth(400),
           height: getProportionateScreenHeight(55),
@@ -593,7 +595,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
     return Scaffold(
       backgroundColor: kCustomWhite,
       bottomSheet: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15.0),
         child: SizedBox(
           width: getProportionateScreenWidth(400),
           height: getProportionateScreenHeight(55),
@@ -815,13 +817,17 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                         width: getProportionateScreenWidth(170),
                         child: Row(
                           children: [
-                            Text('Stock in magazzino: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
-                            Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(13))),
+                            Text('Stock: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
+                            Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(13))),
                           ],
                         ),) :
                       SizedBox(
                         width: getProportionateScreenWidth(170),
                         child: Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),),
+
+                      SizedBox(
+                        width: getProportionateScreenWidth(170),
+                        child: Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(12))),),
 
                       SizedBox(
                         width: getProportionateScreenWidth(170),
@@ -841,7 +847,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
                       children: [
-                        Text((product.stockFromStorage! + product.amountLoad!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(20))),
+                        Text((product.stockFromStorage! + product.amountLoad!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(20))),
                         Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
                       ],
                     ),
@@ -881,7 +887,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                           style: TextStyle(
                             color: kCustomGrey,
                             fontWeight: FontWeight.w600,
-                            fontSize: getProportionateScreenHeight(22),
+                            fontSize: getProportionateScreenHeight(15),
                           ),
                           keyboardType: const TextInputType.numberWithOptions(
                               decimal: true, signed: false),
@@ -938,7 +944,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                         child: Row(
                           children: [
                             Text('Carico: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(14))),
-                            Text(product.stockFromStorage!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen, fontSize: getProportionateScreenHeight(15))),
+                            Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen, fontSize: getProportionateScreenHeight(15))),
                           ],
                         ),) :
 
@@ -959,7 +965,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
                       children: [
-                        Text((product.consumed! + product.amountUnload!).toString(), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomBordeaux, fontSize: getProportionateScreenHeight(20))),
+                        Text((product.consumed! + product.amountUnload!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomBordeaux, fontSize: getProportionateScreenHeight(20))),
                         Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
                       ],
                     ),

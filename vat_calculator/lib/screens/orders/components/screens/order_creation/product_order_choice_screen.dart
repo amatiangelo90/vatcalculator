@@ -62,7 +62,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                               dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : Row(
                                 children: [
                                   Text('Prezzo: ', textAlign: TextAlign.center, style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(14)),),
-                                  Text(dataBundleNotifier.calculateTotalFromBasket()!.toString() + ' €', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(14)),),
+                                  Text(dataBundleNotifier.calculateTotalFromBasket()!.toStringAsFixed(2) + ' €', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(14)),),
                                 ],
                               ),
                             ],
@@ -191,7 +191,8 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
       ),
     );
     for (var currentProduct in dataBundleNotifier.basket!) {
-      TextEditingController controller = TextEditingController(text: currentProduct.amount!.toStringAsFixed(2));
+      TextEditingController controller = TextEditingController(text: currentProduct.amount! > 0
+          ? currentProduct.amount!.toStringAsFixed(2).replaceAll('.00', '') : '');
 
       list.add(
           Padding(

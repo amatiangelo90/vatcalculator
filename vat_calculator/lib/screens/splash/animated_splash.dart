@@ -43,7 +43,7 @@ class _SecondClassState extends State<SecondClass>
         if (status == AnimationStatus.completed) {
           Navigator.of(context).pushReplacement(
             ThisIsFadeRoute(
-              route: const LandingScreen(email: 'amati.angelo90@gmailò.asddsa'), page: Text(''),
+              route: const LandingScreen(email: 'amati.angelo90@gmail.com'), page: Text(''),
             ),
           );
           Timer(

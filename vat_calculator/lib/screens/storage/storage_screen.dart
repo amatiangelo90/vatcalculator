@@ -874,9 +874,9 @@ class _StorageScreenState extends State<StorageScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
                     children: [
-                      Text(product.stock!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: product.stock! >= 0 ? kCustomGreen : kPinaColor, fontSize: getProportionateScreenHeight(20))),
+                      Text(product.stock!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: product.stock! >= 0 ? kCustomGreen : kPinaColor, fontSize: getProportionateScreenHeight(20))),
                       Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
-                      Text('q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
+                      Text('q/100: ' + product.amountHundred!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
                     ],
                   ),
                 ))),
