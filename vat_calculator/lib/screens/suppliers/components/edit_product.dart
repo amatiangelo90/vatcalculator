@@ -1,7 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/default_button.dart';
@@ -87,15 +86,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
                         if(updateProdRespo.isSuccessful){
                           print('Prodotto aggiornato!');
+                          dataBundleNotifier.replaceProductUpdatedIntoCurrentSupplier(updateProdRespo.body);
+                          Navigator.of(context).pop();
                           buildSnackBar(text: 'Prodotto aggiornato.', color: kCustomGreen);
                         }else{
                           buildSnackBar(text: 'Errore durante l\'aggiornamento del prodotto. Err: ' + updateProdRespo.error!.toString(), color: kRed);
                         }
-
-
                       }
                     },
-                    text: 'Modifica', textColor: Colors.white,
+                    text: 'Modifica prodotto', textColor: Colors.white,
                   ),
                 ),
               appBar: AppBar(
@@ -123,23 +122,15 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 ),
                 elevation: 2,
                 actions: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
-                    child: IconButton(
-                      onPressed: () async {
-
-             //          if(perforDelteProduct != null && perforDelteProduct.statusCode == 200){
-             //            List<ProductModel> retrieveProductsBySupplier = await vatService.retrieveProductsBySupplier(widget.supplier);
-             //            dataBundleNotifier.addAllCurrentProductSupplierList(retrieveProductsBySupplier);
-             //            buildSnackBar(text: 'Prodotto eliminato correttamente', color: Colors.green.shade700);
-             //            Navigator.of(context).pop();
-             //          }else{
-             //            buildSnackBar(text: 'Si sono verificati problemi durante l\'aggiornamento del prodotto. Riprova più tardi.', color: LightColors.kRed);
-             //          }
-                      },
-                      icon: SvgPicture.asset('assets/icons/Trash.svg', color: kRed, height: getProportionateScreenHeight(29)),
-                    ),
-                  ),
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                //   child: IconButton(
+                //     onPressed: () async {
+                //
+                //     },
+                //     icon: SvgPicture.asset('assets/icons/Trash.svg', color: kRed, height: getProportionateScreenHeight(29)),
+                //   ),
+                // ),
                 ],
               ),
               body: SingleChildScrollView(

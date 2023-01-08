@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -128,55 +129,131 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
   }
 
   Widget buildListSuppliers(DataBundleNotifier dataBundleNotifier, context) {
-    List<Widget> listout = [];
-    listout.add(
-      Padding(
-        padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-        child: CupertinoTextField(
-          textInputAction: TextInputAction.next,
-          restorationId: 'Ricerca Fornitore',
-          keyboardType: TextInputType.text,
-          clearButtonMode: OverlayVisibilityMode.editing,
-          placeholder: 'Ricerca Fornitore per nome o codice',
-          onChanged: (currentText) {
-            setState((){
-              _filter = currentText;
-            });
-          },
-        ),
-      ),
-    );
-    listout.add(
-        Divider(color: Colors.grey.withOpacity(0.5), height: 0, indent: getProportionateScreenHeight(25),)
-    );
-    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.name!.contains(_filter))) {
-      listout.add(
-        Padding(
-          padding: const EdgeInsets.only(top: 2, left: 5, right: 5),
-          child: GestureDetector(
-            onTap: () async {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EditSuppliersScreen(
-                    currentSupplier: supplier,
-                  ),
-                ),
-              );
-            },
-            child: buildSupplierRow(dataBundleNotifier, supplier, kCustomGrey),
-          ),
-        ),
-      );
-    }
-
-    listout.add(SizedBox(
-      height: getProportionateScreenHeight(100),
-    ));
     return SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
-        children: listout,
+       children: [
+         Padding(
+           padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
+           child: CupertinoTextField(
+             textInputAction: TextInputAction.next,
+             restorationId: 'Ricerca Fornitore',
+             keyboardType: TextInputType.text,
+             clearButtonMode: OverlayVisibilityMode.editing,
+             placeholder: 'Ricerca Fornitore per nome o codice',
+             onChanged: (currentText) {
+               setState((){
+                 _filter = currentText;
+               });
+             },
+           ),
+         ),
+         buildWorkstationListWidget(dataBundleNotifier.getCurrentBranch().suppliers!, dataBundleNotifier),
+       ],
+      )
+    );
+  }
+
+  buildWorkstationListWidget(List<Supplier> supplierList, DataBundleNotifier dataBundleNotifier) {
+
+
+    return SizedBox(
+      height: supplierList.where((element) => element.name!.contains(_filter)).length * getProportionateScreenHeight(120),
+      child: ListView.builder(
+        itemCount: supplierList.where((element) => element.name!.contains(_filter)).length,
+        itemBuilder: (context, index) {
+          Supplier supplier = supplierList.where((element) => element.name!.contains(_filter)).toList()[index];
+          return Dismissible(
+            background: Container(
+              color: kCustomBordeaux,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 30),
+                    child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                  )
+                ],
+              ),
+            ),
+            key: Key(supplier.supplierId!.toString()),
+            direction: DismissDirection.endToStart,
+            confirmDismiss: (DismissDirection direction) async {
+              return await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Conferma operazione"),
+                    content: Text("Eliminare ${supplier.name} dalla lista dei tuoi fornitori?"),
+                    actions: <Widget>[
+                      OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text("Elimina", style: TextStyle(color: kRed),)
+                      ),
+                      OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text("Indietro"),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            resizeDuration: const Duration(seconds: 1),
+            onDismissed: (direction) async {
+              print('Delete supplier : ' + supplier.toString());
+
+              Response deleteSupplier = await dataBundleNotifier.getSwaggerClient()
+                  .apiV1AppSuppliersDeleteDelete(supplierId: supplier.supplierId!.toInt(), branchId: supplier.branchId!.toInt());
+              if(deleteSupplier.isSuccessful){
+                dataBundleNotifier.removeSupplierFromCurrentBranch(supplier.supplierId!);
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 1),
+                    backgroundColor: kCustomGreen,
+                    content: Text('Fornitore eliminato con successo')));
+              }else{
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(
+                    duration: Duration(seconds: 3),
+                    backgroundColor: kCustomBordeaux,
+                    content: Text('Ho riscontrato un problema durante l\'eliminazione del fornitore. Riprova fra 2 minuti o contatta l\'amministratore del sistema')));
+              }
+            },
+            child: ListTile(
+              title: Column(
+                children: [
+                  ListTile(
+                    leading: ClipRect(
+                      child: SvgPicture.asset(
+                        'assets/icons/supplier.svg',
+                        height: getProportionateScreenHeight(40),
+                        color: kCustomGrey,
+                      ),
+                    ),
+                    onTap: (){
+                      dataBundleNotifier.setCurrentSupplier(supplier);
+                      Navigator.pushNamed(context, EditSuppliersScreen.routeName);
+
+                    },
+                    title: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(supplier.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
+                          Text(supplier.supplierCode! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
+                          Divider()
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -188,7 +265,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
         padding: const EdgeInsets.only(left: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: kCustomGreen,
+          color: kCustomGrey,
         ),
         child: Container(
           decoration: const BoxDecoration(
@@ -223,7 +300,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
                             color: color,
                             width: getProportionateScreenWidth(20),
                           ),
-                          Text('  #' + supplier.code!,
+                          Text('  #' + supplier.supplierCode!,
                               style: TextStyle(
                                   color: color,
                                   fontSize: getProportionateScreenWidth(8),

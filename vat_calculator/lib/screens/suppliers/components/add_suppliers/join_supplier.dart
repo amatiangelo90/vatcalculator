@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -7,6 +8,8 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
+import '../../../../swagger/swagger.models.swagger.dart';
+import '../../../home/main_page.dart';
 
 class JoinSupplierScreen extends StatefulWidget {
   JoinSupplierScreen({Key? key}) : super(key: key);
@@ -24,7 +27,6 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
   final formKey = GlobalKey<FormState>();
   StreamController<ErrorAnimationType> errorController = StreamController();
 
-  bool hasError = false;
   String currentPassword = '';
 
   @override
@@ -32,55 +34,48 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            backgroundColor: kCustomGrey,
+            backgroundColor: Colors.white,
 
             appBar: AppBar(
 
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: IconButton(icon: Icon(Icons.clear), onPressed: () { supplierCodeControllerSearch.clear(); },),
+                )
+              ],
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
                   onPressed: () => {
                     Navigator.pushNamed(context, SuppliersScreen.routeName),
                   }
               ),
-              iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: kCustomGrey,
+              iconTheme: const IconThemeData(color: kCustomGrey),
+              backgroundColor: Colors.white,
               centerTitle: true,
               title: Text(
                 'Associa Fornitore',
                 style: TextStyle(
                   fontSize: getProportionateScreenWidth(19),
-                  color: Colors.white,
+                  color: kCustomGrey,
                 ),
               ),
-              elevation: 5,
+              elevation: 0,
             ),
-            body: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Form(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      children: <Widget>[
-                        const Text('Immetti qui il codice del fornitore', textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
-                        SizedBox(height: getProportionateScreenHeight(30),),
-                        _buildInputPasswordForEventWidget(dataBundleNotifier),
-                        SizedBox(height: getProportionateScreenHeight(60),),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            body: _buildInputPasswordForEventWidget(dataBundleNotifier),
           );
         });
   }
 
 
   Widget _buildInputPasswordForEventWidget(DataBundleNotifier dataBundleNotifier) {
-    return Container(
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
+          const Text('Immetti qui il codice del fornitore', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey)),
+          SizedBox(height: getProportionateScreenHeight(30),),
           Form(
             key: formKey,
             child: PinCodeTextField(
@@ -91,14 +86,12 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               textStyle: const TextStyle(color: Colors.black),
               pinTheme: PinTheme(
                 inactiveColor: kCustomGrey,
-                selectedColor: Colors.lightBlueAccent,
-                activeColor: Colors.white,
+                selectedColor: kCustomBordeaux,
+                activeColor: kCustomGrey,
                 shape: PinCodeFieldShape.box,
                 borderRadius: BorderRadius.circular(4),
-                fieldHeight: getProportionateScreenHeight(40),
-                fieldWidth: getProportionateScreenHeight(40),
-                activeFillColor:
-                hasError ? Colors.blue.shade100 : Colors.white,
+                fieldHeight: getProportionateScreenHeight(50),
+                fieldWidth: getProportionateScreenHeight(50),
               ),
               cursorColor: Colors.black,
               animationDuration: const Duration(milliseconds: 300),
@@ -115,6 +108,161 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               onCompleted: (code) async {
                 formKey.currentState?.validate();
                 print('Retrieve Supplier model by code : ' + code);
+                Response apiV1AppSuppliersFindbycodeGet = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersFindbycodeGet(suppliercode: code);
+
+                if(apiV1AppSuppliersFindbycodeGet.isSuccessful){
+
+                  if(apiV1AppSuppliersFindbycodeGet.body == null){
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: kCustomBordeaux,
+                      duration: Duration(seconds: 3),
+                      content: Text('Non ho trovato Fornitori con il seguente codice: ${code}'),
+                    ));
+                    clearControllers();
+                  }else{
+                    Supplier supplier = apiV1AppSuppliersFindbycodeGet.body;
+                    showModalBottomSheet(
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(25.0),
+                          ),
+                        ),
+                        context: context,
+                        builder: (context) {
+                          return SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: SizedBox(
+                              height: getProportionateScreenHeight(550),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(' Aggiungere il presente fornitore alla tua lista?', style: TextStyle(fontSize: getProportionateScreenHeight(15), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                        IconButton(icon: Icon(Icons.clear, size: getProportionateScreenHeight(30)), color: kCustomGrey, onPressed: (){
+                                          clearControllers();
+                                          Navigator.of(context).pop();
+                                        },)
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Fornitore: ', style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey, fontWeight: FontWeight.w600)),
+                                                  Text(supplier.name!, style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Email: ', style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey, fontWeight: FontWeight.w600)),
+                                                  Text(supplier.email!, style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Telefono: ', style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey, fontWeight: FontWeight.w600)),
+                                                  Text(supplier.phoneNumber!, style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Codice: ', style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey, fontWeight: FontWeight.w600)),
+                                                  Text(supplier.supplierCode!, style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Indirizzo: ', style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey, fontWeight: FontWeight.w600)),
+                                                  Text(supplier.address!, style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('Città: ', style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey, fontWeight: FontWeight.w600)),
+                                                  Text(supplier.city!, style: TextStyle(fontSize: getProportionateScreenHeight(17), color: kCustomGrey, fontWeight: FontWeight.w900)),
+                                                ],
+                                              ),
+                                              SizedBox(height: getProportionateScreenHeight(55),),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: getProportionateScreenWidth(400),
+                                          height: getProportionateScreenHeight(55),
+                                          child: OutlinedButton(
+                                            onPressed: () async {
+
+                                              Response responseLinkBranchSupp = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersConnectbranchsupplierGet(
+                                                  branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt(),
+                                                  supplierId: supplier.supplierId!.toInt());
+
+
+                                              if(responseLinkBranchSupp.isSuccessful){
+
+                                                dataBundleNotifier.refreshCurrentBranchData();
+
+                                                Navigator.pushNamed(context, HomeScreenMain.routeName);
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                  backgroundColor: kCustomGreen,
+                                                  duration: const Duration(milliseconds: 2600),
+                                                  content: Text(
+                                                      'Complimenti. Hai collegato il fornitore ${supplier.name} alla tua attività!'),
+                                                ));
+                                              }else{
+                                                Navigator.of(context).pop(false);
+                                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                  backgroundColor: kCustomBordeaux,
+                                                  duration: const Duration(milliseconds: 2600),
+                                                  content: Text(
+                                                      'Si è verificato un errore durante l\'operazione. Err: ' + responseLinkBranchSupp.error!.toString()),
+                                                ));
+                                              }
+
+                                            },
+                                            style: ButtonStyle(
+                                              elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                              backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                                              side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
+                                              shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                            ),
+                                            child: Text('Aggiungi Fornitore', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(18)),),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  }
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    backgroundColor: kCustomBordeaux,
+                    duration: Duration(seconds: 3),
+                    content: Text('Ho riscontrato un errore durante l\'operzione. Riprovare fra un paio di minuti. Err: ' + apiV1AppSuppliersFindbycodeGet!.error.toString()),
+                  ));
+                  clearControllers();
+                }
+
               },
               onChanged: (value) {
                 setState(() {
@@ -123,102 +271,8 @@ class _JoinSupplierScreenState extends State<JoinSupplierScreen> {
               },
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: CupertinoButton(
-                    color: Colors.lightBlueAccent,
-                    child: Text("Clear", style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(18)),),
-                    onPressed: () {
-                      supplierCodeControllerSearch.clear();
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
-    );
-  }
-
-
-  void buildShowErrorDialog(String text) {
-    Widget cancelButton = TextButton(
-      child: const Text("Indietro", style: TextStyle(color: kCustomGrey),),
-      onPressed:  () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    showDialog(
-        context: context,
-        builder: (_) => AlertDialog(
-          actions: [
-            cancelButton
-          ],
-          contentPadding: EdgeInsets.zero,
-          shape: const RoundedRectangleBorder(
-              borderRadius:
-              BorderRadius.all(
-                  Radius.circular(10.0))),
-          content: Builder(
-            builder: (context) {
-              var height = MediaQuery.of(context).size.height;
-              var width = MediaQuery.of(context).size.width;
-              return SizedBox(
-                height: getProportionateScreenHeight(150),
-                width: width - 90,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topRight: Radius.circular(10.0),
-                              topLeft: Radius.circular(10.0) ),
-                          color: kPinaColor,
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text('  Errore ',style: TextStyle(
-                                  fontSize: getProportionateScreenWidth(14),
-                                  fontWeight: FontWeight.bold,
-                                  color: kCustomWhite,
-                                ),),
-                                IconButton(icon: const Icon(
-                                  Icons.clear,
-                                  color: kCustomWhite,
-                                ), onPressed: () { Navigator.pop(context); },),
-
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(18.0),
-                          child: Text(text,
-                            style: TextStyle(fontSize: 14),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
-        )
     );
   }
 

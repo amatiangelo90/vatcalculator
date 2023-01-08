@@ -65,8 +65,6 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                               'Si è verificato un errore durante l\'operazione. Err: ' + loadUnloadResponse.error.toString()!),
                         ));
                       }
-
-
                     },
                     style: ButtonStyle(
                       elevation: MaterialStateProperty.resolveWith((states) => 5),
@@ -174,7 +172,8 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                           fontSize: getProportionateScreenHeight(22),
                         ),
                         onChanged: (text){
-                          currentProduct.orderAmount = double.parse(text);
+
+                          currentProduct.orderAmount = double.parse(text.toString().replaceAll(',', '.'));
                         },
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: true, signed: false),

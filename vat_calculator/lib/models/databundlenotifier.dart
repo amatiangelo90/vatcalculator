@@ -8,7 +8,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   String baseUrlHttps = 'https://servicedbacorp741w.com:8444/ventimetriservice';
 
-  String baseUrlHttp = 'http://servicedbacorp741w.com:8080/ventimetriquadriservice';
+  String baseUrlHttp = 'http://localhost:16172/ventimetriquadriservice';
 
   Swagger getSwaggerClient(){
     if(kIsWeb){
@@ -25,10 +25,26 @@ class DataBundleNotifier extends ChangeNotifier {
   Branch _currentBranch = Branch(branchId: 0);
   Storage _currentStorage = Storage(storageId: 0);
   Workstation _currentWorkstation = Workstation(workstationId: 0);
+  Supplier _currentSupplier = Supplier(supplierId: 0);
 
 
+  void setCurrentSupplier(Supplier supplier) {
+    _currentSupplier = supplier;
+    notifyListeners();
+  }
+
+  Supplier getCurrentSupplier(){
+    return _currentSupplier;
+  }
+
+  void removeProductFromCurrentSupplier(num productId){
+    _currentSupplier.productList!.removeWhere((element) => element.productId == productId);
+    notifyListeners();
+  }
   void refreshCurrentBranchData() async {
+
     Response response = await getSwaggerClient().apiV1AppBranchesRetrievebranchbyidGet(branchid: _currentBranch.branchId!.toInt());
+
     if(response.isSuccessful){
       Branch branch = response.body;
       setBranch(branch);
@@ -111,9 +127,11 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void configureLoadByAmountHundred(double pax) {
-    _currentWorkstation.products!.forEach((prod) {
-      prod.amountLoad = prod.amountHundred! * pax;
-    });
+
+    for (var prod in _currentWorkstation.products!) {
+      prod.amountLoad = (prod.amountHundred! * pax) / 100 ;
+    }
+
     notifyListeners();
   }
   List<ROrderProduct> buildROrderProductFromSupplierProdList(List<Product> productList) {
@@ -250,6 +268,12 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeSupplierFromCurrentBranch(num supplierId) {
+    getCurrentBranch().suppliers!.removeWhere((element) => element.supplierId == supplierId);
+    notifyListeners();
+  }
+
+
   void addSavedProductToSupplierList(Product body, int supplierId) {
     _currentBranch.suppliers!.where((element) => element.supplierId == supplierId).first.productList!.add(body);
     notifyListeners();
@@ -291,6 +315,24 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void removeWorkstationFromEvent(num workstationId) {
     _currentEventModel.workstations!.removeWhere((element) => element.workstationId == workstationId);
+    notifyListeners();
+  }
+
+  void addSupplierToCurrentBranch(Supplier supplier) {
+    getCurrentBranch().suppliers!.add(supplier);
+    notifyListeners();
+  }
+
+  void replaceProductUpdatedIntoCurrentSupplier(Product product) {
+    int currentPositionListToReplace = 0;
+
+    for(int i = 0; i < getCurrentSupplier()!.productList!.length; i++){
+      if(product.productId == getCurrentSupplier()!.productList![i].productId){
+        currentPositionListToReplace = i;
+      }
+    }
+
+    getCurrentSupplier().productList![currentPositionListToReplace] = product;
     notifyListeners();
   }
 

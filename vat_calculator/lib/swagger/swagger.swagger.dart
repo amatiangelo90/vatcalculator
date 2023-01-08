@@ -459,7 +459,7 @@ abstract class Swagger extends ChopperService {
 
   ///update
   ///@param product product
-  Future<chopper.Response> apiV1AppProductsUpdatePut(
+  Future<chopper.Response<Product>> apiV1AppProductsUpdatePut(
       {required Product? product}) {
     generatedMapping.putIfAbsent(Product, () => Product.fromJsonFactory);
 
@@ -469,7 +469,7 @@ abstract class Swagger extends ChopperService {
   ///update
   ///@param product product
   @Put(path: '/api/v1/app/products/update')
-  Future<chopper.Response> _apiV1AppProductsUpdatePut(
+  Future<chopper.Response<Product>> _apiV1AppProductsUpdatePut(
       {@Body() required Product? product});
 
   ///updateAmountHundredValue
@@ -658,20 +658,45 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _apiV1AppStorageUpdatePut(
       {@Body() required Storage? storage});
 
-  ///delete
-  ///@param supplier supplier
-  Future<chopper.Response> apiV1AppSuppliersDeleteDelete(
-      {required Supplier? supplier}) {
-    generatedMapping.putIfAbsent(Supplier, () => Supplier.fromJsonFactory);
-
-    return _apiV1AppSuppliersDeleteDelete(supplier: supplier);
+  ///update
+  ///@param branchId branchId
+  ///@param supplierId supplierId
+  Future<chopper.Response> apiV1AppSuppliersConnectbranchsupplierGet({
+    required int? branchId,
+    required int? supplierId,
+  }) {
+    return _apiV1AppSuppliersConnectbranchsupplierGet(
+        branchId: branchId, supplierId: supplierId);
   }
 
-  ///delete
-  ///@param supplier supplier
+  ///update
+  ///@param branchId branchId
+  ///@param supplierId supplierId
+  @Get(path: '/api/v1/app/suppliers/connectbranchsupplier')
+  Future<chopper.Response> _apiV1AppSuppliersConnectbranchsupplierGet({
+    @Query('branchId') required int? branchId,
+    @Query('supplierId') required int? supplierId,
+  });
+
+  ///deleterelationsupplierbranch
+  ///@param supplierId supplierId
+  ///@param branchId branchId
+  Future<chopper.Response> apiV1AppSuppliersDeleteDelete({
+    required int? supplierId,
+    required int? branchId,
+  }) {
+    return _apiV1AppSuppliersDeleteDelete(
+        supplierId: supplierId, branchId: branchId);
+  }
+
+  ///deleterelationsupplierbranch
+  ///@param supplierId supplierId
+  ///@param branchId branchId
   @Delete(path: '/api/v1/app/suppliers/delete')
-  Future<chopper.Response> _apiV1AppSuppliersDeleteDelete(
-      {@Body() required Supplier? supplier});
+  Future<chopper.Response> _apiV1AppSuppliersDeleteDelete({
+    @Query('supplierId') required int? supplierId,
+    @Query('branchId') required int? branchId,
+  });
 
   ///retrieveAll
   Future<chopper.Response<List<Supplier>>> apiV1AppSuppliersFindallGet() {
@@ -684,20 +709,20 @@ abstract class Swagger extends ChopperService {
   @Get(path: '/api/v1/app/suppliers/findall')
   Future<chopper.Response<List<Supplier>>> _apiV1AppSuppliersFindallGet();
 
-  ///retrieveByPhone
-  ///@param phone phone
-  Future<chopper.Response<Supplier>> apiV1AppSuppliersFindbyphoneGet(
-      {required String? phone}) {
+  ///retrieveSupplierByCode
+  ///@param suppliercode suppliercode
+  Future<chopper.Response<Supplier>> apiV1AppSuppliersFindbycodeGet(
+      {required String? suppliercode}) {
     generatedMapping.putIfAbsent(Supplier, () => Supplier.fromJsonFactory);
 
-    return _apiV1AppSuppliersFindbyphoneGet(phone: phone);
+    return _apiV1AppSuppliersFindbycodeGet(suppliercode: suppliercode);
   }
 
-  ///retrieveByPhone
-  ///@param phone phone
-  @Get(path: '/api/v1/app/suppliers/findbyphone')
-  Future<chopper.Response<Supplier>> _apiV1AppSuppliersFindbyphoneGet(
-      {@Query('phone') required String? phone});
+  ///retrieveSupplierByCode
+  ///@param suppliercode suppliercode
+  @Get(path: '/api/v1/app/suppliers/findbycode')
+  Future<chopper.Response<Supplier>> _apiV1AppSuppliersFindbycodeGet(
+      {@Query('suppliercode') required String? suppliercode});
 
   ///save
   ///@param supplier supplier

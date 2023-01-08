@@ -184,8 +184,11 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
               ),
               elevation: 0,
             ),
-            body: Column(
-              children: buildProductPage(dataBundleNotifier, widget.currentSupplier),
+            body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: buildProductPage(dataBundleNotifier, widget.currentSupplier),
+              ),
             ),
           ),
         );
@@ -388,6 +391,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
       }
     }
 
+    list.add(SizedBox(
+      height: 100,
+    ));
     return list;
   }
 

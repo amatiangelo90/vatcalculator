@@ -412,7 +412,7 @@ class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<dynamic>> _apiV1AppProductsUpdatePut(
+  Future<Response<Product>> _apiV1AppProductsUpdatePut(
       {required Product? product}) {
     final String $url = '/api/v1/app/products/update';
     final $body = product;
@@ -422,7 +422,7 @@ class _$Swagger extends Swagger {
       client.baseUrl,
       body: $body,
     );
-    return client.send<dynamic, dynamic>($request);
+    return client.send<Product, Product>($request);
   }
 
   @override
@@ -601,15 +601,39 @@ class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<dynamic>> _apiV1AppSuppliersDeleteDelete(
-      {required Supplier? supplier}) {
+  Future<Response<dynamic>> _apiV1AppSuppliersConnectbranchsupplierGet({
+    required int? branchId,
+    required int? supplierId,
+  }) {
+    final String $url = '/api/v1/app/suppliers/connectbranchsupplier';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'branchId': branchId,
+      'supplierId': supplierId,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiV1AppSuppliersDeleteDelete({
+    required int? supplierId,
+    required int? branchId,
+  }) {
     final String $url = '/api/v1/app/suppliers/delete';
-    final $body = supplier;
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'supplierId': supplierId,
+      'branchId': branchId,
+    };
     final Request $request = Request(
       'DELETE',
       $url,
       client.baseUrl,
-      body: $body,
+      parameters: $params,
     );
     return client.send<dynamic, dynamic>($request);
   }
@@ -626,10 +650,12 @@ class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<Supplier>> _apiV1AppSuppliersFindbyphoneGet(
-      {required String? phone}) {
-    final String $url = '/api/v1/app/suppliers/findbyphone';
-    final Map<String, dynamic> $params = <String, dynamic>{'phone': phone};
+  Future<Response<Supplier>> _apiV1AppSuppliersFindbycodeGet(
+      {required String? suppliercode}) {
+    final String $url = '/api/v1/app/suppliers/findbycode';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'suppliercode': suppliercode
+    };
     final Request $request = Request(
       'GET',
       $url,

@@ -266,7 +266,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   buildListBranches(DataBundleNotifier dataBundleNotifier) {
     List<Widget> branchWidgetList = [];
     branchWidgetList.add(
-        Divider(color: Colors.grey, height: 10,)
+        const Divider(color: Colors.grey, height: 10,)
     );
     for (var currentBranch in dataBundleNotifier.getUserEntity().branchList!) {
       branchWidgetList.add(

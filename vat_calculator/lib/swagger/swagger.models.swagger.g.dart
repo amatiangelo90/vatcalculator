@@ -405,7 +405,6 @@ Supplier _$SupplierFromJson(Map<String, dynamic> json) => Supplier(
       cap: json['cap'] as String?,
       cf: json['cf'] as String?,
       city: json['city'] as String?,
-      code: json['code'] as String?,
       country: json['country'] as String?,
       createdByUserId: json['createdByUserId'] as num?,
       email: json['email'] as String?,
@@ -416,6 +415,7 @@ Supplier _$SupplierFromJson(Map<String, dynamic> json) => Supplier(
               ?.map((e) => Product.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
+      supplierCode: json['supplierCode'] as String?,
       supplierId: json['supplierId'] as num?,
       vatNumber: json['vatNumber'] as String?,
     );
@@ -426,7 +426,6 @@ Map<String, dynamic> _$SupplierToJson(Supplier instance) => <String, dynamic>{
       'cap': instance.cap,
       'cf': instance.cf,
       'city': instance.city,
-      'code': instance.code,
       'country': instance.country,
       'createdByUserId': instance.createdByUserId,
       'email': instance.email,
@@ -434,6 +433,7 @@ Map<String, dynamic> _$SupplierToJson(Supplier instance) => <String, dynamic>{
       'pec': instance.pec,
       'phoneNumber': instance.phoneNumber,
       'productList': instance.productList?.map((e) => e.toJson()).toList(),
+      'supplierCode': instance.supplierCode,
       'supplierId': instance.supplierId,
       'vatNumber': instance.vatNumber,
     };

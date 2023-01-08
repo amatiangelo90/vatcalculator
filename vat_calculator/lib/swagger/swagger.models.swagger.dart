@@ -1135,7 +1135,7 @@ class Workstation {
   @JsonKey(name: 'responsable')
   String? responsable;
   @JsonKey(name: 'workstationId')
-  final num? workstationId;
+  num? workstationId;
   @JsonKey(
     name: 'workstationType',
     toJson: workstationWorkstationTypeToJson,
@@ -1948,7 +1948,6 @@ class Supplier {
     this.cap,
     this.cf,
     this.city,
-    this.code,
     this.country,
     this.createdByUserId,
     this.email,
@@ -1956,6 +1955,7 @@ class Supplier {
     this.pec,
     this.phoneNumber,
     this.productList,
+    this.supplierCode,
     this.supplierId,
     this.vatNumber,
   });
@@ -1973,8 +1973,6 @@ class Supplier {
   final String? cf;
   @JsonKey(name: 'city')
   final String? city;
-  @JsonKey(name: 'code')
-  final String? code;
   @JsonKey(name: 'country')
   final String? country;
   @JsonKey(name: 'createdByUserId')
@@ -1989,6 +1987,8 @@ class Supplier {
   final String? phoneNumber;
   @JsonKey(name: 'productList', defaultValue: <Product>[])
   final List<Product>? productList;
+  @JsonKey(name: 'supplierCode')
+  final String? supplierCode;
   @JsonKey(name: 'supplierId')
   final num? supplierId;
   @JsonKey(name: 'vatNumber')
@@ -2013,8 +2013,6 @@ class Supplier {
                 const DeepCollectionEquality().equals(other.cf, cf)) &&
             (identical(other.city, city) ||
                 const DeepCollectionEquality().equals(other.city, city)) &&
-            (identical(other.code, code) ||
-                const DeepCollectionEquality().equals(other.code, code)) &&
             (identical(other.country, country) ||
                 const DeepCollectionEquality()
                     .equals(other.country, country)) &&
@@ -2033,6 +2031,9 @@ class Supplier {
             (identical(other.productList, productList) ||
                 const DeepCollectionEquality()
                     .equals(other.productList, productList)) &&
+            (identical(other.supplierCode, supplierCode) ||
+                const DeepCollectionEquality()
+                    .equals(other.supplierCode, supplierCode)) &&
             (identical(other.supplierId, supplierId) ||
                 const DeepCollectionEquality()
                     .equals(other.supplierId, supplierId)) &&
@@ -2051,7 +2052,6 @@ class Supplier {
       const DeepCollectionEquality().hash(cap) ^
       const DeepCollectionEquality().hash(cf) ^
       const DeepCollectionEquality().hash(city) ^
-      const DeepCollectionEquality().hash(code) ^
       const DeepCollectionEquality().hash(country) ^
       const DeepCollectionEquality().hash(createdByUserId) ^
       const DeepCollectionEquality().hash(email) ^
@@ -2059,6 +2059,7 @@ class Supplier {
       const DeepCollectionEquality().hash(pec) ^
       const DeepCollectionEquality().hash(phoneNumber) ^
       const DeepCollectionEquality().hash(productList) ^
+      const DeepCollectionEquality().hash(supplierCode) ^
       const DeepCollectionEquality().hash(supplierId) ^
       const DeepCollectionEquality().hash(vatNumber) ^
       runtimeType.hashCode;
@@ -2071,7 +2072,6 @@ extension $SupplierExtension on Supplier {
       String? cap,
       String? cf,
       String? city,
-      String? code,
       String? country,
       num? createdByUserId,
       String? email,
@@ -2079,6 +2079,7 @@ extension $SupplierExtension on Supplier {
       String? pec,
       String? phoneNumber,
       List<Product>? productList,
+      String? supplierCode,
       num? supplierId,
       String? vatNumber}) {
     return Supplier(
@@ -2087,7 +2088,6 @@ extension $SupplierExtension on Supplier {
         cap: cap ?? this.cap,
         cf: cf ?? this.cf,
         city: city ?? this.city,
-        code: code ?? this.code,
         country: country ?? this.country,
         createdByUserId: createdByUserId ?? this.createdByUserId,
         email: email ?? this.email,
@@ -2095,6 +2095,7 @@ extension $SupplierExtension on Supplier {
         pec: pec ?? this.pec,
         phoneNumber: phoneNumber ?? this.phoneNumber,
         productList: productList ?? this.productList,
+        supplierCode: supplierCode ?? this.supplierCode,
         supplierId: supplierId ?? this.supplierId,
         vatNumber: vatNumber ?? this.vatNumber);
   }
@@ -2105,7 +2106,6 @@ extension $SupplierExtension on Supplier {
       Wrapped<String?>? cap,
       Wrapped<String?>? cf,
       Wrapped<String?>? city,
-      Wrapped<String?>? code,
       Wrapped<String?>? country,
       Wrapped<num?>? createdByUserId,
       Wrapped<String?>? email,
@@ -2113,6 +2113,7 @@ extension $SupplierExtension on Supplier {
       Wrapped<String?>? pec,
       Wrapped<String?>? phoneNumber,
       Wrapped<List<Product>?>? productList,
+      Wrapped<String?>? supplierCode,
       Wrapped<num?>? supplierId,
       Wrapped<String?>? vatNumber}) {
     return Supplier(
@@ -2121,7 +2122,6 @@ extension $SupplierExtension on Supplier {
         cap: (cap != null ? cap.value : this.cap),
         cf: (cf != null ? cf.value : this.cf),
         city: (city != null ? city.value : this.city),
-        code: (code != null ? code.value : this.code),
         country: (country != null ? country.value : this.country),
         createdByUserId: (createdByUserId != null
             ? createdByUserId.value
@@ -2133,6 +2133,8 @@ extension $SupplierExtension on Supplier {
             (phoneNumber != null ? phoneNumber.value : this.phoneNumber),
         productList:
             (productList != null ? productList.value : this.productList),
+        supplierCode:
+            (supplierCode != null ? supplierCode.value : this.supplierCode),
         supplierId: (supplierId != null ? supplierId.value : this.supplierId),
         vatNumber: (vatNumber != null ? vatNumber.value : this.vatNumber));
   }

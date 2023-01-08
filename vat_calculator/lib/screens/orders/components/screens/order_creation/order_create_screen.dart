@@ -197,7 +197,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
                         color: color,
                         width: getProportionateScreenWidth(20),
                       ),
-                      Text('  #' + supplier.code!,
+                      Text('  #' + supplier.supplierCode!,
                           style: TextStyle(
                               color: color,
                               fontSize: getProportionateScreenWidth(10),

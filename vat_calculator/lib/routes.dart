@@ -13,11 +13,11 @@ import 'package:vat_calculator/screens/home/main_page.dart';
 import 'package:vat_calculator/screens/orders/components/screens/order_creation/order_create_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
-import 'package:vat_calculator/screens/splash/splash_screen.dart';
 import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/join_supplier.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
+import 'package:vat_calculator/screens/suppliers/components/edit_supplier_screen.dart';
 import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 
 final Map<String, WidgetBuilder> routes = {
@@ -31,8 +31,8 @@ final Map<String, WidgetBuilder> routes = {
   SupplierChoiceCreationEnjoy.routeName: (context) => SupplierChoiceCreationEnjoy(),
   JoinSupplierScreen.routeName: (context) => JoinSupplierScreen(),
   RecapOrderScreen.routeName: (context) => RecapOrderScreen(),
-  SplashScreen.routeName: (context) => SplashScreen(),
   EventHomeScreen.routeName: (context) => EventHomeScreen(),
+  EditSuppliersScreen.routeName: (context) => EditSuppliersScreen(),
   EventCreateScreen.routeName: (context) => EventCreateScreen(),
   AmountHundredScreen.routeName: (context) => AmountHundredScreen(),
   UpdateBranchScreen.routeName: (context) => UpdateBranchScreen(),

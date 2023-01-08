@@ -40,95 +40,94 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
             bottomSheet: Padding(
-              padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 50,
-                      child: CupertinoButton(
-                          color: kCustomGreen,
-                          child: const Text('Salva Fornitore'),
-                          onPressed: () async {
-                            if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
-                              print('Il nome del fornitore è obbligatorio');
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                  duration: Duration(milliseconds: 800),
-                                  content: Text('Il nome del fornitore è obbligatorio')));
-                            }else if(controllerEmail.text == null || controllerEmail.text == ''){
-                              print('L\'indirizzo email è obbligatorio');
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                  duration: Duration(milliseconds: 800),
-                                  content: Text('L\'indirizzo email è obbligatorio')));
-                            }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
-                              print('Cellulare obbligatorio');
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  backgroundColor: Colors.redAccent.withOpacity(0.8),
-                                  duration: Duration(milliseconds: 800),
-                                  content: Text('Il numero di cellulare è obbligatorio')));
-                            }else{
-                              KeyboardUtil.hideKeyboard(context);
-                              try{
-                                Response apiV1AppSuppliersSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersSavePost(
-                                    supplier: Supplier(
-                                        supplierId: 0,
-                                        cap: controllerCap.text,
-                                        city: controllerCity.text,
-                                        address: controllerAddress.text,
-                                        email: controllerEmail.text,
-                                        name: controllerSupplierName.text,
-                                        pec: '',
-                                        cf: '',
-                                        createdByUserId: dataBundleNotifier.getUserEntity().userId,
-                                        country: 'ITALIA',
-                                        vatNumber: controllerPIva.text,
-                                        phoneNumber: controllerMobileNo.text,
-                                        branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt()
-                                    )
-                                );
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                width: getProportionateScreenWidth(400),
+                height: getProportionateScreenHeight(55),
+                child: OutlinedButton(
+                  onPressed: () async {
+                    if(controllerSupplierName.text == null || controllerSupplierName.text == ''){
+                      print('Il nome del fornitore è obbligatorio');
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Il nome del fornitore è obbligatorio')));
+                    }else if(controllerEmail.text == null || controllerEmail.text == ''){
+                      print('L\'indirizzo email è obbligatorio');
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('L\'indirizzo email è obbligatorio')));
+                    }else if(controllerMobileNo.text == null || controllerMobileNo.text == ''){
+                      print('Cellulare obbligatorio');
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(
+                          backgroundColor: Colors.redAccent.withOpacity(0.8),
+                          duration: Duration(milliseconds: 800),
+                          content: Text('Il numero di cellulare è obbligatorio')));
+                    }else{
+                      KeyboardUtil.hideKeyboard(context);
+                      try{
+                        Response apiV1AppSuppliersSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersSavePost(
+                            supplier: Supplier(
+                                supplierId: 0,
+                                cap: controllerCap.text,
+                                city: controllerCity.text,
+                                address: controllerAddress.text,
+                                email: controllerEmail.text,
+                                name: controllerSupplierName.text,
+                                pec: '',
+                                cf: '',
+                                createdByUserId: dataBundleNotifier.getUserEntity().userId,
+                                country: 'ITALIA',
+                                vatNumber: controllerPIva.text,
+                                phoneNumber: controllerMobileNo.text,
+                                branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt()
+                            )
+                        );
 
-                                if(apiV1AppSuppliersSavePost.isSuccessful){
-                                  final snackBar = SnackBar(
-                                      duration: const Duration(seconds: 2),
-                                      backgroundColor: Colors.green,
-                                      content: Text('Fornitore ' + controllerSupplierName.text +' creato',
-                                      )
-                                  );
+                        if(apiV1AppSuppliersSavePost.isSuccessful){
+                          final snackBar = SnackBar(
+                              duration: const Duration(seconds: 2),
+                              backgroundColor: Colors.green,
+                              content: Text('Fornitore ' + controllerSupplierName.text +' creato',
+                              )
+                          );
 
-                                  dataBundleNotifier.refreshCurrentBranchData();
+                          dataBundleNotifier.getCurrentBranch().suppliers!.add(apiV1AppSuppliersSavePost.body);
 
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                  Navigator.pushNamed(context, SuppliersScreen.routeName);
-                                  clearControllers();
-                                }else{
-                                  final snackBar = SnackBar(
-                                      duration: const Duration(seconds: 4),
-                                      backgroundColor: Colors.redAccent,
-                                      content: Text('Errore durante la creazione del fornitore. Riprovare fra 2 minuti o contattare l\'amministratore del sistema. Err: ' + apiV1AppSuppliersSavePost.error.toString(),
-                                      )
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                }
-                              }catch(e){
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(SnackBar(
-                                    duration: const Duration(milliseconds: 5000),
-                                    backgroundColor: Colors.red,
-                                    content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
-                              }
-                            }
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          Navigator.pushNamed(context, SuppliersScreen.routeName);
+                          clearControllers();
+                        }else{
+                          final snackBar = SnackBar(
+                              duration: const Duration(seconds: 4),
+                              backgroundColor: Colors.redAccent,
+                              content: Text('Errore durante la creazione del fornitore. Riprovare fra 2 minuti o contattare l\'amministratore del sistema. Err: ' + apiV1AppSuppliersSavePost.error.toString(),
+                              )
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      }catch(e){
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                            duration: const Duration(milliseconds: 5000),
+                            backgroundColor: Colors.red,
+                            content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                      }
+                    }
 
-                          }),
-                    ),
+                  },
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.resolveWith((states) => 5),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                   ),
-                ],
+                  child: Text('Crea Fornitore', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
+                ),
               ),
             ),
             appBar: AppBar(

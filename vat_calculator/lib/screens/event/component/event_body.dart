@@ -8,6 +8,8 @@ import '../../../constants.dart';
 import 'event_manager_screen.dart';
 
 class EventsBodyWidget extends StatelessWidget {
+  const EventsBodyWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
@@ -78,8 +80,8 @@ class EventsBodyWidget extends StatelessWidget {
       appointments.add(
           Appointment(
           id: event.eventId!,
-          startTime: dateFormat.parse(event.dateEvent!),
-          endTime: DateTime.now().add(Duration(hours: 5)),
+          startTime: dateFormat.parse(event.dateEvent!).add(Duration(hours: 21)),
+          endTime: dateFormat.parse(event.dateEvent!).add(Duration(hours: 23, minutes: 59)),
           subject: event.name!,
           color: Color(int.parse(event.cardColor!)),
           location: event.location!,

@@ -18,9 +18,8 @@ import '../suppliers_screen.dart';
 import 'edit_product.dart';
 
 class EditSuppliersScreen extends StatefulWidget {
-  const EditSuppliersScreen({Key? key, required this.currentSupplier}) : super(key: key);
+  const EditSuppliersScreen({Key? key}) : super(key: key);
 
-  final Supplier currentSupplier;
   static String routeName = 'editsupplier';
 
   @override
@@ -42,18 +41,19 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
   @override
   Widget build(BuildContext context) {
 
-    String whatsappUrl = 'https://api.whatsapp.com/send/?phone=${getRefactoredNumber(widget.currentSupplier.phoneNumber!)}';
+
 
     final kPages = <Widget>[
       Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
-          controllerSupplierName = TextEditingController(text: widget.currentSupplier.name!);
-          controllerAddress = TextEditingController(text: widget.currentSupplier.address!);
-          controllerMobileNo = TextEditingController(text: widget.currentSupplier.phoneNumber!);
-          controllerCity = TextEditingController(text: widget.currentSupplier.city!);
-          controllerCap = TextEditingController(text: widget.currentSupplier.cap!);
-          controllerEmail = TextEditingController(text: widget.currentSupplier.email!);
-          controllerPIva = TextEditingController(text: widget.currentSupplier.vatNumber!);
+          controllerSupplierName = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().name!);
+          controllerAddress = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().address!);
+          controllerMobileNo = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().phoneNumber!);
+          controllerCity = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().city!);
+          controllerCap = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().cap!);
+          controllerEmail = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().email!);
+          controllerPIva = TextEditingController(text: dataBundleNotifier.getCurrentSupplier().vatNumber!);
+
           return Scaffold(
             bottomSheet: dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ? Padding(
               padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
@@ -62,13 +62,30 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 press: () {
 
                   Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                      AddProductScreen(supplier: widget.currentSupplier),),);
+                      AddProductScreen(supplier: dataBundleNotifier.getCurrentSupplier()),),);
                 },
                 color: kCustomGreen, textColor: Colors.white,
               ),
             ) : const SizedBox(height: 0,),
             body: Column(
-              children:  buildProductPage(widget.currentSupplier.productList!, dataBundleNotifier),
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: CupertinoTextField(
+                    textInputAction: TextInputAction.next,
+                    restorationId: 'Ricerca prodotto',
+                    keyboardType: TextInputType.text,
+                    clearButtonMode: OverlayVisibilityMode.editing,
+                    placeholder: 'Ricerca prodotto',
+                    onChanged: (currentText) {
+                      setState((){
+                        filter = currentText;
+                      });
+                    },
+                  ),
+                ),
+                buildProductPage(dataBundleNotifier.getCurrentSupplier().productList!, dataBundleNotifier),
+              ],
             ),
           );
         },
@@ -85,7 +102,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChoiceOrderProductScreen(
-                        currentSupplier: widget.currentSupplier,
+                        currentSupplier: dataBundleNotifier.getCurrentSupplier(),
                       ),
                     ),
                   );
@@ -98,48 +115,9 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
         },
       ),
       Consumer<DataBundleNotifier>(
-        builder: (context, dataBundleNotifier, _){
-          return Container(
-            color: Color(0XD00A2227),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 50.0,
-
-                      decoration: BoxDecoration(
-                        color: kLavender,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: TextButton(
-                        onPressed: () {
-
-                        },
-                        child: const Center(
-                          child: Text(
-                            'MOSTRA STORICO',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 16),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-      Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
           return Scaffold(
-            bottomSheet: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? Row(
+            bottomSheet: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
@@ -206,7 +184,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       ),
                       CupertinoTextField(
                         textInputAction: TextInputAction.next,
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         restorationId: 'Nome Attività',
                         keyboardType: TextInputType.emailAddress,
                         controller: controllerSupplierName,
@@ -221,7 +199,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       CupertinoTextField(
                         textInputAction: TextInputAction.next,
                         restorationId: 'Email',
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         keyboardType: TextInputType.emailAddress,
                         controller: controllerEmail,
                         clearButtonMode: OverlayVisibilityMode.editing,
@@ -233,7 +211,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Cellulare',
                         keyboardType: TextInputType.number,
@@ -247,7 +225,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Partita Iva',
                         keyboardType: TextInputType.number,
@@ -261,7 +239,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Indirizzo',
                         keyboardType: TextInputType.emailAddress,
@@ -275,7 +253,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Città',
                         keyboardType: TextInputType.emailAddress,
@@ -289,7 +267,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         ],
                       ),
                       CupertinoTextField(
-                        enabled: dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ? true : false,
+                        enabled: dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ? true : false,
                         textInputAction: TextInputAction.next,
                         restorationId: 'Cap',
                         keyboardType: TextInputType.number,
@@ -297,7 +275,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         clearButtonMode: OverlayVisibilityMode.editing,
                         placeholder: 'Cap',
                       ),
-                      dataBundleNotifier.getUserEntity().userId == widget.currentSupplier.createdByUserId ?
+                      dataBundleNotifier.getUserEntity().userId == dataBundleNotifier.getCurrentSupplier().createdByUserId ?
                       const Text('*campo obbligatorio') : const SizedBox(width: 0,),
                       SizedBox(height: getProportionateScreenHeight(50),),
                     ],
@@ -311,10 +289,9 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
     ];
 
     final kTab = <Tab>[
-      const Tab(child: Text('Catalogo'),),
-      const Tab(child: Text('Ordini')),
-      const Tab(child: Text('Fatture')),
-      const Tab(child: Text('Dettagli')),
+      const Tab(child: Text('Catalogo', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),),
+      const Tab(child: Text('Ordini', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),)),
+      const Tab(child: Text('Dettagli', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),)),
     ];
 
     return Consumer<DataBundleNotifier>(
@@ -330,25 +307,25 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         Navigator.pop(context),
                       }
                   ),
-                  iconTheme: const IconThemeData(color: Colors.white),
-                  backgroundColor: kCustomGrey,
+                  iconTheme: const IconThemeData(color: kCustomGrey),
+                  backgroundColor: Colors.white,
                   title: Text(
-                    widget.currentSupplier.name!,
+                    dataBundleNotifier.getCurrentSupplier().name!,
                     style: TextStyle(
                       fontSize: getProportionateScreenWidth(17),
-                      color: Colors.white,
+                      color: kCustomGrey,
                     ),
                   ),
-                  elevation: 2,
+                  elevation: 0,
                   actions: [
                     IconButton(
                         icon: SvgPicture.asset(
                           'assets/icons/Phone.svg',
-                          color: kCustomWhite,
+                          color: kCustomGrey,
                           height: getProportionateScreenHeight(23),
                         ),
                         onPressed: () => {
-                          launch('tel://${getRefactoredNumber(widget.currentSupplier.phoneNumber!)}')
+                          launch('tel://${getRefactoredNumber(dataBundleNotifier.getCurrentSupplier().phoneNumber!)}')
                         }
                     ),
                     IconButton(
@@ -357,14 +334,15 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           height: getProportionateScreenHeight(25),
                         ),
                         onPressed: () {
+                          String whatsappUrl = 'https://api.whatsapp.com/send/?phone=${getRefactoredNumber(dataBundleNotifier.getCurrentSupplier().phoneNumber!)}';
                           print(whatsappUrl);
                           launch(whatsappUrl);
                         }
                     ),
-                    dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? SizedBox(height: 0,) : IconButton(
+                    dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const SizedBox(height: 0,) : IconButton(
                         icon: SvgPicture.asset(
                           'assets/icons/remove-icon.svg',
-                          color: Colors.red,
+                          color: kCustomBordeaux,
                           height: getProportionateScreenHeight(26),
                         ),
                         onPressed: () async {
@@ -378,20 +356,28 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           Widget continueButton = TextButton(
                             child: const Text("Elimina", style: TextStyle(color: kPinaColor)),
                             onPressed:  () async {
-                              print('asdasdasdasd');
 
-                              Response supplierDeleted = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersDeleteDelete(
-                                  supplier: Supplier(
-                                      branchId: widget.currentSupplier.branchId!.toInt(),
-                                      supplierId: widget.currentSupplier.supplierId!.toInt()
-                                  )
-                              );
 
-                              if(supplierDeleted.isSuccessful){
-                                dataBundleNotifier.refreshCurrentBranchData();
+                              print('Delete supplier : ' + dataBundleNotifier.getCurrentSupplier().toString());
+
+                              Response deleteSupplier = await dataBundleNotifier.getSwaggerClient()
+                                  .apiV1AppSuppliersDeleteDelete(supplierId: dataBundleNotifier.getCurrentSupplier().supplierId!.toInt(),
+                                  branchId: dataBundleNotifier.getCurrentSupplier().branchId!.toInt());
+
+                              if(deleteSupplier.isSuccessful){
+                                dataBundleNotifier.removeSupplierFromCurrentBranch(dataBundleNotifier.getCurrentSupplier().supplierId!);
                                 Navigator.pushNamed(context, SuppliersScreen.routeName);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                    duration: Duration(seconds: 1),
+                                    backgroundColor: kCustomGreen,
+                                    content: Text('Fornitore eliminato con successo')));
                               }else{
-
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: kCustomBordeaux,
+                                    content: Text('Ho riscontrato un problema durante l\'eliminazione del fornitore. Riprova fra 2 minuti o contatta l\'amministratore del sistema')));
                               }
 
                             },
@@ -416,7 +402,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                         Radius.circular(10.0))),
                                 content: Builder(
                                   builder: (context) {
-                                    var height = MediaQuery.of(context).size.height;
                                     var width = MediaQuery.of(context).size.width;
                                     return SizedBox(
                                       height: getProportionateScreenHeight(180),
@@ -455,7 +440,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                                             Padding(
                                               padding: const EdgeInsets.all(8.0),
                                               child: Center(
-                                                child: Text('Eliminare il fornitore ' + widget.currentSupplier.name! + '?', textAlign: TextAlign.center,),
+                                                child: Text('Eliminare il fornitore ' + dataBundleNotifier.getCurrentSupplier().name! + '?', textAlign: TextAlign.center,),
                                               ),
                                             ),
                                           ],
@@ -474,7 +459,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                   ],
                   bottom: TabBar(
                     tabs: kTab,
-                    indicator: UnderlineTabIndicator(borderSide: BorderSide(width: 2.0, color: Colors.white),
+                    indicator: const UnderlineTabIndicator(borderSide: BorderSide(width: 2.0, color: kCustomGrey),
                     ),
                   ),
                 ),
@@ -496,81 +481,140 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
     });
   }
 
-  buildProductPage(List<Product> products, DataBundleNotifier dataBundleNotifier) {
-    List<Widget> list = [];
+  buildProductPage(List<Product> products,
+      DataBundleNotifier dataBundleNotifier) {
 
-    if(products!.isEmpty){
-      list.add(Column(
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height*0.3,),
-          const Center(child: Text('Nessun prodotto registrato')),
-        ],
-      ),);
-      return list;
-    }
 
-    list.add(
-      Padding(
-        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-        child: CupertinoTextField(
-          textInputAction: TextInputAction.next,
-          restorationId: 'Ricerca prodotto',
-          keyboardType: TextInputType.text,
-          clearButtonMode: OverlayVisibilityMode.editing,
-          placeholder: 'Ricerca prodotto',
-          onChanged: (currentText) {
-            setState((){
-              filter = currentText;
-            });
-          },
-        ),
-      ),
-    );
-    for (var currentProduct in products) {
-      if(filter == '' || currentProduct.name!.contains(filter)){
-        list.add(GestureDetector(
-          onTap: (){
-            if(dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => EditProductScreen(
-                  product: currentProduct
-                  ),
-                ),
+
+    return Container(
+      height: products!.where((element) => element.name!.contains(filter))!.length! * getProportionateScreenHeight(150),
+      child: ListView.builder(
+        itemCount: products!.where((element) => element.name!.contains(filter))!.length,
+        itemBuilder: (context, index) {
+          Product prod = products!.where((element) => element.name!.contains(filter))!.toList()[index];
+          return Dismissible(
+            background: Container(
+              color: kCustomBordeaux,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(right: 30),
+                    child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                  )
+                ],
+              ),
+            ),
+            key: Key(prod.productId!.toString()),
+            direction: DismissDirection.endToStart,
+            confirmDismiss: (DismissDirection direction) async {
+              return await showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text("Conferma operazione"),
+                    content: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("Sei sicuro di voler eliminare il prodotto"
+                          " ${prod.name}?"),
+                    ),
+                    actions: <Widget>[
+                      OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text("Elimina", style: TextStyle(color: kRed),)
+                      ),
+                      OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: const Text("Indietro"),
+                      ),
+                    ],
+                  );
+                },
               );
-            }
-          },
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 2, 10, 1),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            },
+            resizeDuration: const Duration(seconds: 1),
+            onDismissed: (direction) async {
+              print('Delete product with id: ' + prod.productId!.toString());
+              try {
+                Response responseDeleteProd = await dataBundleNotifier.getSwaggerClient().apiV1AppProductsDeleteDelete(product: prod);
+
+                if(responseDeleteProd.isSuccessful){
+                  dataBundleNotifier.removeProductFromCurrentSupplier(prod.productId!.toInt());
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          duration:
+                          const Duration(milliseconds: 1000),
+                          backgroundColor: kCustomGreen,
+                          content: Text(
+                            'Prodotto ${prod.name} eliminato!',
+                            style: const TextStyle(color: Colors.white),
+                          )));
+
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          duration:
+                          const Duration(milliseconds: 1000),
+                          backgroundColor: kCustomGreen,
+                          content: Text(
+                            'Ho riscontrato problemi durante l\'eliminazione del prodotto ${prod.name}. Err: ' + responseDeleteProd.error.toString(),
+                            style: const TextStyle(color: Colors.white),
+                          )));
+
+                }
+
+
+
+              } on Exception catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                        duration:
+                        const Duration(milliseconds: 3000),
+                        backgroundColor: kCustomBordeaux,
+                        content: Text(
+                          'Ho riscontrato problemi durante l\'operazione. Err: ' + e.toString(),
+                          style: TextStyle(color: Colors.white),
+                        )));
+              }
+            },
+            child: GestureDetector(
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) =>
+                    EditProductScreen(product: prod),),);
+              },
+              child: ListTile(
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                        width: getProportionateScreenWidth(200),
-                        child: Text(currentProduct.name!, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800),)),
-                    Text(productUnitMeasureToJson(currentProduct.unitMeasure).toString(), style: TextStyle(color: Colors.grey, fontSize: getProportionateScreenWidth(10), fontWeight: FontWeight.w800)),
+                    Padding(
+                      padding: const EdgeInsets.all(1.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                              width: getProportionateScreenWidth(170),
+                              child: Text(prod.name!, style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
+                          Text(productUnitMeasureToJson(prod.unitMeasure!).toString(), style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(16))),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(prod.price!.toStringAsFixed(2).replaceAll('.00', '') + ' €', style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(18))),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('€ ***') : Text('€ ' + currentProduct.price.toString(), style: TextStyle(color: Colors.black, fontSize: getProportionateScreenWidth(15), fontWeight: FontWeight.w800)),
-              ],
+              ),
             ),
-          ),
-        ));
-      }
-    }
-
-    list.add(Column(
-      children: const [
-        Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Text(' --- '),
-        ),
-        SizedBox(height: 80,),
-
-      ],
-    ));
-    return list;
+          );
+        },
+      ),
+    );
   }
 
   getRefactoredNumber(String tel) {
