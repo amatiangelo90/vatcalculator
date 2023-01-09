@@ -72,15 +72,15 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
         child: Consumer<DataBundleNotifier>(
             builder: (context, dataBundleNotifier, child) {
               return Scaffold(
-                backgroundColor: kCustomGrey,
+                backgroundColor: Colors.white,
                 appBar: AppBar(
                   leading: IconButton(
-                      icon: const Icon(Icons.arrow_back_ios, color: kCustomWhite),
+                      icon: const Icon(Icons.arrow_back_ios, color: kCustomGrey),
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                  iconTheme: const IconThemeData(color: kCustomWhite),
-                  backgroundColor: kCustomGrey,
+                  iconTheme: const IconThemeData(color: kCustomGrey),
+                  backgroundColor: Colors.white,
                   centerTitle: true,
                   title: Column(
                     children: [
@@ -91,14 +91,14 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             style: TextStyle(
                               fontWeight: FontWeight.w800,
                               fontSize: getProportionateScreenWidth(19),
-                              color: kCustomWhite,
+                              color: kCustomGrey,
                             ),
                           ),
                           Text(
                             'Pagina creazione eventi',
                             style: TextStyle(
                               fontSize: getProportionateScreenWidth(11),
-                              color: kCustomWhite,
+                              color: kCustomGrey,
                             ),
                           ),
                         ],
@@ -108,6 +108,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                   elevation: 0,
                 ),
                 body: Container(
+                  color: Colors.white,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Column(
@@ -116,7 +117,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         Row(
                           children: [
                             const SizedBox(width: 11,),
-                            Text('  Nome Evento', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(16))),
+                            Text('  Nome Evento', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                           ],
                         ),
                         Padding(
@@ -129,13 +130,13 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             clearButtonMode: OverlayVisibilityMode.editing,
                             autocorrect: false,
                             placeholder: 'Nome Evento',
-                            style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(20)),
+                            style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(16)),
                           ),
                         ),
                         Row(
                           children: [
                             const SizedBox(width: 11,),
-                            Text('  Location', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(16))),
+                            Text('  Location', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                           ],
                         ),
                         Padding(
@@ -148,7 +149,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                             clearButtonMode: OverlayVisibilityMode.editing,
                             autocorrect: false,
                             placeholder: 'Location Evento',
-                            style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(20)),
+                            style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w600, fontSize: getProportionateScreenWidth(16)),
                           ),
                         ),
                         Padding(
@@ -188,7 +189,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                         Row(
                           children: [
                             const SizedBox(width: 11,),
-                            Text('  Seleziona il magazzino di riferimento', style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                            Text('  Seleziona il magazzino di riferimento', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                           ],
                         ),
                         Padding(
@@ -215,7 +216,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(15.0),
-                              child: Text('Configura Workstations', textAlign: TextAlign.center, style: TextStyle(color: kCustomWhite, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(15))),
+                              child: Text('Configura Workstations', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.w800, fontSize: getProportionateScreenWidth(15))),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
@@ -223,7 +224,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     image: DecorationImage(
-                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                      colorFilter: ColorFilter.mode(Colors.black, BlendMode.dstATop),
                                       image: AssetImage("assets/png/bar.png"),
                                       fit: BoxFit.cover,
                                     ),
@@ -236,7 +237,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                     },
                                     style: ButtonStyle(
                                       elevation: MaterialStateProperty.resolveWith((states) => 5),
-                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(0.6)),
                                       side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomGreen),),
                                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                                     ),
@@ -311,7 +312,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(20),
                                     image: DecorationImage(
-                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                      colorFilter: ColorFilter.mode(Colors.black, BlendMode.dstATop),
                                       image: AssetImage("assets/png/champagnerie.png"),
                                       fit: BoxFit.cover,
                                     ),
@@ -324,8 +325,8 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                                     },
                                     style: ButtonStyle(
                                       elevation: MaterialStateProperty.resolveWith((states) => 5),
-                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
-                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomPinkAccent),),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(0.6)),
+                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomBordeaux),),
                                       shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                                     ),
                                     child: Column(
@@ -404,7 +405,7 @@ class _EventCreateScreenState extends State<EventCreateScreen> {
                   ),
                 ),
                 bottomSheet: Container(
-                  color: kCustomGrey,
+                  color: Colors.white,
                   child: Padding(
                     padding: EdgeInsets.all(Platform.isAndroid ? 8.0 : 18.0),
                     child: DefaultButton(

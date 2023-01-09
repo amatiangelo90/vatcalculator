@@ -931,6 +931,23 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _apiV1AppWorkstationRemoveworkstationDelete(
       {@Query('workstationId') required int? workstationId});
 
+  ///set0ToProductWorkstationLoadValue
+  ///@param workstationProductId workstationProductId
+  Future<chopper.Response> apiV1AppWorkstationResetproductstockvaluePut(
+      {required int? workstationProductId}) {
+    return _apiV1AppWorkstationResetproductstockvaluePut(
+        workstationProductId: workstationProductId);
+  }
+
+  ///set0ToProductWorkstationLoadValue
+  ///@param workstationProductId workstationProductId
+  @Put(
+    path: '/api/v1/app/workstation/resetproductstockvalue',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppWorkstationResetproductstockvaluePut(
+      {@Query('workstationProductId') required int? workstationProductId});
+
   ///retrieveAllProductByWorkstationId
   ///@param workstationId workstationId
   Future<chopper.Response<List<RWorkstationProduct>>>

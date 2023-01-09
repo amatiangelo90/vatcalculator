@@ -55,6 +55,7 @@ class AddElementIntoWorkstationWidget extends StatelessWidget {
 
                       print('Save product into workstation. '
                           'Product id : ${product.productId!.toInt()}, storage id ${dataBundleNotifier.getCurrentEvent().storageId!.toInt()}, workstation id : ${dataBundleNotifier.getCurrentWorkstation().workstationId!.toInt().toString()}' );
+
                       Response apiV1AppStorageInsertproductGet = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationInsertproductGet(
                         workstationId: dataBundleNotifier.getCurrentWorkstation().workstationId!.toInt(),
                         storageId: dataBundleNotifier.getCurrentEvent().storageId!.toInt(),

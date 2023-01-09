@@ -33,11 +33,11 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
       child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
             return Scaffold(
-              backgroundColor: kCustomWhite,
+              backgroundColor: Colors.white,
               floatingActionButton: dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ?
               FloatingActionButton(
                   heroTag: "bt123541b12b3123",
-                  backgroundColor: kCustomPinkAccent,
+                  backgroundColor: kCustomGreen,
                   child: Icon(Icons.add, color: Colors.white, size: getProportionateScreenWidth(30)),
                   onPressed: (){
                 Navigator.pushNamed(context, EventCreateScreen.routeName);
@@ -49,7 +49,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                       Navigator.pushNamed(context, HomeScreenMain.routeName);
                     }),
                 iconTheme: const IconThemeData(color: kCustomGrey),
-                backgroundColor: kCustomWhite,
+                backgroundColor: Colors.white,
                 centerTitle: true,
                 title: Column(
                   children: [

@@ -299,7 +299,6 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   Storage getStorageById(num storageId) {
-    print('Retrieve storage by id ' + storageId.toString());
     return getCurrentBranch().storages!.where((element) => element.storageId == storageId).first;
   }
 

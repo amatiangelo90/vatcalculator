@@ -214,6 +214,7 @@ class RWorkstationProduct {
     this.amountLoad,
     this.amountUnload,
     this.consumed,
+    this.price,
     this.productId,
     this.productName,
     this.stockFromStorage,
@@ -233,6 +234,8 @@ class RWorkstationProduct {
   double? amountUnload;
   @JsonKey(name: 'consumed')
   double? consumed;
+  @JsonKey(name: 'price')
+  final double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -265,6 +268,8 @@ class RWorkstationProduct {
             (identical(other.consumed, consumed) ||
                 const DeepCollectionEquality()
                     .equals(other.consumed, consumed)) &&
+            (identical(other.price, price) ||
+                const DeepCollectionEquality().equals(other.price, price)) &&
             (identical(other.productId, productId) ||
                 const DeepCollectionEquality()
                     .equals(other.productId, productId)) &&
@@ -294,6 +299,7 @@ class RWorkstationProduct {
       const DeepCollectionEquality().hash(amountLoad) ^
       const DeepCollectionEquality().hash(amountUnload) ^
       const DeepCollectionEquality().hash(consumed) ^
+      const DeepCollectionEquality().hash(price) ^
       const DeepCollectionEquality().hash(productId) ^
       const DeepCollectionEquality().hash(productName) ^
       const DeepCollectionEquality().hash(stockFromStorage) ^
@@ -309,6 +315,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       double? amountLoad,
       double? amountUnload,
       double? consumed,
+      double? price,
       num? productId,
       String? productName,
       double? stockFromStorage,
@@ -320,6 +327,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
         amountLoad: amountLoad ?? this.amountLoad,
         amountUnload: amountUnload ?? this.amountUnload,
         consumed: consumed ?? this.consumed,
+        price: price ?? this.price,
         productId: productId ?? this.productId,
         productName: productName ?? this.productName,
         stockFromStorage: stockFromStorage ?? this.stockFromStorage,
@@ -334,6 +342,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       Wrapped<double?>? amountLoad,
       Wrapped<double?>? amountUnload,
       Wrapped<double?>? consumed,
+      Wrapped<double?>? price,
       Wrapped<num?>? productId,
       Wrapped<String?>? productName,
       Wrapped<double?>? stockFromStorage,
@@ -347,6 +356,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
         amountUnload:
             (amountUnload != null ? amountUnload.value : this.amountUnload),
         consumed: (consumed != null ? consumed.value : this.consumed),
+        price: (price != null ? price.value : this.price),
         productId: (productId != null ? productId.value : this.productId),
         productName:
             (productName != null ? productName.value : this.productName),
@@ -432,6 +442,7 @@ class RStorageProduct {
     this.amountHundred,
     this.available,
     this.orderAmount,
+    this.price,
     this.productId,
     this.productName,
     this.stock,
@@ -449,6 +460,8 @@ class RStorageProduct {
   final bool? available;
   @JsonKey(name: 'orderAmount')
   double? orderAmount;
+  @JsonKey(name: 'price')
+  final double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -478,6 +491,8 @@ class RStorageProduct {
             (identical(other.orderAmount, orderAmount) ||
                 const DeepCollectionEquality()
                     .equals(other.orderAmount, orderAmount)) &&
+            (identical(other.price, price) ||
+                const DeepCollectionEquality().equals(other.price, price)) &&
             (identical(other.productId, productId) ||
                 const DeepCollectionEquality()
                     .equals(other.productId, productId)) &&
@@ -505,6 +520,7 @@ class RStorageProduct {
       const DeepCollectionEquality().hash(amountHundred) ^
       const DeepCollectionEquality().hash(available) ^
       const DeepCollectionEquality().hash(orderAmount) ^
+      const DeepCollectionEquality().hash(price) ^
       const DeepCollectionEquality().hash(productId) ^
       const DeepCollectionEquality().hash(productName) ^
       const DeepCollectionEquality().hash(stock) ^
@@ -519,6 +535,7 @@ extension $RStorageProductExtension on RStorageProduct {
       {double? amountHundred,
       bool? available,
       double? orderAmount,
+      double? price,
       num? productId,
       String? productName,
       double? stock,
@@ -529,6 +546,7 @@ extension $RStorageProductExtension on RStorageProduct {
         amountHundred: amountHundred ?? this.amountHundred,
         available: available ?? this.available,
         orderAmount: orderAmount ?? this.orderAmount,
+        price: price ?? this.price,
         productId: productId ?? this.productId,
         productName: productName ?? this.productName,
         stock: stock ?? this.stock,
@@ -541,6 +559,7 @@ extension $RStorageProductExtension on RStorageProduct {
       {Wrapped<double?>? amountHundred,
       Wrapped<bool?>? available,
       Wrapped<double?>? orderAmount,
+      Wrapped<double?>? price,
       Wrapped<num?>? productId,
       Wrapped<String?>? productName,
       Wrapped<double?>? stock,
@@ -553,6 +572,7 @@ extension $RStorageProductExtension on RStorageProduct {
         available: (available != null ? available.value : this.available),
         orderAmount:
             (orderAmount != null ? orderAmount.value : this.orderAmount),
+        price: (price != null ? price.value : this.price),
         productId: (productId != null ? productId.value : this.productId),
         productName:
             (productName != null ? productName.value : this.productName),
@@ -1135,7 +1155,7 @@ class Workstation {
   @JsonKey(name: 'responsable')
   String? responsable;
   @JsonKey(name: 'workstationId')
-  num? workstationId;
+  final num? workstationId;
   @JsonKey(
     name: 'workstationType',
     toJson: workstationWorkstationTypeToJson,

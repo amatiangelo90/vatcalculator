@@ -86,6 +86,14 @@ String refactorNumber(String number) {
   }
 }
 
+String getFormtDateToReadeableItalianDate(String dateToConvert){
+  DateTime date = dateFormat.parse(dateToConvert!);
+
+  return getDayFromWeekDay(date.weekday) + ' ' + date.day.toString() + ' ' + getMonthFromMonthNumber(date.month) + ' ' + date.year.toString();
+
+}
+
+
 String getDayFromWeekDay(int weekDay){
   switch(weekDay){
     case 1:

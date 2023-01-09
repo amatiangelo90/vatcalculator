@@ -27,17 +27,13 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   @override
   Widget build(BuildContext context) {
 
-    double width = MediaQuery.of(context).size.width;
-
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-
         Iterable<Workstation> barList = dataBundleNotifier.getCurrentEvent()
             .workstations!.where((element) => element.workstationType == WorkstationWorkstationType.bar);
 
         Iterable<Workstation> champList = dataBundleNotifier.getCurrentEvent()
             .workstations!.where((element) => element.workstationType == WorkstationWorkstationType.champagnerie);
-
 
         return DefaultTabController(
           length: 2,
@@ -56,19 +52,19 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             key: _scaffoldKey,
             appBar: AppBar(
               bottom: const TabBar(
-              indicatorColor: kCustomGreen,
+              indicatorColor: kCustomGrey,
               indicatorWeight: 3,
               tabs: [
                 Tab(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text('Workstations', style: TextStyle(color: kCustomGreen, fontWeight: FontWeight.bold),),
+                    child: Text('Workstations', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
                   ),
                 ),
                 Tab(
                   child: Padding(
                     padding: EdgeInsets.all(8.0),
-                    child: Text('Spese', style: TextStyle(color:  kCustomGreen, fontWeight: FontWeight.bold),),
+                    child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold),),
                   ),
                 ),
               ],
@@ -221,14 +217,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                       Navigator.of(context).pop();
                                                       dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
                                                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                          backgroundColor: kCustomPinkAccent,
+                                                          backgroundColor: kCustomBordeaux,
                                                           duration: Duration(milliseconds: 1000),
                                                           content: Text('Postazione champagnerie creata correttamente'
                                                           )));
                                                     }else{
                                                       Navigator.of(context).pop();
                                                       dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                                           backgroundColor: kRed,
                                                           duration: Duration(milliseconds: 3000),
                                                           content: Text('Errore durante la creazione della postazione champagnerie. Riprova fra 2 minuti.'
@@ -293,36 +289,83 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ),
               elevation: 0,
             ),
-            backgroundColor: kCustomWhite,
+            backgroundColor: Colors.white,
             body: TabBarView(
               children: [
                 SingleChildScrollView(
                   scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Container(
-                        width: getProportionateScreenWidth(600),
-                        color: kCustomGreen,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Postazioni bar', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.black, height: getProportionateScreenHeight(40),),
+                                  ),
+                                  Column(
+                                    children: [
+                                      Text('Magazzino di riferimento: ', style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGrey, fontWeight: FontWeight.w200),),
+                                      Text(dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!).name!, style: TextStyle(fontSize: getProportionateScreenHeight(25), color: kCustomGrey, fontWeight: FontWeight.bold),),
+                                    ],
+                                  ),Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.black, height: getProportionateScreenHeight(40),),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      buildWorkstationListWidget(barList.toList(), dataBundleNotifier, true),
-                      Container(
-                        width: getProportionateScreenWidth(600),
-                        color: kCustomBordeaux,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text('Postazioni champagnerie',textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white)),
+                        Container(
+                          width: getProportionateScreenWidth(600),
+                          color: kCustomGreen,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Postazioni bar', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white)),
+                          ),
                         ),
-                      ),
-                      buildWorkstationListWidget(champList.toList(), dataBundleNotifier, false),
-                      SizedBox(height: 100,)
-                    ],
+                        buildWorkstationListWidget(barList.toList(), dataBundleNotifier, true),
+                        Container(
+                          width: getProportionateScreenWidth(600),
+                          color: kCustomBordeaux,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text('Postazioni champagnerie',textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(25), color: Colors.white)),
+                          ),
+                        ),
+                        buildWorkstationListWidget(champList.toList(), dataBundleNotifier, false),
+                        SizedBox(height: 100,)
+                      ],
+                    ),
                   ),
                 ),
-                Text('settings'),
+                SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          buildRecapWorkstationExpences(
+                              dataBundleNotifier.getCurrentEvent(),
+                            WorkstationWorkstationType.bar
+                          ),
+                          buildRecapWorkstationExpences(
+                              dataBundleNotifier.getCurrentEvent(),
+                              WorkstationWorkstationType.champagnerie
+                          ),
+                        ],
+                      )
+                    ),
+                  )
+                )
               ],
             ),
           ),
@@ -583,5 +626,87 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         },
       ),
     );
+  }
+
+  buildRecapWorkstationExpences(Event currentEvent, WorkstationWorkstationType type) {
+    List<Widget> tableRecapRow = [];
+    for (var workstation in currentEvent.workstations!.where((element) => element.workstationType == type)) {
+      tableRecapRow.add(
+        Row(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Container(
+                color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,
+                height: getProportionateScreenHeight(50),
+                child: Center(child: Column(
+                  children: [
+                    Text(workstation.name!, style: TextStyle(color: Colors.white),),
+                    workstation.responsable! == '' ? Text('') : Text('Responsabile: ' + workstation.responsable!, style: TextStyle(color: Colors.white),),
+                  ],
+                )),
+              ),
+            ),
+          ],
+        )
+      );
+      tableRecapRow.add(Row(
+        children: [
+          Expanded(flex: 3, child: Text('Prodotto', style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenWidth(12)),),),
+          Expanded(flex: 1, child: Icon(Icons.arrow_circle_down_outlined, color: kCustomGreen),),
+          Expanded(flex: 1, child: Icon(Icons.arrow_circle_up, color: kCustomBordeaux),),
+          Expanded(flex: 2, child: Text('Spesa', textAlign: TextAlign.center)),
+        ],
+      ));
+      for (var product in workstation.products!) {
+        tableRecapRow.add(
+          Row(
+            children: [
+              Expanded(flex: 3, child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(product.productName!, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                  Text(' - ' + product.unitMeasure!, style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
+                  Text(' - € ' + product.price!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
+                ],
+              ),),
+              Expanded(flex: 1, child: Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 1, child: Text(product.consumed!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 2, child: Text('€ ' + (product.consumed! * product.price!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+            ],
+          ),
+        );
+        tableRecapRow.add(Divider(height: 1,));
+      }
+
+      tableRecapRow.add(
+        Row(
+          children: [
+            Expanded(flex: 3, child: Text('Totale: ', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),),
+            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+            Expanded(flex: 2, child: Text('€ ' + calculateTotal(workstation.products!), textAlign: TextAlign.center),),
+          ],
+        ),
+      );
+    }
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: getProportionateScreenHeight(80)),
+      child: Column(
+        children: tableRecapRow,
+      ),
+    );
+  }
+
+  String calculateTotal(List<RWorkstationProduct> products) {
+    double total = 0.0;
+
+    products.forEach((element) {
+      total = total + (element.price! * (element.stockFromStorage! - element.consumed!));
+    });
+
+    return total.toStringAsFixed(2).replaceAll('.00','');
   }
 }
