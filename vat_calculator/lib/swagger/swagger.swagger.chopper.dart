@@ -859,6 +859,22 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppWorkstationResetproductconsumedvaluePut(
+      {required int? workstationProductId}) {
+    final String $url = '/api/v1/app/workstation/resetproductconsumedvalue';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'workstationProductId': workstationProductId
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _apiV1AppWorkstationResetproductstockvaluePut(
       {required int? workstationProductId}) {
     final String $url = '/api/v1/app/workstation/resetproductstockvalue';

@@ -52,23 +52,23 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             key: _scaffoldKey,
             appBar: AppBar(
               bottom: const TabBar(
-              indicatorColor: kCustomGrey,
-              indicatorWeight: 3,
-              tabs: [
-                Tab(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Workstations', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
+                indicatorColor: kCustomGrey,
+                indicatorWeight: 3,
+                tabs: [
+                  Tab(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Workstations', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
+                    ),
                   ),
-                ),
-                Tab(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold),),
+                  Tab(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold),),
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
               actions: [
                 dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : IconButton(
                   onPressed: (){
@@ -78,193 +78,193 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: IconButton(
-                    onPressed: (){
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog (
-                            backgroundColor:  kCustomGrey,
-                            contentPadding: EdgeInsets.zero,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(
-                                    Radius.circular(10.0))),
-                            content: Builder(
-                              builder: (context) {
-                                return SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        decoration: const BoxDecoration(
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(10.0),
-                                              topLeft: Radius.circular(10.0) ),
-                                          color: kCustomGrey,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text('  Crea postazione',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: getProportionateScreenWidth(15),
-                                                  fontWeight: FontWeight.bold,
-                                                  color: kCustomWhite,
-                                                )),
-                                            IconButton(icon: const Icon(
-                                              Icons.clear,
-                                              color: kCustomWhite,
-                                            ), onPressed: () { Navigator.pop(context); },),
+                      onPressed: (){
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog (
+                              backgroundColor:  kCustomGrey,
+                              contentPadding: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              content: Builder(
+                                builder: (context) {
+                                  return SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          decoration: const BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(10.0),
+                                                topLeft: Radius.circular(10.0) ),
+                                            color: kCustomGrey,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text('  Crea postazione',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: getProportionateScreenWidth(15),
+                                                    fontWeight: FontWeight.bold,
+                                                    color: kCustomWhite,
+                                                  )),
+                                              IconButton(icon: const Icon(
+                                                Icons.clear,
+                                                color: kCustomWhite,
+                                              ), onPressed: () { Navigator.pop(context); },),
 
+                                            ],
+                                          ),
+                                        ),
+
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                          children: [
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+                                              child: Container(
+                                                  width: getProportionateScreenWidth(500),
+                                                  height: getProportionateScreenHeight(120),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    image: DecorationImage(
+                                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                                      image: const AssetImage("assets/png/bar.png"),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                  child: OutlinedButton(
+                                                    onPressed: () async {
+                                                      Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
+                                                        workstationType: WorkstationWorkstationType.bar,
+                                                        eventId: dataBundleNotifier.getCurrentEvent().eventId!,
+                                                        responsable: '',
+                                                        name: 'NUOVO BAR',
+                                                        products: [],
+                                                        extra: '',
+                                                      ));
+
+                                                      if(createWorkstationResponse.isSuccessful){
+                                                        Navigator.of(context).pop();
+                                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            backgroundColor: kCustomGreen,
+                                                            duration: Duration(milliseconds: 1000),
+                                                            content: Text('Postazione bar creata correttamente'
+                                                            )));
+                                                      }else{
+                                                        Navigator.of(context).pop();
+                                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            backgroundColor: kRed,
+                                                            duration: Duration(milliseconds: 3000),
+                                                            content: Text('Errore durante la creazione della postazione bar. Riprova fra 2 minuti.'
+                                                            )));
+                                                      }
+
+                                                    },
+                                                    style: ButtonStyle(
+                                                      elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomGreen),),
+                                                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(10),
+                                                          child: Text('CREA POSTAZIONE BAR',style: TextStyle(
+                                                              color: kCustomWhite,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize:
+                                                              getProportionateScreenWidth(
+                                                                  15)),),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(right: 4, left: 8, top: 5, bottom: 20),
+                                              child: Container(
+                                                  width: getProportionateScreenWidth(500),
+                                                  height: getProportionateScreenHeight(120),
+                                                  decoration: BoxDecoration(
+                                                    borderRadius: BorderRadius.circular(20),
+                                                    image: DecorationImage(
+                                                      colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                                                      image: AssetImage("assets/png/champagnerie.png"),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                  child: OutlinedButton(
+                                                    onPressed: () async {
+                                                      Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
+                                                        workstationType: WorkstationWorkstationType.champagnerie,
+                                                        eventId: dataBundleNotifier.getCurrentEvent().eventId!,
+                                                        responsable: '',
+                                                        name: 'NUOVA CHAMPAGNERIE',
+                                                        products: [],
+                                                        extra: '',
+                                                      ));
+
+                                                      if(createWorkstationResponse.isSuccessful){
+                                                        Navigator.of(context).pop();
+                                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            backgroundColor: kCustomBordeaux,
+                                                            duration: Duration(milliseconds: 1000),
+                                                            content: Text('Postazione champagnerie creata correttamente'
+                                                            )));
+                                                      }else{
+                                                        Navigator.of(context).pop();
+                                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                            backgroundColor: kRed,
+                                                            duration: Duration(milliseconds: 3000),
+                                                            content: Text('Errore durante la creazione della postazione champagnerie. Riprova fra 2 minuti.'
+                                                            )));
+                                                      }
+                                                    },
+                                                    style: ButtonStyle(
+                                                      elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                                      backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
+                                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomPinkAccent),),
+                                                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        Padding(
+                                                          padding: const EdgeInsets.all(10),
+                                                          child: Text('CREA CHAMPAGNERIE',style: TextStyle(
+                                                              color: kCustomWhite,
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize:
+                                                              getProportionateScreenWidth(
+                                                                  15)),),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  )
+                                              ),
+                                            ),
                                           ],
                                         ),
-                                      ),
-
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
-                                            child: Container(
-                                                width: getProportionateScreenWidth(500),
-                                                height: getProportionateScreenHeight(120),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  image: DecorationImage(
-                                                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                                                    image: const AssetImage("assets/png/bar.png"),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                child: OutlinedButton(
-                                                  onPressed: () async {
-                                                    Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
-                                                      workstationType: WorkstationWorkstationType.bar,
-                                                      eventId: dataBundleNotifier.getCurrentEvent().eventId!,
-                                                      responsable: '',
-                                                      name: 'NUOVO BAR',
-                                                      products: [],
-                                                      extra: '',
-                                                    ));
-
-                                                    if(createWorkstationResponse.isSuccessful){
-                                                      Navigator.of(context).pop();
-                                                      dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                          backgroundColor: kCustomGreen,
-                                                          duration: Duration(milliseconds: 1000),
-                                                          content: Text('Postazione bar creata correttamente'
-                                                          )));
-                                                    }else{
-                                                      Navigator.of(context).pop();
-                                                      dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                          backgroundColor: kRed,
-                                                          duration: Duration(milliseconds: 3000),
-                                                          content: Text('Errore durante la creazione della postazione bar. Riprova fra 2 minuti.'
-                                                          )));
-                                                    }
-
-                                                  },
-                                                  style: ButtonStyle(
-                                                    elevation: MaterialStateProperty.resolveWith((states) => 5),
-                                                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
-                                                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomGreen),),
-                                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(10),
-                                                        child: Text('CREA POSTAZIONE BAR',style: TextStyle(
-                                                            color: kCustomWhite,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize:
-                                                            getProportionateScreenWidth(
-                                                                15)),),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(right: 4, left: 8, top: 5, bottom: 20),
-                                            child: Container(
-                                                width: getProportionateScreenWidth(500),
-                                                height: getProportionateScreenHeight(120),
-                                                decoration: BoxDecoration(
-                                                  borderRadius: BorderRadius.circular(20),
-                                                  image: DecorationImage(
-                                                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                                                    image: AssetImage("assets/png/champagnerie.png"),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                                child: OutlinedButton(
-                                                  onPressed: () async {
-                                                    Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
-                                                      workstationType: WorkstationWorkstationType.champagnerie,
-                                                      eventId: dataBundleNotifier.getCurrentEvent().eventId!,
-                                                      responsable: '',
-                                                      name: 'NUOVA CHAMPAGNERIE',
-                                                      products: [],
-                                                      extra: '',
-                                                    ));
-
-                                                    if(createWorkstationResponse.isSuccessful){
-                                                      Navigator.of(context).pop();
-                                                      dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                          backgroundColor: kCustomBordeaux,
-                                                          duration: Duration(milliseconds: 1000),
-                                                          content: Text('Postazione champagnerie creata correttamente'
-                                                          )));
-                                                    }else{
-                                                      Navigator.of(context).pop();
-                                                      dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                          backgroundColor: kRed,
-                                                          duration: Duration(milliseconds: 3000),
-                                                          content: Text('Errore durante la creazione della postazione champagnerie. Riprova fra 2 minuti.'
-                                                          )));
-                                                    }
-                                                  },
-                                                  style: ButtonStyle(
-                                                    elevation: MaterialStateProperty.resolveWith((states) => 5),
-                                                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.white.withOpacity(0.1)),
-                                                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 3.5, color: kCustomPinkAccent),),
-                                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      Padding(
-                                                        padding: const EdgeInsets.all(10),
-                                                        child: Text('CREA CHAMPAGNERIE',style: TextStyle(
-                                                            color: kCustomWhite,
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize:
-                                                            getProportionateScreenWidth(
-                                                                15)),),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                      );
-                    },
-                    icon: Icon(Icons.add, color: kCustomGrey, size: getProportionateScreenWidth(30))
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                        );
+                      },
+                      icon: Icon(Icons.add, color: kCustomGrey, size: getProportionateScreenWidth(30))
                   ),
                 ),
               ],
@@ -346,25 +346,27 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     ),
                   ),
                 ),
-                SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      color: Colors.white,
-                      child: Column(
-                        children: [
-                          buildRecapWorkstationExpences(
-                              dataBundleNotifier.getCurrentEvent(),
-                            WorkstationWorkstationType.bar
-                          ),
-                          buildRecapWorkstationExpences(
-                              dataBundleNotifier.getCurrentEvent(),
-                              WorkstationWorkstationType.champagnerie
-                          ),
-                        ],
-                      )
-                    ),
-                  )
+                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Center(child: Text('Non hai i permessi per visualizzare questa pagina'))
+                    : SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+
+                              buildRecapWorkstationExpences(
+                                  dataBundleNotifier.getCurrentEvent(),
+                                  WorkstationWorkstationType.bar
+                              ),
+                              buildRecapWorkstationExpences(
+                                  dataBundleNotifier.getCurrentEvent(),
+                                  WorkstationWorkstationType.champagnerie
+                              ),
+                            ],
+                          )
+                      ),
+                    )
                 )
               ],
             ),
@@ -528,7 +530,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         itemCount: barList.length,
         itemBuilder: (context, index) {
           Workstation workstation = barList[index];
-          return Dismissible(
+          return dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? buildWorkstationWidget(isBar, dataBundleNotifier, workstation) : Dismissible(
             background: Container(
               color: kCustomBordeaux,
               child: Row(
@@ -567,11 +569,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             resizeDuration: Duration(seconds: 1),
             onDismissed: (direction) async {
               Response deleteWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationRemoveworkstationDelete(workstationId: workstation.workstationId!.toInt());
-
               if(deleteWorkstationResponse.isSuccessful){
-
                 dataBundleNotifier.removeWorkstationFromEvent(workstation.workstationId!);
-
                 ScaffoldMessenger.of(context)
                     .showSnackBar(const SnackBar(
                     duration: Duration(seconds: 1),
@@ -585,43 +584,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     content: Text('Ho riscontrato un problema durante l\'eliminazione della postazione. Riprova fra 2 minuti o contatta l\'amministratore del sistema')));
               }
             },
-            child: ListTile(
-              title: Column(
-                children: [
-                  ListTile(
-                    leading: ClipRect(
-                      child: SvgPicture.asset(
-                        isBar ? 'assets/icons/bartender.svg' : 'assets/icons/bouvette.svg',
-                        height: getProportionateScreenHeight(40),
-                        color: isBar ? kCustomGreen : kCustomBordeaux,
-                      ),
-                    ),
-                    onTap: (){
-
-                      dataBundleNotifier.setCurrentWorkstation(workstation);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => WorkstationManagerScreen(),
-                        ),
-                      );
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(workstation.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
-                          Text(workstation.responsable!.isEmpty ? '' : 'Responsabile: ' + workstation.responsable!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
-                          Divider()
-                        ],
-                      ),
-                    ),
-                  ),
-                  const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
-                ],
-              ),
-            ),
+            child: buildWorkstationWidget(isBar, dataBundleNotifier, workstation),
           );
         },
       ),
@@ -632,23 +595,23 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     List<Widget> tableRecapRow = [];
     for (var workstation in currentEvent.workstations!.where((element) => element.workstationType == type)) {
       tableRecapRow.add(
-        Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: Container(
-                color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,
-                height: getProportionateScreenHeight(50),
-                child: Center(child: Column(
-                  children: [
-                    Text(workstation.name!, style: TextStyle(color: Colors.white),),
-                    workstation.responsable! == '' ? Text('') : Text('Responsabile: ' + workstation.responsable!, style: TextStyle(color: Colors.white),),
-                  ],
-                )),
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,
+                  height: getProportionateScreenHeight(50),
+                  child: Center(child: Column(
+                    children: [
+                      Text(workstation.name!, style: TextStyle(color: Colors.white),),
+                      workstation.responsable! == '' ? Text('') : Text('Responsabile: ' + workstation.responsable!, style: TextStyle(color: Colors.white),),
+                    ],
+                  )),
+                ),
               ),
-            ),
-          ],
-        )
+            ],
+          )
       );
       tableRecapRow.add(Row(
         children: [
@@ -708,5 +671,45 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     });
 
     return total.toStringAsFixed(2).replaceAll('.00','');
+  }
+
+  buildWorkstationWidget(bool isBar, DataBundleNotifier dataBundleNotifier, Workstation workstation) {
+    return ListTile(
+      title: Column(
+        children: [
+          ListTile(
+            leading: ClipRect(
+              child: SvgPicture.asset(
+                isBar ? 'assets/icons/bartender.svg' : 'assets/icons/bouvette.svg',
+                height: getProportionateScreenHeight(40),
+                color: isBar ? kCustomGreen : kCustomBordeaux,
+              ),
+            ),
+            onTap: (){
+
+              dataBundleNotifier.setCurrentWorkstation(workstation);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => WorkstationManagerScreen(),
+                ),
+              );
+            },
+            title: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(workstation.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
+                  Text(workstation.responsable!.isEmpty ? '' : 'Responsabile: ' + workstation.responsable!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
+                  Divider()
+                ],
+              ),
+            ),
+          ),
+          const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
+        ],
+      ),
+    );
   }
 }

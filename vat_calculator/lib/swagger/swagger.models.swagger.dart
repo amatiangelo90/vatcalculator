@@ -227,7 +227,7 @@ class RWorkstationProduct {
       _$RWorkstationProductFromJson(json);
 
   @JsonKey(name: 'amountHundred')
-  final double? amountHundred;
+  double? amountHundred;
   @JsonKey(name: 'amountLoad')
   double? amountLoad;
   @JsonKey(name: 'amountUnload')

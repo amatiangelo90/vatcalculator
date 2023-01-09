@@ -987,7 +987,32 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                   padding: const EdgeInsets.only(top: 10),
                   child: OutlinedButton(
                     onPressed: () async {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        backgroundColor: kCustomBordeaux,
+                        duration: Duration(seconds: 3),
+                        content: Text('Tieni premuto sul pulsante Reset per 1 secondo per ripristinare la quantità di giacenza'),
+                      ));
+                    },
+                    onLongPress: () async {
+                      Response response = await dataBundleNotifier.getSwaggerClient()
+                          .apiV1AppWorkstationResetproductconsumedvaluePut(workstationProductId: product.workstationProductId!.toInt());
 
+                      if(response.isSuccessful){
+                        dataBundleNotifier.setGiacenza0ToProductIntoCurrentWorkstation(product.workstationProductId!.toInt());
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          backgroundColor: kCustomGreen,
+                          duration: Duration(milliseconds: 1000),
+                          content: Text(
+                              'Operazione di ripristino valore giacenza completata'),
+                        ));
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          backgroundColor: kCustomBordeaux,
+                          duration: Duration(milliseconds: 3000),
+                          content: Text(
+                              'Ho riscontrato un errore durante l\'operazione: ' + response.error!.toString()),
+                        ));
+                      }
                     },
                     child: const Text('Reset', style: TextStyle(color: Colors.grey)),
                   ),
