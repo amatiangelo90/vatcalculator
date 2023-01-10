@@ -352,6 +352,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: SvgPicture.asset('assets/icons/receipt.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                       ),
+
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(name,style: TextStyle(

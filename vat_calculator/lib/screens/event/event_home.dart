@@ -1,3 +1,4 @@
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -81,15 +82,19 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                   ],
                 ),
                 actions: [
-                  branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? const SizedBox(width: 5) : Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                  branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? SizedBox(width: getProportionateScreenWidth(35)) : Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
                     child: IconButton(
                         icon: SvgPicture.asset(
-                          "assets/icons/archive.svg",
+                          "assets/icons/document.svg",
                           width: 25,
-                          color: kCustomGrey,
                         ),
-                        onPressed: () {
+                        onPressed: () async {
+                          context.loaderOverlay.show();
+                          Response apiV1AppEventFindeventbybranchidClosedGet = await dataBundleNotifier.getSwaggerClient().apiV1AppEventFindeventbybranchidClosedGet(branchid: dataBundleNotifier.getCurrentBranch().branchId!.toInt());
+                          print(apiV1AppEventFindeventbybranchidClosedGet.body);
+
+                          context.loaderOverlay.hide();
                         }),
                   ),
                   SizedBox(width: 5),

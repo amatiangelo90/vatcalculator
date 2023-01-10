@@ -183,6 +183,21 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _apiV1AppBranchesUpdatePut(
       {@Body() required Branch? branch});
 
+  ///close
+  ///@param eventId eventId
+  Future<chopper.Response> apiV1AppEventClosePut({required int? eventId}) {
+    return _apiV1AppEventClosePut(eventId: eventId);
+  }
+
+  ///close
+  ///@param eventId eventId
+  @Put(
+    path: '/api/v1/app/event/close',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppEventClosePut(
+      {@Query('eventId') required int? eventId});
+
   ///delete
   ///@param eventId eventId
   Future<chopper.Response> apiV1AppEventDeleteDelete({required int? eventId}) {

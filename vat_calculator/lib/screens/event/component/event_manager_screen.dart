@@ -11,6 +11,7 @@ import '../../../constants.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 import '../../home/main_page.dart';
+import '../event_home.dart';
 
 class EventManagerScreen extends StatefulWidget {
 
@@ -124,6 +125,87 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                             ),
                                           ],
                                         ),
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text('Eliminando l\'evento tutta la merce caricata verrà inserita nuvoamente nel magazzino associato all\'evento. L\'operazione non è reversibile.', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey),),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: getProportionateScreenHeight(100),
+                                              width: getProportionateScreenWidth(600),
+                                              child: OutlinedButton(
+                                                style: ButtonStyle(
+                                                  elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                                  backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.red),
+                                                  side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.white),),
+                                                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                                ),
+                                                onPressed: () async {
+                                                  Response responseDeleteEvent = await dataBundleNotifier.getSwaggerClient().apiV1AppEventDeleteDelete(eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
+                                                  if(responseDeleteEvent.isSuccessful){
+
+                                                    dataBundleNotifier.refreshCurrentBranchData();
+                                                    Navigator.pushNamed(context, EventHomeScreen.routeName);
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                      backgroundColor: kCustomGreen,
+                                                      duration: Duration(seconds: 1),
+                                                      content: Text('Evento ' + dataBundleNotifier.getCurrentEvent().name! + ' eliminato con success.'),
+                                                    ));
+                                                  }else{
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                      backgroundColor: kCustomGreen,
+                                                      duration: Duration(seconds: 1),
+                                                      content: Text('Ho riscontrato un errore durante la cancellazione dell\'evento ' + dataBundleNotifier.getCurrentEvent().name! + '. Err:' + responseDeleteEvent!.error.toString()),
+                                                    ));
+                                                  }
+                                                },
+                                                child: Text('ELIMINA EVENTO', style: TextStyle(color: Colors.white),),
+                                              ),
+                                            ),
+                                          ),
+                                          Divider(),
+                                          Text('Chiudendo l\'evento i tuoi dipendenti non potranno piu fare operazioni di scarico e carico. '
+                                              'Inoltre tutta la merce in giacenza verrà ricaricata nel magazzino associato all\'evento.', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey),),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: getProportionateScreenHeight(100),
+                                              width: getProportionateScreenWidth(600),
+                                              child: OutlinedButton(
+                                                style: ButtonStyle(
+                                                  elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                                  backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomBordeaux),
+                                                  side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.white),),
+                                                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                                ),
+                                                onPressed: () async {
+                                                  Response responseDeleteEvent = await dataBundleNotifier.getSwaggerClient().apiV1AppEventClosePut(eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
+                                                  if(responseDeleteEvent.isSuccessful){
+
+                                                    dataBundleNotifier.refreshCurrentBranchData();
+                                                    Navigator.pushNamed(context, EventHomeScreen.routeName);
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                      backgroundColor: kCustomGreen,
+                                                      duration: Duration(seconds: 1),
+                                                      content: Text('Evento ' + dataBundleNotifier.getCurrentEvent().name! + ' chiuso con success.'),
+                                                    ));
+                                                  }else{
+                                                    Navigator.of(context).pop();
+                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                      backgroundColor: kCustomGreen,
+                                                      duration: Duration(seconds: 1),
+                                                      content: Text('Ho riscontrato un errore durante la chiusura dell\'evento ' + dataBundleNotifier.getCurrentEvent().name! + '. Err:' + responseDeleteEvent!.error.toString()),
+                                                    ));
+                                                  }
+                                                },
+                                                child: Text('CHIUDI EVENTO', style: TextStyle(color: Colors.white),),
+                                              ),
+                                            ),
+                                          ),
+
+                                        ],
                                       ),
                                       const SizedBox(height: 40),
                                     ],
@@ -737,9 +819,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 ],
               ),),
               Expanded(flex: 1, child: Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-              Expanded(flex: 1, child: Text(product.consumed!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-              Expanded(flex: 1, child: Text((product.stockFromStorage! - product.consumed!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-              Expanded(flex: 2, child: Text('€ ' + ((product.stockFromStorage! - product.consumed!) * product.price!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 1, child: Text(product.leftOvers!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 1, child: Text((product.stockFromStorage! - product.leftOvers!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 2, child: Text('€ ' + ((product.stockFromStorage! - product.leftOvers!) * product.price!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
             ],
           ),
         );
@@ -771,7 +853,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     double total = 0.0;
 
     products.forEach((element) {
-      total = total + (element.price! * (element.stockFromStorage! - element.consumed!));
+      total = total + (element.price! * (element.stockFromStorage! - element.leftOvers!));
     });
 
     return total.toStringAsFixed(2).replaceAll('.00','');

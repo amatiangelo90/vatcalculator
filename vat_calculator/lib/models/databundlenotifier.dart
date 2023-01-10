@@ -340,7 +340,7 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
   void setGiacenza0ToProductIntoCurrentWorkstation(int id) {
-    getCurrentWorkstation().products!.where((element) => element.workstationProductId == id).first.consumed = 0;
+    getCurrentWorkstation().products!.where((element) => element.workstationProductId == id).first.leftOvers = 0;
     notifyListeners();
   }
 

@@ -26,7 +26,7 @@ class ROrderProduct {
   @JsonKey(name: 'orderProductId')
   final num? orderProductId;
   @JsonKey(name: 'price')
-  double? price;
+  final double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -213,7 +213,7 @@ class RWorkstationProduct {
     this.amountHundred,
     this.amountLoad,
     this.amountUnload,
-    this.consumed,
+    this.leftOvers,
     this.price,
     this.productId,
     this.productName,
@@ -232,8 +232,8 @@ class RWorkstationProduct {
   double? amountLoad;
   @JsonKey(name: 'amountUnload')
   double? amountUnload;
-  @JsonKey(name: 'consumed')
-  double? consumed;
+  @JsonKey(name: 'leftOvers')
+  double? leftOvers;
   @JsonKey(name: 'price')
   final double? price;
   @JsonKey(name: 'productId')
@@ -265,9 +265,9 @@ class RWorkstationProduct {
             (identical(other.amountUnload, amountUnload) ||
                 const DeepCollectionEquality()
                     .equals(other.amountUnload, amountUnload)) &&
-            (identical(other.consumed, consumed) ||
+            (identical(other.leftOvers, leftOvers) ||
                 const DeepCollectionEquality()
-                    .equals(other.consumed, consumed)) &&
+                    .equals(other.leftOvers, leftOvers)) &&
             (identical(other.price, price) ||
                 const DeepCollectionEquality().equals(other.price, price)) &&
             (identical(other.productId, productId) ||
@@ -298,7 +298,7 @@ class RWorkstationProduct {
       const DeepCollectionEquality().hash(amountHundred) ^
       const DeepCollectionEquality().hash(amountLoad) ^
       const DeepCollectionEquality().hash(amountUnload) ^
-      const DeepCollectionEquality().hash(consumed) ^
+      const DeepCollectionEquality().hash(leftOvers) ^
       const DeepCollectionEquality().hash(price) ^
       const DeepCollectionEquality().hash(productId) ^
       const DeepCollectionEquality().hash(productName) ^
@@ -314,7 +314,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       {double? amountHundred,
       double? amountLoad,
       double? amountUnload,
-      double? consumed,
+      double? leftOvers,
       double? price,
       num? productId,
       String? productName,
@@ -326,7 +326,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
         amountHundred: amountHundred ?? this.amountHundred,
         amountLoad: amountLoad ?? this.amountLoad,
         amountUnload: amountUnload ?? this.amountUnload,
-        consumed: consumed ?? this.consumed,
+        leftOvers: leftOvers ?? this.leftOvers,
         price: price ?? this.price,
         productId: productId ?? this.productId,
         productName: productName ?? this.productName,
@@ -341,7 +341,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
       {Wrapped<double?>? amountHundred,
       Wrapped<double?>? amountLoad,
       Wrapped<double?>? amountUnload,
-      Wrapped<double?>? consumed,
+      Wrapped<double?>? leftOvers,
       Wrapped<double?>? price,
       Wrapped<num?>? productId,
       Wrapped<String?>? productName,
@@ -355,7 +355,7 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
         amountLoad: (amountLoad != null ? amountLoad.value : this.amountLoad),
         amountUnload:
             (amountUnload != null ? amountUnload.value : this.amountUnload),
-        consumed: (consumed != null ? consumed.value : this.consumed),
+        leftOvers: (leftOvers != null ? leftOvers.value : this.leftOvers),
         price: (price != null ? price.value : this.price),
         productId: (productId != null ? productId.value : this.productId),
         productName:
@@ -461,7 +461,7 @@ class RStorageProduct {
   @JsonKey(name: 'orderAmount')
   double? orderAmount;
   @JsonKey(name: 'price')
-  double? price;
+  final double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')

@@ -107,7 +107,7 @@ class EventsBodyWidget extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0),
             ),
-            shadowColor: kCustomGrey,
+            shadowColor: kCustomGreen,
             elevation: 5,
             child: ListTile(
             leading: ClipRect(
@@ -121,41 +121,72 @@ class EventsBodyWidget extends StatelessWidget {
               dataBundleNotifier.setCurrentEvent(event);
               Navigator.pushNamed(context, EventManagerScreen.routeName);
             },
-            title: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(event.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
-                  Text('Location: ' + event.location! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(14), color: kCustomGrey)),
-                  Text(getFormtDateToReadeableItalianDate(event.dateEvent!) , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(14), color: kCustomGrey)),
-                  Divider(),
-                  Row(
+            title: Stack(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    SvgPicture.asset(
+                      event.eventStatus == EventEventStatus.aperto ? 'assets/icons/open_tabel.svg' : 'assets/icons/close_tabel.svg',
+                      height: getProportionateScreenHeight(60),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SvgPicture.asset(
-                        'assets/icons/bartender.svg',
-                        color: kCustomGreen,
-                        width: getProportionateScreenHeight(17),
+                      Text(event.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/Location point.svg',
+                            color: kCustomGrey,
+                            width: getProportionateScreenHeight(11),
+                          ),
+                          Text(' ' + event.location! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(14), color: kCustomGrey)),
+                        ],
                       ),
-                      Text(' Postazioni bar x ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
-                      Text(event.workstations!.where((element) => element.workstationType == WorkstationWorkstationType.bar).length.toString()! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGreen)),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/calendar.svg',
+                            color: kCustomGrey,
+                            width: getProportionateScreenHeight(11),
+                          ),
+                          Text(' ' + getFormtDateToReadeableItalianDate(event.dateEvent!) , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(14), color: kCustomGrey)),
+                        ],
+                      ),
+                      Divider(),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/bartender.svg',
+                            color: kCustomGreen,
+                            width: getProportionateScreenHeight(17),
+                          ),
+                          Text(' Postazioni bar x ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
+                          Text(event.workstations!.where((element) => element.workstationType == WorkstationWorkstationType.bar).length.toString()! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGreen)),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/icons/bouvette.svg',
+                            color: kCustomBordeaux,
+                            width: getProportionateScreenHeight(17),
+                          ),
+                          Text(' Postazioni champagnerie x ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
+                          Text(event.workstations!.where((element) => element.workstationType == WorkstationWorkstationType.champagnerie).length.toString()! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomBordeaux)),
+                        ],
+                      ),
+                      Divider(),
+                      Text('Creato da ' + event.createdBy! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10), color: Colors.grey)),
                     ],
                   ),
-                  Row(
-                    children: [
-                      SvgPicture.asset(
-                        'assets/icons/bouvette.svg',
-                        color: kCustomBordeaux,
-                        width: getProportionateScreenHeight(17),
-                      ),
-                      Text(' Postazioni champagnerie x ' , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
-                      Text(event.workstations!.where((element) => element.workstationType == WorkstationWorkstationType.champagnerie).length.toString()! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomBordeaux)),
-                    ],
-                  ),
-                  Divider(),
-                  Text('Creato da ' + event.createdBy! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10), color: Colors.grey)),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         )),

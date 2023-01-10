@@ -368,7 +368,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                   if(apiV1AppWorkstationLoadPost.isSuccessful){
                     dataBundleNotifier.refreshCurrentBranchData();
                     dataBundleNotifier.getCurrentWorkstation().products!.where((element) => element.amountUnload!>0).forEach((element) {
-                      element.consumed = element.consumed! + element.amountUnload!;
+                      element.leftOvers = element.leftOvers! + element.amountUnload!;
                       element.amountUnload = 0;
                     });
 
@@ -911,7 +911,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                       Row(
                         children: [
                           Text('Consumato: ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(14))),
-                          Text((product.stockFromStorage! - product.consumed!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(15))),
+                          Text((product.stockFromStorage! - product.leftOvers!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(15))),
                         ],
                       ),
                     ],
@@ -964,7 +964,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                     padding: const EdgeInsets.all(4.0),
                     child: Column(
                       children: [
-                        Text((product.consumed! + product.amountUnload!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomBordeaux, fontSize: getProportionateScreenHeight(20))),
+                        Text((product.leftOvers! + product.amountUnload!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomBordeaux, fontSize: getProportionateScreenHeight(20))),
                         Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
                       ],
                     ),

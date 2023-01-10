@@ -159,6 +159,19 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppEventClosePut({required int? eventId}) {
+    final String $url = '/api/v1/app/event/close';
+    final Map<String, dynamic> $params = <String, dynamic>{'eventId': eventId};
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _apiV1AppEventDeleteDelete(
       {required int? eventId}) {
     final String $url = '/api/v1/app/event/delete';
