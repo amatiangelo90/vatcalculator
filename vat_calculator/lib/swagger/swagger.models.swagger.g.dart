@@ -214,7 +214,9 @@ ExpenceEvent _$ExpenceEventFromJson(Map<String, dynamic> json) => ExpenceEvent(
       amount: (json['amount'] as num?)?.toDouble(),
       dateIntert: json['dateIntert'] as String?,
       description: json['description'] as String?,
+      eventId: json['eventId'] as num?,
       expenceId: json['expenceId'] as num?,
+      price: (json['price'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$ExpenceEventToJson(ExpenceEvent instance) =>
@@ -222,7 +224,9 @@ Map<String, dynamic> _$ExpenceEventToJson(ExpenceEvent instance) =>
       'amount': instance.amount,
       'dateIntert': instance.dateIntert,
       'description': instance.description,
+      'eventId': instance.eventId,
       'expenceId': instance.expenceId,
+      'price': instance.price,
     };
 
 Workstation _$WorkstationFromJson(Map<String, dynamic> json) => Workstation(

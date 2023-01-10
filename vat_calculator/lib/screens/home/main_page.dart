@@ -35,7 +35,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
         return Scaffold(
 
           appBar: AppBar(
-            iconTheme: const IconThemeData(color: kCustomGrey),
+            iconTheme: const IconThemeData(color: Colors.white),
             leading: IconButton(
               onPressed: (){
 
@@ -43,12 +43,12 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
               icon: Icon(Icons.login_outlined, size: getProportionateScreenHeight(30)),
               color: kCustomBordeaux,
             ),
-            backgroundColor: kCustomWhite,
+            backgroundColor: kCustomGrey,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: IconButton(
-                  icon: SvgPicture.asset('assets/icons/User.svg', color: kCustomGrey, height: getProportionateScreenHeight(35),),
+                  icon: SvgPicture.asset('assets/icons/User.svg', color: Colors.white, height: getProportionateScreenHeight(35),),
                   onPressed: (){
                   },
                 )
@@ -62,7 +62,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(19),
                     fontWeight: FontWeight.bold,
-                    color: kCustomGrey,
+                    color: Colors.white,
                   ),
                 ),
                 Text(
@@ -70,14 +70,14 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(9),
                     fontWeight: FontWeight.bold,
-                    color: kCustomGrey,
+                    color: Colors.white,
                   ),
                 ),
                 Text(
                   dataBundleNotifier.getCurrentBranch().branchId == 0 ? '' : branchUserPriviledgeToJson(dataBundleNotifier.getCurrentBranch()!.userPriviledge).toString() + ' per ' + dataBundleNotifier.getCurrentBranch()!.name!.toString(),
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(5),
-                    color: kCustomGrey,
+                    color: Colors.white,
                   ),
                 ),
               ],

@@ -68,7 +68,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               return Future.delayed(const Duration(milliseconds: 500));
             },
             child: Container(
-              color: kCustomWhite,
+              color: kCustomGrey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -434,9 +434,9 @@ class _HomePageBodyState extends State<HomePageBody> {
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
+              image: const DecorationImage(
                 colorFilter: ColorFilter.mode(Colors.black, BlendMode.dstATop),
-                image: const AssetImage("assets/images/party.jpg"),
+                image: AssetImage("assets/images/party.jpg"),
                 fit: BoxFit.cover,
               ),
             ),
@@ -487,7 +487,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             child: Card(
                               color: kCustomPinkAccent,
                               child: Center(
-                                child: Text(dataBundleNotifier.getCurrentBranch().events!.length.toString(),
+                                child: Text(dataBundleNotifier.getCurrentBranch().events!.where((event) => event.dateEvent == dateFormat.format(DateTime.now())).length.toString(),
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 14.0,

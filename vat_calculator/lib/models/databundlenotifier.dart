@@ -8,7 +8,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   String baseUrlHttps = 'https://servicedbacorp741w.com:8444/ventimetriservice';
 
-  String baseUrlHttp = 'http://servicedbacorp741w.com:8080/ventimetriquadriservice';
+  String baseUrlHttp = 'http://localhost:16172/ventimetriquadriservice';
 
   Swagger getSwaggerClient(){
     if(kIsWeb){
@@ -119,9 +119,13 @@ class DataBundleNotifier extends ChangeNotifier {
     return _currentWorkstation;
   }
 
-  void updateCurrentWorkstation(String nameWorkstaiton, String responsable) {
-    _currentWorkstation.name = nameWorkstaiton;
-    _currentWorkstation.responsable = responsable;
+  void updateCurrentWorkstation(String nameWorkstaiton, String responsable, num workstationID) {
+    for(Workstation workstation in getCurrentEvent().workstations!){
+      if(workstation.workstationId == workstationID){
+        workstation.name = nameWorkstaiton;
+        workstation.responsable = responsable;
+      }
+    }
     notifyListeners();
 
   }
@@ -340,4 +344,39 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setExpenceToCurrentEvent(ExpenceEvent expence) {
+    getCurrentEvent().expenceEvents!.add(expence);
+    notifyListeners();
+  }
+
+  void removeExpence(ExpenceEvent currentEventExpence) {
+    getCurrentEvent().expenceEvents!.removeWhere((element) => element.expenceId == currentEventExpence.expenceId);
+    notifyListeners();
+  }
+
+  void updateExpenceToCurrentEvent({required double amount,
+    required num expenceId,
+    required String description,
+    required double price,
+    required int eventId}) {
+
+    int idToReplace = 0;
+
+    for(int i = 0; i < getCurrentEvent().expenceEvents!.length; i++){
+      if(getCurrentEvent().expenceEvents![i]!.expenceId! == expenceId){
+        idToReplace = i;
+        break;
+      }
+    }
+    getCurrentEvent().expenceEvents![idToReplace] = ExpenceEvent(eventId: eventId, price: price, description: description, amount: amount, expenceId: expenceId);
+    notifyListeners();
+  }
+
+  String getTotalFromCurrentExpenceList() {
+    double tot = 0.0;
+    getCurrentEvent().expenceEvents!.forEach((element) {
+      tot = tot + (element.price! * element.amount!);
+    });
+    return tot.toStringAsFixed(2).replaceAll('.00', '');
+  }
 }

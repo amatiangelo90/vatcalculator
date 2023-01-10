@@ -26,7 +26,7 @@ class ROrderProduct {
   @JsonKey(name: 'orderProductId')
   final num? orderProductId;
   @JsonKey(name: 'price')
-  final double? price;
+  double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -461,7 +461,7 @@ class RStorageProduct {
   @JsonKey(name: 'orderAmount')
   double? orderAmount;
   @JsonKey(name: 'price')
-  final double? price;
+  double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -1055,7 +1055,9 @@ class ExpenceEvent {
     this.amount,
     this.dateIntert,
     this.description,
+    this.eventId,
     this.expenceId,
+    this.price,
   });
 
   factory ExpenceEvent.fromJson(Map<String, dynamic> json) =>
@@ -1067,8 +1069,12 @@ class ExpenceEvent {
   final String? dateIntert;
   @JsonKey(name: 'description')
   final String? description;
+  @JsonKey(name: 'eventId')
+  final num? eventId;
   @JsonKey(name: 'expenceId')
   final num? expenceId;
+  @JsonKey(name: 'price')
+  final double? price;
   static const fromJsonFactory = _$ExpenceEventFromJson;
   static const toJsonFactory = _$ExpenceEventToJson;
   Map<String, dynamic> toJson() => _$ExpenceEventToJson(this);
@@ -1085,9 +1091,14 @@ class ExpenceEvent {
             (identical(other.description, description) ||
                 const DeepCollectionEquality()
                     .equals(other.description, description)) &&
+            (identical(other.eventId, eventId) ||
+                const DeepCollectionEquality()
+                    .equals(other.eventId, eventId)) &&
             (identical(other.expenceId, expenceId) ||
                 const DeepCollectionEquality()
-                    .equals(other.expenceId, expenceId)));
+                    .equals(other.expenceId, expenceId)) &&
+            (identical(other.price, price) ||
+                const DeepCollectionEquality().equals(other.price, price)));
   }
 
   @override
@@ -1098,7 +1109,9 @@ class ExpenceEvent {
       const DeepCollectionEquality().hash(amount) ^
       const DeepCollectionEquality().hash(dateIntert) ^
       const DeepCollectionEquality().hash(description) ^
+      const DeepCollectionEquality().hash(eventId) ^
       const DeepCollectionEquality().hash(expenceId) ^
+      const DeepCollectionEquality().hash(price) ^
       runtimeType.hashCode;
 }
 
@@ -1107,25 +1120,33 @@ extension $ExpenceEventExtension on ExpenceEvent {
       {double? amount,
       String? dateIntert,
       String? description,
-      num? expenceId}) {
+      num? eventId,
+      num? expenceId,
+      double? price}) {
     return ExpenceEvent(
         amount: amount ?? this.amount,
         dateIntert: dateIntert ?? this.dateIntert,
         description: description ?? this.description,
-        expenceId: expenceId ?? this.expenceId);
+        eventId: eventId ?? this.eventId,
+        expenceId: expenceId ?? this.expenceId,
+        price: price ?? this.price);
   }
 
   ExpenceEvent copyWithWrapped(
       {Wrapped<double?>? amount,
       Wrapped<String?>? dateIntert,
       Wrapped<String?>? description,
-      Wrapped<num?>? expenceId}) {
+      Wrapped<num?>? eventId,
+      Wrapped<num?>? expenceId,
+      Wrapped<double?>? price}) {
     return ExpenceEvent(
         amount: (amount != null ? amount.value : this.amount),
         dateIntert: (dateIntert != null ? dateIntert.value : this.dateIntert),
         description:
             (description != null ? description.value : this.description),
-        expenceId: (expenceId != null ? expenceId.value : this.expenceId));
+        eventId: (eventId != null ? eventId.value : this.eventId),
+        expenceId: (expenceId != null ? expenceId.value : this.expenceId),
+        price: (price != null ? price.value : this.price));
   }
 }
 
