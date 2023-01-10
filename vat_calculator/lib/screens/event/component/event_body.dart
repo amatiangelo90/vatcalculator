@@ -13,21 +13,28 @@ class EventsBodyWidget extends StatelessWidget {
   const EventsBodyWidget({super.key});
 
 
+
   @override
   Widget build(BuildContext context) {
+
+    DateTime now = DateTime.now();
+
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-        final String monthName = _getMonthName(DateTime.now().month);
-        final String nextMonthName = _getMonthName(DateTime.now().month + 1);
+        final String monthName = _getMonthName(now.month);
+        final String nextMonthName = _getMonthName(now.month + 1);
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
+              Text(getFormtDateToReadeableItalianDate(dateFormat.format(now)), style: TextStyle(fontSize: 7),),
               buildImageContainerByMonth('assets/imagescalendar/${monthName}.png', monthName),
               Column(
-                children: buildEventListWidgetByMonth(DateTime.now().month, context, dataBundleNotifier),
+                children: buildEventListWidgetByMonth(now, context, dataBundleNotifier),
               ),
+
+
               buildImageContainerByMonth('assets/imagescalendar/${nextMonthName}.png', nextMonthName),
             ],
           ),
@@ -155,14 +162,14 @@ class EventsBodyWidget extends StatelessWidget {
       ));
     }
     if(list.isEmpty){
-      list.add(Text('Non ci sono eventi in programma', style: TextStyle(color: kCustomWhite)));
+      list.add(Text('Non ci sono eventi in programma', style: TextStyle(color: Colors.grey)));
     }
     return list;
   }
 
-  buildEventListWidgetByMonth(int month, BuildContext context, DataBundleNotifier dataBundleNotifier) {
+  buildEventListWidgetByMonth(DateTime nowDate, BuildContext context, DataBundleNotifier dataBundleNotifier) {
 
-    DateTime now = DateTime.now();
+    DateTime now = nowDate.subtract(Duration(days: 1));
 
     DateTimeRange range = DateTimeRange(start: now,
         end: DateTime(now.year, now.month + 1, 0));
@@ -181,21 +188,21 @@ class EventsBodyWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: range.start.add(Duration(days: i)) == DateTime.now() ? kCustomPinkAccent : kCustomGrey,
+                      color: range.start.add(Duration(days: i)) == now.add(Duration(days: 1)) ? kCustomGreen : kCustomGrey,
                       width: 2.0,
                     ),
                   ),
                   width: MediaQuery.of(context).size.width * 0.25,
                   height: getProportionateScreenHeight(90),
                   child: CircleAvatar(
-                    backgroundColor: Colors.white,
+                    backgroundColor: range.start.add(Duration(days: i)) == now.add(Duration(days: 1)) ? kCustomGreen : Colors.white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(getDayFromWeekDay(range.start.add(Duration(days: i)).weekday!) , style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(10))),
-                        Text(range.start.add(Duration(days: i)).day.toString()!, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(22))),
-                        Text(getMonthFromMonthNumber(range.start.add(Duration(days: i)).month), style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(10)) ),
-                      ],
+                        Text(getDayFromWeekDay(range.start.add(Duration(days: i)).weekday!) , style: TextStyle(color: range.start.add(Duration(days: i)) == now.add(Duration(days: 1)) ? Colors.white : kCustomGrey,fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10))),
+                        Text(range.start.add(Duration(days: i)).day.toString()!, style: TextStyle(color: range.start.add(Duration(days: i)) == now.add(Duration(days: 1)) ? Colors.white : kCustomGrey, fontSize: getProportionateScreenHeight(22))),
+                        ],
                     ),
                   )
               ),
@@ -207,7 +214,7 @@ class EventsBodyWidget extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.25,
               child: Column(
                 children: buildEventListForCurrentDate(dataBundleNotifier.getCurrentBranch().events!
-                    .where((element) => element.dateEvent == dateFormat.format(DateTime.now().add(Duration(days: i)))),
+                    .where((element) => element.dateEvent == dateFormat.format(now.add(Duration(days: i)))),
                     context, dataBundleNotifier),
               ),
             ),

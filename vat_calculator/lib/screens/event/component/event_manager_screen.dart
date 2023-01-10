@@ -355,6 +355,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                           child: Column(
                             children: [
 
+
+
                               buildRecapWorkstationExpences(
                                   dataBundleNotifier.getCurrentEvent(),
                                   WorkstationWorkstationType.bar

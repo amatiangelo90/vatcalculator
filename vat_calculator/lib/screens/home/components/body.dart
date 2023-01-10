@@ -68,7 +68,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               return Future.delayed(const Duration(milliseconds: 500));
             },
             child: Container(
-              color: kCustomBlack,
+              color: kCustomWhite,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -321,12 +321,12 @@ class _HomePageBodyState extends State<HomePageBody> {
     return Expanded(
       flex: 3,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(2.0),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
             image: DecorationImage(
-              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+              colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.9), BlendMode.dstATop),
               image: AssetImage("assets/images/orders.jpg"),
               fit: BoxFit.cover,
             ),
@@ -337,29 +337,32 @@ class _HomePageBodyState extends State<HomePageBody> {
             },
             style: ButtonStyle(
               elevation: MaterialStateProperty.resolveWith((states) => 5),
-              backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+              backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(0.6)),
               side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 1.5, color: Colors.white),),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset('assets/icons/receipt.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(name,style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize:
-                          getProportionateScreenWidth(
-                              17)),),
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(top: 10),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SvgPicture.asset('assets/icons/receipt.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(name,style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            getProportionateScreenWidth(
+                                17)),),
+                      ),
+                    ],
+                  ),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -427,12 +430,12 @@ class _HomePageBodyState extends State<HomePageBody> {
     return Expanded(
       flex: 2,
       child: Padding(
-        padding: const EdgeInsets.only(top: 15, bottom: 4, right: 8, left: 8),
+        padding: const EdgeInsets.only(top: 4, bottom: 4, right: 4, left: 4),
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
               image: DecorationImage(
-                colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+                colorFilter: ColorFilter.mode(Colors.black, BlendMode.dstATop),
                 image: const AssetImage("assets/images/party.jpg"),
                 fit: BoxFit.cover,
               ),
@@ -442,7 +445,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               onPressed: param1,
               style: ButtonStyle(
                 elevation: MaterialStateProperty.resolveWith((states) => 5),
-                backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+                backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(0.6)),
                 side: MaterialStateProperty.resolveWith((states) => const BorderSide(width: 1.5, color: Colors.white),),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
               ),
@@ -530,12 +533,12 @@ class _HomePageBodyState extends State<HomePageBody> {
         Expanded(
           flex: 2,
           child: Padding(
-            padding: const EdgeInsets.only(right: 4, left: 8, top: 5),
+            padding: const EdgeInsets.only(right: 2, left: 4, top: 2),
             child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+                    colorFilter: ColorFilter.mode(Colors.black, BlendMode.dstATop),
                     image: AssetImage("assets/images/supplier.jpg"),
                     fit: BoxFit.cover,
                   ),
@@ -547,7 +550,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                   },
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.resolveWith((states) => 5),
-                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(0.6)),
                     side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 1.5, color: Colors.white),),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                   ),
@@ -593,12 +596,12 @@ class _HomePageBodyState extends State<HomePageBody> {
         Expanded(
           flex: 2,
           child: Padding(
-            padding: const EdgeInsets.only(right: 8, left: 4, top: 5),
+            padding: const EdgeInsets.only(right: 4, left: 2, top: 2),
             child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   image: DecorationImage(
-                    colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.dstATop),
+                    colorFilter: ColorFilter.mode(Colors.black, BlendMode.dstATop),
                     image: AssetImage("assets/images/magazzino.jpg"),
                     fit: BoxFit.cover,
                   ),
@@ -610,7 +613,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                   },
                   style: ButtonStyle(
                     elevation: MaterialStateProperty.resolveWith((states) => 5),
-                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.transparent),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) => Colors.black.withOpacity(0.6)),
                     side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 1.5, color: Colors.white),),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                   ),

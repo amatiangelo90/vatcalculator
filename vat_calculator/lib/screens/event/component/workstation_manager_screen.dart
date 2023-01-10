@@ -801,76 +801,73 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21))),
-                        prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
-                          width: getProportionateScreenWidth(170),
-                          child: Row(
-                            children: [
-                              Text('Stock: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
-                              Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!).toStringAsFixed(2).replaceAll('.00', '') + ' x ' + product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(13))),
-                            ],
-                          ),) :
-                        Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),
-                        Text('Q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(12))),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: OutlinedButton(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21))),
+                      prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
+                        width: getProportionateScreenWidth(170),
+                        child: Row(
+                          children: [
+                            Text('Stock: ', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(9))),
+                            Text((prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!).toStringAsFixed(2).replaceAll('.00', '') + ' x ' + product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color:(prodList.where((productL) => productL.productId == product.productId)!.first!.stock! - product.amountLoad!) > 0 ? kCustomGreen : kCustomBordeaux, fontSize: getProportionateScreenHeight(11))),
+                          ],
+                        ),) :
+                      Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),
+                      Text('Q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(12))),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: OutlinedButton(
 
-                            onLongPress: () async {
+                          onLongPress: () async {
 
-                              Response response = await dataBundleNotifier
-                                  .getSwaggerClient().apiV1AppWorkstationResetproductstockvaluePut(workstationProductId: product.workstationProductId!.toInt());
+                            Response response = await dataBundleNotifier
+                                .getSwaggerClient().apiV1AppWorkstationResetproductstockvaluePut(workstationProductId: product.workstationProductId!.toInt());
 
-                              if(product.stockFromStorage != 0){
-                                if(response.isSuccessful){
-                                  product.stockFromStorage = 0;
-                                  product.amountLoad = 0;
-                                  dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(product.storageId!.toInt());
-                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                    backgroundColor: kCustomGreen,
-                                    duration: Duration(seconds: 3),
-                                    content: Text('Reset ok'),
-                                  ));
-                                }else{
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    backgroundColor: kCustomBordeaux,
-                                    duration: Duration(seconds: 3),
-                                    content: Text('Errore -  ' + response.error!.toString()),
-                                  ));
-                                }
-                              }else{
+                            if(product.stockFromStorage != 0){
+                              if(response.isSuccessful){
+                                product.stockFromStorage = 0;
+                                product.amountLoad = 0;
+                                dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(product.storageId!.toInt());
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                   backgroundColor: kCustomGreen,
                                   duration: Duration(seconds: 3),
                                   content: Text('Reset ok'),
                                 ));
+                              }else{
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: kCustomBordeaux,
+                                  duration: Duration(seconds: 3),
+                                  content: Text('Errore -  ' + response.error!.toString()),
+                                ));
                               }
-
-                            },
-                            onPressed: () {
+                            }else{
                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                backgroundColor: kCustomBordeaux,
+                                backgroundColor: kCustomGreen,
                                 duration: Duration(seconds: 3),
-                                content: Text('Tieni premuto sul pulsante Reset per 1 secondo per ripristinare la quantità di carico'),
+                                content: Text('Reset ok'),
                               ));
-                            },
-                            child: Text('Reset', style: TextStyle(color: Colors.grey)),
-                          ),
+                            }
+
+                          },
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              backgroundColor: kCustomBordeaux,
+                              duration: Duration(seconds: 3),
+                              content: Text('Tieni premuto sul pulsante Reset per 1 secondo per ripristinare la quantità di carico'),
+                            ));
+                          },
+                          child: Text('Reset', style: TextStyle(color: Colors.grey)),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Center(
                 child: Column(
                   children: [

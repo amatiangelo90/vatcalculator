@@ -35,20 +35,20 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
         return Scaffold(
 
           appBar: AppBar(
-            iconTheme: const IconThemeData(color: kCustomWhite),
+            iconTheme: const IconThemeData(color: kCustomGrey),
             leading: IconButton(
               onPressed: (){
 
               },
               icon: Icon(Icons.login_outlined, size: getProportionateScreenHeight(30)),
-              color: kRed,
+              color: kCustomBordeaux,
             ),
-            backgroundColor: kCustomBlack,
+            backgroundColor: kCustomWhite,
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: IconButton(
-                  icon: SvgPicture.asset('assets/icons/User.svg', color: Colors.white, height: getProportionateScreenHeight(35),),
+                  icon: SvgPicture.asset('assets/icons/User.svg', color: kCustomGrey, height: getProportionateScreenHeight(35),),
                   onPressed: (){
                   },
                 )
@@ -60,22 +60,24 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 Text(
                   "Ciao ${dataBundleNotifier.getUserEntity().name!}",
                   style: TextStyle(
-                    fontSize: getProportionateScreenWidth(17),
-                    color: kCustomWhite,
+                    fontSize: getProportionateScreenWidth(19),
+                    fontWeight: FontWeight.bold,
+                    color: kCustomGrey,
                   ),
                 ),
                 Text(
                   dataBundleNotifier.getUserEntity().email!,
                   style: TextStyle(
-                    fontSize: getProportionateScreenWidth(7),
-                    color: kCustomWhite,
+                    fontSize: getProportionateScreenWidth(9),
+                    fontWeight: FontWeight.bold,
+                    color: kCustomGrey,
                   ),
                 ),
                 Text(
                   dataBundleNotifier.getCurrentBranch().branchId == 0 ? '' : branchUserPriviledgeToJson(dataBundleNotifier.getCurrentBranch()!.userPriviledge).toString() + ' per ' + dataBundleNotifier.getCurrentBranch()!.name!.toString(),
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(5),
-                    color: Colors.white,
+                    color: kCustomGrey,
                   ),
                 ),
               ],
