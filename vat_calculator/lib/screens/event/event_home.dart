@@ -13,6 +13,7 @@ import '../../swagger/swagger.models.swagger.dart';
 import '../home/main_page.dart';
 import 'component/event_body.dart';
 import 'component/event_create_screen.dart';
+import 'component/event_manager_screen_closed.dart';
 
 class EventHomeScreen extends StatefulWidget {
   const EventHomeScreen({Key? key}) : super(key: key);
@@ -90,11 +91,40 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           width: 25,
                         ),
                         onPressed: () async {
-                          context.loaderOverlay.show();
-                          Response apiV1AppEventFindeventbybranchidClosedGet = await dataBundleNotifier.getSwaggerClient().apiV1AppEventFindeventbybranchidClosedGet(branchid: dataBundleNotifier.getCurrentBranch().branchId!.toInt());
-                          print(apiV1AppEventFindeventbybranchidClosedGet.body);
+                          try{
+                            context.loaderOverlay.show();
 
-                          context.loaderOverlay.hide();
+                            Response apiV1AppEventFindeventbybranchidClosedGet = await dataBundleNotifier.getSwaggerClient().apiV1AppEventFindeventbybranchidClosedGet(branchid: dataBundleNotifier.getCurrentBranch().branchId!.toInt());
+                            if(apiV1AppEventFindeventbybranchidClosedGet.isSuccessful){
+                              dataBundleNotifier.setClosedEventList(apiV1AppEventFindeventbybranchidClosedGet.body);
+
+                              if(dataBundleNotifier.getListEventClosed().isEmpty){
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  duration: const Duration(seconds: 3),
+                                  backgroundColor: kCustomBordeaux,
+                                  content: Text('Ho riscontrato degli errori durante il recupero dei dati. Error: ' + apiV1AppEventFindeventbybranchidClosedGet.error.toString()),
+                                ));
+                              }else{
+                                Navigator.pushNamed(context, EventManagerScreenClosed.routeName);
+                              }
+                            }else{
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                duration: const Duration(seconds: 3),
+                                backgroundColor: kCustomBordeaux,
+                                content: Text('Ho riscontrato degli errori durante il recupero dei dati. Error: ' + apiV1AppEventFindeventbybranchidClosedGet.error.toString()),
+                              ));
+                            }
+                          }catch(e){
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              duration: const Duration(seconds: 3),
+                              backgroundColor: kCustomBordeaux,
+                              content: Text('Ho riscontrato degli errori durante il recupero dei dati. Error: ' + e.toString()),
+                            ));
+                          }finally{
+                            context.loaderOverlay.hide();
+                          }
+
+
                         }),
                   ),
                   SizedBox(width: 5),

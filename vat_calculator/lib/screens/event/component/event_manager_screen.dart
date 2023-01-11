@@ -76,7 +76,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   },
                   icon: SvgPicture.asset('assets/icons/excel.svg', height: getProportionateScreenWidth(30)),
                 ),
-                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : IconButton(
+                dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : IconButton(
                   onPressed: (){
                     showModalBottomSheet(
                         shape: const RoundedRectangleBorder(
@@ -142,24 +142,45 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                                                 ),
                                                 onPressed: () async {
-                                                  Response responseDeleteEvent = await dataBundleNotifier.getSwaggerClient().apiV1AppEventDeleteDelete(eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
-                                                  if(responseDeleteEvent.isSuccessful){
+                                                  Navigator.of(context).pop();
 
-                                                    dataBundleNotifier.refreshCurrentBranchData();
-                                                    Navigator.pushNamed(context, EventHomeScreen.routeName);
-                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                      backgroundColor: kCustomGreen,
-                                                      duration: Duration(seconds: 1),
-                                                      content: Text('Evento ' + dataBundleNotifier.getCurrentEvent().name! + ' eliminato con success.'),
-                                                    ));
-                                                  }else{
-                                                    Navigator.of(context).pop();
-                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                      backgroundColor: kCustomGreen,
-                                                      duration: Duration(seconds: 1),
-                                                      content: Text('Ho riscontrato un errore durante la cancellazione dell\'evento ' + dataBundleNotifier.getCurrentEvent().name! + '. Err:' + responseDeleteEvent!.error.toString()),
-                                                    ));
-                                                  }
+                                                  return await showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text("Conferma operazione"),
+                                                        content: const Text("Una volta eliminato l\'evento tutti i prodotti registrati nelle workstation verranno ricaricati nei magazzini di provenienza. L\'operazione non è reversibile e verranno persi tutti i dati. Continuare?"),
+                                                        actions: <Widget>[
+                                                          OutlinedButton(
+                                                              onPressed: () async {
+                                                                Response responseDeleteEvent = await dataBundleNotifier.getSwaggerClient().apiV1AppEventDeleteDelete(eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
+                                                                if(responseDeleteEvent.isSuccessful){
+                                                                  dataBundleNotifier.refreshCurrentBranchData();
+                                                                  Navigator.pushNamed(context, EventHomeScreen.routeName);
+                                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    backgroundColor: kCustomGreen,
+                                                                    duration: Duration(seconds: 1),
+                                                                    content: Text('Evento ' + dataBundleNotifier.getCurrentEvent().name! + ' eliminato con success.'),
+                                                                  ));
+                                                                }else{
+                                                                  Navigator.of(context).pop();
+                                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    backgroundColor: kCustomGreen,
+                                                                    duration: Duration(seconds: 1),
+                                                                    content: Text('Ho riscontrato un errore durante la cancellazione dell\'evento ' + dataBundleNotifier.getCurrentEvent().name! + '. Err:' + responseDeleteEvent!.error.toString()),
+                                                                  ));
+                                                                }
+                                                              },
+                                                              child: const Text("Elimina", style: TextStyle(color: kRed),)
+                                                          ),
+                                                          OutlinedButton(
+                                                            onPressed: () => Navigator.of(context).pop(false),
+                                                            child: const Text("Indietro"),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
                                                 },
                                                 child: Text('ELIMINA EVENTO', style: TextStyle(color: Colors.white),),
                                               ),
@@ -181,24 +202,47 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                                                 ),
                                                 onPressed: () async {
-                                                  Response responseDeleteEvent = await dataBundleNotifier.getSwaggerClient().apiV1AppEventClosePut(eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
-                                                  if(responseDeleteEvent.isSuccessful){
 
-                                                    dataBundleNotifier.refreshCurrentBranchData();
-                                                    Navigator.pushNamed(context, EventHomeScreen.routeName);
-                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                      backgroundColor: kCustomGreen,
-                                                      duration: Duration(seconds: 1),
-                                                      content: Text('Evento ' + dataBundleNotifier.getCurrentEvent().name! + ' chiuso con success.'),
-                                                    ));
-                                                  }else{
-                                                    Navigator.of(context).pop();
-                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                      backgroundColor: kCustomGreen,
-                                                      duration: Duration(seconds: 1),
-                                                      content: Text('Ho riscontrato un errore durante la chiusura dell\'evento ' + dataBundleNotifier.getCurrentEvent().name! + '. Err:' + responseDeleteEvent!.error.toString()),
-                                                    ));
-                                                  }
+                                                  Navigator.of(context).pop();
+
+                                                  return await showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text("Conferma operazione"),
+                                                        content: const Text("Una volta chiuso l\'evento la giacenza registrata per ogni singolo prodotto verrà ricaricata nel magazzino di provenienza. L\'evento non sarà piu visibile nel calendario e ai tuoi collaboratori. Potrai comunque consultare gli eventi chiusi nella sezione \'Archivio Eventi\'. Continuare?"),
+                                                        actions: <Widget>[
+                                                          OutlinedButton(
+                                                              onPressed: () async {
+                                                                Response responseDeleteEvent = await dataBundleNotifier.getSwaggerClient().apiV1AppEventClosePut(eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
+                                                                if(responseDeleteEvent.isSuccessful){
+
+                                                                  dataBundleNotifier.refreshCurrentBranchData();
+                                                                  Navigator.pushNamed(context, EventHomeScreen.routeName);
+                                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    backgroundColor: kCustomGreen,
+                                                                    duration: Duration(seconds: 1),
+                                                                    content: Text('Evento ' + dataBundleNotifier.getCurrentEvent().name! + ' chiuso con success.'),
+                                                                  ));
+                                                                }else{
+                                                                  Navigator.of(context).pop();
+                                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                    backgroundColor: kCustomGreen,
+                                                                    duration: Duration(seconds: 1),
+                                                                    content: Text('Ho riscontrato un errore durante la chiusura dell\'evento ' + dataBundleNotifier.getCurrentEvent().name! + '. Err:' + responseDeleteEvent!.error.toString()),
+                                                                  ));
+                                                                }
+                                                              },
+                                                              child: const Text("Chiudi Evento", style: TextStyle(color: kRed),)
+                                                          ),
+                                                          OutlinedButton(
+                                                            onPressed: () => Navigator.of(context).pop(false),
+                                                            child: const Text("Indietro"),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
+                                                  );
                                                 },
                                                 child: Text('CHIUDI EVENTO', style: TextStyle(color: Colors.white),),
                                               ),
@@ -217,7 +261,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                         });
                   },
                   icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomGrey, height: getProportionateScreenWidth(30)),
-                ),
+                ) : SizedBox(height: 1),
               ],
               leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
@@ -287,7 +331,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('BAR', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGreen)),
-                                OutlinedButton(
+                                dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
                                     onPressed: () async {
                                       Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
                                         workstationType: WorkstationWorkstationType.bar,
@@ -315,7 +359,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       }
                                     },
                                     child: const Text("Crea nuovo", style: TextStyle(color: kCustomGreen),)
-                                )
+                                ) : Text(''),
                               ],
                             ),
                           ),
@@ -333,7 +377,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text('CHAMPAGNERIE',textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomBordeaux)),
-                                OutlinedButton(
+                                dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
                                     onPressed: () async {
                                       Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(
                                           workstation: Workstation(
@@ -362,7 +406,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       }
                                     },
                                     child: const Text("Crea nuovo", style: TextStyle(color: kCustomBordeaux),)
-                                )
+                                ) : Text('')
                               ],
                             ),
                           ),
@@ -394,7 +438,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text('Spese serata', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
-                                      OutlinedButton(
+                                      dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
                                           onPressed: () async {
 
                                             TextEditingController amountController = TextEditingController();
@@ -513,7 +557,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                             );
                                           },
                                           child: const Text("Crea nuova", style: TextStyle(color: kCustomGrey),)
-                                      )
+                                      ) : Text(''),
                                     ],
                                   ),
                                 ),
@@ -725,7 +769,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ),
             ),
             key: Key(workstation.workstationId!.toString()),
-            direction: DismissDirection.endToStart,
+            direction: dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? DismissDirection.endToStart : DismissDirection.none,
             confirmDismiss: (DismissDirection direction) async {
               return await showDialog(
                 context: context,
@@ -862,14 +906,22 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   buildWorkstationWidget(bool isBar, DataBundleNotifier dataBundleNotifier, Workstation workstation) {
     return ListTile(
       onTap: (){
+        if(dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto){
+          dataBundleNotifier.setCurrentWorkstation(workstation);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WorkstationManagerScreen(),
+            ),
+          );
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            backgroundColor: kCustomBordeaux,
+            duration: Duration(seconds: 2),
+            content: Text('Evento chiuso. Per visualizzare le informazioni della postazione lavorativa vai nella sezione spese.'),
+          ));
+        }
 
-        dataBundleNotifier.setCurrentWorkstation(workstation);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => WorkstationManagerScreen(),
-          ),
-        );
       },
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -898,9 +950,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             ],
           ),
 
-          IconButton(
+          dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? IconButton(
             onPressed: (){
-
               showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -958,7 +1009,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               );
             },
             icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomGrey, height: getProportionateScreenWidth(30)),
-          ),
+          ) : Text(''),
         ],
       ),
     );

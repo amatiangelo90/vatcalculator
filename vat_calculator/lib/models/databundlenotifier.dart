@@ -379,4 +379,15 @@ class DataBundleNotifier extends ChangeNotifier {
     });
     return tot.toStringAsFixed(2).replaceAll('.00', '');
   }
+
+  List<Event> _currentEventsClosed = [];
+
+  List<Event> getListEventClosed(){
+    return _currentEventsClosed;
+  }
+  void setClosedEventList(List<Event> eventClosed) {
+    _currentEventsClosed.clear();
+    _currentEventsClosed.addAll(eventClosed);
+    notifyListeners();
+  }
 }
