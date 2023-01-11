@@ -373,7 +373,6 @@ Map<String, dynamic> _$BranchToJson(Branch instance) => <String, dynamic>{
 
 Event _$EventFromJson(Map<String, dynamic> json) => Event(
       branchId: json['branchId'] as num?,
-      cardColor: json['cardColor'] as String?,
       createdBy: json['createdBy'] as String?,
       dateCreation: json['dateCreation'] as String?,
       dateEvent: json['dateEvent'] as String?,
@@ -394,7 +393,6 @@ Event _$EventFromJson(Map<String, dynamic> json) => Event(
 
 Map<String, dynamic> _$EventToJson(Event instance) => <String, dynamic>{
       'branchId': instance.branchId,
-      'cardColor': instance.cardColor,
       'createdBy': instance.createdBy,
       'dateCreation': instance.dateCreation,
       'dateEvent': instance.dateEvent,

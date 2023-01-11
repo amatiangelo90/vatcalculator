@@ -1811,7 +1811,6 @@ extension $BranchExtension on Branch {
 class Event {
   Event({
     this.branchId,
-    this.cardColor,
     this.createdBy,
     this.dateCreation,
     this.dateEvent,
@@ -1828,8 +1827,6 @@ class Event {
 
   @JsonKey(name: 'branchId')
   final num? branchId;
-  @JsonKey(name: 'cardColor')
-  final String? cardColor;
   @JsonKey(name: 'createdBy')
   final String? createdBy;
   @JsonKey(name: 'dateCreation')
@@ -1865,9 +1862,6 @@ class Event {
             (identical(other.branchId, branchId) ||
                 const DeepCollectionEquality()
                     .equals(other.branchId, branchId)) &&
-            (identical(other.cardColor, cardColor) ||
-                const DeepCollectionEquality()
-                    .equals(other.cardColor, cardColor)) &&
             (identical(other.createdBy, createdBy) ||
                 const DeepCollectionEquality()
                     .equals(other.createdBy, createdBy)) &&
@@ -1905,7 +1899,6 @@ class Event {
   @override
   int get hashCode =>
       const DeepCollectionEquality().hash(branchId) ^
-      const DeepCollectionEquality().hash(cardColor) ^
       const DeepCollectionEquality().hash(createdBy) ^
       const DeepCollectionEquality().hash(dateCreation) ^
       const DeepCollectionEquality().hash(dateEvent) ^
@@ -1922,7 +1915,6 @@ class Event {
 extension $EventExtension on Event {
   Event copyWith(
       {num? branchId,
-      String? cardColor,
       String? createdBy,
       String? dateCreation,
       String? dateEvent,
@@ -1935,7 +1927,6 @@ extension $EventExtension on Event {
       List<Workstation>? workstations}) {
     return Event(
         branchId: branchId ?? this.branchId,
-        cardColor: cardColor ?? this.cardColor,
         createdBy: createdBy ?? this.createdBy,
         dateCreation: dateCreation ?? this.dateCreation,
         dateEvent: dateEvent ?? this.dateEvent,
@@ -1950,7 +1941,6 @@ extension $EventExtension on Event {
 
   Event copyWithWrapped(
       {Wrapped<num?>? branchId,
-      Wrapped<String?>? cardColor,
       Wrapped<String?>? createdBy,
       Wrapped<String?>? dateCreation,
       Wrapped<String?>? dateEvent,
@@ -1963,7 +1953,6 @@ extension $EventExtension on Event {
       Wrapped<List<Workstation>?>? workstations}) {
     return Event(
         branchId: (branchId != null ? branchId.value : this.branchId),
-        cardColor: (cardColor != null ? cardColor.value : this.cardColor),
         createdBy: (createdBy != null ? createdBy.value : this.createdBy),
         dateCreation:
             (dateCreation != null ? dateCreation.value : this.dateCreation),

@@ -1,15 +1,14 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+
 import '../../../components/loader_overlay_widget.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
-import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 import 'add_prod_workstation_element.dart';
 
