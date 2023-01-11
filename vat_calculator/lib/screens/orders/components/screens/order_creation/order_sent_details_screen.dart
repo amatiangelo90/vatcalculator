@@ -191,6 +191,7 @@ class OrderSentDetailsScreen extends StatelessWidget {
                   padding: EdgeInsets.all(15.0),
                   child: Text('-- oppure torna alla home --' , textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold)),
                 ),
+                SizedBox(height: 100,)
               ],
             ),
           ),

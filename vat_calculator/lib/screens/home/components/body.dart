@@ -148,7 +148,10 @@ class _HomePageBodyState extends State<HomePageBody> {
                     }
                   }, dataBundleNotifier,),
 
-                  SizedBox(height: getProportionateScreenHeight(15),),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Developed by AmatiCorp', style: TextStyle(fontSize: 6)),
+                  )
                 ],
               ),
             ),
