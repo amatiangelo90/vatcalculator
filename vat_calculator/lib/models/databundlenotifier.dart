@@ -144,13 +144,12 @@ class DataBundleNotifier extends ChangeNotifier {
     productList.forEach((prod) {
       returnRProdList.add(ROrderProduct(
         productId: prod.productId,
-        unitMeasure: productUnitMeasureToJson(prod.unitMeasure),
+        unitMeasure: prod.unitMeasure == ProductUnitMeasure.altro ? prod.unitMeasureOTH! : productUnitMeasureToJson(prod.unitMeasure),
         price: prod.price,
         amount: 0,
         productName: prod.name,
       ));
     });
-
     return returnRProdList;
 
   }

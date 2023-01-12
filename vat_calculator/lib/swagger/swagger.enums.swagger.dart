@@ -24,12 +24,28 @@ enum ProductUnitMeasure {
   kg,
   @JsonValue('PEZZI')
   pezzi,
+  @JsonValue('LITRI')
+  litri,
+  @JsonValue('PACCHI')
+  pacchi,
+  @JsonValue('BARATTOLIPICCOLI')
+  barattolipiccoli,
   @JsonValue('CARTONI')
   cartoni,
   @JsonValue('BOTTIGLIA')
   bottiglia,
+  @JsonValue('BARATTOLI')
+  barattoli,
+  @JsonValue('FARDELLO')
+  fardello,
+  @JsonValue('CT')
+  ct,
+  @JsonValue('BOTTIGLIETTA')
+  bottiglietta,
   @JsonValue('UNITA')
   unita,
+  @JsonValue('SECCHIO')
+  secchio,
   @JsonValue('ALTRO')
   altro
 }
@@ -37,9 +53,17 @@ enum ProductUnitMeasure {
 const $ProductUnitMeasureMap = {
   ProductUnitMeasure.kg: 'KG',
   ProductUnitMeasure.pezzi: 'PEZZI',
+  ProductUnitMeasure.litri: 'LITRI',
+  ProductUnitMeasure.pacchi: 'PACCHI',
+  ProductUnitMeasure.barattolipiccoli: 'BARATTOLIPICCOLI',
   ProductUnitMeasure.cartoni: 'CARTONI',
   ProductUnitMeasure.bottiglia: 'BOTTIGLIA',
+  ProductUnitMeasure.barattoli: 'BARATTOLI',
+  ProductUnitMeasure.fardello: 'FARDELLO',
+  ProductUnitMeasure.ct: 'CT',
+  ProductUnitMeasure.bottiglietta: 'BOTTIGLIETTA',
   ProductUnitMeasure.unita: 'UNITA',
+  ProductUnitMeasure.secchio: 'SECCHIO',
   ProductUnitMeasure.altro: 'ALTRO'
 };
 

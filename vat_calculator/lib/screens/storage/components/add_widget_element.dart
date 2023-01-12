@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
+import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 
 class AddElementWidget extends StatelessWidget {
@@ -51,7 +52,7 @@ class AddElementWidget extends StatelessWidget {
                           SizedBox(
                               width: getProportionateScreenWidth(250),
                               child: Text(element.name!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey,fontSize: getProportionateScreenHeight(17)),)),
-                          Text(productUnitMeasureToJson(element.unitMeasure)!, style: TextStyle(fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold,),),
+                          Text(element.unitMeasure == ProductUnitMeasure.altro ? element.unitMeasureOTH! : productUnitMeasureToJson(element.unitMeasure)!, style: TextStyle(fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold,),),
                         ],
                       ),
                       IconButton(onPressed: () async {
@@ -62,10 +63,8 @@ class AddElementWidget extends StatelessWidget {
 
                         if(apiV1AppStorageInsertproductGet.isSuccessful){
                           dataBundleNotifier.addProductToCurrentStorage(apiV1AppStorageInsertproductGet.body);
-
                         }else{
                           print(apiV1AppStorageInsertproductGet.error.toString());
-
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             backgroundColor: kPinaColor,

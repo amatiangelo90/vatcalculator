@@ -34,9 +34,12 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
       overlayWidget: const LoaderOverlayWidget(message: 'Caricamento dati in corso...',),
       child: Consumer<DataBundleNotifier>(
           builder: (context, dataBundleNotifier, child) {
+            print(dataBundleNotifier.getCurrentBranch().userPriviledge);
+            print(BranchUserPriviledge.employee);
+
             return Scaffold(
               backgroundColor: Colors.white,
-              floatingActionButton: dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ?
+              floatingActionButton: dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.admin ?
               FloatingActionButton(
                   heroTag: "bt123541b12b3123",
                   backgroundColor: kCustomGreen,

@@ -75,81 +75,23 @@ class _HomePageBodyState extends State<HomePageBody> {
                   buildGestureDetectorBranchSelector(
                       context, dataBundleNotifier),
                   //buildStaffWidget(dataBundleNotifier),
-                  buildOrderButton('ORDINI', dataBundleNotifier),
 
-                  buildSuppliersStorageButton(width, dataBundleNotifier),
                   buildCateringButton('CATERING', (){
                     if(dataBundleNotifier.getCurrentBranch()!.storages!.isEmpty){
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            contentPadding: EdgeInsets.zero,
-                            shape: const RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.all(
-                                    Radius.circular(10.0))),
-                            content: Builder(
-                              builder: (context) {
-                                var height = MediaQuery.of(context).size.height;
-                                var width = MediaQuery.of(context).size.width;
-                                return SizedBox(
-                                  height: getProportionateScreenHeight(300),
-                                  width: width - 90,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          decoration: const BoxDecoration(
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(10.0),
-                                                topLeft: Radius.circular(10.0) ),
-                                            color: kPinaColor,
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: [
-                                                  Text('  Errore ',style: TextStyle(
-                                                    fontSize: getProportionateScreenWidth(14),
-                                                    fontWeight: FontWeight.bold,
-                                                    color: kCustomWhite,
-                                                  ),),
-                                                  IconButton(icon: const Icon(
-                                                    Icons.clear,
-                                                    color: kCustomWhite,
-                                                  ), onPressed: () { Navigator.pop(context); },),
-
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        const Center(
-                                          child: Padding(
-                                            padding: EdgeInsets.all(18.0),
-                                            child: Text('Per creare un evento catering devi prima creare un magazzino. Il magazzino creato potrà essere selezionato ed associato all\' evento in modo tale da ottenere una lista di prodotti da utilizzare in fase di carico/scarico',
-                                              style: TextStyle(fontSize: 14),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                      );
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        backgroundColor: kCustomBordeaux,
+                        duration: Duration(seconds: 4),
+                        content: Text('Per creare un evento catering devi prima creare un magazzino. Il magazzino creato potrà essere selezionato ed associato all\' evento in modo tale da ottenere una lista di prodotti da utilizzare in fase di carico/scarico'),
+                      ));
                     }else{
                       Navigator.pushNamed(context, EventHomeScreen.routeName);
                     }
                   }, dataBundleNotifier,),
+                  buildSuppliersStorageButton(width, dataBundleNotifier),
 
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  buildOrderButton('ORDINI', dataBundleNotifier),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Text('Developed by AmatiCorp', style: TextStyle(fontSize: 6)),
                   )
                 ],
@@ -322,9 +264,9 @@ class _HomePageBodyState extends State<HomePageBody> {
 
   buildOrderButton(String name, DataBundleNotifier dataBundleNotifier) {
     return Expanded(
-      flex: 3,
+      flex: 4,
       child: Padding(
-        padding: const EdgeInsets.all(2.0),
+        padding: const EdgeInsets.all(6.0),
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
@@ -355,7 +297,6 @@ class _HomePageBodyState extends State<HomePageBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: SvgPicture.asset('assets/icons/receipt.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                       ),
-
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Text(name,style: TextStyle(
@@ -363,7 +304,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                             fontWeight: FontWeight.bold,
                             fontSize:
                             getProportionateScreenWidth(
-                                17)),),
+                                16)),),
                       ),
                     ],
                   ),
@@ -434,7 +375,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     return Expanded(
       flex: 2,
       child: Padding(
-        padding: const EdgeInsets.only(top: 4, bottom: 4, right: 4, left: 4),
+        padding: const EdgeInsets.all(6),
         child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20),
@@ -559,28 +500,13 @@ class _HomePageBodyState extends State<HomePageBody> {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: SvgPicture.asset('assets/icons/supplier.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
-                            ),
-                            Text('FORNITORI',style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                getProportionateScreenWidth(
-                                    17)),),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8, top: 8),
-                              child: const Icon(Icons.circle, color: kCustomGreen, size: 5,),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: SvgPicture.asset('assets/icons/supplier.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                         ),
                       ),
                       Padding(
@@ -590,7 +516,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                             fontSize: getProportionateScreenWidth(50),
                             color: Colors.white),),
                       ),
-                      Text('')
+                      Text('FORNITORI',style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          getProportionateScreenWidth(
+                              15)),),
                     ],
                   ),
                 )
@@ -622,28 +553,13 @@ class _HomePageBodyState extends State<HomePageBody> {
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                   ),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
-                            ),
-                            Text('MAGAZZINI',style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize:
-                                getProportionateScreenWidth(
-                                    17)),),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8, top: 8),
-                              child: const Icon(Icons.circle, color: kCustomGreen, size: 5,),
-                            ),
-                          ],
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8),
+                          child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.white, height: getProportionateScreenHeight(27),),
                         ),
                       ),
                       Padding(
@@ -653,7 +569,12 @@ class _HomePageBodyState extends State<HomePageBody> {
                             fontSize: getProportionateScreenWidth(50),
                             color: Colors.white),),
                       ),
-                      Text(''),
+                      Text('MAGAZZINI',style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize:
+                          getProportionateScreenWidth(
+                              15)),),
                     ],
                   ),
                 )

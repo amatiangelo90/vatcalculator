@@ -103,6 +103,7 @@ RStorageProduct _$RStorageProductFromJson(Map<String, dynamic> json) =>
       storageProductId: json['storageProductId'] as num?,
       supplierId: json['supplierId'] as num?,
       unitMeasure: json['unitMeasure'] as String?,
+      unitMeasureOth: json['unitMeasureOth'] as String?,
     );
 
 Map<String, dynamic> _$RStorageProductToJson(RStorageProduct instance) =>
@@ -117,6 +118,7 @@ Map<String, dynamic> _$RStorageProductToJson(RStorageProduct instance) =>
       'storageProductId': instance.storageProductId,
       'supplierId': instance.supplierId,
       'unitMeasure': instance.unitMeasure,
+      'unitMeasureOth': instance.unitMeasureOth,
     };
 
 Customer _$CustomerFromJson(Map<String, dynamic> json) => Customer(

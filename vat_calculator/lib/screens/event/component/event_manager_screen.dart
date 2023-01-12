@@ -71,11 +71,16 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 ],
               ),
               actions: [
-                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : IconButton(
+                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.admin ? IconButton(
                   onPressed: (){
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: kCustomGreen,
+                      duration: Duration(seconds: 3),
+                      content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
+                    ));
                   },
                   icon: SvgPicture.asset('assets/icons/excel.svg', height: getProportionateScreenWidth(30)),
-                ),
+                ) :  const Text(''),
                 dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : IconButton(
                   onPressed: (){
                     showModalBottomSheet(
@@ -333,30 +338,39 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                 Text('BAR', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGreen)),
                                 dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
                                     onPressed: () async {
-                                      Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
-                                        workstationType: WorkstationWorkstationType.bar,
-                                        eventId: dataBundleNotifier.getCurrentEvent().eventId!,
-                                        responsable: '',
-                                        name: 'NUOVO BAR',
-                                        products: [],
-                                        extra: '',
-                                      ));
-                                      if(createWorkstationResponse.isSuccessful){
-                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                      if(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee){
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                            backgroundColor: kCustomGreen,
-                                            duration: Duration(milliseconds: 1000),
-                                            content: Text('Postazione bar creata correttamente'
+                                            backgroundColor: kCustomBordeaux,
+                                            duration: Duration(milliseconds: 3000),
+                                            content: Text('Non hai i permessi per creare una nuova postazione'
                                             )));
                                       }else{
-                                        Navigator.of(context).pop();
-                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                            backgroundColor: kRed,
-                                            duration: Duration(milliseconds: 3000),
-                                            content: Text('Errore durante la creazione della postazione bar. Riprova fra 2 minuti.'
-                                            )));
+                                        Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(workstation: Workstation(
+                                          workstationType: WorkstationWorkstationType.bar,
+                                          eventId: dataBundleNotifier.getCurrentEvent().eventId!,
+                                          responsable: '',
+                                          name: 'NUOVO BAR',
+                                          products: [],
+                                          extra: '',
+                                        ));
+                                        if(createWorkstationResponse.isSuccessful){
+                                          dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              backgroundColor: kCustomGreen,
+                                              duration: Duration(milliseconds: 1000),
+                                              content: Text('Postazione bar creata correttamente'
+                                              )));
+                                        }else{
+                                          Navigator.of(context).pop();
+                                          dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              backgroundColor: kRed,
+                                              duration: Duration(milliseconds: 3000),
+                                              content: Text('Errore durante la creazione della postazione bar. Riprova fra 2 minuti.'
+                                              )));
+                                        }
                                       }
+
                                     },
                                     child: const Text("Crea nuovo", style: TextStyle(color: kCustomGreen),)
                                 ) : Text(''),
@@ -379,31 +393,41 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                 Text('CHAMPAGNERIE',textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomBordeaux)),
                                 dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
                                     onPressed: () async {
-                                      Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(
-                                          workstation: Workstation(
-                                        workstationType: WorkstationWorkstationType.champagnerie,
-                                        eventId: dataBundleNotifier.getCurrentEvent().eventId!,
-                                        responsable: '',
-                                        name: 'CHAMPAGNERIE',
-                                        products: [],
-                                        extra: '',
-                                      ));
-                                      if(createWorkstationResponse.isSuccessful){
-                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+
+                                      if(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee){
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                            backgroundColor: kCustomGreen,
-                                            duration: Duration(milliseconds: 1000),
-                                            content: Text('Postazione champagnerie creata correttamente'
+                                            backgroundColor: kCustomBordeaux,
+                                            duration: Duration(milliseconds: 3000),
+                                            content: Text('Non hai i permessi per creare una nuova postazione'
                                             )));
                                       }else{
-                                        Navigator.of(context).pop();
-                                        dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                            backgroundColor: kRed,
-                                            duration: Duration(milliseconds: 3000),
-                                            content: Text('Errore durante la creazione della postazione champagnerie. Riprova fra 2 minuti.'
-                                            )));
+                                        Response createWorkstationResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppEventWorkstationCreatePost(
+                                            workstation: Workstation(
+                                              workstationType: WorkstationWorkstationType.champagnerie,
+                                              eventId: dataBundleNotifier.getCurrentEvent().eventId!,
+                                              responsable: '',
+                                              name: 'CHAMPAGNERIE',
+                                              products: [],
+                                              extra: '',
+                                            ));
+                                        if(createWorkstationResponse.isSuccessful){
+                                          dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              backgroundColor: kCustomGreen,
+                                              duration: Duration(milliseconds: 1000),
+                                              content: Text('Postazione champagnerie creata correttamente'
+                                              )));
+                                        }else{
+                                          Navigator.of(context).pop();
+                                          dataBundleNotifier.refreshEventById(createWorkstationResponse.body);
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                              backgroundColor: kRed,
+                                              duration: Duration(milliseconds: 3000),
+                                              content: Text('Errore durante la creazione della postazione champagnerie. Riprova fra 2 minuti.'
+                                              )));
+                                        }
                                       }
+
                                     },
                                     child: const Text("Crea nuovo", style: TextStyle(color: kCustomBordeaux),)
                                 ) : Text('')
@@ -952,61 +976,70 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
           dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? IconButton(
             onPressed: (){
-              showDialog(
-                  context: context,
-                  builder: (_) => AlertDialog(
-                    contentPadding: EdgeInsets.zero,
-                    shape: const RoundedRectangleBorder(
-                        borderRadius:
-                        BorderRadius.all(
-                            Radius.circular(10.0))),
-                    content: Builder(
-                      builder: (context) {
-                        var height = MediaQuery.of(context).size.height;
-                        var width = MediaQuery.of(context).size.width;
-                        return SizedBox(
-                          height: getProportionateScreenHeight(300),
-                          width: width - 90,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.vertical,
-                            child: Column(
-                              children: [
-                                Container(
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(10.0),
-                                        topLeft: Radius.circular(10.0) ),
-                                    color: kCustomGrey,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text('  Aggiorna postazione ',style: TextStyle(
-                                            fontSize: getProportionateScreenWidth(14),
-                                            fontWeight: FontWeight.bold,
-                                            color: kCustomWhite,
-                                          ),),
-                                          IconButton(icon: const Icon(
-                                            Icons.clear,
-                                            color: kCustomWhite,
-                                          ), onPressed: () { Navigator.pop(context); },),
+              if(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee){
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  backgroundColor: kCustomBordeaux,
+                  duration: Duration(seconds: 2),
+                  content: Text('Utente non abilitato alla modifica della postazione bar'),
+                ));
+              }else{
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      contentPadding: EdgeInsets.zero,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius:
+                          BorderRadius.all(
+                              Radius.circular(10.0))),
+                      content: Builder(
+                        builder: (context) {
+                          var height = MediaQuery.of(context).size.height;
+                          var width = MediaQuery.of(context).size.width;
+                          return SizedBox(
+                            height: getProportionateScreenHeight(300),
+                            width: width - 90,
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                          topRight: Radius.circular(10.0),
+                                          topLeft: Radius.circular(10.0) ),
+                                      color: kCustomGrey,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text('  Aggiorna postazione ',style: TextStyle(
+                                              fontSize: getProportionateScreenWidth(14),
+                                              fontWeight: FontWeight.bold,
+                                              color: kCustomWhite,
+                                            ),),
+                                            IconButton(icon: const Icon(
+                                              Icons.clear,
+                                              color: kCustomWhite,
+                                            ), onPressed: () { Navigator.pop(context); },),
 
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                buildSettingWorkstationWidget(dataBundleNotifier, workstation)
-                              ],
+                                  buildSettingWorkstationWidget(dataBundleNotifier, workstation)
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-              );
+                          );
+                        },
+                      ),
+                    )
+                );
+              }
+
             },
             icon: SvgPicture.asset('assets/icons/Settings.svg', color: kCustomGrey, height: getProportionateScreenWidth(30)),
           ) : Text(''),

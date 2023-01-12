@@ -209,7 +209,7 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                       Row(
                         children: [
                           Text(
-                            currentProduct.unitMeasure!,
+                            currentProduct.unitMeasure! == 'ALTRO' ? currentProduct.unitMeasure! : currentProduct.unitMeasure!,
                             style:
                             TextStyle(fontSize: getProportionateScreenWidth(13), fontWeight: FontWeight.bold),
                           ),
@@ -263,7 +263,6 @@ class _ChoiceOrderProductScreenState extends State<ChoiceOrderProductScreen> {
                               currentProduct.amount = double.parse(text.replaceAll(',', '.'));
                             }
                           }
-
                         },
                         textInputAction: TextInputAction.next,
                         style: TextStyle(

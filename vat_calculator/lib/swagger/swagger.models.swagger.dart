@@ -235,11 +235,11 @@ class RWorkstationProduct {
   @JsonKey(name: 'leftOvers')
   double? leftOvers;
   @JsonKey(name: 'price')
-  final double? price;
+  double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
-  final String? productName;
+  String? productName;
   @JsonKey(name: 'stockFromStorage')
   double? stockFromStorage;
   @JsonKey(name: 'storageId')
@@ -449,6 +449,7 @@ class RStorageProduct {
     this.storageProductId,
     this.supplierId,
     this.unitMeasure,
+    this.unitMeasureOth,
   });
 
   factory RStorageProduct.fromJson(Map<String, dynamic> json) =>
@@ -474,6 +475,8 @@ class RStorageProduct {
   final num? supplierId;
   @JsonKey(name: 'unitMeasure')
   final String? unitMeasure;
+  @JsonKey(name: 'unitMeasureOth')
+  final String? unitMeasureOth;
   static const fromJsonFactory = _$RStorageProductFromJson;
   static const toJsonFactory = _$RStorageProductToJson;
   Map<String, dynamic> toJson() => _$RStorageProductToJson(this);
@@ -509,7 +512,10 @@ class RStorageProduct {
                     .equals(other.supplierId, supplierId)) &&
             (identical(other.unitMeasure, unitMeasure) ||
                 const DeepCollectionEquality()
-                    .equals(other.unitMeasure, unitMeasure)));
+                    .equals(other.unitMeasure, unitMeasure)) &&
+            (identical(other.unitMeasureOth, unitMeasureOth) ||
+                const DeepCollectionEquality()
+                    .equals(other.unitMeasureOth, unitMeasureOth)));
   }
 
   @override
@@ -527,6 +533,7 @@ class RStorageProduct {
       const DeepCollectionEquality().hash(storageProductId) ^
       const DeepCollectionEquality().hash(supplierId) ^
       const DeepCollectionEquality().hash(unitMeasure) ^
+      const DeepCollectionEquality().hash(unitMeasureOth) ^
       runtimeType.hashCode;
 }
 
@@ -541,7 +548,8 @@ extension $RStorageProductExtension on RStorageProduct {
       double? stock,
       num? storageProductId,
       num? supplierId,
-      String? unitMeasure}) {
+      String? unitMeasure,
+      String? unitMeasureOth}) {
     return RStorageProduct(
         amountHundred: amountHundred ?? this.amountHundred,
         available: available ?? this.available,
@@ -552,7 +560,8 @@ extension $RStorageProductExtension on RStorageProduct {
         stock: stock ?? this.stock,
         storageProductId: storageProductId ?? this.storageProductId,
         supplierId: supplierId ?? this.supplierId,
-        unitMeasure: unitMeasure ?? this.unitMeasure);
+        unitMeasure: unitMeasure ?? this.unitMeasure,
+        unitMeasureOth: unitMeasureOth ?? this.unitMeasureOth);
   }
 
   RStorageProduct copyWithWrapped(
@@ -565,7 +574,8 @@ extension $RStorageProductExtension on RStorageProduct {
       Wrapped<double?>? stock,
       Wrapped<num?>? storageProductId,
       Wrapped<num?>? supplierId,
-      Wrapped<String?>? unitMeasure}) {
+      Wrapped<String?>? unitMeasure,
+      Wrapped<String?>? unitMeasureOth}) {
     return RStorageProduct(
         amountHundred:
             (amountHundred != null ? amountHundred.value : this.amountHundred),
@@ -582,7 +592,10 @@ extension $RStorageProductExtension on RStorageProduct {
             : this.storageProductId),
         supplierId: (supplierId != null ? supplierId.value : this.supplierId),
         unitMeasure:
-            (unitMeasure != null ? unitMeasure.value : this.unitMeasure));
+            (unitMeasure != null ? unitMeasure.value : this.unitMeasure),
+        unitMeasureOth: (unitMeasureOth != null
+            ? unitMeasureOth.value
+            : this.unitMeasureOth));
   }
 }
 

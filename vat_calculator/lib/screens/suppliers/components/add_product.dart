@@ -41,7 +41,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   String currentUnitMeasure = 'Seleziona unità di misura';
-  String currentIva = 'Seleziona aliquota applicata';
+  String currentIva = '22';
 
   @override
   Widget build(BuildContext context) {
@@ -120,71 +120,124 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 ),
                                 context: context,
                                 builder: (context) {
-                                  return Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      ListTile(
-                                        leading: Icon(FontAwesomeIcons.weightHanging, color: kCustomGrey),
-                                        title: Text(ProductUnitMeasure.kg.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
-                                        onTap: () {
-                                          setState(() {
-                                            currentUnitMeasure = ProductUnitMeasure.kg.name;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: Icon(FontAwesomeIcons.box, color: kCustomGrey),
-                                        title: Text(ProductUnitMeasure.pezzi.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
-                                        onTap: () {
-                                          setState(() {
-                                            currentUnitMeasure = ProductUnitMeasure.pezzi.name;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: Icon(FontAwesomeIcons.boxes, color: kCustomGrey),
-                                        title: Text(ProductUnitMeasure.cartoni.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
-                                        onTap: () {
-                                          setState(() {
-                                            currentUnitMeasure = ProductUnitMeasure.cartoni.name;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(FontAwesomeIcons.wineBottle, color: kCustomGrey),
-                                        title: Text(ProductUnitMeasure.bottiglia.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
-                                        onTap: () {
-                                          setState(() {
-                                            currentUnitMeasure = ProductUnitMeasure.bottiglia.name;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kCustomGrey),
-                                        title: Text(ProductUnitMeasure.unita.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
-                                        onTap: () {
-                                          setState(() {
-                                            currentUnitMeasure = ProductUnitMeasure.unita.name;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: Icon(FontAwesomeIcons.adn, color: kCustomGrey),
-                                        title: Text(ProductUnitMeasure.altro.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
-                                        onTap: () {
-                                          setState(() {
-                                            currentUnitMeasure = ProductUnitMeasure.altro.name;
-                                          });
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      SizedBox(height: 30,)
-                                    ],
+                                  return SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.weightHanging, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.kg.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.kg.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.box, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.pezzi.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.pezzi.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.boxes, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.cartoni.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.cartoni.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(FontAwesomeIcons.wineBottle, size: 30, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.bottiglia.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.bottiglia.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(FontAwesomeIcons.wineBottle, size: 23, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.bottiglietta.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.bottiglietta.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(Icons.one_x_mobiledata, size: 30, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.unita.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.unita.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(FontAwesomeIcons.database, size: 28, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.barattoli.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.barattoli.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(FontAwesomeIcons.database, size: 21, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.barattolipiccoli.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.barattolipiccoli.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(FontAwesomeIcons.water, size: 21, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.litri.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.litri.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading:const Icon(FontAwesomeIcons.linode, size: 21, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.fardello.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.fardello.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: Icon(FontAwesomeIcons.adn, color: kCustomGrey),
+                                          title: Text(ProductUnitMeasure.altro.name, style: TextStyle(fontWeight: FontWeight.w800, color: kCustomGrey)),
+                                          onTap: () {
+                                            setState(() {
+                                              currentUnitMeasure = ProductUnitMeasure.altro.name;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        SizedBox(height: 30,)
+                                      ],
+                                    ),
                                   );
                                 });
 
@@ -214,7 +267,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   Row(
                     children: [
                       const SizedBox(width: 11,),
-                      Text('   Prezzo Lordo', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      Text('   Prezzo (€)', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                     ],
                   ),
                   Padding(
@@ -237,7 +290,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   Row(
                     children: [
                       const SizedBox(width: 11,),
-                      Text('   Iva Applicata', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
+                      Text('   Iva Applicata (%)', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12))),
                     ],
                   ),
                   Padding(
@@ -372,8 +425,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     buildSnackBar(text: 'Specificare unità di misura', color: kRed);
                   }else if(double.tryParse(_priceController.text.replaceAll(',', '.')) == null){
                     buildSnackBar(text: 'Valore non valido per il prezzo. Immettere un numero corretto.', color: kRed);
-                  }else if(currentIva == 'Seleziona aliquota applicata'){
-                    buildSnackBar(text: 'Selezionare un valore per Aliquota', color: kRed);
                   } else{
 
                     Response apiV1AppProductsSavePost = await dataBundleNotifier.getSwaggerClient().apiV1AppProductsSavePost(

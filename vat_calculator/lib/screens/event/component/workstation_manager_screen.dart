@@ -805,74 +805,69 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                 ],
               ),
             ),
-            Expanded(
-              flex: 3,
-              child: Center(
-                child: Column(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+
+                Text((product.stockFromStorage! + product.amountLoad!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(18))),
+                Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Text((product.stockFromStorage! + product.amountLoad!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(20))),
-                    Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                if(product.amountLoad! > 0){
-                                  product.amountLoad = product.amountLoad! - 1;
-                                }
-                              });
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                FontAwesomeIcons.minus,
-                                color: kCustomBordeaux,
-                              ),
-                            ),
-                          ),
-                          ConstrainedBox(
-                            constraints: BoxConstraints.loose(Size(
-                                getProportionateScreenWidth(60),
-                                getProportionateScreenWidth(80))),
-                            child: CupertinoTextField(
-                              controller: controller,
-                              onChanged: (text) {
-                                product.amountLoad = double.parse(text.replaceAll(',', '.'));
-                              },
-                              textInputAction: TextInputAction.next,
-                              style: TextStyle(
-                                color: kCustomGrey,
-                                fontWeight: FontWeight.w600,
-                                fontSize: getProportionateScreenHeight(15),
-                              ),
-                              keyboardType: const TextInputType.numberWithOptions(
-                                  decimal: true, signed: false),
-                              clearButtonMode: OverlayVisibilityMode.never,
-                              textAlign: TextAlign.center,
-                              autocorrect: false,
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                product.amountLoad = product.amountLoad! + 1;
-                              });
-                            },
-                            child: const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(FontAwesomeIcons.plus,
-                                  color: kCustomGreen),
-                            ),
-                          ),
-                        ],
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          if(product.amountLoad! > 0){
+                            product.amountLoad = product.amountLoad! - 1;
+                          }
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(
+                          FontAwesomeIcons.minus,
+                          color: kCustomBordeaux,
+                        ),
+                      ),
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints.loose(Size(
+                          getProportionateScreenWidth(60),
+                          getProportionateScreenWidth(80))),
+                      child: CupertinoTextField(
+                        controller: controller,
+                        onChanged: (text) {
+                          product.amountLoad = double.parse(text.replaceAll(',', '.'));
+                        },
+                        textInputAction: TextInputAction.next,
+                        style: TextStyle(
+                          color: kCustomGrey,
+                          fontWeight: FontWeight.w600,
+                          fontSize: getProportionateScreenHeight(15),
+                        ),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true, signed: false),
+                        clearButtonMode: OverlayVisibilityMode.never,
+                        textAlign: TextAlign.center,
+                        autocorrect: false,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          product.amountLoad = product.amountLoad! + 1;
+                        });
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Icon(FontAwesomeIcons.plus,
+                            color: kCustomGreen),
                       ),
                     ),
                   ],
                 ),
-              ),
+              ],
             ),
           ],
         ),
@@ -895,7 +890,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
               children: [
                 SizedBox(
                     width: getProportionateScreenWidth(170),
-                    child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21)))),
+                    child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
 
                 prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
                   width: getProportionateScreenWidth(170),

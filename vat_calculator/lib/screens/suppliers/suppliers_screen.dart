@@ -55,7 +55,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
                 ),
               ),
             ) : const Text(''),
-        backgroundColor: kCustomWhite,
+        backgroundColor: Colors.white,
         appBar: AppBar(
           leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
@@ -63,7 +63,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
                     Navigator.pushNamed(context, HomeScreenMain.routeName);
                   }),
           iconTheme: const IconThemeData(color: kCustomGrey),
-          backgroundColor: kCustomWhite,
+          backgroundColor: Colors.white,
           centerTitle: true,
           title: Column(
             children: [
@@ -87,7 +87,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
           elevation: 0,
         ),
         body: Container(
-          color: kCustomWhite,
+          color: Colors.white,
           child: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
                   ? buildListSuppliers(dataBundleNotifier, context)
                   : Center(
@@ -242,13 +242,26 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(supplier.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
-                          Text(supplier.supplierCode! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+
+                                Text('cell: ' + supplier.phoneNumber! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
+                                Text('email: ' + supplier.email! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
+                                Text('codice: ' + supplier.supplierCode! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: Colors.grey)),
+                              ],
+                            ),
+                          ),
+
                           Divider()
                         ],
                       ),
                     ),
                   ),
-                  const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
+
                 ],
               ),
             ),

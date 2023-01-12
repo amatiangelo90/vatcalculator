@@ -46,7 +46,7 @@ class AddElementIntoWorkstationWidget extends StatelessWidget {
                         Row(
                           children: [
                             Text(product.stock.toString(), style: TextStyle(fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold, color: product.stock! > 0 ? kCustomGreen : kCustomBordeaux),),
-                            Text(' x ' + product.unitMeasure!, style: TextStyle(fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold,),),
+                            Text(' x ' + (product.unitMeasure! == 'ALTRO' ? product.unitMeasureOth! : product.unitMeasure!), style: TextStyle(fontSize: getProportionateScreenHeight(12), fontWeight: FontWeight.bold,),),
                           ],
                         ),
                       ],

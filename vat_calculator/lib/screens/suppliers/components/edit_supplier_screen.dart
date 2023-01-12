@@ -67,25 +67,28 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 color: kCustomGreen, textColor: Colors.white,
               ),
             ) : const SizedBox(height: 0,),
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: CupertinoTextField(
-                    textInputAction: TextInputAction.next,
-                    restorationId: 'Ricerca prodotto',
-                    keyboardType: TextInputType.text,
-                    clearButtonMode: OverlayVisibilityMode.editing,
-                    placeholder: 'Ricerca prodotto',
-                    onChanged: (currentText) {
-                      setState((){
-                        filter = currentText;
-                      });
-                    },
+            body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: CupertinoTextField(
+                      textInputAction: TextInputAction.next,
+                      restorationId: 'Ricerca prodotto',
+                      keyboardType: TextInputType.text,
+                      clearButtonMode: OverlayVisibilityMode.editing,
+                      placeholder: 'Ricerca prodotto',
+                      onChanged: (currentText) {
+                        setState((){
+                          filter = currentText;
+                        });
+                      },
+                    ),
                   ),
-                ),
-                buildProductPage(dataBundleNotifier.getCurrentSupplier().productList!, dataBundleNotifier),
-              ],
+                  buildProductPage(dataBundleNotifier.getCurrentSupplier().productList!, dataBundleNotifier),
+                ],
+              ),
             ),
           );
         },
@@ -299,7 +302,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
           return DefaultTabController(
             length: kTab.length,
             child: Scaffold(
-                backgroundColor: kCustomWhite,
+                backgroundColor: Colors.white,
                 appBar: AppBar(
                   leading: IconButton(
                       icon: const Icon(Icons.arrow_back_ios),
@@ -486,12 +489,12 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
 
 
 
-    return Container(
-      height: products!.where((element) => element.name!.contains(filter))!.length! * getProportionateScreenHeight(150),
+    return SizedBox(
+      height: products!.where((element) => element.name!.toLowerCase().contains(filter.toLowerCase()))!.length! * getProportionateScreenHeight(100),
       child: ListView.builder(
-        itemCount: products!.where((element) => element.name!.contains(filter))!.length,
+        itemCount: products!.where((element) => element.name!.toLowerCase().contains(filter.toLowerCase()))!.length,
         itemBuilder: (context, index) {
-          Product prod = products!.where((element) => element.name!.contains(filter))!.toList()[index];
+          Product prod = products!.where((element) => element.name!.toLowerCase().contains(filter.toLowerCase()))!.toList()[index];
           return Dismissible(
             background: Container(
               color: kCustomBordeaux,
@@ -594,8 +597,8 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         children: [
                           SizedBox(
                               width: getProportionateScreenWidth(170),
-                              child: Text(prod.name!, style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
-                          Text(productUnitMeasureToJson(prod.unitMeasure!).toString(), style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(16))),
+                              child: Text(prod.name!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
+                          Text(prod.unitMeasure! == ProductUnitMeasure.altro ? prod.unitMeasureOTH! : productUnitMeasureToJson(prod.unitMeasure!).toString(), style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(16))),
                         ],
                       ),
                     ),
@@ -603,7 +606,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Text(prod.price!.toStringAsFixed(2).replaceAll('.00', '') + ' €', style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(18))),
+                          Text(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? '*** €' : prod.price!.toStringAsFixed(2).replaceAll('.00', '') + ' €', style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(18))),
                         ],
                       ),
                     ),
