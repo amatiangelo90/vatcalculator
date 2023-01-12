@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/scheduler/ticker.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/screens/authentication/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/home/components/body.dart';
 import '../../models/databundlenotifier.dart';
 import '../../size_config.dart';
@@ -30,6 +32,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
 
   @override
   Widget build(BuildContext context) {
+
+    final _auth = FirebaseAuth.instance;
+
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
         return Scaffold(
@@ -38,6 +43,8 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
             iconTheme: const IconThemeData(color: Colors.white),
             leading: IconButton(
               onPressed: (){
+                _auth.signOut();
+                Navigator.pushNamed(context, SignInScreen.routeName);
 
               },
               icon: Icon(Icons.login_outlined, size: getProportionateScreenHeight(30)),

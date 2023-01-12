@@ -8,7 +8,7 @@ class DataBundleNotifier extends ChangeNotifier {
 
   String baseUrlHttps = 'https://servicedbacorp741w.com:8444/ventimetriservice';
 
-  String baseUrlHttp = 'http://localhost:16172/ventimetriquadriservice';
+  String baseUrlHttp = 'http://servicedbacorp741w.com:8080/ventimetriquadriservice';
 
   Swagger getSwaggerClient(){
     if(kIsWeb){

@@ -17,10 +17,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_holo_date_picker: ^1.0.1+2
   dio: ^4.0.0
-  #firebase_core:
-  #firebase_auth: ^3.3.9
+  firebase_core: ^2.4.1
+  firebase_auth: ^4.2.5
+  #page_transition: ^2.0.9
   #cloud_firestore:
-
+  #animated_splash_screen: ^1.3.0
   pin_code_fields: ^7.3.0
   flutter_lints: ^1.0.0
   gender_picker: ^1.1.0

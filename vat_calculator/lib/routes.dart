@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:vat_calculator/screens/authentication/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
 import 'package:vat_calculator/screens/event/component/event_manager_screen_closed.dart';
@@ -29,6 +30,7 @@ final Map<String, WidgetBuilder> routes = {
   AddSupplierScreen.routeName: (context) => AddSupplierScreen(),
   CreationBranchScreen.routeName: (context) => CreationBranchScreen(),
   BranchJoinScreen.routeName: (context) => BranchJoinScreen(),
+  SignInScreen.routeName: (context) => SignInScreen(),
   SupplierChoiceCreationEnjoy.routeName: (context) => SupplierChoiceCreationEnjoy(),
   JoinSupplierScreen.routeName: (context) => JoinSupplierScreen(),
   RecapOrderScreen.routeName: (context) => RecapOrderScreen(),

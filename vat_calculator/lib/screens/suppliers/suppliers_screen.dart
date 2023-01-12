@@ -34,29 +34,15 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
       return Scaffold(
-        bottomSheet:
-            dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const SizedBox(width: 0,) :
-            dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty ? Container(
-              color: Colors.transparent,
-              child: Padding(
-                padding: EdgeInsets.all(Platform.isAndroid ? 13.0 : 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width - 40,
-                      child: CupertinoButton(
-                        color: kCustomGreen ,
-                          child: const Text('Aggiungi nuovo fornitore'), onPressed: () {
-                        Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-            ) : const Text(''),
         backgroundColor: Colors.white,
         appBar: AppBar(
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton( onPressed: (){
+              Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
+          }, icon: Icon(Icons.add)),
+            )],
           leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios),
               onPressed: () {
@@ -67,102 +53,74 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
           centerTitle: true,
           title: Column(
             children: [
-              Text(
-                'Fornitori',
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(20),
-                  color: kCustomGrey,
-                  fontWeight: FontWeight.w600
-                ),
-              ),
-              Text(
-                'Gestione fornitori',
-                style: TextStyle(
-                  fontSize: getProportionateScreenWidth(10),
-                  color: kCustomGrey,
-                ),
+              CupertinoTextField(
+                textInputAction: TextInputAction.next,
+                restorationId: 'Ricerca Fornitore',
+                keyboardType: TextInputType.text,
+                clearButtonMode: OverlayVisibilityMode.editing,
+                placeholder: 'Ricerca Fornitore per nome o codice',
+                onChanged: (currentText) {
+                  setState((){
+                    _filter = currentText;
+                  });
+                },
               ),
             ],
           ),
           elevation: 0,
         ),
-        body: Container(
-          color: Colors.white,
-          child: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
-                  ? buildListSuppliers(dataBundleNotifier, context)
-                  : Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(''),
-                          Text(
-                            "Non hai ancora creato nessun fornitore. ",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: getProportionateScreenWidth(13),
-                              fontWeight: FontWeight.bold,
-                              color: kCustomGrey,
-                            ),
+        body: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
+                ? buildListSuppliers(dataBundleNotifier, context)
+                : Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(''),
+                        Text(
+                          "Non hai ancora creato nessun fornitore. ",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: getProportionateScreenWidth(13),
+                            fontWeight: FontWeight.bold,
+                            color: kCustomGrey,
                           ),
+                        ),
 
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 30),
-                            child: SizedBox(
-                              height: getProportionateScreenHeight(50),
-                              width: SizeConfig.screenWidth * 0.9,
-                              child: DefaultButton(
-                                color: kCustomGreen,
-                                text: "Crea Fornitore",
-                                press: () async {
-                                  Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
-                                }, textColor: kCustomWhite,
-                              ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 30),
+                          child: SizedBox(
+                            height: getProportionateScreenHeight(50),
+                            width: SizeConfig.screenWidth * 0.9,
+                            child: DefaultButton(
+                              color: kCustomGreen,
+                              text: "Crea Fornitore",
+                              press: () async {
+                                Navigator.pushNamed(context, SupplierChoiceCreationEnjoy.routeName);
+                              }, textColor: kCustomWhite,
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-        ),
+                  ),
       );
     });
   }
 
   Widget buildListSuppliers(DataBundleNotifier dataBundleNotifier, context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-       children: [
-         Padding(
-           padding: const EdgeInsets.fromLTRB(10, 15, 10, 10),
-           child: CupertinoTextField(
-             textInputAction: TextInputAction.next,
-             restorationId: 'Ricerca Fornitore',
-             keyboardType: TextInputType.text,
-             clearButtonMode: OverlayVisibilityMode.editing,
-             placeholder: 'Ricerca Fornitore per nome o codice',
-             onChanged: (currentText) {
-               setState((){
-                 _filter = currentText;
-               });
-             },
-           ),
-         ),
-         buildWorkstationListWidget(dataBundleNotifier.getCurrentBranch().suppliers!, dataBundleNotifier),
-       ],
-      )
-    );
+    return buildWorkstationListWidget(dataBundleNotifier.getCurrentBranch().suppliers!, dataBundleNotifier);
   }
 
   buildWorkstationListWidget(List<Supplier> supplierList, DataBundleNotifier dataBundleNotifier) {
 
 
     return SizedBox(
-      height: supplierList.where((element) => element.name!.contains(_filter)).length * getProportionateScreenHeight(120),
+      height: supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).length * getProportionateScreenHeight(120),
       child: ListView.builder(
-        itemCount: supplierList.where((element) => element.name!.contains(_filter)).length,
+        itemCount: supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).length,
         itemBuilder: (context, index) {
-          Supplier supplier = supplierList.where((element) => element.name!.contains(_filter)).toList()[index];
+          Supplier supplier = supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).toList()[index];
           return Dismissible(
             background: Container(
               color: kCustomBordeaux,

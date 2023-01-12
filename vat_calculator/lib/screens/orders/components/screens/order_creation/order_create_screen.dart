@@ -122,7 +122,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
         ),
       ),
     );
-    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.name!.contains(_filter))) {
+    for (var supplier in dataBundleNotifier.getCurrentBranch().suppliers!.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase()))) {
       listout.add(
         GestureDetector(
           onTap: () async {

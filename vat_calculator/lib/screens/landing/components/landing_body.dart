@@ -85,16 +85,19 @@ class _LandingBodyState extends State<LandingBody> {
                               context.loaderOverlay.show();
                               Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
                               Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: widget.email);
+
                               if(response.isSuccessful){
                                 dataBundleNotifier.setUser(response.body);
                                 Navigator.pushNamed(context, HomeScreenMain.routeName);
 
-                              }else{
+                              } else{
+
                                 print(response.error);
                                 print(response.base.headers.toString());
+
                               }
                             }catch(e){
-
+                              print(e.toString());
                             }finally{
                               context.loaderOverlay.hide();
                             }
