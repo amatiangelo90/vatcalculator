@@ -75,6 +75,9 @@ class DataBundleNotifier extends ChangeNotifier {
 
   void setBranch(Branch branch){
     _currentBranch = branch;
+    if(_currentBranch!.storages!.isNotEmpty){
+      setStorage(_currentBranch.storages!.first);
+    }
     notifyListeners();
   }
 

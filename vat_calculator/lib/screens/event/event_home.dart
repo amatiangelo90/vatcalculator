@@ -126,8 +126,6 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                           }finally{
                             context.loaderOverlay.hide();
                           }
-
-
                         }),
                   ),
                   SizedBox(width: 5),

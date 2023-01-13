@@ -67,11 +67,12 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 color: kCustomGreen, textColor: Colors.white,
               ),
             ) : const SizedBox(height: 0,),
-            body: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                children: [
-                  Padding(
+            body: Stack(
+              children: [
+                buildProductPage(dataBundleNotifier.getCurrentSupplier().productList!, dataBundleNotifier),
+                Container(
+                  color: Colors.white,
+                  child: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
                     child: CupertinoTextField(
                       textInputAction: TextInputAction.next,
@@ -86,9 +87,8 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       },
                     ),
                   ),
-                  buildProductPage(dataBundleNotifier.getCurrentSupplier().productList!, dataBundleNotifier),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },
@@ -486,12 +486,11 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
 
   buildProductPage(List<Product> products,
       DataBundleNotifier dataBundleNotifier) {
-
-
-
-    return SizedBox(
-      height: products!.where((element) => element.name!.toLowerCase().contains(filter.toLowerCase()))!.length! * getProportionateScreenHeight(100),
+    return Padding(
+      padding: const EdgeInsets.only(top: 50, bottom: 100),
       child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.vertical,
         itemCount: products!.where((element) => element.name!.toLowerCase().contains(filter.toLowerCase()))!.length,
         itemBuilder: (context, index) {
           Product prod = products!.where((element) => element.name!.toLowerCase().contains(filter.toLowerCase()))!.toList()[index];
@@ -535,7 +534,6 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                 },
               );
             },
-            resizeDuration: const Duration(seconds: 1),
             onDismissed: (direction) async {
               print('Delete product with id: ' + prod.productId!.toString());
               try {
@@ -597,8 +595,8 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                         children: [
                           SizedBox(
                               width: getProportionateScreenWidth(170),
-                              child: Text(prod.name!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
-                          Text(prod.unitMeasure! == ProductUnitMeasure.altro ? prod.unitMeasureOTH! : productUnitMeasureToJson(prod.unitMeasure!).toString(), style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(16))),
+                              child: Text(prod.name!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(13)))),
+                          Text(prod.unitMeasure! == ProductUnitMeasure.altro ? prod.unitMeasureOTH! : productUnitMeasureToJson(prod.unitMeasure!).toString(), style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
                         ],
                       ),
                     ),
@@ -606,7 +604,7 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
-                          Text(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? '*** €' : prod.price!.toStringAsFixed(2).replaceAll('.00', '') + ' €', style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(18))),
+                          Text(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? '*** €' : prod.price!.toStringAsFixed(2).replaceAll('.00', '') + ' €', style: TextStyle(fontWeight: FontWeight.w500, color: kCustomGrey, fontSize: getProportionateScreenHeight(14))),
                         ],
                       ),
                     ),

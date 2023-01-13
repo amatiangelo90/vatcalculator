@@ -71,7 +71,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 ],
               ),
               actions: [
-                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.admin ? IconButton(
+                dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ? IconButton(
                   onPressed: (){
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                       backgroundColor: kCustomGreen,

@@ -70,7 +70,7 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
           elevation: 0,
         ),
         body: dataBundleNotifier.getCurrentBranch().suppliers!.isNotEmpty
-                ? buildListSuppliers(dataBundleNotifier, context)
+                ? buildWorkstationListWidget(dataBundleNotifier.getCurrentBranch().suppliers!, dataBundleNotifier)
                 : Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,124 +108,119 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
     });
   }
 
-  Widget buildListSuppliers(DataBundleNotifier dataBundleNotifier, context) {
-    return buildWorkstationListWidget(dataBundleNotifier.getCurrentBranch().suppliers!, dataBundleNotifier);
-  }
-
   buildWorkstationListWidget(List<Supplier> supplierList, DataBundleNotifier dataBundleNotifier) {
 
 
-    return SizedBox(
-      height: supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).length * getProportionateScreenHeight(120),
-      child: ListView.builder(
-        itemCount: supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).length,
-        itemBuilder: (context, index) {
-          Supplier supplier = supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).toList()[index];
-          return Dismissible(
-            background: Container(
-              color: kCustomBordeaux,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 30),
-                    child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
-                  )
-                ],
-              ),
+    return ListView.builder(
+      scrollDirection: Axis.vertical,
+      shrinkWrap: true,
+      itemCount: supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).length,
+      itemBuilder: (context, index) {
+        Supplier supplier = supplierList.where((element) => element.name!.toLowerCase().contains(_filter.toLowerCase())).toList()[index];
+        return Dismissible(
+          background: Container(
+            color: kCustomBordeaux,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(right: 30),
+                  child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                )
+              ],
             ),
-            key: Key(supplier.supplierId!.toString()),
-            direction: DismissDirection.endToStart,
-            confirmDismiss: (DismissDirection direction) async {
-              return await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text("Conferma operazione"),
-                    content: Text("Eliminare ${supplier.name} dalla lista dei tuoi fornitori?"),
-                    actions: <Widget>[
-                      OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text("Elimina", style: TextStyle(color: kRed),)
-                      ),
-                      OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text("Indietro"),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-            resizeDuration: const Duration(seconds: 1),
-            onDismissed: (direction) async {
-              print('Delete supplier : ' + supplier.toString());
-
-              Response deleteSupplier = await dataBundleNotifier.getSwaggerClient()
-                  .apiV1AppSuppliersDeleteDelete(supplierId: supplier.supplierId!.toInt(), branchId: supplier.branchId!.toInt());
-              if(deleteSupplier.isSuccessful){
-                dataBundleNotifier.removeSupplierFromCurrentBranch(supplier.supplierId!);
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(
-                    duration: Duration(seconds: 1),
-                    backgroundColor: kCustomGreen,
-                    content: Text('Fornitore eliminato con successo')));
-              }else{
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(const SnackBar(
-                    duration: Duration(seconds: 3),
-                    backgroundColor: kCustomBordeaux,
-                    content: Text('Ho riscontrato un problema durante l\'eliminazione del fornitore. Riprova fra 2 minuti o contatta l\'amministratore del sistema')));
-              }
-            },
-            child: ListTile(
-              title: Column(
-                children: [
-                  ListTile(
-                    leading: ClipRect(
-                      child: SvgPicture.asset(
-                        'assets/icons/supplier.svg',
-                        height: getProportionateScreenHeight(40),
-                        color: kCustomGrey,
-                      ),
+          ),
+          key: Key(supplier.supplierId!.toString()),
+          direction: DismissDirection.endToStart,
+          confirmDismiss: (DismissDirection direction) async {
+            return await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text("Conferma operazione"),
+                  content: Text("Eliminare ${supplier.name} dalla lista dei tuoi fornitori?"),
+                  actions: <Widget>[
+                    OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: const Text("Elimina", style: TextStyle(color: kRed),)
                     ),
-                    onTap: (){
-                      dataBundleNotifier.setCurrentSupplier(supplier);
-                      Navigator.pushNamed(context, EditSuppliersScreen.routeName);
+                    OutlinedButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text("Indietro"),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          resizeDuration: const Duration(seconds: 1),
+          onDismissed: (direction) async {
+            print('Delete supplier : ' + supplier.toString());
 
-                    },
-                    title: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(supplier.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(20), color: kCustomGrey)),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-
-                                Text('cell: ' + supplier.phoneNumber! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
-                                Text('email: ' + supplier.email! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
-                                Text('codice: ' + supplier.supplierCode! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: Colors.grey)),
-                              ],
-                            ),
-                          ),
-
-                          Divider()
-                        ],
-                      ),
+            Response deleteSupplier = await dataBundleNotifier.getSwaggerClient()
+                .apiV1AppSuppliersDeleteDelete(supplierId: supplier.supplierId!.toInt(), branchId: supplier.branchId!.toInt());
+            if(deleteSupplier.isSuccessful){
+              dataBundleNotifier.removeSupplierFromCurrentBranch(supplier.supplierId!);
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(
+                  duration: Duration(seconds: 1),
+                  backgroundColor: kCustomGreen,
+                  content: Text('Fornitore eliminato con successo')));
+            }else{
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(
+                  duration: Duration(seconds: 3),
+                  backgroundColor: kCustomBordeaux,
+                  content: Text('Ho riscontrato un problema durante l\'eliminazione del fornitore. Riprova fra 2 minuti o contatta l\'amministratore del sistema')));
+            }
+          },
+          child: ListTile(
+            title: Column(
+              children: [
+                ListTile(
+                  leading: ClipRect(
+                    child: SvgPicture.asset(
+                      'assets/icons/supplier.svg',
+                      height: getProportionateScreenHeight(30),
+                      color: kCustomGrey,
                     ),
                   ),
+                  onTap: (){
+                    dataBundleNotifier.setCurrentSupplier(supplier);
+                    Navigator.pushNamed(context, EditSuppliersScreen.routeName);
 
-                ],
-              ),
+                  },
+                  title: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(supplier.name!, style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              Text('cell: ' + supplier.phoneNumber! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10), color: Colors.grey)),
+                              Text('email: ' + supplier.email! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10), color: Colors.grey)),
+                              Text('codice: ' + supplier.supplierCode! , style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(13), color: Colors.grey)),
+                            ],
+                          ),
+                        ),
+
+                        Divider()
+                      ],
+                    ),
+                  ),
+                ),
+
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
