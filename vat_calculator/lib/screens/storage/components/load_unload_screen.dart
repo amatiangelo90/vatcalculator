@@ -25,86 +25,91 @@ class LoadUnloadScreen extends StatefulWidget {
 class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataBundleNotifier>(
-        builder: (child, dataBundleNotifier, _){
+    return GestureDetector(
+      onTap: FocusScope.of(context).unfocus,
+      child: Consumer<DataBundleNotifier>(
+          builder: (child, dataBundleNotifier, _){
 
-          return GestureDetector(
-            onTap: FocusScope.of(context).unfocus,
-            child: Scaffold(
-              bottomSheet: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                  width: getProportionateScreenWidth(400),
-                  height: getProportionateScreenHeight(55),
-                  child: OutlinedButton(
-                    onPressed: () async {
-                      List<LoadUnloadModel> list = buildListFromRStorageProduct(dataBundleNotifier);
-                      Response loadUnloadResponse;
-                      if(widget.isLoad){
-                        loadUnloadResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageLoadPut(loadUnloadModel: list);
-                      }else{
-                        loadUnloadResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageUnloadPut(loadUnloadModel: list);
-                      }
+            return GestureDetector(
+              onTap: (){
+                FocusScope.of(context).unfocus;
+              },
+              child: Scaffold(
+                bottomSheet: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: getProportionateScreenWidth(400),
+                    height: getProportionateScreenHeight(55),
+                    child: OutlinedButton(
+                      onPressed: () async {
+                        List<LoadUnloadModel> list = buildListFromRStorageProduct(dataBundleNotifier);
+                        Response loadUnloadResponse;
+                        if(widget.isLoad){
+                          loadUnloadResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageLoadPut(loadUnloadModel: list);
+                        }else{
+                          loadUnloadResponse = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageUnloadPut(loadUnloadModel: list);
+                        }
 
-                      if(loadUnloadResponse.isSuccessful){
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                          backgroundColor: kCustomGreen,
-                          duration: Duration(milliseconds: 1000),
-                          content: Text(
-                              'Operazione eseguita con successo'),
-                        ));
+                        if(loadUnloadResponse.isSuccessful){
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            backgroundColor: kCustomGreen,
+                            duration: Duration(milliseconds: 1000),
+                            content: Text(
+                                'Operazione eseguita con successo'),
+                          ));
 
-                        dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+                          dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
 
-                        Navigator.of(context).pop(false);
-                      }else{
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: kRed,
-                          duration: Duration(milliseconds: 2600),
-                          content: Text(
-                              'Si è verificato un errore durante l\'operazione. Err: ' + loadUnloadResponse.error.toString()!),
-                        ));
-                      }
-                    },
-                    style: ButtonStyle(
-                      elevation: MaterialStateProperty.resolveWith((states) => 5),
-                      backgroundColor: MaterialStateProperty.resolveWith((states) => widget.isLoad ? kCustomGreen : kCustomBordeaux),
-                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
-                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                          Navigator.of(context).pop(false);
+                        }else{
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            backgroundColor: kRed,
+                            duration: Duration(milliseconds: 2600),
+                            content: Text(
+                                'Si è verificato un errore durante l\'operazione. Err: ' + loadUnloadResponse.error.toString()!),
+                          ));
+                        }
+                      },
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.resolveWith((states) => 5),
+                        backgroundColor: MaterialStateProperty.resolveWith((states) => widget.isLoad ? kCustomGreen : kCustomBordeaux),
+                        side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                      ),
+                      child: Text(widget.isLoad ? 'Effettua carico' : 'Effettua scarico', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
                     ),
-                    child: Text(widget.isLoad ? 'Effettua carico' : 'Effettua scarico', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
                   ),
                 ),
-              ),
-              appBar: AppBar(
-                centerTitle: true,
-                title: Text(widget.isLoad ? 'Effettua carico' : 'Effettua scarico', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(20)),),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: IconButton(
-                      onPressed: () {  },
-                      icon: Stack(
-                        children: [
-                          Icon(Icons.shopping_basket, size: getProportionateScreenWidth(20), color: kCustomGrey,),
-                          Positioned(
-                              left: 10,
-                              top: 1,
-                              child: Stack(children: [
-                                const Icon(Icons.circle, size: 15,color: kCustomPinkAccent,),
-                                Center(child: Text( '  ' + dataBundleNotifier.getCurrentStorage().products!.where((element) => element.orderAmount! > 0).length.toString(), style: TextStyle(fontSize: 9))),
-                              ], )
-                          )
-                        ],
+                appBar: AppBar(
+                  centerTitle: true,
+                  title: Text(widget.isLoad ? 'Effettua carico' : 'Effettua scarico', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(20)),),
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: IconButton(
+                        onPressed: () {  },
+                        icon: Stack(
+                          children: [
+                            Icon(Icons.shopping_basket, size: getProportionateScreenWidth(20), color: kCustomGrey,),
+                            Positioned(
+                                left: 10,
+                                top: 1,
+                                child: Stack(children: [
+                                  const Icon(Icons.circle, size: 15,color: kCustomPinkAccent,),
+                                  Center(child: Text( '  ' + dataBundleNotifier.getCurrentStorage().products!.where((element) => element.orderAmount! > 0).length.toString(), style: TextStyle(fontSize: 9))),
+                                ], )
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
+                body: buildWidgetProdList(dataBundleNotifier),
               ),
-              body: buildWidgetProdList(dataBundleNotifier),
-            ),
-          );
-        }
+            );
+          }
+      ),
     );
   }
 
@@ -171,12 +176,11 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                           fontWeight: FontWeight.w600,
                           fontSize: getProportionateScreenHeight(22),
                         ),
-                        onChanged: (text){
 
-                          currentProduct.orderAmount = double.parse(text.toString().replaceAll(',', '.'));
+                        onChanged: (text){
+                          currentProduct.orderAmount = 0 + double.parse(text.toString().replaceAll(',', '.'));
                         },
-                        keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true, signed: false),
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: false),
                         clearButtonMode: OverlayVisibilityMode.never,
                         textAlign: TextAlign.center,
                         autocorrect: false,

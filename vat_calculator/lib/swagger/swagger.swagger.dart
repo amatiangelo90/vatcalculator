@@ -801,6 +801,22 @@ abstract class Swagger extends ChopperService {
       _apiV1AppUsersFindAllBranchesByUserIdGet(
           {@Query('userId') required int? userId});
 
+  ///retrieveAllUsersByBranchId
+  ///@param branchId branchId
+  Future<chopper.Response<List<UserBranch>>>
+      apiV1AppUsersFindAllUsersByBranchIdGet({required int? branchId}) {
+    generatedMapping.putIfAbsent(UserBranch, () => UserBranch.fromJsonFactory);
+
+    return _apiV1AppUsersFindAllUsersByBranchIdGet(branchId: branchId);
+  }
+
+  ///retrieveAllUsersByBranchId
+  ///@param branchId branchId
+  @Get(path: '/api/v1/app/users/findAllUsersByBranchId')
+  Future<chopper.Response<List<UserBranch>>>
+      _apiV1AppUsersFindAllUsersByBranchIdGet(
+          {@Query('branchId') required int? branchId});
+
   ///retrieveAll
   Future<chopper.Response<List<UserEntity>>> apiV1AppUsersFindallGet() {
     generatedMapping.putIfAbsent(UserEntity, () => UserEntity.fromJsonFactory);
@@ -856,6 +872,29 @@ abstract class Swagger extends ChopperService {
   @Put(path: '/api/v1/app/users/update')
   Future<chopper.Response> _apiV1AppUsersUpdatePut(
       {@Body() required UserEntity? userEntity});
+
+  ///updatePermissionTypeToUserForBranch
+  ///@param userBranchId userBranchId
+  ///@param userPriviledge userPriviledge
+  Future<chopper.Response> apiV1AppUsersUpdatePermissionTypePut({
+    required int? userBranchId,
+    required String? userPriviledge,
+  }) {
+    return _apiV1AppUsersUpdatePermissionTypePut(
+        userBranchId: userBranchId, userPriviledge: userPriviledge);
+  }
+
+  ///updatePermissionTypeToUserForBranch
+  ///@param userBranchId userBranchId
+  ///@param userPriviledge userPriviledge
+  @Put(
+    path: '/api/v1/app/users/updatePermissionType',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppUsersUpdatePermissionTypePut({
+    @Query('userBranchId') required int? userBranchId,
+    @Query('userPriviledge') required String? userPriviledge,
+  });
 
   ///deleteProduct
   ///@param workstationProductId workstationProductId

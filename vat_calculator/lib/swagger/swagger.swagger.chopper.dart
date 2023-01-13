@@ -735,6 +735,22 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<UserBranch>>> _apiV1AppUsersFindAllUsersByBranchIdGet(
+      {required int? branchId}) {
+    final String $url = '/api/v1/app/users/findAllUsersByBranchId';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'branchId': branchId
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<List<UserBranch>, UserBranch>($request);
+  }
+
+  @override
   Future<Response<List<UserEntity>>> _apiV1AppUsersFindallGet() {
     final String $url = '/api/v1/app/users/findall';
     final Request $request = Request(
@@ -783,6 +799,25 @@ class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiV1AppUsersUpdatePermissionTypePut({
+    required int? userBranchId,
+    required String? userPriviledge,
+  }) {
+    final String $url = '/api/v1/app/users/updatePermissionType';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'userBranchId': userBranchId,
+      'userPriviledge': userPriviledge,
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
     );
     return client.send<dynamic, dynamic>($request);
   }

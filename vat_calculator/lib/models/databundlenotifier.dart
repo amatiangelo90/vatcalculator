@@ -422,4 +422,16 @@ class DataBundleNotifier extends ChangeNotifier {
   }
 
 
+  OrderEntity _orderToReview = OrderEntity(orderId: 0);
+
+  void setCurrentOrderToReview(OrderEntity order) {
+    _orderToReview = order;
+    notifyListeners();
+  }
+
+  OrderEntity getOrderToReview(){
+    return _orderToReview;
+  }
+
+
 }

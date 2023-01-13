@@ -447,3 +447,24 @@ Map<String, dynamic> _$SupplierToJson(Supplier instance) => <String, dynamic>{
       'supplierId': instance.supplierId,
       'vatNumber': instance.vatNumber,
     };
+
+UserBranch _$UserBranchFromJson(Map<String, dynamic> json) => UserBranch(
+      branch: json['branch'] == null
+          ? null
+          : Branch.fromJson(json['branch'] as Map<String, dynamic>),
+      token: json['token'] as String?,
+      userEntity: json['userEntity'] == null
+          ? null
+          : UserEntity.fromJson(json['userEntity'] as Map<String, dynamic>),
+      userPriviledge: userBranchUserPriviledgeFromJson(json['userPriviledge']),
+      userbranchid: json['userbranchid'] as num?,
+    );
+
+Map<String, dynamic> _$UserBranchToJson(UserBranch instance) =>
+    <String, dynamic>{
+      'branch': instance.branch?.toJson(),
+      'token': instance.token,
+      'userEntity': instance.userEntity?.toJson(),
+      'userPriviledge': userBranchUserPriviledgeToJson(instance.userPriviledge),
+      'userbranchid': instance.userbranchid,
+    };

@@ -535,6 +535,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
           child: OutlinedButton(
             onPressed: () async {
               print('Perform load product into workstation');
+              FocusScope.of(context).requestFocus(FocusNode());
               try{
                 context.loaderOverlay.show();
                 List<WorkstationLoadUnloadProduct> prodLoadList = [];
@@ -543,7 +544,6 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                   if(storageProductList.where((prod) => prod.productId == rWorkstationProd.productId).isNotEmpty){
                     storageProductId = storageProductList.where((prod) => prod.productId == rWorkstationProd.productId).first.storageProductId!;
                   }
-
                   if(rWorkstationProd.amountLoad! > 0){
                     prodLoadList.add(WorkstationLoadUnloadProduct(
                         productId: rWorkstationProd.productId,
@@ -755,13 +755,12 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                           ],
                         ),) :
                       Text('Prodotto non presente in magazzino', style: TextStyle(fontWeight: FontWeight.bold, color: kCustomBordeaux, fontSize: getProportionateScreenHeight(8))),
-                      Text('Q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(12))),
+                      prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? Text('Q/100: ' + product.amountHundred!.toString(), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(12))) : Text(''),
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: OutlinedButton(
 
                           onLongPress: () async {
-
                             Response response = await dataBundleNotifier
                                 .getSwaggerClient().apiV1AppWorkstationResetproductstockvaluePut(workstationProductId: product.workstationProductId!.toInt());
 

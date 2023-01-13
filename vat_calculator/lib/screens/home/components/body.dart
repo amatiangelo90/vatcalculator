@@ -99,7 +99,7 @@ class _HomePageBodyState extends State<HomePageBody> {
               children: [
                 buildGestureDetectorBranchSelector(
                     context, dataBundleNotifier),
-                //buildStaffWidget(dataBundleNotifier),
+                buildStaffWidget(dataBundleNotifier),
 
                 buildCateringButton('CATERING', (){
                   if(dataBundleNotifier.getCurrentBranch()!.storages!.isEmpty){

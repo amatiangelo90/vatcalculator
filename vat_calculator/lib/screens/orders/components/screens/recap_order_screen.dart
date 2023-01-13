@@ -73,7 +73,6 @@ class _RecapOrderScreenState extends State<RecapOrderScreen> {
 
     List<Widget> list = [];
 
-
     for (int i = 0; i <= range.end.difference(range.start).inDays+1; i++) {
       list.add(Row(
         children: [
@@ -139,6 +138,7 @@ class _RecapOrderScreenState extends State<RecapOrderScreen> {
               elevation: 5,
               child: ListTile(
                 onTap: (){
+                  dataBundleNotifier.setCurrentOrderToReview(order);
                   Navigator.pushNamed(context, OrderDetailsScreen.routeName);
                 },
                 title: Padding(

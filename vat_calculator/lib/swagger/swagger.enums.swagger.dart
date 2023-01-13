@@ -158,3 +158,23 @@ const $EventEventStatusMap = {
   EventEventStatus.aperto: 'APERTO',
   EventEventStatus.chiuso: 'CHIUSO'
 };
+
+enum UserBranchUserPriviledge {
+  @JsonValue('swaggerGeneratedUnknown')
+  swaggerGeneratedUnknown,
+  @JsonValue('SUPER_ADMIN')
+  superAdmin,
+  @JsonValue('ADMIN')
+  admin,
+  @JsonValue('EMPLOYEE')
+  employee,
+  @JsonValue('BARMAN')
+  barman
+}
+
+const $UserBranchUserPriviledgeMap = {
+  UserBranchUserPriviledge.superAdmin: 'SUPER_ADMIN',
+  UserBranchUserPriviledge.admin: 'ADMIN',
+  UserBranchUserPriviledge.employee: 'EMPLOYEE',
+  UserBranchUserPriviledge.barman: 'BARMAN'
+};

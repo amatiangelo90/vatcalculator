@@ -227,7 +227,7 @@ class RWorkstationProduct {
       _$RWorkstationProductFromJson(json);
 
   @JsonKey(name: 'amountHundred')
-  final double? amountHundred;
+  double? amountHundred;
   @JsonKey(name: 'amountLoad')
   double? amountLoad;
   @JsonKey(name: 'amountUnload')
@@ -235,7 +235,7 @@ class RWorkstationProduct {
   @JsonKey(name: 'leftOvers')
   double? leftOvers;
   @JsonKey(name: 'price')
-  double? price;
+  final double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -959,7 +959,7 @@ class UserEntity {
   @JsonKey(name: 'branchList', defaultValue: <Branch>[])
   final List<Branch>? branchList;
   @JsonKey(name: 'email')
-  final String? email;
+  String? email;
   @JsonKey(name: 'lastname')
   String? lastname;
   @JsonKey(name: 'name')
@@ -967,7 +967,7 @@ class UserEntity {
   @JsonKey(name: 'phone')
   String? phone;
   @JsonKey(name: 'photo')
-  String? photo;
+  final String? photo;
   @JsonKey(name: 'profileCompleted')
   bool? profileCompleted;
   @JsonKey(name: 'userId')
@@ -2196,6 +2196,102 @@ extension $SupplierExtension on Supplier {
   }
 }
 
+@JsonSerializable(explicitToJson: true)
+class UserBranch {
+  UserBranch({
+    this.branch,
+    this.token,
+    this.userEntity,
+    this.userPriviledge,
+    this.userbranchid,
+  });
+
+  factory UserBranch.fromJson(Map<String, dynamic> json) =>
+      _$UserBranchFromJson(json);
+
+  @JsonKey(name: 'branch')
+  final Branch? branch;
+  @JsonKey(name: 'token')
+  final String? token;
+  @JsonKey(name: 'userEntity')
+  final UserEntity? userEntity;
+  @JsonKey(
+    name: 'userPriviledge',
+    toJson: userBranchUserPriviledgeToJson,
+    fromJson: userBranchUserPriviledgeFromJson,
+  )
+  final enums.UserBranchUserPriviledge? userPriviledge;
+  @JsonKey(name: 'userbranchid')
+  final num? userbranchid;
+  static const fromJsonFactory = _$UserBranchFromJson;
+  static const toJsonFactory = _$UserBranchToJson;
+  Map<String, dynamic> toJson() => _$UserBranchToJson(this);
+
+  @override
+  bool operator ==(dynamic other) {
+    return identical(this, other) ||
+        (other is UserBranch &&
+            (identical(other.branch, branch) ||
+                const DeepCollectionEquality().equals(other.branch, branch)) &&
+            (identical(other.token, token) ||
+                const DeepCollectionEquality().equals(other.token, token)) &&
+            (identical(other.userEntity, userEntity) ||
+                const DeepCollectionEquality()
+                    .equals(other.userEntity, userEntity)) &&
+            (identical(other.userPriviledge, userPriviledge) ||
+                const DeepCollectionEquality()
+                    .equals(other.userPriviledge, userPriviledge)) &&
+            (identical(other.userbranchid, userbranchid) ||
+                const DeepCollectionEquality()
+                    .equals(other.userbranchid, userbranchid)));
+  }
+
+  @override
+  String toString() => jsonEncode(this);
+
+  @override
+  int get hashCode =>
+      const DeepCollectionEquality().hash(branch) ^
+      const DeepCollectionEquality().hash(token) ^
+      const DeepCollectionEquality().hash(userEntity) ^
+      const DeepCollectionEquality().hash(userPriviledge) ^
+      const DeepCollectionEquality().hash(userbranchid) ^
+      runtimeType.hashCode;
+}
+
+extension $UserBranchExtension on UserBranch {
+  UserBranch copyWith(
+      {Branch? branch,
+      String? token,
+      UserEntity? userEntity,
+      enums.UserBranchUserPriviledge? userPriviledge,
+      num? userbranchid}) {
+    return UserBranch(
+        branch: branch ?? this.branch,
+        token: token ?? this.token,
+        userEntity: userEntity ?? this.userEntity,
+        userPriviledge: userPriviledge ?? this.userPriviledge,
+        userbranchid: userbranchid ?? this.userbranchid);
+  }
+
+  UserBranch copyWithWrapped(
+      {Wrapped<Branch?>? branch,
+      Wrapped<String?>? token,
+      Wrapped<UserEntity?>? userEntity,
+      Wrapped<enums.UserBranchUserPriviledge?>? userPriviledge,
+      Wrapped<num?>? userbranchid}) {
+    return UserBranch(
+        branch: (branch != null ? branch.value : this.branch),
+        token: (token != null ? token.value : this.token),
+        userEntity: (userEntity != null ? userEntity.value : this.userEntity),
+        userPriviledge: (userPriviledge != null
+            ? userPriviledge.value
+            : this.userPriviledge),
+        userbranchid:
+            (userbranchid != null ? userbranchid.value : this.userbranchid));
+  }
+}
+
 String? customerAccessBranchLocationToJson(
     enums.CustomerAccessBranchLocation? customerAccessBranchLocation) {
   return enums.$CustomerAccessBranchLocationMap[customerAccessBranchLocation];
@@ -2664,6 +2760,75 @@ List<enums.EventEventStatus>? eventEventStatusNullableListFromJson(
 
   return eventEventStatus
       .map((e) => eventEventStatusFromJson(e.toString()))
+      .toList();
+}
+
+String? userBranchUserPriviledgeToJson(
+    enums.UserBranchUserPriviledge? userBranchUserPriviledge) {
+  return enums.$UserBranchUserPriviledgeMap[userBranchUserPriviledge];
+}
+
+enums.UserBranchUserPriviledge userBranchUserPriviledgeFromJson(
+  Object? userBranchUserPriviledge, [
+  enums.UserBranchUserPriviledge? defaultValue,
+]) {
+  if (userBranchUserPriviledge is String) {
+    return enums.$UserBranchUserPriviledgeMap.entries
+        .firstWhere(
+            (element) =>
+                element.value.toLowerCase() ==
+                userBranchUserPriviledge.toLowerCase(),
+            orElse: () => const MapEntry(
+                enums.UserBranchUserPriviledge.swaggerGeneratedUnknown, ''))
+        .key;
+  }
+
+  final parsedResult = defaultValue == null
+      ? null
+      : enums.$UserBranchUserPriviledgeMap.entries
+          .firstWhereOrNull((element) => element.value == defaultValue)
+          ?.key;
+
+  return parsedResult ??
+      defaultValue ??
+      enums.UserBranchUserPriviledge.swaggerGeneratedUnknown;
+}
+
+List<String> userBranchUserPriviledgeListToJson(
+    List<enums.UserBranchUserPriviledge>? userBranchUserPriviledge) {
+  if (userBranchUserPriviledge == null) {
+    return [];
+  }
+
+  return userBranchUserPriviledge
+      .map((e) => enums.$UserBranchUserPriviledgeMap[e]!)
+      .toList();
+}
+
+List<enums.UserBranchUserPriviledge> userBranchUserPriviledgeListFromJson(
+  List? userBranchUserPriviledge, [
+  List<enums.UserBranchUserPriviledge>? defaultValue,
+]) {
+  if (userBranchUserPriviledge == null) {
+    return defaultValue ?? [];
+  }
+
+  return userBranchUserPriviledge
+      .map((e) => userBranchUserPriviledgeFromJson(e.toString()))
+      .toList();
+}
+
+List<enums.UserBranchUserPriviledge>?
+    userBranchUserPriviledgeNullableListFromJson(
+  List? userBranchUserPriviledge, [
+  List<enums.UserBranchUserPriviledge>? defaultValue,
+]) {
+  if (userBranchUserPriviledge == null) {
+    return defaultValue;
+  }
+
+  return userBranchUserPriviledge
+      .map((e) => userBranchUserPriviledgeFromJson(e.toString()))
       .toList();
 }
 

@@ -43,9 +43,9 @@ dependencies:
   syncfusion_flutter_charts: ^19.3.56
   csc_picker: ^0.2.6
   sliding_up_panel: ^2.0.0+1
-  syncfusion_flutter_pdf: ^19.3.57-beta
-  rflutter_alert: ^1.0.2
-  animated_text_kit: ^4.2.1
+  #syncfusion_flutter_pdf: ^19.3.57-beta
+  #rflutter_alert: ^1.0.2
+  #animated_text_kit: ^4.2.1
   animations: ^1.0.0
   desktop_window: 0.4.0
   intl: ^0.17.0
