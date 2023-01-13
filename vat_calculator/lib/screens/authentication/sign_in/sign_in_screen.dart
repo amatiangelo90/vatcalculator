@@ -79,7 +79,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(40, 60, 40, 40),
+                        padding: const EdgeInsets.fromLTRB(40, 10, 40, 40),
                         child: Image.asset(
                           'assets/logo/logo_home_nero.png',
                           width: getProportionateScreenWidth(100),
@@ -104,26 +104,32 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: Padding(
                           padding: const EdgeInsets.only(
                               left: 30, right: 30, bottom: 10),
-                          child: CupertinoTextField(
-                            textInputAction: TextInputAction.next,
-                            autofillHints: [AutofillHints.email],
-                            restorationId: 'email',
-                            keyboardType: TextInputType.emailAddress,
-                            controller: emailController,
-                            clearButtonMode: OverlayVisibilityMode.editing,
-                            placeholder: 'email',
+                          child: SizedBox(
+                            height: getProportionateScreenHeight(50),
+                            child: CupertinoTextField(
+                              textInputAction: TextInputAction.next,
+                              autofillHints: [AutofillHints.email],
+                              restorationId: 'email',
+                              keyboardType: TextInputType.emailAddress,
+                              controller: emailController,
+                              clearButtonMode: OverlayVisibilityMode.editing,
+                              placeholder: 'email',
+                            ),
                           ),
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 30, right: 30),
-                        child: CupertinoTextField(
-                          textInputAction: TextInputAction.done,
-                          restorationId: 'password',
-                          keyboardType: TextInputType.text,
-                          controller: passwordController,
-                          clearButtonMode: OverlayVisibilityMode.editing,
-                          placeholder: 'password',
+                        child: SizedBox(
+                          height: getProportionateScreenHeight(50),
+                          child: CupertinoTextField(
+                            textInputAction: TextInputAction.done,
+                            restorationId: 'password',
+                            keyboardType: TextInputType.text,
+                            controller: passwordController,
+                            clearButtonMode: OverlayVisibilityMode.editing,
+                            placeholder: 'password',
+                          ),
                         ),
                       ),
                       SizedBox(height: SizeConfig.screenHeight * 0.01),
@@ -132,13 +138,16 @@ class _SignInScreenState extends State<SignInScreen> {
                           : Padding(
                               padding:
                                   const EdgeInsets.only(left: 30, right: 30),
-                              child: CupertinoTextField(
-                                textInputAction: TextInputAction.done,
-                                restorationId: 'conferma password',
-                                keyboardType: TextInputType.text,
-                                controller: passwordConfirmationController,
-                                clearButtonMode: OverlayVisibilityMode.editing,
-                                placeholder: 'conferma password',
+                              child: SizedBox(
+                                height: getProportionateScreenHeight(50),
+                                child: CupertinoTextField(
+                                  textInputAction: TextInputAction.done,
+                                  restorationId: 'conferma password',
+                                  keyboardType: TextInputType.text,
+                                  controller: passwordConfirmationController,
+                                  clearButtonMode: OverlayVisibilityMode.editing,
+                                  placeholder: 'conferma password',
+                                ),
                               ),
                             ),
                       SizedBox(height: SizeConfig.screenHeight * 0.02),
@@ -328,7 +337,124 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(38.0),
+                    padding: const EdgeInsets.all(28.0),
+                    child: GestureDetector(
+                        onTap: () {
+                          TextEditingController emailControllerPassReset = TextEditingController();
+
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog (
+                                contentPadding: EdgeInsets.zero,
+                                shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.all(
+                                        Radius.circular(10.0))),
+                                content: Builder(
+                                  builder: (context) {
+                                    var height = MediaQuery.of(context).size.height;
+                                    var width = MediaQuery.of(context).size.width;
+                                    return SizedBox(
+                                      width: width - 90,
+                                      child: SingleChildScrollView(
+                                        scrollDirection: Axis.vertical,
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              decoration: const BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                    topRight: Radius.circular(10.0),
+                                                    topLeft: Radius.circular(10.0) ),
+                                                color: Colors.white,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  Text('  Reimposta password',
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontSize: getProportionateScreenWidth(15),
+                                                        fontWeight: FontWeight.bold,
+                                                        color: kCustomGrey,
+                                                      )),
+                                                  IconButton(icon: const Icon(
+                                                    Icons.clear,
+                                                    color: kCustomGrey,
+                                                  ), onPressed: () { Navigator.pop(context); },),
+
+                                                ],
+                                              ),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Padding(
+                                                  padding: const EdgeInsets.only(left: 5, right: 5),
+                                                  child: SizedBox(
+                                                    height: getProportionateScreenHeight(50),
+                                                    child: CupertinoTextField(
+                                                      textInputAction: TextInputAction.done,
+                                                      restorationId: 'Inserisci email',
+                                                      keyboardType: TextInputType.text,
+                                                      controller: emailControllerPassReset,
+                                                      clearButtonMode: OverlayVisibilityMode.editing,
+                                                      placeholder: 'Inserisci email',
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: getProportionateScreenHeight(50),),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: SizedBox(
+                                                    width: getProportionateScreenWidth(300),
+                                                    height: getProportionateScreenHeight(60),
+                                                    child: OutlinedButton(
+                                                      style: ButtonStyle(
+                                                        elevation:
+                                                        MaterialStateProperty.resolveWith((states) => 5),
+                                                        backgroundColor: MaterialStateProperty.resolveWith(
+                                                                (states) => kCustomGreen),
+                                                        side: MaterialStateProperty.resolveWith(
+                                                              (states) =>
+                                                              const BorderSide(width: 0.5, color: Colors.white),
+                                                        ),
+                                                        shape: MaterialStateProperty.all(
+                                                            RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(15.0))),
+                                                      ),
+                                                      child: Text('Reimposta password',
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: getProportionateScreenHeight(20))),
+                                                      onPressed: () async {
+                                                        await _auth.sendPasswordResetEmail(email: emailControllerPassReset.text);
+                                                        Navigator.of(context).pop();
+                                                        ScaffoldMessenger.of(context)
+                                                            .showSnackBar(SnackBar(
+                                                            duration: const Duration(milliseconds: 2000),
+                                                            backgroundColor: kCustomGreen,
+                                                            content: Text('Reset password inviato alla mail ' + emailControllerPassReset.text , style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+
+                                            const Text(''),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                          );
+                        },
+                        child: const Text('Password dimenticata?')),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(18.0),
                     child: Column(
                       children: [
                         Padding(
