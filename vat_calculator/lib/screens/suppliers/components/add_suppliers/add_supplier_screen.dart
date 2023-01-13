@@ -9,6 +9,7 @@ import 'package:vat_calculator/screens/suppliers/suppliers_screen.dart';
 import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
 import '../../../../constants.dart';
 import '../../../../size_config.dart';
+import 'add_supplier_from_contact_list.dart';
 
 class AddSupplierScreen extends StatefulWidget {
   AddSupplierScreen({Key? key}) : super(key: key);
@@ -21,26 +22,35 @@ class AddSupplierScreen extends StatefulWidget {
 
 class _AddSupplierScreenState extends State<AddSupplierScreen> {
 
-  static TextEditingController controllerPIva = TextEditingController();
-  static TextEditingController controllerCap = TextEditingController();
-  static TextEditingController controllerCity = TextEditingController();
-  static TextEditingController controllerSupplierName = TextEditingController();
-  static TextEditingController controllerEmail = TextEditingController();
-  static TextEditingController controllerAddress = TextEditingController();
-  static TextEditingController controllerMobileNo = TextEditingController();
+
 
   bool hasError = false;
   final formKey = GlobalKey<FormState>();
 
   String currentPassword = '';
 
+  TextEditingController controllerPIva = TextEditingController();
+  TextEditingController controllerCap = TextEditingController();
+  TextEditingController controllerCity = TextEditingController();
+  TextEditingController controllerSupplierName = TextEditingController();
+  TextEditingController controllerEmail = TextEditingController();
+  TextEditingController controllerAddress = TextEditingController();
+  TextEditingController controllerMobileNo = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child) {
+
+          if(dataBundleNotifier.getSupplierToCreateNew().supplierId != 0){
+            controllerEmail = TextEditingController(text: dataBundleNotifier.getSupplierToCreateNew().email! ?? '');
+            controllerMobileNo = TextEditingController(text: dataBundleNotifier.getSupplierToCreateNew().phoneNumber ?? '');
+            controllerSupplierName = TextEditingController(text: dataBundleNotifier.getSupplierToCreateNew().name ?? '');
+          }
+
           return Scaffold(
             bottomSheet: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(18.0),
               child: SizedBox(
                 width: getProportionateScreenWidth(400),
                 height: getProportionateScreenHeight(55),
@@ -140,6 +150,69 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
               iconTheme: const IconThemeData(color: kCustomGrey),
               backgroundColor: Colors.white,
               centerTitle: true,
+              actions: [
+                IconButton(icon: Icon(Icons.phone,), onPressed: () {
+
+                  showModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(25.0),
+                        ),
+                      ),
+                      context: context,
+                      builder: (context) {
+                        return Builder(
+                          builder: (context) {
+                            return SizedBox(
+                              width: getProportionateScreenWidth(900),
+                              height: getProportionateScreenHeight(600),
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.vertical,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        borderRadius: BorderRadius.only(
+                                            topRight: Radius.circular(10.0),
+                                            topLeft: Radius.circular(10.0)),
+                                        color: kCustomGrey,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            '  Scegli fornitore dalla tua lista contatti',
+                                            style: TextStyle(
+                                              fontSize:
+                                              getProportionateScreenWidth(13),
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.clear,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    AddSupplierFromContactList(),
+
+                                    const SizedBox(height: 140),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      });
+                },),
+              ],
               title: Column(
                 children: [
                   Text(

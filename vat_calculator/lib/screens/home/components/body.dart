@@ -13,7 +13,7 @@ import '../../../size_config.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 import '../../branch_registration/branch_update.dart';
-import '../../edit_profile.dart';
+import '../../authentication/edit_profile.dart';
 import '../../event/event_home.dart';
 import '../../orders/components/screens/order_creation/order_create_screen.dart';
 import '../../orders/components/screens/recap_order_screen.dart';
@@ -351,7 +351,8 @@ class _HomePageBodyState extends State<HomePageBody> {
                           child: Card(
                             color: kCustomPinkAccent,
                             child: Center(
-                              child: Text(dataBundleNotifier.getCurrentBranch().orders!.length.toString(),
+                              child: Text(dataBundleNotifier.getCurrentBranch().orders!.where((element)
+                              => element.deliveryDate == dateFormat.format(DateTime.now())).length.toString(),
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.0,

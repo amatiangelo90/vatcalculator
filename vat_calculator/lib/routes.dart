@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vat_calculator/screens/authentication/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_creation.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_join.dart';
-import 'package:vat_calculator/screens/edit_profile.dart';
+import 'package:vat_calculator/screens/authentication/edit_profile.dart';
 import 'package:vat_calculator/screens/event/component/event_manager_screen_closed.dart';
 import 'package:vat_calculator/screens/orders/components/screens/recap_order_screen.dart';
 import 'package:vat_calculator/screens/storage/components/load_unload_screen.dart';
@@ -18,6 +18,7 @@ import 'package:vat_calculator/screens/branch_registration/branch_choice_registr
 import 'package:vat_calculator/screens/splash/animated_splash.dart';
 import 'package:vat_calculator/screens/storage/qhundred/amount_hundred_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_choice.dart';
+import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_from_contact_list.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/join_supplier.dart';
 import 'package:vat_calculator/screens/suppliers/components/add_suppliers/add_supplier_screen.dart';
 import 'package:vat_calculator/screens/suppliers/components/edit_product.dart';
@@ -39,6 +40,7 @@ final Map<String, WidgetBuilder> routes = {
   EventHomeScreen.routeName: (context) => EventHomeScreen(),
   EditProfileScreen.routeName: (context) => EditProfileScreen(),
   EditSuppliersScreen.routeName: (context) => EditSuppliersScreen(),
+  AddSupplierFromContactList.routeName: (context) => AddSupplierFromContactList(),
   EventCreateScreen.routeName: (context) => EventCreateScreen(),
   AmountHundredScreen.routeName: (context) => AmountHundredScreen(),
   UpdateBranchScreen.routeName: (context) => UpdateBranchScreen(),

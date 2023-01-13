@@ -1,6 +1,7 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
 import '../swagger/swagger.models.swagger.dart';
 import '../swagger/swagger.swagger.dart';
 
@@ -398,6 +399,25 @@ class DataBundleNotifier extends ChangeNotifier {
   void setClosedEventList(List<Event> eventClosed) {
     _currentEventsClosed.clear();
     _currentEventsClosed.addAll(eventClosed);
+    notifyListeners();
+  }
+
+  Supplier _supplierToCreateNew = Supplier(supplierId: 0);
+
+  Supplier getSupplierToCreateNew(){
+    return _supplierToCreateNew;
+  }
+
+  void clearSupplier(){
+    _supplierToCreateNew = Supplier(supplierId: 0);
+    notifyListeners();
+  }
+  void setCurrentSupplierToCreateNew(Contact? contact) {
+    _supplierToCreateNew = Supplier(
+      name: contact!.name!.first + ' ' +  contact!.name!.last ?? '',
+      phoneNumber: contact!.phones.first.number ?? '',
+      email: contact!.emails!.isEmpty ? '' : contact!.emails!.first.address ?? '',
+    );
     notifyListeners();
   }
 

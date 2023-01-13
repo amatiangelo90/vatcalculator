@@ -21,8 +21,8 @@ class EventsBodyWidget extends StatelessWidget {
 
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundleNotifier, _){
-        final String monthName = _getMonthName(now.month);
-        final String nextMonthName = _getMonthName(now.month + 1);
+        final String monthName = getMonthName(now.month);
+        final String nextMonthName = getMonthName(now.month + 1);
 
         return SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -43,58 +43,7 @@ class EventsBodyWidget extends StatelessWidget {
     );
   }
 
-  String _getMonthName(int month) {
-    if (month == 01) {
-      return 'Gennaio';
-    } else if (month == 02) {
-      return 'Febbraio';
-    } else if (month == 03) {
-      return 'Marzo';
-    } else if (month == 04) {
-      return 'Aprile';
-    } else if (month == 05) {
-      return 'Maggio';
-    } else if (month == 06) {
-      return 'Giugno';
-    } else if (month == 07) {
-      return 'Luglio';
-    } else if (month == 08) {
-      return 'Agosto';
-    } else if (month == 09) {
-      return 'Settembre';
-    } else if (month == 10) {
-      return 'Ottobre';
-    } else if (month == 11) {
-      return 'Novembre';
-    } else {
-      return 'Dicembre';
-    }
-  }
 
-  buildImageContainerByMonth(String monthImage, String month) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Stack(
-        children: [
-
-          Container(
-            height: getProportionateScreenHeight(150),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              image: DecorationImage(
-                image: AssetImage(monthImage),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 15, left: 15),
-            child: Text(month, style: TextStyle(fontSize: getProportionateScreenHeight(30), color: Colors.black),),
-          ),
-        ],
-      ),
-    );
-  }
 
   buildEventListForCurrentDate(Iterable<Event> events,BuildContext context, DataBundleNotifier dataBundleNotifier) {
     List<Widget> list = [];

@@ -22,7 +22,7 @@ String getRandomColor(){
 return colors[_random.nextInt(colors.length)];
 }
 
-const String kVersionApp = '1.0.82';
+const String kVersionApp = '2.0.1';
 const Color kCustomBlack = Color(0xff121212);
 const Color kCustomGreen =  Color(0xff398564);
 const Color kCustomGrey = Color(0xff1C1C1E);
@@ -230,8 +230,60 @@ String getNameDayFromWeekDay(int weekday) {
       return 'Domenica';
     default:
       return 'ERRORE';
-
   }
+}
+
+String getMonthName(int month) {
+  if (month == 01) {
+    return 'Gennaio';
+  } else if (month == 02) {
+    return 'Febbraio';
+  } else if (month == 03) {
+    return 'Marzo';
+  } else if (month == 04) {
+    return 'Aprile';
+  } else if (month == 05) {
+    return 'Maggio';
+  } else if (month == 06) {
+    return 'Giugno';
+  } else if (month == 07) {
+    return 'Luglio';
+  } else if (month == 08) {
+    return 'Agosto';
+  } else if (month == 09) {
+    return 'Settembre';
+  } else if (month == 10) {
+    return 'Ottobre';
+  } else if (month == 11) {
+    return 'Novembre';
+  } else {
+    return 'Dicembre';
+  }
+}
+
+buildImageContainerByMonth(String monthImage, String month) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Stack(
+      children: [
+
+        Container(
+          height: getProportionateScreenHeight(150),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            image: DecorationImage(
+              image: AssetImage(monthImage),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(right: 15, left: 15),
+          child: Text(month, style: TextStyle(fontSize: getProportionateScreenHeight(30), color: Colors.black),),
+        ),
+      ],
+    ),
+  );
 }
 
 

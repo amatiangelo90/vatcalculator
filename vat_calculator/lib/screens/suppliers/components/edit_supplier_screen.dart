@@ -141,29 +141,36 @@ class _EditSuppliersScreenState extends State<EditSuppliersScreen> {
                           print('Inserire un numero di cellulare');
                           buildShowErrorDialog('Inserire un numero di cellulare');
                         }else{
+
                           KeyboardUtil.hideKeyboard(context);
-                          try{
+                          Response apiV1AppSuppliersUpdatePut = await dataBundleNotifier.getSwaggerClient().apiV1AppSuppliersUpdatePut(supplier: Supplier(
+                            name: controllerSupplierName.text,
+                            email: controllerEmail.text,
+                            phoneNumber: controllerMobileNo.text,
+                            supplierId: dataBundleNotifier.getCurrentSupplier().supplierId,
+                            address: controllerAddress.text,
+                            city: controllerCity.text,
+                            cap: controllerCap.text,
+                            vatNumber: controllerPIva.text,
+                          ));
 
+                          if(apiV1AppSuppliersUpdatePut.isSuccessful){
+                            dataBundleNotifier.refreshCurrentBranchData();
 
-                            final snackBar =
-                            SnackBar(
-                                duration: const Duration(seconds: 3),
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                 backgroundColor: kCustomGreen,
-                                content: Text('Fornitore ' + controllerSupplierName.text +' aggiornato',
-                                )
-                            );
-
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            Navigator.pushNamed(context, SuppliersScreen.routeName);
-                          }catch(e){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                                duration: const Duration(milliseconds: 5000),
-                                backgroundColor: Colors.red,
-                                content: Text('Impossibile creare fornitore. Riprova più tardi. Errore: $e', style: TextStyle(fontFamily: 'LoraFont', color: Colors.white),)));
+                                duration: Duration(milliseconds: 1000),
+                                content: Text('Fornitore modificato con successo'
+                                )));
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                backgroundColor: kCustomBordeaux,
+                                duration: Duration(milliseconds: 3000),
+                                content: Text('Errore durante l\'operazione. Err: ' + apiV1AppSuppliersUpdatePut.error.toString()
+                                )));
                           }
-                        }
 
+                        }
                       }, textColor: Colors.white,),
                   ),
                 ),

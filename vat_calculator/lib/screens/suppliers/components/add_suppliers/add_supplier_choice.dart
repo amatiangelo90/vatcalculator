@@ -68,6 +68,7 @@ class _SupplierChoiceCreationEnjoyState extends State<SupplierChoiceCreationEnjo
                               width: getProportionateScreenWidth(600),
                               child: OutlinedButton(
                                 onPressed: (){
+                                  dataBundleNotifier.clearSupplier();
                                   Navigator.pushNamed(context, AddSupplierScreen.routeName);
                                 },
                                 style: ButtonStyle(

@@ -1,7 +1,6 @@
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
@@ -9,8 +8,7 @@ import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/home/main_page.dart';
 import 'package:vat_calculator/swagger/swagger.enums.swagger.dart';
 import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
-
-import '../size_config.dart';
+import '../../size_config.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({Key? key}) : super(key: key);

@@ -65,6 +65,7 @@ class _OrdersScreenBodyState extends State<OrdersScreenBody> {
                             child: DefaultButton(
                               text: "Crea Fornitore",
                               press: () async {
+                                dataBundleNotifier.clearSupplier();
                                 Navigator.pushNamed(context, AddSupplierScreen.routeName);
                               }, textColor: kCustomBlue, color: kCustomGrey,
                             ),

@@ -10,7 +10,7 @@ import 'package:vat_calculator/screens/home/components/body.dart';
 import '../../models/databundlenotifier.dart';
 import '../../size_config.dart';
 import '../../swagger/swagger.models.swagger.dart';
-import '../edit_profile.dart';
+import '../authentication/edit_profile.dart';
 
 class HomeScreenMain extends StatelessWidget {
 

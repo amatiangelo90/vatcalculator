@@ -26,33 +26,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   bool isSignInPage = true;
 
-  void getCurrentUser() async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        print('Email logged in : ' + user.email!);
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => LandingScreen(email: user.email!),
-          ),
-        );
-
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: const Duration(milliseconds: 700),
-            backgroundColor: Colors.green,
-            content: Text(
-              'Accesso con utenza ${user.email}...',
-              style: const TextStyle(color: Colors.white),
-            )));
-      } else {
-        print('No user authenticated');
-      }
-    } catch (e) {
-      print('Exception : ' + e.toString());
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     TextEditingController emailController = TextEditingController();

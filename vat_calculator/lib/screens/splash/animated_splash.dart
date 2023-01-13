@@ -1,6 +1,9 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:vat_calculator/constants.dart';
+import 'package:vat_calculator/screens/authentication/sign_in/sign_in_screen.dart';
 import 'package:vat_calculator/size_config.dart';
 
 import '../landing/landing_page.dart';
@@ -35,17 +38,30 @@ class _SecondClassState extends State<SecondClass>
   void initState() {
     super.initState();
 
+    final user = FirebaseAuth.instance!.currentUser;
+
     scaleController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1800),
     )..addStatusListener(
           (status) {
         if (status == AnimationStatus.completed) {
-          Navigator.of(context).pushReplacement(
-            ThisIsFadeRoute(
-              route: const LandingScreen(email: 'amati.angelo90@gmail.com'), page: Text(''),
-            ),
-          );
+          if(user == null){
+            Navigator.of(context).pushReplacement(
+              ThisIsFadeRoute(
+                route: SignInScreen(), page: Text(''),
+              ),
+            );
+          }else{
+            print('Email logged in : ' + user.email!);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LandingScreen(email: user.email!),
+              ),
+            );
+          }
+
           Timer(
             const Duration(milliseconds: 300), () {
               scaleController.reset();
