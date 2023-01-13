@@ -10,6 +10,7 @@ import 'package:vat_calculator/screens/home/components/body.dart';
 import '../../models/databundlenotifier.dart';
 import '../../size_config.dart';
 import '../../swagger/swagger.models.swagger.dart';
+import '../edit_profile.dart';
 
 class HomeScreenMain extends StatelessWidget {
 
@@ -33,7 +34,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
   @override
   Widget build(BuildContext context) {
 
-    final _auth = FirebaseAuth.instance;
+    Future<void> _signOut() async {
+      await FirebaseAuth.instance.signOut();
+    }
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
@@ -43,8 +46,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
             iconTheme: const IconThemeData(color: Colors.white),
             leading: IconButton(
               onPressed: (){
-                _auth.signOut();
+                _signOut();
                 Navigator.pushNamed(context, SignInScreen.routeName);
+
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(const SnackBar(
+                    duration: Duration(milliseconds: 1000),
+                    backgroundColor: kCustomBordeaux,
+                    content: Text('Logging out...', style: TextStyle(color: Colors.white),)));
+
 
               },
               icon: Icon(Icons.login_outlined, size: getProportionateScreenHeight(30)),
@@ -54,18 +64,24 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
             actions: [
               Padding(
                 padding: const EdgeInsets.only(right: 10),
-                child: IconButton(
-                  icon: SvgPicture.asset('assets/icons/User.svg', color: Colors.white, height: getProportionateScreenHeight(35),),
-                  onPressed: (){
-                  },
-                )
+                child: Stack(
+                  children: [
+                    dataBundleNotifier.getUserEntity().profileCompleted! ? const Text('') : Positioned(child: Icon(Icons.warning_amber_rounded, color: Colors.yellow,)),
+                    IconButton(
+                      icon: SvgPicture.asset('assets/icons/User.svg', color: Colors.white, height: getProportionateScreenHeight(35),),
+                      onPressed: (){
+                        Navigator.pushNamed(context, EditProfileScreen.routeName);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
             centerTitle: true,
             title: Column(
               children: [
                 Text(
-                  "Ciao ${dataBundleNotifier.getUserEntity().name!}",
+                  "Ciao ${dataBundleNotifier.getUserEntity()!.name == null ? '' : dataBundleNotifier.getUserEntity()!.name!}",
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(19),
                     fontWeight: FontWeight.bold,

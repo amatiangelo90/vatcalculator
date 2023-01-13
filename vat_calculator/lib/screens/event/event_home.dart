@@ -39,7 +39,7 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
 
             return Scaffold(
               backgroundColor: Colors.white,
-              floatingActionButton: dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.admin ?
+              floatingActionButton: dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ?
               FloatingActionButton(
                   heroTag: "bt123541b12b3123",
                   backgroundColor: kCustomGreen,

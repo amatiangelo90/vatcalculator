@@ -33,6 +33,14 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateProfile(String name, String lastname, String phone, bool isComplete) {
+    _userEntity.name = name;
+    _userEntity.lastname = lastname;
+    _userEntity.phone = phone;
+    _userEntity.profileCompleted = isComplete;
+    notifyListeners();
+  }
+
   Supplier getCurrentSupplier(){
     return _currentSupplier;
   }
@@ -392,4 +400,6 @@ class DataBundleNotifier extends ChangeNotifier {
     _currentEventsClosed.addAll(eventClosed);
     notifyListeners();
   }
+
+
 }

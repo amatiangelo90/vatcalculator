@@ -417,111 +417,112 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: workstationModel.products!.length! * getProportionateScreenHeight(300),
-          child: ListView.builder(
-            itemCount: workstationModel.products!.length,
-            itemBuilder: (context, index) {
-              RWorkstationProduct rWorkstationProduct = workstationModel.products![index];
-              return Dismissible(
-                background: Container(
-                  color: kCustomBordeaux,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 30),
-                        child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
-                      )
-                    ],
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 100),
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: workstationModel.products!.length,
+          itemBuilder: (context, index) {
+            RWorkstationProduct rWorkstationProduct = workstationModel.products![index];
+            return Dismissible(
+              background: Container(
+                color: kCustomBordeaux,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 30),
+                      child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                    )
+                  ],
                 ),
-                key: Key(rWorkstationProduct.productId!.toString()),
-                direction: DismissDirection.endToStart,
-                confirmDismiss: (DismissDirection direction) async {
-                  return await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Conferma operazione"),
-                        content: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Sei sicuro di voler eliminare il"
-                              " prodotto?\nUna volta cancellato il prodotto verranno ricaricati nel magazzino \'${dataBundleNotifier.getStorageById(rWorkstationProduct.storageId!).name}\'"
-                              " n° ${rWorkstationProduct.stockFromStorage} x ${rWorkstationProduct.unitMeasure} di ${rWorkstationProduct.productName}"),
+              ),
+              key: Key(rWorkstationProduct.productId!.toString()),
+              direction: DismissDirection.endToStart,
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Conferma operazione"),
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Sei sicuro di voler eliminare il"
+                            " prodotto?\nUna volta cancellato il prodotto verranno ricaricati nel magazzino \'${dataBundleNotifier.getStorageById(rWorkstationProduct.storageId!).name}\'"
+                            " n° ${rWorkstationProduct.stockFromStorage} x ${rWorkstationProduct.unitMeasure} di ${rWorkstationProduct.productName}"),
+                      ),
+                      actions: <Widget>[
+                        OutlinedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text("Elimina", style: TextStyle(color: kRed),)
                         ),
-                        actions: <Widget>[
-                          OutlinedButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text("Elimina", style: TextStyle(color: kRed),)
-                          ),
-                          OutlinedButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text("Indietro"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                resizeDuration: Duration(seconds: 1),
-                onDismissed: (direction) async {
-                  print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
-                  try {
-                    Response apiV1AppWorkstationRemoveproductDelete = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationRemoveproductDelete(workstationProductId: rWorkstationProduct.workstationProductId!.toInt());
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Indietro"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              resizeDuration: Duration(seconds: 1),
+              onDismissed: (direction) async {
+                print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
+                try {
+                  Response apiV1AppWorkstationRemoveproductDelete = await dataBundleNotifier.getSwaggerClient().apiV1AppWorkstationRemoveproductDelete(workstationProductId: rWorkstationProduct.workstationProductId!.toInt());
 
-                    if(apiV1AppWorkstationRemoveproductDelete.isSuccessful){
+                  if(apiV1AppWorkstationRemoveproductDelete.isSuccessful){
 
-                      dataBundleNotifier.removeProductFromCurrentWorkstation(rWorkstationProduct);
-                      dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(rWorkstationProduct.storageId!.toInt());
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              duration:
-                              Duration(milliseconds: 1000),
-                              backgroundColor: kCustomGreen,
-                              content: Text(
-                                'Prodotto eliminato!',
-                                style: TextStyle(color: Colors.white),
-                              )));
-                    } else{
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              duration:
-                              const Duration(milliseconds: 3000),
-                              backgroundColor: kCustomBordeaux,
-                              content: Text(
-                                'Ho riscontrato problemi durante l\'operazione. Err: ' + apiV1AppWorkstationRemoveproductDelete.error.toString(),
-                                style: TextStyle(color: Colors.white),
-                              )));
-                    }
-                  } on Exception catch (e) {
+                    dataBundleNotifier.removeProductFromCurrentWorkstation(rWorkstationProduct);
+                    dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(rWorkstationProduct.storageId!.toInt());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            duration:
+                            Duration(milliseconds: 1000),
+                            backgroundColor: kCustomGreen,
+                            content: Text(
+                              'Prodotto eliminato!',
+                              style: TextStyle(color: Colors.white),
+                            )));
+                  } else{
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             duration:
                             const Duration(milliseconds: 3000),
                             backgroundColor: kCustomBordeaux,
                             content: Text(
-                              'Ho riscontrato problemi durante l\'operazione. Err: ' + e.toString(),
+                              'Ho riscontrato problemi durante l\'operazione. Err: ' + apiV1AppWorkstationRemoveproductDelete.error.toString(),
                               style: TextStyle(color: Colors.white),
                             )));
                   }
-                },
-                child: ListTile(
-                  title: Column(
-                    children: [
-                      buildUnLoadProductRow(rWorkstationProduct, storageProductList, dataBundleNotifier),
-                      const Divider(color: Colors.grey, height: 4,),
-                    ],
-                  ),
+                } on Exception catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          duration:
+                          const Duration(milliseconds: 3000),
+                          backgroundColor: kCustomBordeaux,
+                          content: Text(
+                            'Ho riscontrato problemi durante l\'operazione. Err: ' + e.toString(),
+                            style: TextStyle(color: Colors.white),
+                          )));
+                }
+              },
+              child: ListTile(
+                title: Column(
+                  children: [
+                    buildUnLoadProductRow(rWorkstationProduct, storageProductList, dataBundleNotifier),
+                    const Divider(color: Colors.grey, height: 4,),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
+
   buildLoadWorkstationScreen(DataBundleNotifier dataBundleNotifier, Workstation workstationModel, List<RStorageProduct> storageProductList) {
 
     return Scaffold(
@@ -620,108 +621,108 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          height: workstationModel.products!.length! * getProportionateScreenHeight(300),
-          child: ListView.builder(
-            itemCount: workstationModel.products!.length,
-            itemBuilder: (context, index) {
-              RWorkstationProduct rWorkstationProduct = workstationModel.products![index];
-              return Dismissible(
-                background: Container(
-                  color: kCustomBordeaux,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 30),
-                        child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
-                      )
-                    ],
-                  ),
+      body: Padding(
+        padding: const EdgeInsets.only(bottom: 100),
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.vertical,
+          itemCount: workstationModel.products!.length,
+          itemBuilder: (context, index) {
+            RWorkstationProduct rWorkstationProduct = workstationModel.products![index];
+            return Dismissible(
+              background: Container(
+                color: kCustomBordeaux,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 30),
+                      child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                    )
+                  ],
                 ),
-                key: Key(rWorkstationProduct.productId!.toString()),
-                direction: DismissDirection.endToStart,
-                confirmDismiss: (DismissDirection direction) async {
-                  return await showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text("Conferma operazione"),
-                        content: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("Sei sicuro di voler eliminare il"
-                              " prodotto?\nUna volta cancellato il prodotto verranno ricaricati nel magazzino \'${dataBundleNotifier.getStorageById(rWorkstationProduct.storageId!).name}\'"
-                              " n° ${rWorkstationProduct.stockFromStorage} x ${rWorkstationProduct.unitMeasure} di ${rWorkstationProduct.productName}"),
+              ),
+              key: Key(rWorkstationProduct.productId!.toString()),
+              direction: DismissDirection.endToStart,
+              confirmDismiss: (DismissDirection direction) async {
+                return await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Conferma operazione"),
+                      content: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Sei sicuro di voler eliminare il"
+                            " prodotto?\nUna volta cancellato il prodotto verranno ricaricati nel magazzino \'${dataBundleNotifier.getStorageById(rWorkstationProduct.storageId!).name}\'"
+                            " n° ${rWorkstationProduct.stockFromStorage} x ${rWorkstationProduct.unitMeasure} di ${rWorkstationProduct.productName}"),
+                      ),
+                      actions: <Widget>[
+                        OutlinedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            child: const Text("Elimina", style: TextStyle(color: kRed),)
                         ),
-                        actions: <Widget>[
-                          OutlinedButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text("Elimina", style: TextStyle(color: kRed),)
-                          ),
-                          OutlinedButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: const Text("Indietro"),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                resizeDuration: Duration(seconds: 1),
-                onDismissed: (direction) async {
-                  print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
-                  try {
-                    Response apiV1AppWorkstationRemoveproductDelete = await dataBundleNotifier.getSwaggerClient()
-                        .apiV1AppWorkstationRemoveproductDelete(workstationProductId: rWorkstationProduct.workstationProductId!.toInt());
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Indietro"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              resizeDuration: Duration(seconds: 1),
+              onDismissed: (direction) async {
+                print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
+                try {
+                  Response apiV1AppWorkstationRemoveproductDelete = await dataBundleNotifier.getSwaggerClient()
+                      .apiV1AppWorkstationRemoveproductDelete(workstationProductId: rWorkstationProduct.workstationProductId!.toInt());
 
-                    if(apiV1AppWorkstationRemoveproductDelete.isSuccessful){
+                  if(apiV1AppWorkstationRemoveproductDelete.isSuccessful){
 
-                      dataBundleNotifier.removeProductFromCurrentWorkstation(rWorkstationProduct);
-                      dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(rWorkstationProduct.storageId!.toInt());
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              duration:
-                              Duration(milliseconds: 1000),
-                              backgroundColor: kCustomGreen,
-                              content: Text(
-                                'Prodotto eliminato!',
-                                style: TextStyle(color: Colors.white),
-                              )));
-                    } else{
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              duration:
-                              const Duration(milliseconds: 3000),
-                              backgroundColor: kCustomBordeaux,
-                              content: Text(
-                                'Ho riscontrato problemi durante l\'operazione. Err: ' + apiV1AppWorkstationRemoveproductDelete.error.toString(),
-                                style: TextStyle(color: Colors.white),
-                              )));
-                    }
-                  } on Exception catch (e) {
+                    dataBundleNotifier.removeProductFromCurrentWorkstation(rWorkstationProduct);
+                    dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(rWorkstationProduct.storageId!.toInt());
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            duration:
+                            Duration(milliseconds: 1000),
+                            backgroundColor: kCustomGreen,
+                            content: Text(
+                              'Prodotto eliminato!',
+                              style: TextStyle(color: Colors.white),
+                            )));
+                  } else{
                     ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                             duration:
                             const Duration(milliseconds: 3000),
                             backgroundColor: kCustomBordeaux,
                             content: Text(
-                              'Ho riscontrato problemi durante l\'operazione. Err: ' + e.toString(),
+                              'Ho riscontrato problemi durante l\'operazione. Err: ' + apiV1AppWorkstationRemoveproductDelete.error.toString(),
                               style: TextStyle(color: Colors.white),
                             )));
                   }
-                },
-                child: ListTile(
-                  title: Column(
-                    children: [
-                      buildLoadProductRow(rWorkstationProduct, storageProductList, dataBundleNotifier),
-                      const Divider(color:  Colors.grey, height: 4,),
-                    ],
-                  ),
+                } on Exception catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                          duration:
+                          const Duration(milliseconds: 3000),
+                          backgroundColor: kCustomBordeaux,
+                          content: Text(
+                            'Ho riscontrato problemi durante l\'operazione. Err: ' + e.toString(),
+                            style: TextStyle(color: Colors.white),
+                          )));
+                }
+              },
+              child: ListTile(
+                title: Column(
+                  children: [
+                    buildLoadProductRow(rWorkstationProduct, storageProductList, dataBundleNotifier),
+                    const Divider(color:  Colors.grey, height: 4,),
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -744,7 +745,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(21))),
+                      Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(14))),
                       prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
                         width: getProportionateScreenWidth(170),
                         child: Row(
@@ -810,7 +811,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
 
-                Text((product.stockFromStorage! + product.amountLoad!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(18))),
+                Text((product.stockFromStorage! + product.amountLoad!).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color:kCustomGreen, fontSize: getProportionateScreenHeight(16))),
                 Text(product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -890,7 +891,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
               children: [
                 SizedBox(
                     width: getProportionateScreenWidth(170),
-                    child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
+                    child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(14)))),
 
                 prodList.where((productL) => productL.productId == product.productId).isNotEmpty ? SizedBox(
                   width: getProportionateScreenWidth(170),
@@ -898,8 +899,8 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
                     children: [
                       Row(
                         children: [
-                          Text('Carico: ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(14))),
-                          Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen, fontSize: getProportionateScreenHeight(15))),
+                          Text('Carico: ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(11))),
+                          Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGreen, fontSize: getProportionateScreenHeight(13))),
                         ],
                       ),
                       Row(

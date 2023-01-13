@@ -13,6 +13,7 @@ import '../../../size_config.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
 import '../../branch_registration/branch_update.dart';
+import '../../edit_profile.dart';
 import '../../event/event_home.dart';
 import '../../orders/components/screens/order_creation/order_create_screen.dart';
 import '../../orders/components/screens/recap_order_screen.dart';
@@ -35,67 +36,90 @@ class _HomePageBodyState extends State<HomePageBody> {
 
     return Consumer<DataBundleNotifier>(
       builder: (context, dataBundleNotifier, child) {
-        if (dataBundleNotifier.getUserEntity().branchList!.isEmpty) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
+        if (!dataBundleNotifier.getUserEntity().profileCompleted!) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(38.0),
+                child: Text(
+                  "Ciao, completa il profilo prima di iniziare",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: getProportionateScreenWidth(13),
+                    fontWeight: FontWeight.bold,
+                    color: kCustomGrey,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: SizeConfig.screenWidth * 0.8,
+                height: getProportionateScreenHeight(50),
+                child: OutlinedButton(
+                  style: ButtonStyle(
+                    elevation: MaterialStateProperty.resolveWith((states) => 5),
+                    backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                  ), onPressed: () {
+                  Navigator.pushNamed(context, EditProfileScreen.routeName);
+                }, child: Text('Completa profilo', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20))),
+
+                ),
+              ),
+            ],
+          );
+        } else if(dataBundleNotifier.getUserEntity().branchList!.isEmpty){
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(38.0),
+                child: Text(
                   "Sembra che tu non abbia configurato ancora nessuna attività. ",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: getProportionateScreenWidth(13),
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: kCustomGrey,
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                SizedBox(
-                  width: SizeConfig.screenWidth * 0.6,
-                  child: CreateBranchButton(),
-                ),
-              ],
-            ),
-          );
-        } else {
-          return RefreshIndicator(
-            color: kCustomWhite,
-            onRefresh: () {
-              setState(() {});
-              return Future.delayed(const Duration(milliseconds: 500));
-            },
-            child: Container(
-              color: kCustomGrey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  buildGestureDetectorBranchSelector(
-                      context, dataBundleNotifier),
-                  //buildStaffWidget(dataBundleNotifier),
-
-                  buildCateringButton('CATERING', (){
-                    if(dataBundleNotifier.getCurrentBranch()!.storages!.isEmpty){
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        backgroundColor: kCustomBordeaux,
-                        duration: Duration(seconds: 4),
-                        content: Text('Per creare un evento catering devi prima creare un magazzino. Il magazzino creato potrà essere selezionato ed associato all\' evento in modo tale da ottenere una lista di prodotti da utilizzare in fase di carico/scarico'),
-                      ));
-                    }else{
-                      Navigator.pushNamed(context, EventHomeScreen.routeName);
-                    }
-                  }, dataBundleNotifier,),
-                  buildSuppliersStorageButton(width, dataBundleNotifier),
-
-                  buildOrderButton('ORDINI', dataBundleNotifier),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text('Developed by AmatiCorp', style: TextStyle(fontSize: 6)),
-                  )
-                ],
               ),
+              SizedBox(
+                width: SizeConfig.screenWidth * 0.8,
+                child: CreateBranchButton(),
+              ),
+            ],
+          );
+        } {
+          return Container(
+            color: kCustomGrey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                buildGestureDetectorBranchSelector(
+                    context, dataBundleNotifier),
+                //buildStaffWidget(dataBundleNotifier),
+
+                buildCateringButton('CATERING', (){
+                  if(dataBundleNotifier.getCurrentBranch()!.storages!.isEmpty){
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      backgroundColor: kCustomBordeaux,
+                      duration: Duration(seconds: 4),
+                      content: Text('Per creare un evento catering devi prima creare un magazzino. Il magazzino creato potrà essere selezionato ed associato all\' evento in modo tale da ottenere una lista di prodotti da utilizzare in fase di carico/scarico'),
+                    ));
+                  }else{
+                    Navigator.pushNamed(context, EventHomeScreen.routeName);
+                  }
+                }, dataBundleNotifier,),
+                buildSuppliersStorageButton(width, dataBundleNotifier),
+
+                buildOrderButton('ORDINI', dataBundleNotifier),
+                const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text('Developed by AmatiCorp', style: TextStyle(fontSize: 6)),
+                )
+              ],
             ),
           );
         }

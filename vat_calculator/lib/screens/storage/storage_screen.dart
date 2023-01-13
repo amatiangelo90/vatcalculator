@@ -861,7 +861,7 @@ class _StorageScreenState extends State<StorageScreen> {
                   children: [
                     SizedBox(
                         width: getProportionateScreenWidth(200),
-                        child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(18)))),
+                        child: Text(product.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(14)))),
                     Text('€ ' + product.price!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(14))),
                   ],
                 ),
@@ -878,8 +878,8 @@ class _StorageScreenState extends State<StorageScreen> {
                   padding: const EdgeInsets.all(4.0),
                   child: Column(
                     children: [
-                      Text(product.stock!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: product.stock! >= 0 ? kCustomGreen : kPinaColor, fontSize: getProportionateScreenHeight(20))),
-                      Text(product.unitMeasure! == 'ALTRO' ? product!.unitMeasureOth! : product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(15))),
+                      Text(product.stock!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: product.stock! >= 0 ? kCustomGreen : kPinaColor, fontSize: getProportionateScreenHeight(15))),
+                      Text(product.unitMeasure! == 'ALTRO' ? product!.unitMeasureOth! : product.unitMeasure!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey, fontSize: getProportionateScreenHeight(11))),
                       Text('q/100: ' + product.amountHundred!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, fontSize: getProportionateScreenHeight(8))),
                     ],
                   ),

@@ -227,7 +227,7 @@ class RWorkstationProduct {
       _$RWorkstationProductFromJson(json);
 
   @JsonKey(name: 'amountHundred')
-  double? amountHundred;
+  final double? amountHundred;
   @JsonKey(name: 'amountLoad')
   double? amountLoad;
   @JsonKey(name: 'amountUnload')
@@ -239,7 +239,7 @@ class RWorkstationProduct {
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
-  String? productName;
+  final String? productName;
   @JsonKey(name: 'stockFromStorage')
   double? stockFromStorage;
   @JsonKey(name: 'storageId')
@@ -948,6 +948,7 @@ class UserEntity {
     this.name,
     this.phone,
     this.photo,
+    this.profileCompleted,
     this.userId,
     this.userType,
   });
@@ -960,13 +961,15 @@ class UserEntity {
   @JsonKey(name: 'email')
   final String? email;
   @JsonKey(name: 'lastname')
-  final String? lastname;
+  String? lastname;
   @JsonKey(name: 'name')
-  final String? name;
+  String? name;
   @JsonKey(name: 'phone')
-  final String? phone;
+  String? phone;
   @JsonKey(name: 'photo')
-  final String? photo;
+  String? photo;
+  @JsonKey(name: 'profileCompleted')
+  bool? profileCompleted;
   @JsonKey(name: 'userId')
   final num? userId;
   @JsonKey(
@@ -997,6 +1000,9 @@ class UserEntity {
                 const DeepCollectionEquality().equals(other.phone, phone)) &&
             (identical(other.photo, photo) ||
                 const DeepCollectionEquality().equals(other.photo, photo)) &&
+            (identical(other.profileCompleted, profileCompleted) ||
+                const DeepCollectionEquality()
+                    .equals(other.profileCompleted, profileCompleted)) &&
             (identical(other.userId, userId) ||
                 const DeepCollectionEquality().equals(other.userId, userId)) &&
             (identical(other.userType, userType) ||
@@ -1015,6 +1021,7 @@ class UserEntity {
       const DeepCollectionEquality().hash(name) ^
       const DeepCollectionEquality().hash(phone) ^
       const DeepCollectionEquality().hash(photo) ^
+      const DeepCollectionEquality().hash(profileCompleted) ^
       const DeepCollectionEquality().hash(userId) ^
       const DeepCollectionEquality().hash(userType) ^
       runtimeType.hashCode;
@@ -1028,6 +1035,7 @@ extension $UserEntityExtension on UserEntity {
       String? name,
       String? phone,
       String? photo,
+      bool? profileCompleted,
       num? userId,
       enums.UserEntityUserType? userType}) {
     return UserEntity(
@@ -1037,6 +1045,7 @@ extension $UserEntityExtension on UserEntity {
         name: name ?? this.name,
         phone: phone ?? this.phone,
         photo: photo ?? this.photo,
+        profileCompleted: profileCompleted ?? this.profileCompleted,
         userId: userId ?? this.userId,
         userType: userType ?? this.userType);
   }
@@ -1048,6 +1057,7 @@ extension $UserEntityExtension on UserEntity {
       Wrapped<String?>? name,
       Wrapped<String?>? phone,
       Wrapped<String?>? photo,
+      Wrapped<bool?>? profileCompleted,
       Wrapped<num?>? userId,
       Wrapped<enums.UserEntityUserType?>? userType}) {
     return UserEntity(
@@ -1057,6 +1067,9 @@ extension $UserEntityExtension on UserEntity {
         name: (name != null ? name.value : this.name),
         phone: (phone != null ? phone.value : this.phone),
         photo: (photo != null ? photo.value : this.photo),
+        profileCompleted: (profileCompleted != null
+            ? profileCompleted.value
+            : this.profileCompleted),
         userId: (userId != null ? userId.value : this.userId),
         userType: (userType != null ? userType.value : this.userType));
   }

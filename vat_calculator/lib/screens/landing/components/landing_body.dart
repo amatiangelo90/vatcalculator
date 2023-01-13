@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,15 +12,9 @@ import '../../../size_config.dart';
 import '../../../swagger/swagger.swagger.dart';
 import '../../home/main_page.dart';
 
-class LandingBody extends StatefulWidget {
+class LandingBody extends StatelessWidget {
   final String email;
   const LandingBody({Key? key, required this.email}) : super(key: key);
-
-  @override
-  State<LandingBody> createState() => _LandingBodyState();
-}
-
-class _LandingBodyState extends State<LandingBody> {
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +24,35 @@ class _LandingBodyState extends State<LandingBody> {
       overlayWidget: const LoaderOverlayWidget(message: 'Sto caricando i tuoi dati..',),
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child){
+          Timer(
+              const Duration(seconds: 2),
+                  () async {
+                    try{
+                      context.loaderOverlay.show();
+                      Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
+                      Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: email);
+
+                      if(response.isSuccessful){
+                        dataBundleNotifier.setUser(response.body);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (BuildContext context) => HomeScreenMain()));
+
+                      } else{
+                        print(response.error);
+                        print(response.base.headers.toString());
+                      }
+                    }catch(e){
+                      print(e.toString());
+                    }finally{
+                      context.loaderOverlay.hide();
+                    }
+                  });
+
           return Scaffold(
             backgroundColor: kCustomGrey,
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(25.0),
@@ -57,7 +76,7 @@ class _LandingBodyState extends State<LandingBody> {
                       ),
                     ),
                     Text(
-                      widget.email,
+                      email,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: getProportionateScreenWidth(18),
@@ -69,50 +88,6 @@ class _LandingBodyState extends State<LandingBody> {
                 ),
                 SizedBox(height: getProportionateScreenHeight(20),),
                 Text('v. ' + kVersionApp, style: TextStyle(fontSize: getProportionateScreenHeight(12))),
-
-                Padding(
-                  padding: EdgeInsets.all(Platform.isAndroid ? 10.0 : 30.0),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        width: getProportionateScreenWidth(500),
-                        child: CupertinoButton(
-                          child: const Text('AVANTI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                          color: kCustomGreen,
-                          onPressed: () async {
-
-                            try{
-                              context.loaderOverlay.show();
-                              Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
-                              Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: widget.email);
-
-                              if(response.isSuccessful){
-                                dataBundleNotifier.setUser(response.body);
-                                Navigator.pushNamed(context, HomeScreenMain.routeName);
-
-                              } else{
-
-                                print(response.error);
-                                print(response.base.headers.toString());
-
-                              }
-                            }catch(e){
-                              print(e.toString());
-                            }finally{
-                              context.loaderOverlay.hide();
-                            }
-
-
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text('Developed by Angelo Amati - All right reserved', style: TextStyle(fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(6))),
-                      ),
-                    ],
-                  ),
-                ),
               ],
             ),
           );
