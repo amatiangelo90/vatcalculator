@@ -24,38 +24,15 @@ class LandingBody extends StatelessWidget {
       overlayWidget: const LoaderOverlayWidget(message: 'Sto caricando i tuoi dati..',),
       child: Consumer<DataBundleNotifier>(
         builder: (context, dataBundleNotifier, child){
-          Timer(
-              const Duration(seconds: 2),
-                  () async {
-                    try{
-                      context.loaderOverlay.show();
-                      Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
-                      Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: email);
-
-                      if(response.isSuccessful){
-                        dataBundleNotifier.setUser(response.body);
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (BuildContext context) => HomeScreenMain()));
-
-                      } else{
-                        print(response.error);
-                        print(response.base.headers.toString());
-                      }
-                    }catch(e){
-                      print(e.toString());
-                    }finally{
-                      context.loaderOverlay.hide();
-                    }
-                  });
 
           return Scaffold(
             backgroundColor: kCustomGrey,
             body: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(25.0),
+                  padding: const EdgeInsets.all(105.0),
                   child: Center(
                     child: Image.asset(
                       "assets/logo/logo_home_white.png",
@@ -88,6 +65,42 @@ class LandingBody extends StatelessWidget {
                 ),
                 SizedBox(height: getProportionateScreenHeight(20),),
                 Text('v. ' + kVersionApp, style: TextStyle(fontSize: getProportionateScreenHeight(12))),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 80, left: 20, right: 20),
+                  child: SizedBox(
+                    width: getProportionateScreenWidth(400),
+                    height: getProportionateScreenHeight(50),
+                    child: OutlinedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.resolveWith((states) => 5),
+                          backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                          side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                        ),
+                        onPressed: () async {
+                      try{
+                        context.loaderOverlay.show();
+                        Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
+                        Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: email);
+
+                        if(response.isSuccessful){
+                          dataBundleNotifier.setUser(response.body);
+
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                              builder: (BuildContext context) => HomeScreenMain()));
+
+                        } else{
+                          print(response.error);
+                          print(response.base.headers.toString());
+                        }
+                      }catch(e){
+                        print(e.toString());
+                      }finally{
+                        context.loaderOverlay.hide();
+                      }
+                    }, child: Text('Accedi', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenWidth(20)),)),
+                  ),
+                )
               ],
             ),
           );

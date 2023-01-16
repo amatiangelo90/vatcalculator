@@ -82,11 +82,17 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setBranch(Branch branch){
+  Future<void> setBranch(Branch branch) async {
     _currentBranch = branch;
     if(_currentBranch!.storages!.isNotEmpty){
       setStorage(_currentBranch.storages!.first);
     }
+    Response response = await getSwaggerClient()
+        .apiV1AppUsersFindAllUsersByBranchIdGet(branchId: _currentBranch.branchId!.toInt());
+    if(response.isSuccessful){
+      setUserListForCurrentBranch(response.body);
+    }
+
     notifyListeners();
   }
 
@@ -94,10 +100,7 @@ class DataBundleNotifier extends ChangeNotifier {
     print('Set user to databundle: ' + user.toJson().toString());
     _userEntity = user;
     if(user.branchList!.isNotEmpty){
-      _currentBranch = user.branchList![0];
-      if(_currentBranch!.storages!.isNotEmpty){
-        setStorage(_currentBranch.storages!.first);
-      }
+      setBranch(user.branchList![0]);
     }
     notifyListeners();
   }
@@ -444,4 +447,5 @@ class DataBundleNotifier extends ChangeNotifier {
     userBranchList.addAll(body);
     notifyListeners();
   }
+
 }

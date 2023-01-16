@@ -1111,7 +1111,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     if(responseupdate.isSuccessful){
 
                       dataBundleNotifier.updateCurrentWorkstation(controllerName.text, controllerResponsable.text, workstaion.workstationId!);
-
                       Navigator.of(context).pop(false);
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         backgroundColor: kCustomGreen,

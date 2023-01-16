@@ -103,20 +103,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                     context, dataBundleNotifier),
 
 
-
-                FutureBuilder<Widget>(
-                  future: _retrieveUsersForCurrentBranch(dataBundleNotifier.getCurrentBranch().branchId!, dataBundleNotifier), // async work
-                  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-                    switch (snapshot.connectionState) {
-                      case ConnectionState.waiting: return Text('Loading....');
-                      default:
-                        if (snapshot.hasError)
-                          return Text('Error: ${snapshot.error}');
-                        else
-                          return snapshot.data!;
-                    }
-                  },
-                ),
+                buildStaffWidget(dataBundleNotifier),
                 buildCateringButton('CATERING', (){
                   if(dataBundleNotifier.getCurrentBranch()!.storages!.isEmpty){
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -626,7 +613,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  buildStaffWidget(DataBundleNotifier dataBundle, List<UserBranch> listUserBranch) {
+  buildStaffWidget(DataBundleNotifier dataBundle) {
     return Column(
       children: [
         Row(
@@ -646,7 +633,7 @@ class _HomePageBodyState extends State<HomePageBody> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: buildListAvatars(listUserBranch),
+              children: buildListAvatars(dataBundle),
             ),
           ),
         ),
@@ -654,38 +641,167 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  Future<Widget> _retrieveUsersForCurrentBranch(num branchId, DataBundleNotifier dataBundleNotifier) async {
-    Response response = await dataBundleNotifier.getSwaggerClient()
-        .apiV1AppUsersFindAllUsersByBranchIdGet(branchId: branchId.toInt());
-
-
-    if(response.isSuccessful){
-      dataBundleNotifier.setUserListForCurrentBranch(response.body);
-      return buildStaffWidget(dataBundleNotifier, response.body);
-    }else{
-      return const Text('non ho trovato utenti');
-    }
-  }
-
-  List<Widget> buildListAvatars(List<UserBranch> listUserBranch) {
+  List<Widget> buildListAvatars(DataBundleNotifier dataBundleNotifier) {
     List<Widget> widget = [];
+    dataBundleNotifier.userBranchList!.forEach((userBranch) {
+      widget.add(GestureDetector(
+        onTap: (){
+          showModalBottomSheet(
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(25.0),
+                ),
+              ),
+              context: context,
+              builder: (context) {
+                return Builder(
+                  builder: (context) {
+                    return SizedBox(
+                      width: getProportionateScreenWidth(900),
+                      height: getProportionateScreenHeight(600),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(10.0),
+                                    topLeft: Radius.circular(10.0)),
+                                color: kCustomGrey,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '  Dettagli profilo',
+                                    style: TextStyle(
+                                      fontSize:
+                                      getProportionateScreenWidth(13),
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  userBranch.userEntity!.photo != null ?
+                                  CircleAvatar(
+                                    radius: 100,
+                                    backgroundImage: NetworkImage(userBranch.userEntity!.photo!),
+                                  ) : const CircleAvatar(
+                                    radius: 100,
+                                    backgroundImage: AssetImage('assets/images/monkey.png'),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(userBranch.userEntity!.name! + ' ' + userBranch.userEntity!.lastname!, style: TextStyle(
+                                          fontSize: getProportionateScreenWidth(27),
+                                          color: kCustomGrey),),
+                                    ],
+                                  ),
+                                  Text(userBranch.userEntity!.email!, style: TextStyle(
+                                      fontSize: getProportionateScreenWidth(17),
+                                      color: kCustomGrey),),
+                                  Text(userBranch.userEntity!.phone!, style: TextStyle(
+                                      fontSize: getProportionateScreenWidth(17),
+                                      color: kCustomGrey),),
 
-    listUserBranch.forEach((userBranch) {
-      widget.add(Padding(
-        padding: const EdgeInsets.only(right: 10),
-        child: Column(
-          children: [
-            userBranch.userEntity!.photo != null ?
-            CircleAvatar(
-              backgroundImage: NetworkImage(userBranch.userEntity!.photo!),
-            ) : const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/monkey.png'),
-            ),
+                                  dataBundleNotifier.getCurrentBranch().userPriviledge == UserBranchUserPriviledge.employee ? const Text('') : Padding(
+                                    padding: const EdgeInsets.all(38.0),
+                                    child: OutlinedButton(onPressed: () async {
 
-            Text(userBranch.userEntity!.name!, style: TextStyle(
-                fontSize: getProportionateScreenWidth(10),
-                color: Colors.white),),
-          ],
+                                      Response responseUpdatePriviledge;
+
+                                      if(userBranch.userPriviledge == UserBranchUserPriviledge.admin){
+                                        responseUpdatePriviledge = await dataBundleNotifier.getSwaggerClient().apiV1AppUsersUpdatePermissionTypePut(userBranchId: userBranch.userbranchid!.toInt(),
+                                            userPriviledge: userBranchUserPriviledgeToJson(UserBranchUserPriviledge.employee));
+                                      }else{
+                                        responseUpdatePriviledge = await dataBundleNotifier.getSwaggerClient().apiV1AppUsersUpdatePermissionTypePut(userBranchId: userBranch.userbranchid!.toInt(),
+                                            userPriviledge: userBranchUserPriviledgeToJson(UserBranchUserPriviledge.admin));
+                                      }
+
+                                      Navigator.of(context).pop();
+                                      if(responseUpdatePriviledge.isSuccessful){
+                                        Response response = await dataBundleNotifier.getSwaggerClient()
+                                            .apiV1AppUsersFindAllUsersByBranchIdGet(branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt());
+                                        if(response.isSuccessful){
+                                          dataBundleNotifier.setUserListForCurrentBranch(response.body);
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              backgroundColor: kCustomGreen,
+                                              duration: const Duration(milliseconds: 800),
+                                              content: const Text('Utenza aggiornata correttamente')));
+                                        }else{
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              backgroundColor: kCustomBordeaux,
+                                              duration: const Duration(milliseconds: 1800),
+                                              content: Text('Errore durante l\'operazione. Erro: ' + response.error.toString())));
+
+                                        }
+                                      }else{
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                            backgroundColor: kCustomBordeaux,
+                                            duration: const Duration(milliseconds: 1800),
+                                            content: Text('Errore durante l\'operazione. Erro: ' + responseUpdatePriviledge.error.toString())));
+                                      }
+                                    }, child: Text(userBranch.userPriviledge == UserBranchUserPriviledge.admin ? 'Rendi Dipendente' : 'Rendi Amministratore', style: TextStyle(color: kCustomGreen),)),
+                                  )
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 140),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              });
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Text(userBranchUserPriviledgeToJson(userBranch.userPriviledge)!, style: TextStyle(
+                    fontSize: getProportionateScreenWidth(7),
+                    color: Colors.white),),
+              ),
+              userBranch.userEntity!.photo != null ?
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: NetworkImage(userBranch.userEntity!.photo!),
+              ) : const CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage('assets/images/monkey.png'),
+              ),
+
+              Text(userBranch.userEntity!.name!, style: TextStyle(
+                  fontSize: getProportionateScreenWidth(10),
+                  color: Colors.white),),
+              Text(userBranch.userEntity!.lastname!, style: TextStyle(
+                  fontSize: getProportionateScreenWidth(7),
+                  color: Colors.white),),
+            ],
+          ),
         ),
       ),);
     });
