@@ -776,6 +776,25 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1AppUsersRemoveuserfrombranchDelete({
+    required int? userId,
+    required int? branchId,
+  }) {
+    final String $url = '/api/v1/app/users/removeuserfrombranch';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'userId': userId,
+      'branchId': branchId,
+    };
+    final Request $request = Request(
+      'DELETE',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _apiV1AppUsersSavePost(
       {required UserEntity? userEntity}) {
     final String $url = '/api/v1/app/users/save';

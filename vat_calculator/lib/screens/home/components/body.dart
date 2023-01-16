@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/components/create_branch_button.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_choice_registration.dart';
+import 'package:vat_calculator/swagger/swagger.swagger.dart';
 import '../../../constants.dart';
 import '../../../size_config.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
@@ -99,8 +101,22 @@ class _HomePageBodyState extends State<HomePageBody> {
               children: [
                 buildGestureDetectorBranchSelector(
                     context, dataBundleNotifier),
-                buildStaffWidget(dataBundleNotifier),
 
+
+
+                FutureBuilder<Widget>(
+                  future: _retrieveUsersForCurrentBranch(dataBundleNotifier.getCurrentBranch().branchId!, dataBundleNotifier), // async work
+                  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting: return Text('Loading....');
+                      default:
+                        if (snapshot.hasError)
+                          return Text('Error: ${snapshot.error}');
+                        else
+                          return snapshot.data!;
+                    }
+                  },
+                ),
                 buildCateringButton('CATERING', (){
                   if(dataBundleNotifier.getCurrentBranch()!.storages!.isEmpty){
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -610,7 +626,7 @@ class _HomePageBodyState extends State<HomePageBody> {
     );
   }
 
-  buildStaffWidget(DataBundleNotifier dataBundle) {
+  buildStaffWidget(DataBundleNotifier dataBundle, List<UserBranch> listUserBranch) {
     return Column(
       children: [
         Row(
@@ -623,134 +639,54 @@ class _HomePageBodyState extends State<HomePageBody> {
             ),
           ],
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Column(
-                    children: [
-                      const CircleAvatar(
-                        backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                      ),
-                      Text('Mattia', style: TextStyle(
-                          fontSize: getProportionateScreenWidth(10),
-                          color: Colors.white),),
-                    ],
-                  ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 10),
-                child: Column(
-                  children: [
-                    const CircleAvatar(
-                      backgroundImage: NetworkImage('https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8cGVyc29ufGVufDB8fDB8fA%3D%3D&w=1000&q=80'),
-                    ),
-                    Text('Mattia', style: TextStyle(
-                        fontSize: getProportionateScreenWidth(10),
-                        color: Colors.white),),
-                  ],
-                ),
-              ),
-
-
-            ],
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: buildListAvatars(listUserBranch),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  Future<Widget> _retrieveUsersForCurrentBranch(num branchId, DataBundleNotifier dataBundleNotifier) async {
+    Response response = await dataBundleNotifier.getSwaggerClient()
+        .apiV1AppUsersFindAllUsersByBranchIdGet(branchId: branchId.toInt());
+
+
+    if(response.isSuccessful){
+      return buildStaffWidget(dataBundleNotifier, response.body);
+    }else{
+      return const Text('non ho trovato utenti');
+    }
+  }
+
+  List<Widget> buildListAvatars(List<UserBranch> listUserBranch) {
+    List<Widget> widget = [];
+
+    print('list user branch: ' + listUserBranch.toString());
+    listUserBranch.forEach((userBranch) {
+      widget.add(Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: Column(
+          children: [
+            const CircleAvatar(
+              backgroundImage: AssetImage('assets/png/bar.png'),
+            ),
+            Text(userBranch.userEntity!.name!, style: TextStyle(
+                fontSize: getProportionateScreenWidth(10),
+                color: Colors.white),),
+          ],
+        ),
+      ),);
+    });
+
+    return widget;
   }
 
 }

@@ -96,7 +96,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: SizedBox(
                           height: getProportionateScreenHeight(50),
                           child: CupertinoTextField(
-                            textInputAction: TextInputAction.done,
+                            textInputAction: TextInputAction.next,
                             restorationId: 'password',
                             keyboardType: TextInputType.text,
                             controller: passwordController,
@@ -114,7 +114,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               child: SizedBox(
                                 height: getProportionateScreenHeight(50),
                                 child: CupertinoTextField(
-                                  textInputAction: TextInputAction.done,
+                                  textInputAction: TextInputAction.next,
                                   restorationId: 'conferma password',
                                   keyboardType: TextInputType.text,
                                   controller: passwordConfirmationController,
@@ -207,6 +207,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               context.loaderOverlay.hide();
                             }
                           } else {
+                            print('Registration in corso...');
                             try {
                               context.loaderOverlay.show();
                               KeyboardUtil.hideKeyboard(context);
@@ -437,11 +438,23 @@ class _SignInScreenState extends State<SignInScreen> {
                             children: [
                               SocialCard(
                                 icon: "assets/icons/google-icon.svg",
-                                press: () {},
+                                press: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    backgroundColor: kCustomGreen,
+                                    duration: Duration(seconds: 3),
+                                    content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
+                                  ));
+                                },
                               ),
                               SocialCard(
                                 icon: "assets/icons/facebook-2.svg",
-                                press: () {},
+                                press: () {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                    backgroundColor: kCustomGreen,
+                                    duration: Duration(seconds: 3),
+                                    content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
+                                  ));
+                                },
                               ),
                             ],
                           ),

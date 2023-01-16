@@ -239,13 +239,13 @@ class RWorkstationProduct {
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
-  final String? productName;
+  String? productName;
   @JsonKey(name: 'stockFromStorage')
   double? stockFromStorage;
   @JsonKey(name: 'storageId')
   final num? storageId;
   @JsonKey(name: 'unitMeasure')
-  final String? unitMeasure;
+  String? unitMeasure;
   @JsonKey(name: 'workstationProductId')
   final num? workstationProductId;
   static const fromJsonFactory = _$RWorkstationProductFromJson;
@@ -959,7 +959,7 @@ class UserEntity {
   @JsonKey(name: 'branchList', defaultValue: <Branch>[])
   final List<Branch>? branchList;
   @JsonKey(name: 'email')
-  String? email;
+  final String? email;
   @JsonKey(name: 'lastname')
   String? lastname;
   @JsonKey(name: 'name')
@@ -967,7 +967,7 @@ class UserEntity {
   @JsonKey(name: 'phone')
   String? phone;
   @JsonKey(name: 'photo')
-  final String? photo;
+  String? photo;
   @JsonKey(name: 'profileCompleted')
   bool? profileCompleted;
   @JsonKey(name: 'userId')

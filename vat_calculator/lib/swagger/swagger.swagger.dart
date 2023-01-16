@@ -32,7 +32,7 @@ abstract class Swagger extends ChopperService {
         interceptors: interceptors ?? [],
         authenticator: authenticator,
         baseUrl: baseUrl ??
-            'http://servicedbacorp741w.com:8080/ventimetriquadriservice');
+            'http://servicedbacorp741w.com:8444/ventimetriquadriservice');
     return _$Swagger(newClient);
   }
 
@@ -842,6 +842,26 @@ abstract class Swagger extends ChopperService {
   @Get(path: '/api/v1/app/users/findbyemail')
   Future<chopper.Response<UserEntity>> _apiV1AppUsersFindbyemailGet(
       {@Query('email') required String? email});
+
+  ///removeUser
+  ///@param userId userId
+  ///@param branchId branchId
+  Future<chopper.Response> apiV1AppUsersRemoveuserfrombranchDelete({
+    required int? userId,
+    required int? branchId,
+  }) {
+    return _apiV1AppUsersRemoveuserfrombranchDelete(
+        userId: userId, branchId: branchId);
+  }
+
+  ///removeUser
+  ///@param userId userId
+  ///@param branchId branchId
+  @Delete(path: '/api/v1/app/users/removeuserfrombranch')
+  Future<chopper.Response> _apiV1AppUsersRemoveuserfrombranchDelete({
+    @Query('userId') required int? userId,
+    @Query('branchId') required int? branchId,
+  });
 
   ///save
   ///@param userEntity userEntity

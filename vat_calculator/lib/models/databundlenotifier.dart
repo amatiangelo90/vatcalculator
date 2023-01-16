@@ -432,6 +432,4 @@ class DataBundleNotifier extends ChangeNotifier {
   OrderEntity getOrderToReview(){
     return _orderToReview;
   }
-
-
 }

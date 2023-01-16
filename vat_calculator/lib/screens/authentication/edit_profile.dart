@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'dart:convert';
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -20,6 +24,9 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  File imageFile = File('');
+  String base64Image = '';
+
   @override
   Widget build(BuildContext context) {
 
@@ -27,7 +34,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     return Consumer<DataBundleNotifier>(
       builder: (child, dataBundle, _){
-
+        
         TextEditingController phonecontroller = TextEditingController(text: dataBundle.getUserEntity().phone ?? '');
         TextEditingController namecontroller = TextEditingController(text: dataBundle.getUserEntity().name ?? '');
         TextEditingController lastnamecontroller = TextEditingController(text: dataBundle.getUserEntity().lastname ?? '');
@@ -37,83 +44,90 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             FocusScope.of(context).requestFocus(FocusNode());
           },
           child: Scaffold(
-            bottomSheet: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(18.0),
-                    child: SizedBox(
-                      height: getProportionateScreenHeight(60),
-                      width: getProportionateScreenWidth(300),
-                      child: OutlinedButton(
-                        style: ButtonStyle(
-                          elevation: MaterialStateProperty.resolveWith((states) => 5),
-                          backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
-                          side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
-                        ), onPressed: () async {
+            bottomSheet: Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: getProportionateScreenHeight(50),
+                    width: getProportionateScreenWidth(350),
+                    child: OutlinedButton(
+                      style: ButtonStyle(
+                        elevation: MaterialStateProperty.resolveWith((states) => 5),
+                        backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                        side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                      ), onPressed: () async {
 
-                          if(namecontroller.text == ''){
+                        if(namecontroller.text == ''){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                              backgroundColor: kCustomBordeaux,
+                              duration: Duration(milliseconds: 800),
+                              content: Text('Inserisci il nome')));
+
+                        }else if(lastnamecontroller.text == ''){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                              backgroundColor:kCustomBordeaux,
+                              duration: Duration(milliseconds: 1800),
+                              content: Text('Inserisci il cognome')));
+
+                        }else if(phonecontroller.text == ''){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                              backgroundColor: kCustomBordeaux,
+                              duration: Duration(milliseconds: 1800),
+                              content: Text('Inserisci il cellulare')));
+
+                        }else if(base64Image == ''){
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                              backgroundColor: kCustomBordeaux,
+                              duration: Duration(milliseconds: 1800),
+                              content: Text('E fattela na foto aoooo, fa niente che spacchi la fotocamera')));
+                        }else{
+
+                          Response apiV1AppUsersUpdatePut = await dataBundle.getSwaggerClient().apiV1AppUsersUpdatePut(userEntity: UserEntity(
+                            email: dataBundle.getUserEntity().email,
+                            userId: dataBundle.getUserEntity().userId,
+                            phone: phonecontroller.text,
+                            name: namecontroller.text,
+                            lastname: lastnamecontroller.text,
+                            profileCompleted: true,
+                            branchList: [],
+                            photo: base64Image,
+                            userType: UserEntityUserType.entrepreneur
+                          ));
+                          if(apiV1AppUsersUpdatePut.isSuccessful){
+
+                            dataBundle.updateProfile(namecontroller.text, lastnamecontroller.text, phonecontroller.text, true);
+                            Navigator.pushNamed(context, HomeScreenMain.routeName);
+
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(const SnackBar(
-                                backgroundColor: kCustomBordeaux,
+                                backgroundColor: kCustomGreen,
                                 duration: Duration(milliseconds: 800),
-                                content: Text('Inserisci il nome')));
-
-                          }else if(lastnamecontroller.text == ''){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                backgroundColor:kCustomBordeaux,
-                                duration: Duration(milliseconds: 800),
-                                content: Text('Inserisci il cognome')));
-
-                          }else if(phonecontroller.text == ''){
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                backgroundColor: kCustomBordeaux,
-                                duration: Duration(milliseconds: 800),
-                                content: Text('Inserisci il cellulare')));
-
+                                content: Text('Profilo aggiornato')));
                           }else{
-                            Response apiV1AppUsersUpdatePut = await dataBundle.getSwaggerClient().apiV1AppUsersUpdatePut(userEntity: UserEntity(
-                              email: dataBundle.getUserEntity().email,
-                              userId: dataBundle.getUserEntity().userId,
-                              phone: phonecontroller.text,
-                              name: namecontroller.text,
-                              lastname: lastnamecontroller.text,
-                              profileCompleted: true,
-                              branchList: [],
-                              photo: '',
-                              userType: UserEntityUserType.entrepreneur
-                            ));
-                            if(apiV1AppUsersUpdatePut.isSuccessful){
-                              dataBundle.updateProfile(namecontroller.text, lastnamecontroller.text, phonecontroller.text, true);
-                              Navigator.pushNamed(context, HomeScreenMain.routeName);
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(const SnackBar(
-                                  backgroundColor: kCustomGreen,
-                                  duration: Duration(milliseconds: 800),
-                                  content: Text('Profilo aggiornato')));
-                            }else{
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(SnackBar(
-                                  backgroundColor: kCustomBordeaux,
-                                  duration: Duration(milliseconds: 2800),
-                                  content: Text('Errore durante l\'oprerazione. Err. ' + apiV1AppUsersUpdatePut.error!.toString() )));
-                            }
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                backgroundColor: kCustomBordeaux,
+                                duration: Duration(milliseconds: 2800),
+                                content: Text('Errore durante l\'oprerazione. Err. ' + apiV1AppUsersUpdatePut.error!.toString() )));
                           }
-                      }, child: Text('Aggiorna Profilo', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15))),
-                      ),
+                        }
+                    }, child: Text('Aggiorna Profilo', style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(15))),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             backgroundColor: Colors.white,
             appBar: AppBar(
               elevation: 0,
+              title: const Text('Gestione profilo', style: TextStyle(color: kCustomGrey)),
             ),
             body: SingleChildScrollView(
               scrollDirection: Axis.vertical,
@@ -122,18 +136,34 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Center(
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: getProportionateScreenHeight(80),
-                          backgroundColor: Colors.grey.shade400,
-                          child: Padding(
-                            padding: const EdgeInsets.all(18.0),
-                            child: Icon(FontAwesomeIcons.camera, color: Colors.white, size: getProportionateScreenHeight(50)),
+
+                        GestureDetector(
+                          onTap: (){
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                              backgroundColor: kCustomGreen,
+                              duration: Duration(seconds: 3),
+                              content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
+                            ));
+                            //_getFromCamera();
+                          },
+                          child: CircleAvatar(
+                            radius: getProportionateScreenHeight(80),
+                            backgroundColor: Colors.grey.shade400,
+                            backgroundImage: Image.file(imageFile,fit: BoxFit.fill).image,
                           ),
                         ),
+                        IconButton(onPressed: (){
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                            backgroundColor: kCustomGreen,
+                            duration: Duration(seconds: 3),
+                            content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
+                          ));
+                          //_getFromCamera();
+                          }, icon: Icon(FontAwesomeIcons.camera, color: kCustomGrey, size: getProportionateScreenHeight(20)),),
                         Text(dataBundle.getUserEntity().email!, style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomGrey),),
                       ],
                     ),
-                  ), SizedBox(height: 20,),
+                  ), const SizedBox(height: 20,),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CupertinoTextField(
@@ -176,4 +206,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       },
     );
   }
+
+  static Uint8List dataFromBase64String(String base64String) {
+    return base64Decode(base64String);
+  }
+
+  _getFromCamera() async {
+    XFile? xFile = await ImagePicker().pickImage(
+      source: ImageSource.camera,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (xFile != null) {
+      List<int> uint8list = await xFile.readAsBytes();
+      base64Image = base64Encode(uint8list);
+
+      setState(() {
+        imageFile = File(xFile.path);
+      });
+
+    }
+  }
+
 }

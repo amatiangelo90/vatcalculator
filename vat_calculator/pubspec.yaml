@@ -34,6 +34,7 @@ dependencies:
   url_launcher: ^6.0.12
   json_path: ^0.3.1
   uuid: 3.0.5
+  image_picker: ^0.8.6
   font_awesome_flutter: ^9.2.0
   data_table_2: ^2.1.1
   table_calendar: ^3.0.0

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
+import 'package:vat_calculator/swagger/swagger.enums.swagger.dart';
 
 import '../../constants.dart';
 import '../../size_config.dart';
@@ -118,7 +119,7 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
 
         return Scaffold(
           backgroundColor: Colors.white,
-          bottomSheet: Container(
+          bottomSheet: dataBundleNotifier.getCurrentBranch().userPriviledge == UserBranchUserPriviledge.employee ? SizedBox(width: 0,) : Container(
             color: Colors.white,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -196,10 +197,66 @@ class _UpdateBranchScreenState extends State<UpdateBranchScreen> {
               ),
             ),
             centerTitle: true,
-            title: Text('Aggiorna dettagli attività',
+            actions: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: IconButton(
+                  onPressed: () async {
+
+                    return await showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text("Conferma operazione"),
+                          content: const Text("Eliminare l\'attivita dalla tua lista?"),
+                          actions: <Widget>[
+                            OutlinedButton(
+                                onPressed: () async {
+                                  Response apiV1AppUsersRemoveuserfrombranchDelete = await dataBundleNotifier.getSwaggerClient()
+                                      .apiV1AppUsersRemoveuserfrombranchDelete(userId: dataBundleNotifier.getUserEntity()!.userId!.toInt(),
+                                    branchId: dataBundleNotifier.getCurrentBranch().branchId!.toInt()
+                                  );
+
+                                  if(apiV1AppUsersRemoveuserfrombranchDelete.isSuccessful){
+
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                      backgroundColor: kCustomGreen,
+                                      content: Text('Hai rimosso correttamente l\'attività dalla tua lista'),
+                                    ));
+
+                                    Response response = await dataBundleNotifier.getSwaggerClient().apiV1AppUsersFindbyemailGet(email: dataBundleNotifier.getUserEntity().email);
+
+                                    dataBundleNotifier.setUser(response.body);
+                                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                                        builder: (BuildContext context) => HomeScreenMain()));
+
+                                  }else{
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      backgroundColor: kCustomBordeaux,
+                                      content: Text('Ho riscontrato degli errori durante la cancellazione. Error: ' + apiV1AppUsersRemoveuserfrombranchDelete.error.toString()),
+                                    ));
+                                  }
+                                },
+                                child: const Text("Elimina", style: TextStyle(color: kRed),)
+                            ),
+                            OutlinedButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text("Indietro"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.delete, color: kCustomBordeaux, size: getProportionateScreenWidth(30)),
+                ),
+              )
+            ],
+            title: Text('Dettagli attività',
               style: TextStyle(
-                fontSize: getProportionateScreenWidth(17),
+                fontSize: getProportionateScreenWidth(20),
                 color: kCustomGrey,
+                fontWeight: FontWeight.bold
               ),
             ),
             backgroundColor: Colors.white,
