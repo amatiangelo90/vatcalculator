@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 import 'package:chopper/chopper.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,8 +25,8 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
-  File imageFile = File('');
-  String base64Image = '';
+
+  String imageUrl = '';
 
   @override
   Widget build(BuildContext context) {
@@ -81,14 +82,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               duration: Duration(milliseconds: 1800),
                               content: Text('Inserisci il cellulare')));
 
-                        }else if(base64Image == ''){
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(
-                              backgroundColor: kCustomBordeaux,
-                              duration: Duration(milliseconds: 1800),
-                              content: Text('E fattela na foto aoooo, fa niente che spacchi la fotocamera')));
                         }else{
 
+                          print('image url: ' + imageUrl);
                           Response apiV1AppUsersUpdatePut = await dataBundle.getSwaggerClient().apiV1AppUsersUpdatePut(userEntity: UserEntity(
                             email: dataBundle.getUserEntity().email,
                             userId: dataBundle.getUserEntity().userId,
@@ -97,7 +93,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             lastname: lastnamecontroller.text,
                             profileCompleted: true,
                             branchList: [],
-                            photo: base64Image,
+                            photo: dataBundle.getUserEntity().photo,
                             userType: UserEntityUserType.entrepreneur
                           ));
                           if(apiV1AppUsersUpdatePut.isSuccessful){
@@ -136,7 +132,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Center(
                     child: Column(
                       children: [
-
                         GestureDetector(
                           onTap: (){
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -149,16 +144,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           child: CircleAvatar(
                             radius: getProportionateScreenHeight(80),
                             backgroundColor: Colors.grey.shade400,
-                            backgroundImage: Image.file(imageFile,fit: BoxFit.fill).image,
+                            backgroundImage: Image.network(dataBundle.getUserEntity().photo == null
+                                ? '' : dataBundle.getUserEntity().photo!, fit: BoxFit.fill).image,
                           ),
                         ),
                         IconButton(onPressed: (){
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                            backgroundColor: kCustomGreen,
-                            duration: Duration(seconds: 3),
-                            content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
-                          ));
-                          //_getFromCamera();
+                            _getFromCamera(dataBundle);
                           }, icon: Icon(FontAwesomeIcons.camera, color: kCustomGrey, size: getProportionateScreenHeight(20)),),
                         Text(dataBundle.getUserEntity().email!, style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomGrey),),
                       ],
@@ -211,19 +202,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     return base64Decode(base64String);
   }
 
-  _getFromCamera() async {
+  _getFromCamera(DataBundleNotifier dataBundle) async {
     XFile? xFile = await ImagePicker().pickImage(
       source: ImageSource.camera,
       maxWidth: 1800,
       maxHeight: 1800,
     );
     if (xFile != null) {
-      List<int> uint8list = await xFile.readAsBytes();
-      base64Image = base64Encode(uint8list);
 
-      setState(() {
-        imageFile = File(xFile.path);
-      });
+      Reference reference = FirebaseStorage.instance.ref();
+      Reference referenceDirImage = reference.child('images');
+      Reference referenceImageToUpload = referenceDirImage.child(dataBundle.getUserEntity().userId.toString());
+      await referenceImageToUpload.putFile(File(xFile.path));
+
+      String imageUrlRetrieved = await referenceImageToUpload.getDownloadURL();
+
+      dataBundle.setImagePhotoUrlToCurrentProfile(imageUrlRetrieved);
+
+
 
     }
   }

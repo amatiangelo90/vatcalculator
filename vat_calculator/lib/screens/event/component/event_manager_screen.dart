@@ -996,7 +996,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                           var height = MediaQuery.of(context).size.height;
                           var width = MediaQuery.of(context).size.width;
                           return SizedBox(
-                            height: getProportionateScreenHeight(300),
+                            height: getProportionateScreenHeight(350),
                             width: width - 90,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
@@ -1078,6 +1078,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
           SizedBox(
             width: getProportionateScreenWidth(400),
             child: CupertinoTextField(
+              enabled: false,
               controller: controllerResponsable,
               textInputAction: TextInputAction.next,
               clearButtonMode: OverlayVisibilityMode.never,
@@ -1085,6 +1086,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               autocorrect: false,
             ),
           ),
+          buildStaffWidget(dataBundleNotifier, dataBundleNotifier.userBranchList),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -1129,7 +1131,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 },
                 style: ButtonStyle(
                   elevation: MaterialStateProperty.resolveWith((states) => 5),
-                  backgroundColor: MaterialStateProperty.resolveWith((states) => dataBundleNotifier.getCurrentWorkstation().workstationType == WorkstationWorkstationType.bar ? kCustomGreen : kCustomPinkAccent),
+                  backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
                   side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
                   shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
                 ),
@@ -1338,5 +1340,66 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         },
       ),
     );
+  }
+
+  buildStaffWidget(DataBundleNotifier dataBundle, List<UserBranch> listUserBranch) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text('Staff ' + dataBundle.getCurrentBranch().name!, style: TextStyle(
+                  fontSize: getProportionateScreenWidth(10),
+                  color: Colors.white),),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: buildListAvatars(listUserBranch),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+  List<Widget> buildListAvatars(List<UserBranch> listUserBranch) {
+    List<Widget> widget = [];
+
+    listUserBranch.forEach((userBranch) {
+      widget.add(Padding(
+        padding: const EdgeInsets.only(right: 10),
+        child: GestureDetector(
+          onTap: (){
+
+          },
+          child: Column(
+            children: [
+              userBranch.userEntity!.photo != null ?
+              CircleAvatar(
+                backgroundImage: NetworkImage(userBranch.userEntity!.photo!),
+              ) : const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/monkey.png'),
+              ),
+
+              Text(userBranch.userEntity!.name!, style: TextStyle(
+                  fontSize: getProportionateScreenWidth(10),
+                  color: kCustomGrey),),
+              Text(userBranch.userEntity!.lastname!, style: TextStyle(
+                  fontSize: getProportionateScreenWidth(7),
+                  color: kCustomGrey),),
+            ],
+          ),
+        ),
+      ),);
+    });
+
+    return widget;
   }
 }

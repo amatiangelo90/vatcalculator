@@ -660,6 +660,7 @@ class _HomePageBodyState extends State<HomePageBody> {
 
 
     if(response.isSuccessful){
+      dataBundleNotifier.setUserListForCurrentBranch(response.body);
       return buildStaffWidget(dataBundleNotifier, response.body);
     }else{
       return const Text('non ho trovato utenti');
@@ -669,15 +670,18 @@ class _HomePageBodyState extends State<HomePageBody> {
   List<Widget> buildListAvatars(List<UserBranch> listUserBranch) {
     List<Widget> widget = [];
 
-    print('list user branch: ' + listUserBranch.toString());
     listUserBranch.forEach((userBranch) {
       widget.add(Padding(
         padding: const EdgeInsets.only(right: 10),
         child: Column(
           children: [
-            const CircleAvatar(
-              backgroundImage: AssetImage('assets/png/bar.png'),
+            userBranch.userEntity!.photo != null ?
+            CircleAvatar(
+              backgroundImage: NetworkImage(userBranch.userEntity!.photo!),
+            ) : const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/monkey.png'),
             ),
+
             Text(userBranch.userEntity!.name!, style: TextStyle(
                 fontSize: getProportionateScreenWidth(10),
                 color: Colors.white),),

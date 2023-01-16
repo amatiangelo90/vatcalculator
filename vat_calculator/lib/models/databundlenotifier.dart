@@ -432,4 +432,16 @@ class DataBundleNotifier extends ChangeNotifier {
   OrderEntity getOrderToReview(){
     return _orderToReview;
   }
+
+  void setImagePhotoUrlToCurrentProfile(String imageUrlRetrieved) {
+    getUserEntity().photo = imageUrlRetrieved;
+    notifyListeners();
+  }
+
+  List<UserBranch> userBranchList = [];
+  void setUserListForCurrentBranch(body) {
+    userBranchList.clear();
+    userBranchList.addAll(body);
+    notifyListeners();
+  }
 }
