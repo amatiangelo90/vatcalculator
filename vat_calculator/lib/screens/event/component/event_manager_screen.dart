@@ -73,11 +73,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               actions: [
                 dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ? IconButton(
                   onPressed: (){
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      backgroundColor: kCustomGreen,
-                      duration: Duration(seconds: 3),
-                      content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
-                    ));
+                    //_createExcel();
                   },
                   icon: SvgPicture.asset('assets/icons/excel.svg', height: getProportionateScreenWidth(30)),
                 ) :  const Text(''),
@@ -973,7 +969,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               ),
             ],
           ),
-
           dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? IconButton(
             onPressed: (){
               if(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee){
@@ -1075,6 +1070,50 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             padding: EdgeInsets.fromLTRB(2, 0, 0, 0),
             child: Text('Responsabile: ', style: TextStyle(color: kCustomGrey),),
           ),
+
+          Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: SizedBox(
+                height: getProportionateScreenHeight(100),
+                child: ListView.builder(
+                  itemCount: dataBundleNotifier.userBranchList!.length,
+                  itemBuilder: (context, index){
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: GestureDetector(
+                        onTap: (){
+                          setState(() {
+                            controllerResponsable.text = dataBundleNotifier.userBranchList[index].userEntity!.name! + ' ' + dataBundleNotifier.userBranchList[index].userEntity!.lastname!;
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            dataBundleNotifier.userBranchList[index].userEntity!.photo != null ?
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(dataBundleNotifier.userBranchList[index].userEntity!.photo!),
+                            ) : const CircleAvatar(
+                              backgroundImage: AssetImage('assets/images/monkey.png'),
+                            ),
+
+                            Text(dataBundleNotifier.userBranchList[index].userEntity!.name!, style: TextStyle(
+                                fontSize: getProportionateScreenWidth(10),
+                                color: kCustomGrey),),
+                            Text(dataBundleNotifier.userBranchList[index].userEntity!.lastname!, style: TextStyle(
+                                fontSize: getProportionateScreenWidth(7),
+                                color: kCustomGrey),),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  scrollDirection: Axis.horizontal,
+                ),
+              ),
+            ),
+          ),
+
           SizedBox(
             width: getProportionateScreenWidth(400),
             child: CupertinoTextField(
@@ -1086,7 +1125,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               autocorrect: false,
             ),
           ),
-          buildStaffWidget(dataBundleNotifier, dataBundleNotifier.userBranchList),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SizedBox(
@@ -1341,33 +1379,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  buildStaffWidget(DataBundleNotifier dataBundle, List<UserBranch> listUserBranch) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Staff ' + dataBundle.getCurrentBranch().name!, style: TextStyle(
-                  fontSize: getProportionateScreenWidth(10),
-                  color: Colors.white),),
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 10),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: buildListAvatars(listUserBranch),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
   List<Widget> buildListAvatars(List<UserBranch> listUserBranch) {
     List<Widget> widget = [];
 

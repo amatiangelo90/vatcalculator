@@ -134,12 +134,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         GestureDetector(
                           onTap: (){
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                              backgroundColor: kCustomGreen,
-                              duration: Duration(seconds: 3),
-                              content: Text('Devo ancora implementare questa funzione:) \n\n\nil Team AmatiCorp.'),
-                            ));
-                            //_getFromCamera();
+                            _getFromCamera(dataBundle);
                           },
                           child: CircleAvatar(
                             radius: getProportionateScreenHeight(80),

@@ -721,7 +721,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                       fontSize: getProportionateScreenWidth(17),
                                       color: kCustomGrey),),
 
-                                  dataBundleNotifier.getCurrentBranch().userPriviledge == UserBranchUserPriviledge.employee ? const Text('') : Padding(
+                                  userBranch.userEntity!.userId == dataBundleNotifier.getUserEntity().userId ? Text('') : dataBundleNotifier.getCurrentBranch().userPriviledge == UserBranchUserPriviledge.employee ? const Text('') : Padding(
                                     padding: const EdgeInsets.all(38.0),
                                     child: OutlinedButton(onPressed: () async {
 

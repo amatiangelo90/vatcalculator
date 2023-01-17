@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/size_config.dart';
-import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
-
 import '../../../swagger/swagger.enums.swagger.dart';
 import 'event_manager_screen.dart';
 

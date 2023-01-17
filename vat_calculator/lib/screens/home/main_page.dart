@@ -66,9 +66,17 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> implements TickerPr
                 padding: const EdgeInsets.only(right: 10),
                 child: Stack(
                   children: [
+
+
                     dataBundleNotifier.getUserEntity().profileCompleted! ? const Text('') : Positioned(child: Icon(Icons.warning_amber_rounded, color: Colors.yellow,)),
                     IconButton(
-                      icon: SvgPicture.asset('assets/icons/User.svg', color: Colors.white, height: getProportionateScreenHeight(35),),
+                      icon: dataBundleNotifier.getUserEntity().photo != null ?
+                      CircleAvatar(
+                        radius: 100,
+                        backgroundImage: NetworkImage(dataBundleNotifier.getUserEntity().photo!),
+                      ) : SvgPicture
+                          .asset('assets/icons/User.svg',
+                        color: Colors.white, height: getProportionateScreenHeight(35),),
                       onPressed: (){
                         Navigator.pushNamed(context, EditProfileScreen.routeName);
                       },
