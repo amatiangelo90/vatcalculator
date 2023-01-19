@@ -642,6 +642,7 @@ class _HomePageBodyState extends State<HomePageBody> {
   }
 
   List<Widget> buildListAvatars(DataBundleNotifier dataBundleNotifier) {
+
     List<Widget> widget = [];
     dataBundleNotifier.userBranchList!.forEach((userBranch) {
       widget.add(GestureDetector(
@@ -721,7 +722,7 @@ class _HomePageBodyState extends State<HomePageBody> {
                                       fontSize: getProportionateScreenWidth(17),
                                       color: kCustomGrey),),
 
-                                  userBranch.userEntity!.userId == dataBundleNotifier.getUserEntity().userId ? Text('') : dataBundleNotifier.getCurrentBranch().userPriviledge == UserBranchUserPriviledge.employee ? const Text('') : Padding(
+                                  userBranch.userEntity!.userId == dataBundleNotifier.getUserEntity().userId ? Text('') : dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Text('') : Padding(
                                     padding: const EdgeInsets.all(38.0),
                                     child: OutlinedButton(onPressed: () async {
 

@@ -52,7 +52,7 @@ android {
         applicationId "com.acorp.businessmanager"
         minSdkVersion 21
         compileSdkVersion 31
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -61,14 +61,19 @@ android {
 
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+            keyAlias keystoreProperties['keyAlias'] ? keystoreProperties['keyAlias'] : null
+            keyPassword keystoreProperties['keyPassword'] ? keystoreProperties['keyPassword'] : null
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
+            storePassword keystoreProperties['storePassword'] ? keystoreProperties['storePassword'] : null
         }
     }
     buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
         release {
+            minifyEnabled true
+            shrinkResources true
             signingConfig signingConfigs.release
         }
     }

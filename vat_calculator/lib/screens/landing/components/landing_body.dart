@@ -80,6 +80,8 @@ class LandingBody extends StatelessWidget {
                         onPressed: () async {
                       try{
                         context.loaderOverlay.show();
+
+                        dataBundleNotifier.clearAll();
                         Swagger swaggerClient = dataBundleNotifier.getSwaggerClient();
                         Response response = await swaggerClient.apiV1AppUsersFindbyemailGet(email: email);
 

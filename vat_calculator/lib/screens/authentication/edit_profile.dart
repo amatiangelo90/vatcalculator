@@ -153,7 +153,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CupertinoTextField(
-                      textInputAction: TextInputAction.newline,
+                      textInputAction: TextInputAction.next,
                       restorationId: 'Nome',
                       keyboardType: TextInputType.text,
                       controller: namecontroller,
@@ -164,7 +164,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CupertinoTextField(
-                      textInputAction: TextInputAction.newline,
+                      textInputAction: TextInputAction.next,
                       restorationId: 'Cognome',
                       keyboardType: TextInputType.text,
                       controller: lastnamecontroller,
@@ -175,7 +175,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CupertinoTextField(
-                      textInputAction: TextInputAction.newline,
+                      textInputAction: TextInputAction.next,
                       restorationId: 'Cellulare',
                       keyboardType: TextInputType.number,
                       controller: phonecontroller,

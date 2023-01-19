@@ -37,7 +37,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             .workstations!.where((element) => element.workstationType == WorkstationWorkstationType.champagnerie);
 
         return DefaultTabController(
-          length: 2,
+          length: 3,
           child: Scaffold(
             bottomSheet: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -52,20 +52,26 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             ),
             key: _scaffoldKey,
             appBar: AppBar(
-              bottom: const TabBar(
+              bottom: TabBar(
                 indicatorColor: kCustomGrey,
                 indicatorWeight: 3,
                 tabs: [
                   Tab(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('Workstations', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold),),
+                      child: Text('Workstations', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
                     ),
                   ),
                   Tab(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold),),
+                      child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
+                    ),
+                  ),
+                  Tab(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text('Contabilità', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
                     ),
                   ),
                 ],
@@ -596,6 +602,21 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                 ),
                               ),
                               SizedBox(height: 50),
+                            ],
+                          )
+                      ),
+                    )
+                ),
+                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Center(child: Text('Non hai i permessi per visualizzare questa pagina'))
+                    : SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+
+
                               buildRecapWorkstationExpences(
                                   dataBundleNotifier.getCurrentEvent(),
                                   WorkstationWorkstationType.bar
@@ -604,6 +625,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                   dataBundleNotifier.getCurrentEvent(),
                                   WorkstationWorkstationType.champagnerie
                               ),
+                              SizedBox(height: 50),
                             ],
                           )
                       ),

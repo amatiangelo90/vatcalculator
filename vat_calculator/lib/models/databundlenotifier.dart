@@ -28,6 +28,15 @@ class DataBundleNotifier extends ChangeNotifier {
   Workstation _currentWorkstation = Workstation(workstationId: 0);
   Supplier _currentSupplier = Supplier(supplierId: 0);
 
+  void clearAll() {
+    userBranchList.clear();
+    _userEntity = UserEntity(userId: 0);
+    _currentBranch = Branch(branchId: 0);
+    _currentStorage = Storage(storageId: 0);
+    _currentWorkstation = Workstation(workstationId: 0);
+    _currentSupplier = Supplier(supplierId: 0);
+    notifyListeners();
+  }
 
   void setCurrentSupplier(Supplier supplier) {
     _currentSupplier = supplier;
@@ -447,5 +456,7 @@ class DataBundleNotifier extends ChangeNotifier {
     userBranchList.addAll(body);
     notifyListeners();
   }
+
+
 
 }
