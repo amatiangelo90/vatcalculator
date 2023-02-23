@@ -28,6 +28,7 @@ class EventsBodyWidget extends StatelessWidget {
           scrollDirection: Axis.vertical,
           child: Column(
             children: [
+
               Text(getFormtDateToReadeableItalianDate(dateFormat.format(now)), style: TextStyle(fontSize: 7),),
               buildImageContainerByMonth('assets/imagescalendar/${monthName}.png', monthName),
               Column(
@@ -45,7 +46,8 @@ class EventsBodyWidget extends StatelessWidget {
 
 
 
-  buildEventListForCurrentDate(Iterable<Event> events,BuildContext context, DataBundleNotifier dataBundleNotifier) {
+  buildEventListForCurrentDate(Iterable<Event> events,BuildContext context,
+      DataBundleNotifier dataBundleNotifier) {
     List<Widget> list = [];
     for (var event in events) {
       list.add(Padding(

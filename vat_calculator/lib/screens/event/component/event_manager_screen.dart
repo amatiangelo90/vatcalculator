@@ -39,17 +39,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         return DefaultTabController(
           length: 3,
           child: Scaffold(
-            bottomSheet: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 13),
-                  child: Text(
-                    'Location: ' + dataBundleNotifier.getCurrentEvent().location!,
-                    style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomGrey, fontWeight: FontWeight.bold),),
-                ),
-              ],
-            ),
             key: _scaffoldKey,
             appBar: AppBar(
               bottom: TabBar(
@@ -300,33 +289,33 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.black, height: getProportionateScreenHeight(40),),
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text('Magazzino di riferimento: ', style: TextStyle(fontSize: getProportionateScreenHeight(10), color: kCustomGrey, fontWeight: FontWeight.w200),),
-                                      Text(dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!).name!, style: TextStyle(fontSize: getProportionateScreenHeight(25), color: kCustomGrey, fontWeight: FontWeight.bold),),
-                                    ],
-                                  ),Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.black, height: getProportionateScreenHeight(40),),
-                                  ),
-                                ],
+                        SizedBox(
+                          height: getProportionateScreenHeight(70),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 18),
+                                child: SvgPicture.asset('assets/icons/storage.svg', color: Colors.black, height: getProportionateScreenHeight(40),),
                               ),
-                            ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text('Magazzino di riferimento: ', style: TextStyle(fontSize: getProportionateScreenHeight(7), color: kCustomGrey, fontWeight: FontWeight.w200),),
+                                  Text(dataBundleNotifier.getStorageById(dataBundleNotifier.getCurrentEvent().storageId!).name!, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: Colors.grey.shade700, fontWeight: FontWeight.bold),),
+                                  Text('Location: ', style: TextStyle(fontSize: getProportionateScreenHeight(7), color: kCustomGrey, fontWeight: FontWeight.w200),),
+                                  Text(dataBundleNotifier.getCurrentEvent().location!, style: TextStyle(fontSize: getProportionateScreenHeight(18), color: Colors.grey.shade700, fontWeight: FontWeight.bold),),
+                                ],
+                              ),Padding(
+                                padding: const EdgeInsets.only(right: 18),
+                                child: SvgPicture.asset('assets/icons/Location point.svg', color: Colors.black, height: getProportionateScreenHeight(40),),
+                              ),
+                            ],
                           ),
                         ),
                         Container(
                           decoration: BoxDecoration(
+                            color: kCustomGreen,
                               border: Border.all(color: kCustomGreen),
                               borderRadius: BorderRadius.all(Radius.circular(9))
                           ),
@@ -337,8 +326,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('BAR', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGreen)),
+                                Text('BAR', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: Colors.white)),
                                 dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
+                                    style: ButtonStyle(
+                                      elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                    ),
                                     onPressed: () async {
                                       if(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee){
                                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -374,7 +369,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       }
 
                                     },
-                                    child: const Text("Crea nuovo", style: TextStyle(color: kCustomGreen),)
+                                    child: const Text("Crea nuovo", style: TextStyle(color: Colors.white),)
                                 ) : Text(''),
                               ],
                             ),
@@ -384,6 +379,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                         Container(
                           width: getProportionateScreenWidth(600),
                           decoration: BoxDecoration(
+                            color: kCustomBordeaux,
                               border: Border.all(color: kCustomBordeaux),
                               borderRadius: BorderRadius.all(Radius.circular(9)),
                           ),
@@ -392,8 +388,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text('CHAMPAGNERIE',textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomBordeaux)),
+                                Text('CHAMPAGNERIE',textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: Colors.white)),
                                 dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
+                                    style: ButtonStyle(
+                                      elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                      backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomBordeaux),
+                                      side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                                      shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                    ),
                                     onPressed: () async {
 
                                       if(dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee){
@@ -431,7 +433,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                       }
 
                                     },
-                                    child: const Text("Crea nuovo", style: TextStyle(color: kCustomBordeaux),)
+                                    child: const Text("Crea nuovo", style: TextStyle(color: Colors.white),)
                                 ) : Text('')
                               ],
                             ),
@@ -453,6 +455,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                             children: [
                               Container(
                                 decoration: BoxDecoration(
+                                  color: kCustomBlue,
                                     border: Border.all(color: kCustomGrey),
                                     borderRadius: BorderRadius.all(Radius.circular(9))
                                 ),
@@ -463,8 +466,14 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text('Spese serata', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: kCustomGrey)),
+                                      Text('Spese serata', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: Colors.white)),
                                       dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
+                                          style: ButtonStyle(
+                                            elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                            side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
+                                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                          ),
+
                                           onPressed: () async {
 
                                             TextEditingController amountController = TextEditingController();
@@ -582,7 +591,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                                 )
                                             );
                                           },
-                                          child: const Text("Crea nuova", style: TextStyle(color: kCustomGrey),)
+                                          child: const Text("Crea nuova", style: TextStyle(color: Colors.white),)
                                       ) : Text(''),
                                     ],
                                   ),
@@ -615,8 +624,9 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                           color: Colors.white,
                           child: Column(
                             children: [
-
-
+                              buildRecapAllWorkstationExpences(
+                                  dataBundleNotifier.getCurrentEvent()
+                              ),
                               buildRecapWorkstationExpences(
                                   dataBundleNotifier.getCurrentEvent(),
                                   WorkstationWorkstationType.bar
@@ -625,7 +635,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                   dataBundleNotifier.getCurrentEvent(),
                                   WorkstationWorkstationType.champagnerie
                               ),
-                              SizedBox(height: 50),
+                              const SizedBox(height: 50),
                             ],
                           )
                       ),
@@ -857,7 +867,87 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       ),
     );
   }
+  buildRecapAllWorkstationExpences(Event currentEvent) {
 
+    List<Widget> tableRecapRow = [];
+
+    List<RWorkstationProduct> normalizedProd = normalizeProducts(currentEvent.workstations!);
+      tableRecapRow.add(
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    decoration: const BoxDecoration(
+                        color: kCustomBlue,
+                        borderRadius: BorderRadius.all(Radius.circular(9))
+                    ),
+                    child: Center(child: Column(
+                      children: const [
+                        Text('Resoconto', style: TextStyle(color: Colors.white),),
+                        Text('', style: TextStyle(color: Colors.white),),
+                      ],
+                    )),
+                  ),
+                ),
+              ),
+            ],
+          )
+      );
+
+      tableRecapRow.add(Row(
+        children: [
+          Expanded(flex: 3, child: Text('Prodotto', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),),),
+          const Expanded(flex: 1, child: Tooltip(message: 'Carico',child: Icon(Icons.arrow_circle_down_outlined, color: kCustomGreen)),),
+          const Expanded(flex: 1, child: Tooltip(message: 'Giacenza',child: Icon(Icons.arrow_circle_up, color: kCustomBordeaux)),),
+          const Expanded(flex: 1, child: Tooltip(message: 'Consumato',child: Icon(Icons.storage, color: kCustomBlue)),),
+          Expanded(flex: 2, child: Text('Spesa', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),),),
+        ],
+      ));
+      for (var product in normalizedProd) {
+        tableRecapRow.add(
+          Row(
+            children: [
+              Expanded(flex: 3, child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(product.productName!, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                  Text(' - ' + product.unitMeasure!, style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
+                  Text(' - € ' + product.price!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
+                ],
+              ),),
+              Expanded(flex: 1, child: Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 1, child: Text(product.leftOvers!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 1, child: Text((product.stockFromStorage! - product.leftOvers!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+              Expanded(flex: 2, child: Text('€ ' + ((product.stockFromStorage! - product.leftOvers!) * product.price!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+            ],
+          ),
+        );
+        tableRecapRow.add(Divider(height: 1,));
+      }
+
+      tableRecapRow.add(
+        Row(
+          children: [
+            Expanded(flex: 3, child: Text('Totale: ', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),),
+            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+            Expanded(flex: 2, child: Text('€ ' + calculateTotal(normalizedProd), textAlign: TextAlign.center),),
+          ],
+        ),
+      );
+
+    return Padding(
+      padding: EdgeInsets.only(bottom: getProportionateScreenHeight(80)),
+      child: Column(
+        children: tableRecapRow,
+      ),
+    );
+  }
   buildRecapWorkstationExpences(Event currentEvent, WorkstationWorkstationType type) {
     List<Widget> tableRecapRow = [];
     for (var workstation in currentEvent.workstations!.where((element) => element.workstationType == type)) {
@@ -866,17 +956,20 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
             children: [
               Expanded(
                 flex: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,),
-                      borderRadius: BorderRadius.all(Radius.circular(9))
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,
+                        borderRadius: BorderRadius.all(Radius.circular(9))
+                    ),
+                    child: Center(child: Column(
+                      children: [
+                        Text(workstation.name!, style: TextStyle(color: Colors.white),),
+                        workstation.responsable! == '' ? Text('') : Text('Responsabile: ' + workstation.responsable!, style: TextStyle(color: Colors.white),),
+                      ],
+                    )),
                   ),
-                  child: Center(child: Column(
-                    children: [
-                      Text(workstation.name!, style: TextStyle(color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,),),
-                      workstation.responsable! == '' ? Text('') : Text('Responsabile: ' + workstation.responsable!, style: TextStyle(color: kCustomGrey),),
-                    ],
-                  )),
                 ),
               ),
             ],
@@ -1207,7 +1300,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   buildExpenceWidget(DataBundleNotifier dataBundleNotifier) {
     return SizedBox(
-      height: dataBundleNotifier.getCurrentEvent().expenceEvents!.length! * 50,
+      height: dataBundleNotifier.getCurrentEvent().expenceEvents!.length! * 90,
       child: ListView.builder(
         itemCount: dataBundleNotifier.getCurrentEvent().expenceEvents!.length,
         itemBuilder: (context, index) {
@@ -1433,5 +1526,29 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     });
 
     return widget;
+  }
+
+  List<RWorkstationProduct> normalizeProducts(List<Workstation> workstations) {
+    List<RWorkstationProduct> rWorkStationProdList = [];
+
+    for (var workstation in workstations) {
+      for (var prod in workstation.products!) {
+
+        if(rWorkStationProdList.where((rWorkProd) => rWorkProd.productId == prod.productId).isNotEmpty){
+
+          RWorkstationProduct rWorkstationProduct = RWorkstationProduct.fromJson(rWorkStationProdList.where((rWorkProd) => rWorkProd.productId == prod.productId).first!.toJson());
+          rWorkstationProduct.leftOvers = rWorkstationProduct.leftOvers! + prod.leftOvers!;
+          rWorkstationProduct.stockFromStorage = rWorkstationProduct.stockFromStorage! + prod.stockFromStorage!;
+          rWorkStationProdList.removeWhere((element) => element.productId == prod.productId);
+          rWorkStationProdList.add(rWorkstationProduct);
+
+        }else{
+          rWorkStationProdList.add(prod);
+        }
+      }
+    }
+
+    return rWorkStationProdList;
+
   }
 }

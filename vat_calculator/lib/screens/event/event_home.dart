@@ -86,11 +86,51 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                   ],
                 ),
                 actions: [
+                  IconButton(
+                      icon: SvgPicture.asset(
+                        "assets/icons/open_tabel.svg",
+                        width: 25,
+                      ),
+                      onPressed: () async {
+                        try{
+                          context.loaderOverlay.show();
+
+                          Response apiV1AppEventFindeventbybranchidClosedGet = await dataBundleNotifier.getSwaggerClient().apiV1AppEventFindeventbybranchidOpenGet(branchid: dataBundleNotifier.getCurrentBranch().branchId!.toInt());
+                          if(apiV1AppEventFindeventbybranchidClosedGet.isSuccessful){
+                            dataBundleNotifier.setClosedEventList(apiV1AppEventFindeventbybranchidClosedGet.body);
+
+                            if(dataBundleNotifier.getListEventClosed().isEmpty){
+                              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                duration: Duration(seconds: 3),
+                                backgroundColor: kCustomBordeaux,
+                                content: Text('Non risultano esserci eventi ancora aperti'),
+                              ));
+                            }else{
+                              Navigator.pushNamed(context, EventManagerScreenClosed.routeName);
+                            }
+                          }else{
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              duration: const Duration(seconds: 3),
+                              backgroundColor: kCustomBordeaux,
+                              content: Text('Ho riscontrato degli errori durante il recupero dei dati. Error: ' + apiV1AppEventFindeventbybranchidClosedGet.error.toString()),
+                            ));
+                          }
+                        }catch(e){
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            duration: const Duration(seconds: 3),
+                            backgroundColor: kCustomBordeaux,
+                            content: Text('Ho riscontrato degli errori durante il recupero dei dati. Error: ' + e.toString()),
+                          ));
+                        }finally{
+                          context.loaderOverlay.hide();
+                        }
+
+                      }),
                   branchUserPriviledgeFromJson(dataBundleNotifier.getCurrentBranch().userPriviledge) == BranchUserPriviledge.employee ? SizedBox(width: getProportionateScreenWidth(35)) : Padding(
                     padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
                     child: IconButton(
                         icon: SvgPicture.asset(
-                          "assets/icons/document.svg",
+                          "assets/icons/close_tabel.svg",
                           width: 25,
                         ),
                         onPressed: () async {
@@ -102,10 +142,10 @@ class _EventHomeScreenState extends State<EventHomeScreen> {
                               dataBundleNotifier.setClosedEventList(apiV1AppEventFindeventbybranchidClosedGet.body);
 
                               if(dataBundleNotifier.getListEventClosed().isEmpty){
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                  duration: const Duration(seconds: 3),
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                  duration: Duration(seconds: 3),
                                   backgroundColor: kCustomBordeaux,
-                                  content: Text('Ho riscontrato degli errori durante il recupero dei dati. Error: ' + apiV1AppEventFindeventbybranchidClosedGet.error.toString()),
+                                  content: Text('Non ci sono ancora eventi che sono stati chiusi. Una volta chiusi potranno essere visualizzati in questa sezione'),
                                 ));
                               }else{
                                 Navigator.pushNamed(context, EventManagerScreenClosed.routeName);
