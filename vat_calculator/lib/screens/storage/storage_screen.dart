@@ -11,11 +11,13 @@ import 'package:vat_calculator/swagger/swagger.models.swagger.dart';
 import '../../constants.dart';
 import '../../size_config.dart';
 import '../../swagger/swagger.enums.swagger.dart';
+import '../home/main_page.dart';
 import 'components/add_storage_screen.dart';
 import 'components/add_widget_element.dart';
 import 'components/create_product_and_add_to_storage.dart';
 import 'components/load_unload_screen.dart';
 import 'components/order_from_storage_widget.dart';
+import 'move_prod_to_other_storage.dart';
 
 class StorageScreen extends StatefulWidget{
 
@@ -36,391 +38,399 @@ class _StorageScreenState extends State<StorageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<DataBundleNotifier>(
-      builder: (context, dataBundleNotifier, child) {
-        suppliersList.clear();
-        return Scaffold(
-          bottomSheet: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: dataBundleNotifier.getCurrentBranch().storages!.isEmpty ? Text('') : getButtonBottonBar(dataBundleNotifier)
+    return GestureDetector(
+      onTap: (){
+        FocusScope.of(context).unfocus;
+      },
+      child: Consumer<DataBundleNotifier>(
+        builder: (context, dataBundleNotifier, child) {
+          suppliersList.clear();
+          return Scaffold(
+            bottomSheet: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: dataBundleNotifier.getCurrentBranch().storages!.isEmpty ? Text('') : getButtonBottonBar(dataBundleNotifier)
+              ),
             ),
-          ),
-          appBar: AppBar(
-            elevation: 0,
-            iconTheme: const IconThemeData(color: kCustomGrey),
-            actions: [
-              GestureDetector(
-                onTap: () {
-                  buildStorageChooserDialog(context, dataBundleNotifier);
-                },
-                child: Stack(
-                  children: [
-                    IconButton(
-                      icon: SvgPicture.asset(
-                        'assets/icons/storage.svg',
-                        color: kCustomGrey,
-                        width: getProportionateScreenHeight(28),
-                      ),
-                      onPressed: () {
-                        buildStorageChooserDialog(context, dataBundleNotifier);
-                      },
-                    ),
-                    Positioned(
-                      top: 26.0,
-                      right: 4.0,
-                      child: Stack(
-                        children: <Widget>[
-                          const Icon(
-                            Icons.brightness_1,
-                            size: 20,
-                            color: kCustomPinkAccent,
-                          ),
-                          Positioned(
-                            right: 6.5,
-                            top: 1.5,
-                            child: Center(
-                              child: Text(dataBundleNotifier.getCurrentBranch().storages!.length.toString(), style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: getProportionateScreenWidth(10))),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10,),
-            ],
-            backgroundColor: Colors.white,
-            centerTitle: true,
-            title: dataBundleNotifier.getCurrentBranch().storages!.isEmpty ? Text('Area Magazzini' , style: TextStyle(
-                fontSize: getProportionateScreenWidth(17),
-                color: kCustomGrey
-            ),) : Column(
-              children: [
-                Text(
-                  dataBundleNotifier.getCurrentStorage().name!,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: getProportionateScreenWidth(17),
-                    color: kCustomGrey,
-                  ),
-                ),
-                Text('Area gestione magazzini',
-                  style: TextStyle(
-                    fontSize: getProportionateScreenWidth(11),
-                    color: kCustomGrey,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          backgroundColor: Colors.white,
-          body: dataBundleNotifier.getCurrentBranch().storages!.isEmpty
-              ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text("Ciao ${dataBundleNotifier.getUserEntity().name}, sembra "
-                    "che tu non abbia configurato ancora nessun magazzino per ${dataBundleNotifier.getCurrentBranch().name}. "
-                    "Ti ricordo che è possibile inserire prodotti al tuo magazzino solo dopo averli creati ed associati ad uno dei tuoi fornitori.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: getProportionateScreenWidth(13),
-                    fontWeight: FontWeight.bold,
-                    color: kCustomGrey,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              SizedBox(
-                width: SizeConfig.screenWidth * 0.6,
-                child: DefaultButton(
-                  text: "Crea Magazzino",
-                  press: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => AddStorageScreen(
-                          branch: dataBundleNotifier.getCurrentBranch(),
-                        ),
-                      ),
-                    );
-                  }, textColor: Colors.white, color: kCustomGreen,
-                ),
-              ),
-            ],
-          )
-              : Consumer<DataBundleNotifier>(
-              builder: (context, dataBundleNotifier, child) {
-                return SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  child: Column(
+            appBar: AppBar(
+              elevation: 0,
+              leading: IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: () {
+                Navigator.pushNamed(context, HomeScreenMain.routeName);
+              },),
+              iconTheme: const IconThemeData(color: kCustomGrey),
+              actions: [
+                GestureDetector(
+                  onTap: () {
+                    buildStorageChooserDialog(context, dataBundleNotifier);
+                  },
+                  child: Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          height: getProportionateScreenHeight(40),
-                          width: getProportionateScreenWidth(500),
-                          child: CupertinoTextField(
-                            textInputAction: TextInputAction.next,
-                            restorationId: 'Ricerca per nome',
-                            keyboardType: TextInputType.text,
-                            clearButtonMode: OverlayVisibilityMode.editing,
-                            placeholder: 'Ricerca per nome',
-                            onChanged: (currentText) {
-                              setState((){
-                                _filter = currentText;
-                              });
-                            },
-                          ),
+                      IconButton(
+                        icon: SvgPicture.asset(
+                          'assets/icons/storage.svg',
+                          color: kCustomGrey,
+                          width: getProportionateScreenHeight(28),
                         ),
+                        onPressed: () {
+                          buildStorageChooserDialog(context, dataBundleNotifier);
+                        },
                       ),
-                      SizedBox(
-                        height: getProportionateScreenHeight(550),
-                        child: ListView.builder(
-                          itemCount: getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter).length,
-                          itemBuilder: (context, index) {
-                            RStorageProduct product = getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index];
-                            return Dismissible(
-                              background: Container(
-                                color: kCustomBordeaux,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Padding(
-                                      padding: EdgeInsets.only(right: 30),
-                                      child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
-                                    )
-                                  ],
-                                ),
+                      Positioned(
+                        top: 26.0,
+                        right: 4.0,
+                        child: Stack(
+                          children: <Widget>[
+                            const Icon(
+                              Icons.brightness_1,
+                              size: 20,
+                              color: kCustomPinkAccent,
+                            ),
+                            Positioned(
+                              right: 6.5,
+                              top: 1.5,
+                              child: Center(
+                                child: Text(dataBundleNotifier.getCurrentBranch().storages!.length.toString(), style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white, fontSize: getProportionateScreenWidth(10))),
                               ),
-                              key: Key(product.productId!.toString()),
-                              direction: DismissDirection.endToStart,
-                              confirmDismiss: (DismissDirection direction) async {
-                                return await showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text("Conferma operazione"),
-                                      content: const Text("Sei sicuro di voler eliminare il prodotto?"),
-                                      actions: <Widget>[
-                                        OutlinedButton(
-                                            onPressed: () => Navigator.of(context).pop(true),
-                                            child: const Text("Elimina", style: TextStyle(color: kRed),)
-                                        ),
-                                        OutlinedButton(
-                                          onPressed: () => Navigator.of(context).pop(false),
-                                          child: const Text("Indietro"),
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                              resizeDuration: Duration(seconds: 1),
-                              onDismissed: (direction) async {
-                                print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
-                                Response apiV1AppProductsDeleteDelete = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageDeleteproductfromstorageDelete(
-                                    storageId: dataBundleNotifier.getCurrentStorage().storageId!.toInt(),
-                                    productId: getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index]!.productId!.toInt());
-
-                                if(apiV1AppProductsDeleteDelete.isSuccessful){
-                                  setState(() {
-                                    dataBundleNotifier.getCurrentStorage().products!.removeWhere((element) => element.productId == getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index]!.productId!);
-                                    _filter = '';
-                                  });
-
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                      duration: Duration(seconds: 1),
-                                      backgroundColor: kCustomGreen,
-                                      content: Text('${product.productName} eliminato')));
-                                }else{
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(content: Text('Si è verificato un problema durante la cancellazione del prodotto. Err:'), backgroundColor: Colors.red,));
-                                }
-                              },
-                              child: ListTile(
-                                title: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap:(){
-                                        TextEditingController controller = TextEditingController(text: product.amountHundred! > 0 ? product.amountHundred!.toString() : '');
-                                        showModalBottomSheet(
-                                            shape: const RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.vertical(
-                                                top: Radius.circular(25.0),
-                                              ),
-                                            ),
-                                            context: context,
-                                            builder: (context) {
-                                              return Builder(
-                                                builder: (context) {
-                                                  return SizedBox(
-                                                    width: getProportionateScreenWidth(900),
-                                                    height: getProportionateScreenHeight(600),
-                                                    child: SingleChildScrollView(
-                                                      scrollDirection: Axis.vertical,
-                                                      child: Column(
-                                                        children: [
-                                                          Container(
-                                                            decoration: const BoxDecoration(
-                                                              borderRadius: BorderRadius.only(
-                                                                  topRight: Radius.circular(10.0),
-                                                                  topLeft: Radius.circular(10.0)),
-                                                              color: kCustomGrey,
-                                                            ),
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                              MainAxisAlignment.spaceBetween,
-                                                              children: [
-                                                                Text(
-                                                                  '  Configura prodotto',
-                                                                  style: TextStyle(
-                                                                    fontSize:
-                                                                    getProportionateScreenWidth(17),
-                                                                    color: Colors.white,
-                                                                  ),
-                                                                ),
-                                                                IconButton(
-                                                                  icon: const Icon(
-                                                                    Icons.clear,
-                                                                    color: Colors.white,
-                                                                  ),
-                                                                  onPressed: () {
-                                                                    Navigator.pop(context);
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          buildProductRow(product),
-                                                          const Divider(color: Colors.grey),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Text(
-                                                              ' Q/100 è un valore che si riferisce alla quantità (del prodotto preso in considerazione) di cui si ha bisogno per servire 100 persone. Ex: 2 Litri Aperol per 100 persone',
-                                                              style: TextStyle(
-                                                                fontSize:
-                                                                getProportionateScreenWidth(8),
-                                                                color: Colors.black,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') :
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                ' Q/100',
-                                                                style: TextStyle(
-                                                                  fontSize:
-                                                                  getProportionateScreenWidth(17),
-                                                                  color: Colors.black,
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets.all(8.0),
-                                                                child: ConstrainedBox(
-                                                                  constraints: BoxConstraints.loose(Size(
-                                                                      getProportionateScreenWidth(100),
-                                                                      getProportionateScreenWidth(80))),
-                                                                  child: CupertinoTextField(
-                                                                    controller: controller,
-                                                                    onChanged: (text) {
-
-                                                                    },
-                                                                    textInputAction: TextInputAction.next,
-                                                                    style: TextStyle(
-                                                                      color: kCustomGrey,
-                                                                      fontWeight: FontWeight.w600,
-                                                                      fontSize: getProportionateScreenHeight(22),
-                                                                    ),
-                                                                    keyboardType: const TextInputType.numberWithOptions(
-                                                                        decimal: true, signed: false),
-                                                                    clearButtonMode: OverlayVisibilityMode.never,
-                                                                    textAlign: TextAlign.center,
-                                                                    autocorrect: false,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: SizedBox(
-                                                              width: getProportionateScreenWidth(400),
-                                                              height: getProportionateScreenHeight(55),
-                                                              child: OutlinedButton(
-                                                                onPressed: () async {
-                                                                  Navigator.of(context).pop(false);
-                                                                  Response responseAmountHundredSave = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageAmounthundredSaveconfigurationPut(
-                                                                      storageProductId: product.storageProductId!.toInt(),
-                                                                      qHundredAmount: double.parse(controller.text));
-
-                                                                  if(responseAmountHundredSave.isSuccessful){
-                                                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                                                                      backgroundColor: kCustomGreen,
-                                                                      duration: Duration(milliseconds: 1000),
-                                                                      content: Text(
-                                                                          'Operazione eseguita con successo'),
-                                                                    ));
-                                                                    dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
-
-                                                                  }else{
-                                                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                      backgroundColor: kCustomGreen,
-                                                                      duration: Duration(milliseconds: 1000),
-                                                                      content: Text(
-                                                                          'Errore durante l\'operazione. Riprova fra due minuti. Err: ' + responseAmountHundredSave.error.toString()),
-                                                                    ));
-                                                                  }
-
-                                                                },
-                                                                style: ButtonStyle(
-                                                                  elevation: MaterialStateProperty.resolveWith((states) => 5),
-                                                                  backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
-                                                                  side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
-                                                                  shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
-                                                                ),
-                                                                child: Text('Salva configurazione Q/100', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          const SizedBox(height: 40),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            });
-                                      },
-                                      child: buildProductRow(product)
-                                    ),
-                                    const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
-                );
-              }
-          ),
+                ),
+                const SizedBox(width: 10,),
+              ],
+              backgroundColor: Colors.white,
+              centerTitle: true,
+              title: dataBundleNotifier.getCurrentBranch().storages!.isEmpty ? Text('Area Magazzini' , style: TextStyle(
+                  fontSize: getProportionateScreenWidth(17),
+                  color: kCustomGrey
+              ),) : Column(
+                children: [
+                  Text(
+                    dataBundleNotifier.getCurrentStorage().name!,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: getProportionateScreenWidth(17),
+                      color: kCustomGrey,
+                    ),
+                  ),
+                  Text('Area gestione magazzini',
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(11),
+                      color: kCustomGrey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            backgroundColor: Colors.white,
+            body: dataBundleNotifier.getCurrentBranch().storages!.isEmpty
+                ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text("Ciao ${dataBundleNotifier.getUserEntity().name}, sembra "
+                      "che tu non abbia configurato ancora nessun magazzino per ${dataBundleNotifier.getCurrentBranch().name}. "
+                      "Ti ricordo che è possibile inserire prodotti al tuo magazzino solo dopo averli creati ed associati ad uno dei tuoi fornitori.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: getProportionateScreenWidth(13),
+                      fontWeight: FontWeight.bold,
+                      color: kCustomGrey,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                SizedBox(
+                  width: SizeConfig.screenWidth * 0.6,
+                  child: DefaultButton(
+                    text: "Crea Magazzino",
+                    press: () async {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => AddStorageScreen(
+                            branch: dataBundleNotifier.getCurrentBranch(),
+                          ),
+                        ),
+                      );
+                    }, textColor: Colors.white, color: kCustomGreen,
+                  ),
+                ),
+              ],
+            )
+                : Consumer<DataBundleNotifier>(
+                builder: (context, dataBundleNotifier, child) {
+                  return SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    scrollDirection: Axis.vertical,
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SizedBox(
+                            height: getProportionateScreenHeight(40),
+                            width: getProportionateScreenWidth(500),
+                            child: CupertinoTextField(
+                              textInputAction: TextInputAction.next,
+                              restorationId: 'Ricerca per nome',
+                              keyboardType: TextInputType.text,
+                              clearButtonMode: OverlayVisibilityMode.editing,
+                              placeholder: 'Ricerca per nome',
+                              onChanged: (currentText) {
+                                setState((){
+                                  _filter = currentText;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: getProportionateScreenHeight(550),
+                          child: ListView.builder(
+                            itemCount: getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter).length,
+                            itemBuilder: (context, index) {
+                              RStorageProduct product = getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index];
+                              return Dismissible(
+                                background: Container(
+                                  color: kCustomBordeaux,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(right: 30),
+                                        child: Icon(Icons.delete, color: Colors.white, size: getProportionateScreenHeight(40)),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                key: Key(product.productId!.toString()),
+                                direction: DismissDirection.endToStart,
+                                confirmDismiss: (DismissDirection direction) async {
+                                  return await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Conferma operazione"),
+                                        content: const Text("Sei sicuro di voler eliminare il prodotto?"),
+                                        actions: <Widget>[
+                                          OutlinedButton(
+                                              onPressed: () => Navigator.of(context).pop(true),
+                                              child: const Text("Elimina", style: TextStyle(color: kRed),)
+                                          ),
+                                          OutlinedButton(
+                                            onPressed: () => Navigator.of(context).pop(false),
+                                            child: const Text("Indietro"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                resizeDuration: Duration(seconds: 1),
+                                onDismissed: (direction) async {
+                                  print('Remove product from storage: ' + dataBundleNotifier.getCurrentStorage().storageId!.toInt().toString() + ' prod id: ' + dataBundleNotifier.getCurrentStorage().products![index]!.productId!.toInt().toString());
+                                  Response apiV1AppProductsDeleteDelete = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageDeleteproductfromstorageDelete(
+                                      storageId: dataBundleNotifier.getCurrentStorage().storageId!.toInt(),
+                                      productId: getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index]!.productId!.toInt());
 
-        );
-      },
+                                  if(apiV1AppProductsDeleteDelete.isSuccessful){
+                                    setState(() {
+                                      dataBundleNotifier.getCurrentStorage().products!.removeWhere((element) => element.productId == getListProdFiltered(dataBundleNotifier.getCurrentStorage().products!, _filter)[index]!.productId!);
+                                      _filter = '';
+                                    });
+
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: kCustomGreen,
+                                        content: Text('${product.productName} eliminato')));
+                                  }else{
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(content: Text('Si è verificato un problema durante la cancellazione del prodotto. Err:'), backgroundColor: Colors.red,));
+                                  }
+                                },
+                                child: ListTile(
+                                  title: Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap:(){
+                                          TextEditingController controller = TextEditingController(text: product.amountHundred! > 0 ? product.amountHundred!.toString() : '');
+                                          showModalBottomSheet(
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(
+                                                  top: Radius.circular(25.0),
+                                                ),
+                                              ),
+                                              context: context,
+                                              builder: (context) {
+                                                return Builder(
+                                                  builder: (context) {
+                                                    return SizedBox(
+                                                      width: getProportionateScreenWidth(900),
+                                                      height: getProportionateScreenHeight(600),
+                                                      child: SingleChildScrollView(
+                                                        scrollDirection: Axis.vertical,
+                                                        child: Column(
+                                                          children: [
+                                                            Container(
+                                                              decoration: const BoxDecoration(
+                                                                borderRadius: BorderRadius.only(
+                                                                    topRight: Radius.circular(10.0),
+                                                                    topLeft: Radius.circular(10.0)),
+                                                                color: kCustomGrey,
+                                                              ),
+                                                              child: Row(
+                                                                mainAxisAlignment:
+                                                                MainAxisAlignment.spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    '  Configura prodotto',
+                                                                    style: TextStyle(
+                                                                      fontSize:
+                                                                      getProportionateScreenWidth(17),
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                  IconButton(
+                                                                    icon: const Icon(
+                                                                      Icons.clear,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                    onPressed: () {
+                                                                      Navigator.pop(context);
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            buildProductRow(product),
+                                                            const Divider(color: Colors.grey),
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: Text(
+                                                                ' Q/100 è un valore che si riferisce alla quantità (del prodotto preso in considerazione) di cui si ha bisogno per servire 100 persone. Ex: 2 Litri Aperol per 100 persone',
+                                                                style: TextStyle(
+                                                                  fontSize:
+                                                                  getProportionateScreenWidth(8),
+                                                                  color: Colors.black,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Text('') :
+                                                            Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Text(
+                                                                  ' Q/100',
+                                                                  style: TextStyle(
+                                                                    fontSize:
+                                                                    getProportionateScreenWidth(17),
+                                                                    color: Colors.black,
+                                                                  ),
+                                                                ),
+                                                                Padding(
+                                                                  padding: const EdgeInsets.all(8.0),
+                                                                  child: ConstrainedBox(
+                                                                    constraints: BoxConstraints.loose(Size(
+                                                                        getProportionateScreenWidth(100),
+                                                                        getProportionateScreenWidth(80))),
+                                                                    child: CupertinoTextField(
+                                                                      controller: controller,
+                                                                      onChanged: (text) {
+
+                                                                      },
+                                                                      textInputAction: TextInputAction.next,
+                                                                      style: TextStyle(
+                                                                        color: kCustomGrey,
+                                                                        fontWeight: FontWeight.w600,
+                                                                        fontSize: getProportionateScreenHeight(22),
+                                                                      ),
+                                                                      keyboardType: const TextInputType.numberWithOptions(
+                                                                          decimal: true, signed: false),
+                                                                      clearButtonMode: OverlayVisibilityMode.never,
+                                                                      textAlign: TextAlign.center,
+                                                                      autocorrect: false,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: SizedBox(
+                                                                width: getProportionateScreenWidth(400),
+                                                                height: getProportionateScreenHeight(55),
+                                                                child: OutlinedButton(
+                                                                  onPressed: () async {
+                                                                    Navigator.of(context).pop(false);
+                                                                    Response responseAmountHundredSave = await dataBundleNotifier.getSwaggerClient().apiV1AppStorageAmounthundredSaveconfigurationPut(
+                                                                        storageProductId: product.storageProductId!.toInt(),
+                                                                        qHundredAmount: double.parse(controller.text));
+
+                                                                    if(responseAmountHundredSave.isSuccessful){
+                                                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                                                                        backgroundColor: kCustomGreen,
+                                                                        duration: Duration(milliseconds: 1000),
+                                                                        content: Text(
+                                                                            'Operazione eseguita con successo'),
+                                                                      ));
+                                                                      dataBundleNotifier.refreshCurrentBranchDataWithStorageTrakingId(dataBundleNotifier.getCurrentStorage().storageId!.toInt());
+
+                                                                    }else{
+                                                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                        backgroundColor: kCustomGreen,
+                                                                        duration: Duration(milliseconds: 1000),
+                                                                        content: Text(
+                                                                            'Errore durante l\'operazione. Riprova fra due minuti. Err: ' + responseAmountHundredSave.error.toString()),
+                                                                      ));
+                                                                    }
+
+                                                                  },
+                                                                  style: ButtonStyle(
+                                                                    elevation: MaterialStateProperty.resolveWith((states) => 5),
+                                                                    backgroundColor: MaterialStateProperty.resolveWith((states) => kCustomGreen),
+                                                                    side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
+                                                                    shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
+                                                                  ),
+                                                                  child: Text('Salva configurazione Q/100', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(16)),),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(height: 40),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              });
+                                        },
+                                        child: buildProductRow(product)
+                                      ),
+                                      const Divider(color: kCustomWhite, height: 4, endIndent: 80,),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+            ),
+
+          );
+        },
+      ),
     );
   }
 
@@ -696,7 +706,8 @@ class _StorageScreenState extends State<StorageScreen> {
             ),
             child: Text('SPOSTA PRODOTTI\nIN ALTRO MAGAZZINO', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(11), fontWeight: FontWeight.bold),),
             onPressed: () {
-              //Navigator.pushNamed(context, MoveProductToStorageScreen.routeName);
+              dataBundleNotifier.clearChoosedStorage();
+              Navigator.pushNamed(context, MoveProductToOtherStorageScreen.routeName);
             },
           ),
         ),

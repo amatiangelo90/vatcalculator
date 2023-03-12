@@ -8,6 +8,7 @@ import 'package:path_provider_platform_interface/path_provider_platform_interfac
 
 ///To save the Excel file in the device
 class FileSaveHelper {
+
   static const MethodChannel _platformCall = MethodChannel('launchFile');
 
   ///To save the Excel file in the device
@@ -31,9 +32,7 @@ class FileSaveHelper {
         'file_path': '$path/$fileName'
       };
       try {
-        //ignore: unused_local_variable
-        final Future result =
-        _platformCall.invokeMethod('viewExcel', argument);
+        final Future result = _platformCall.invokeMethod('viewExcel', argument);
       } catch (e) {
         throw Exception(e);
       }

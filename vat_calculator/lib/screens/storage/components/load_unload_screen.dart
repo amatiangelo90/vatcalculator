@@ -134,10 +134,10 @@ class _LoadUnloadScreenState extends State<LoadUnloadScreen> {
                         child: Text(currentProduct.productName!, style: TextStyle(fontWeight: FontWeight.bold, color: kCustomGrey,fontSize: getProportionateScreenHeight(18)),)),
                     Row(
                       children: [
-                        Text(currentProduct.stock.toString()!, style: TextStyle(fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold, color: kCustomGrey),),
+                        Text(currentProduct.stock!.toStringAsFixed(2).replaceAll('.00', '')!, style: TextStyle(fontSize: getProportionateScreenHeight(15), fontWeight: FontWeight.w500, color: kCustomGrey),),
                         currentProduct.orderAmount! > 0 ? Text(widget.isLoad ? '+' : '-', style: TextStyle(fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold, color: widget.isLoad ? kCustomGreen : kRed),) : Text(''),
                         currentProduct.orderAmount! > 0 ? Text(currentProduct.orderAmount.toString()!, style: TextStyle(fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold, color: widget.isLoad ? kCustomGreen : kRed),) : Text(''),
-                        widget.isLoad ? currentProduct.orderAmount! > 0 ? Text('=' + (currentProduct.stock! + currentProduct.orderAmount!).toString(), style: TextStyle(fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold, color: kCustomGrey),) : Text('') :
+                        widget.isLoad ? currentProduct.orderAmount! > 0 ? Text('=' + (currentProduct.stock! + currentProduct.orderAmount!).toStringAsFixed(2), style: TextStyle(fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold, color: kCustomGrey),) : Text('') :
                         currentProduct.orderAmount! > 0 ? Text('=' + (currentProduct.stock! - currentProduct.orderAmount!).toString(), style: TextStyle(fontSize: getProportionateScreenHeight(13), fontWeight: FontWeight.bold, color: kCustomGrey),) : Text(''),
 
                       ],

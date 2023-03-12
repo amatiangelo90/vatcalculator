@@ -562,6 +562,23 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response> _apiV1AppStorageEmptystoragePut(
       {@Query('storageId') required int? storageId});
 
+  ///findProductByStorageId
+  ///@param storageId storageId
+  Future<chopper.Response<List<RStorageProduct>>>
+      apiV1AppStorageFindproductsbystorageidGet({required int? storageId}) {
+    generatedMapping.putIfAbsent(
+        RStorageProduct, () => RStorageProduct.fromJsonFactory);
+
+    return _apiV1AppStorageFindproductsbystorageidGet(storageId: storageId);
+  }
+
+  ///findProductByStorageId
+  ///@param storageId storageId
+  @Get(path: '/api/v1/app/storage/findproductsbystorageid')
+  Future<chopper.Response<List<RStorageProduct>>>
+      _apiV1AppStorageFindproductsbystorageidGet(
+          {@Query('storageId') required int? storageId});
+
   ///findStorageByBranchId
   ///@param branchid branchid
   Future<chopper.Response<List<Storage>>>
@@ -613,6 +630,40 @@ abstract class Swagger extends ChopperService {
   @Put(path: '/api/v1/app/storage/load')
   Future<chopper.Response> _apiV1AppStorageLoadPut(
       {@Body() required List<LoadUnloadModel>? loadUnloadModel});
+
+  ///updateAmountHundredValue
+  ///@param storageIdFrom storageIdFrom
+  ///@param storageIdTo storageIdTo
+  ///@param productId productId
+  ///@param amount amount
+  Future<chopper.Response> apiV1AppStorageMoveproductbetweenstoragesPut({
+    required int? storageIdFrom,
+    required int? storageIdTo,
+    required int? productId,
+    required num? amount,
+  }) {
+    return _apiV1AppStorageMoveproductbetweenstoragesPut(
+        storageIdFrom: storageIdFrom,
+        storageIdTo: storageIdTo,
+        productId: productId,
+        amount: amount);
+  }
+
+  ///updateAmountHundredValue
+  ///@param storageIdFrom storageIdFrom
+  ///@param storageIdTo storageIdTo
+  ///@param productId productId
+  ///@param amount amount
+  @Put(
+    path: '/api/v1/app/storage/moveproductbetweenstorages',
+    optionalBody: true,
+  )
+  Future<chopper.Response> _apiV1AppStorageMoveproductbetweenstoragesPut({
+    @Query('storageIdFrom') required int? storageIdFrom,
+    @Query('storageIdTo') required int? storageIdTo,
+    @Query('productId') required int? productId,
+    @Query('amount') required num? amount,
+  });
 
   ///save
   ///@param storage storage
@@ -1092,99 +1143,6 @@ abstract class Swagger extends ChopperService {
   Future<chopper.Response<Workstation>> _apiV1AppWorkstationUpdatePut(
       {@Body() required Workstation? workstation});
 
-  ///deleteById
-  ///@param customerId customerId
-  Future<chopper.Response> apiV1WebsiteCustomeraccessDeleteDelete(
-      {int? customerId}) {
-    return _apiV1WebsiteCustomeraccessDeleteDelete(customerId: customerId);
-  }
-
-  ///deleteById
-  ///@param customerId customerId
-  @Delete(path: '/api/v1/website/customeraccess/delete')
-  Future<chopper.Response> _apiV1WebsiteCustomeraccessDeleteDelete(
-      {@Query('customerId') int? customerId});
-
-  ///retrieveAll
-  Future<chopper.Response<List<CustomerAccess>>>
-      apiV1WebsiteCustomeraccessFindallGet() {
-    generatedMapping.putIfAbsent(
-        CustomerAccess, () => CustomerAccess.fromJsonFactory);
-
-    return _apiV1WebsiteCustomeraccessFindallGet();
-  }
-
-  ///retrieveAll
-  @Get(path: '/api/v1/website/customeraccess/findall')
-  Future<chopper.Response<List<CustomerAccess>>>
-      _apiV1WebsiteCustomeraccessFindallGet();
-
-  ///retrieveByCustomerId
-  ///@param customerId customerId
-  Future<chopper.Response<List<CustomerAccess>>>
-      apiV1WebsiteCustomeraccessFindbycustomeridGet(
-          {required int? customerId}) {
-    generatedMapping.putIfAbsent(
-        CustomerAccess, () => CustomerAccess.fromJsonFactory);
-
-    return _apiV1WebsiteCustomeraccessFindbycustomeridGet(
-        customerId: customerId);
-  }
-
-  ///retrieveByCustomerId
-  ///@param customerId customerId
-  @Get(path: '/api/v1/website/customeraccess/findbycustomerid')
-  Future<chopper.Response<List<CustomerAccess>>>
-      _apiV1WebsiteCustomeraccessFindbycustomeridGet(
-          {@Query('customerId') required int? customerId});
-
-  ///save
-  ///@param customerAccessId
-  ///@param accessDate
-  ///@param branchLocation
-  ///@param customerId
-  Future<chopper.Response> apiV1WebsiteCustomeraccessSavePost({
-    int? customerAccessId,
-    String? accessDate,
-    String? branchLocation,
-    int? customerId,
-  }) {
-    return _apiV1WebsiteCustomeraccessSavePost(
-        customerAccessId: customerAccessId,
-        accessDate: accessDate,
-        branchLocation: branchLocation,
-        customerId: customerId);
-  }
-
-  ///save
-  ///@param customerAccessId
-  ///@param accessDate
-  ///@param branchLocation
-  ///@param customerId
-  @Post(
-    path: '/api/v1/website/customeraccess/save',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _apiV1WebsiteCustomeraccessSavePost({
-    @Query('customerAccessId') int? customerAccessId,
-    @Query('accessDate') String? accessDate,
-    @Query('branchLocation') String? branchLocation,
-    @Query('customerId') int? customerId,
-  });
-
-  ///deleteById
-  ///@param customerId customerId
-  Future<chopper.Response> apiV1WebsiteCustomersDeleteDelete(
-      {int? customerId}) {
-    return _apiV1WebsiteCustomersDeleteDelete(customerId: customerId);
-  }
-
-  ///deleteById
-  ///@param customerId customerId
-  @Delete(path: '/api/v1/website/customers/delete')
-  Future<chopper.Response> _apiV1WebsiteCustomersDeleteDelete(
-      {@Query('customerId') int? customerId});
-
   ///retrieveAll
   Future<chopper.Response<List<Customer>>> apiV1WebsiteCustomersFindallGet() {
     generatedMapping.putIfAbsent(Customer, () => Customer.fromJsonFactory);
@@ -1212,200 +1170,135 @@ abstract class Swagger extends ChopperService {
       _apiV1WebsiteCustomersFindallbydateGet(
           {@Query('date') required String? date});
 
-  ///retrieveByPhone
-  ///@param phone phone
-  Future<chopper.Response<Customer>> apiV1WebsiteCustomersFindbyphoneGet(
-      {required String? phone}) {
-    generatedMapping.putIfAbsent(Customer, () => Customer.fromJsonFactory);
-
-    return _apiV1WebsiteCustomersFindbyphoneGet(phone: phone);
-  }
-
-  ///retrieveByPhone
-  ///@param phone phone
-  @Get(path: '/api/v1/website/customers/findbyphone')
-  Future<chopper.Response<Customer>> _apiV1WebsiteCustomersFindbyphoneGet(
-      {@Query('phone') required String? phone});
-
   ///save
-  ///@param accessesList[0].customerAccessId
-  ///@param accessesList[0].accessDate
-  ///@param accessesList[0].branchLocation
-  ///@param accessesList[0].customerId
   ///@param customerId
   ///@param name
   ///@param lastname
   ///@param email
   ///@param phone
   ///@param dob
+  ///@param registrationDate
+  ///@param branchLocation
   ///@param treatmentPersonalData
   Future<chopper.Response<int>> apiV1WebsiteCustomersSavePost({
-    int? accessesList0CustomerAccessId,
-    String? accessesList0AccessDate,
-    String? accessesList0BranchLocation,
-    int? accessesList0CustomerId,
     int? customerId,
     String? name,
     String? lastname,
     String? email,
     String? phone,
     String? dob,
+    String? registrationDate,
+    String? branchLocation,
     bool? treatmentPersonalData,
   }) {
     return _apiV1WebsiteCustomersSavePost(
-        accessesList0CustomerAccessId: accessesList0CustomerAccessId,
-        accessesList0AccessDate: accessesList0AccessDate,
-        accessesList0BranchLocation: accessesList0BranchLocation,
-        accessesList0CustomerId: accessesList0CustomerId,
         customerId: customerId,
         name: name,
         lastname: lastname,
         email: email,
         phone: phone,
         dob: dob,
+        registrationDate: registrationDate,
+        branchLocation: branchLocation,
         treatmentPersonalData: treatmentPersonalData);
   }
 
   ///save
-  ///@param accessesList[0].customerAccessId
-  ///@param accessesList[0].accessDate
-  ///@param accessesList[0].branchLocation
-  ///@param accessesList[0].customerId
   ///@param customerId
   ///@param name
   ///@param lastname
   ///@param email
   ///@param phone
   ///@param dob
+  ///@param registrationDate
+  ///@param branchLocation
   ///@param treatmentPersonalData
   @Post(
     path: '/api/v1/website/customers/save',
     optionalBody: true,
   )
   Future<chopper.Response<int>> _apiV1WebsiteCustomersSavePost({
-    @Query('accessesList[0].customerAccessId')
-        int? accessesList0CustomerAccessId,
-    @Query('accessesList[0].accessDate') String? accessesList0AccessDate,
-    @Query('accessesList[0].branchLocation')
-        String? accessesList0BranchLocation,
-    @Query('accessesList[0].customerId') int? accessesList0CustomerId,
     @Query('customerId') int? customerId,
     @Query('name') String? name,
     @Query('lastname') String? lastname,
     @Query('email') String? email,
     @Query('phone') String? phone,
     @Query('dob') String? dob,
+    @Query('registrationDate') String? registrationDate,
+    @Query('branchLocation') String? branchLocation,
     @Query('treatmentPersonalData') bool? treatmentPersonalData,
   });
 
   ///update
-  ///@param accessesList[0].customerAccessId
-  ///@param accessesList[0].accessDate
-  ///@param accessesList[0].branchLocation
-  ///@param accessesList[0].customerId
+  ///@param customer customer
+  Future<chopper.Response> apiV1WebsiteCustomersSavecustomerPost(
+      {required String? customer}) {
+    return _apiV1WebsiteCustomersSavecustomerPost(customer: customer);
+  }
+
+  ///update
+  ///@param customer customer
+  @Post(path: '/api/v1/website/customers/savecustomer')
+  Future<chopper.Response> _apiV1WebsiteCustomersSavecustomerPost(
+      {@Body() required String? customer});
+
+  ///update
   ///@param customerId
   ///@param name
   ///@param lastname
   ///@param email
   ///@param phone
   ///@param dob
+  ///@param registrationDate
+  ///@param branchLocation
   ///@param treatmentPersonalData
   Future<chopper.Response> apiV1WebsiteCustomersUpdatePut({
-    int? accessesList0CustomerAccessId,
-    String? accessesList0AccessDate,
-    String? accessesList0BranchLocation,
-    int? accessesList0CustomerId,
     int? customerId,
     String? name,
     String? lastname,
     String? email,
     String? phone,
     String? dob,
+    String? registrationDate,
+    String? branchLocation,
     bool? treatmentPersonalData,
   }) {
     return _apiV1WebsiteCustomersUpdatePut(
-        accessesList0CustomerAccessId: accessesList0CustomerAccessId,
-        accessesList0AccessDate: accessesList0AccessDate,
-        accessesList0BranchLocation: accessesList0BranchLocation,
-        accessesList0CustomerId: accessesList0CustomerId,
         customerId: customerId,
         name: name,
         lastname: lastname,
         email: email,
         phone: phone,
         dob: dob,
+        registrationDate: registrationDate,
+        branchLocation: branchLocation,
         treatmentPersonalData: treatmentPersonalData);
   }
 
   ///update
-  ///@param accessesList[0].customerAccessId
-  ///@param accessesList[0].accessDate
-  ///@param accessesList[0].branchLocation
-  ///@param accessesList[0].customerId
   ///@param customerId
   ///@param name
   ///@param lastname
   ///@param email
   ///@param phone
   ///@param dob
+  ///@param registrationDate
+  ///@param branchLocation
   ///@param treatmentPersonalData
   @Put(
     path: '/api/v1/website/customers/update',
     optionalBody: true,
   )
   Future<chopper.Response> _apiV1WebsiteCustomersUpdatePut({
-    @Query('accessesList[0].customerAccessId')
-        int? accessesList0CustomerAccessId,
-    @Query('accessesList[0].accessDate') String? accessesList0AccessDate,
-    @Query('accessesList[0].branchLocation')
-        String? accessesList0BranchLocation,
-    @Query('accessesList[0].customerId') int? accessesList0CustomerId,
     @Query('customerId') int? customerId,
     @Query('name') String? name,
     @Query('lastname') String? lastname,
     @Query('email') String? email,
     @Query('phone') String? phone,
     @Query('dob') String? dob,
+    @Query('registrationDate') String? registrationDate,
+    @Query('branchLocation') String? branchLocation,
     @Query('treatmentPersonalData') bool? treatmentPersonalData,
-  });
-
-  ///save
-  ///@param numbers
-  ///@param wsCampainId
-  ///@param message
-  ///@param date
-  ///@param errors
-  Future<chopper.Response> apiV1WebsiteWhatsappStartcampainPost({
-    List<String>? numbers,
-    int? wsCampainId,
-    String? message,
-    String? date,
-    String? errors,
-  }) {
-    return _apiV1WebsiteWhatsappStartcampainPost(
-        numbers: numbers,
-        wsCampainId: wsCampainId,
-        message: message,
-        date: date,
-        errors: errors);
-  }
-
-  ///save
-  ///@param numbers
-  ///@param wsCampainId
-  ///@param message
-  ///@param date
-  ///@param errors
-  @Post(
-    path: '/api/v1/website/whatsapp/startcampain',
-    optionalBody: true,
-  )
-  Future<chopper.Response> _apiV1WebsiteWhatsappStartcampainPost({
-    @Query('numbers') List<String>? numbers,
-    @Query('wsCampainId') int? wsCampainId,
-    @Query('message') String? message,
-    @Query('date') String? date,
-    @Query('errors') String? errors,
   });
 }
 

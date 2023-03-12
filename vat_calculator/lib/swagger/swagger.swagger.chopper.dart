@@ -507,6 +507,22 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<List<RStorageProduct>>>
+      _apiV1AppStorageFindproductsbystorageidGet({required int? storageId}) {
+    final String $url = '/api/v1/app/storage/findproductsbystorageid';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'storageId': storageId
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<List<RStorageProduct>, RStorageProduct>($request);
+  }
+
+  @override
   Future<Response<List<Storage>>> _apiV1AppStorageFindstoragebybranchidGet(
       {required int? branchid}) {
     final String $url = '/api/v1/app/storage/findstoragebybranchid';
@@ -551,6 +567,29 @@ class _$Swagger extends Swagger {
       $url,
       client.baseUrl,
       body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
+  Future<Response<dynamic>> _apiV1AppStorageMoveproductbetweenstoragesPut({
+    required int? storageIdFrom,
+    required int? storageIdTo,
+    required int? productId,
+    required num? amount,
+  }) {
+    final String $url = '/api/v1/app/storage/moveproductbetweenstorages';
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'storageIdFrom': storageIdFrom,
+      'storageIdTo': storageIdTo,
+      'productId': productId,
+      'amount': amount,
+    };
+    final Request $request = Request(
+      'PUT',
+      $url,
+      client.baseUrl,
+      parameters: $params,
     );
     return client.send<dynamic, dynamic>($request);
   }
@@ -1006,90 +1045,6 @@ class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<dynamic>> _apiV1WebsiteCustomeraccessDeleteDelete(
-      {int? customerId}) {
-    final String $url = '/api/v1/website/customeraccess/delete';
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'customerId': customerId
-    };
-    final Request $request = Request(
-      'DELETE',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<List<CustomerAccess>>>
-      _apiV1WebsiteCustomeraccessFindallGet() {
-    final String $url = '/api/v1/website/customeraccess/findall';
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-    );
-    return client.send<List<CustomerAccess>, CustomerAccess>($request);
-  }
-
-  @override
-  Future<Response<List<CustomerAccess>>>
-      _apiV1WebsiteCustomeraccessFindbycustomeridGet(
-          {required int? customerId}) {
-    final String $url = '/api/v1/website/customeraccess/findbycustomerid';
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'customerId': customerId
-    };
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<List<CustomerAccess>, CustomerAccess>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> _apiV1WebsiteCustomeraccessSavePost({
-    int? customerAccessId,
-    String? accessDate,
-    String? branchLocation,
-    int? customerId,
-  }) {
-    final String $url = '/api/v1/website/customeraccess/save';
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'customerAccessId': customerAccessId,
-      'accessDate': accessDate,
-      'branchLocation': branchLocation,
-      'customerId': customerId,
-    };
-    final Request $request = Request(
-      'POST',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> _apiV1WebsiteCustomersDeleteDelete(
-      {int? customerId}) {
-    final String $url = '/api/v1/website/customers/delete';
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'customerId': customerId
-    };
-    final Request $request = Request(
-      'DELETE',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
   Future<Response<List<Customer>>> _apiV1WebsiteCustomersFindallGet() {
     final String $url = '/api/v1/website/customers/findall';
     final Request $request = Request(
@@ -1115,45 +1070,27 @@ class _$Swagger extends Swagger {
   }
 
   @override
-  Future<Response<Customer>> _apiV1WebsiteCustomersFindbyphoneGet(
-      {required String? phone}) {
-    final String $url = '/api/v1/website/customers/findbyphone';
-    final Map<String, dynamic> $params = <String, dynamic>{'phone': phone};
-    final Request $request = Request(
-      'GET',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<Customer, Customer>($request);
-  }
-
-  @override
   Future<Response<int>> _apiV1WebsiteCustomersSavePost({
-    int? accessesList0CustomerAccessId,
-    String? accessesList0AccessDate,
-    String? accessesList0BranchLocation,
-    int? accessesList0CustomerId,
     int? customerId,
     String? name,
     String? lastname,
     String? email,
     String? phone,
     String? dob,
+    String? registrationDate,
+    String? branchLocation,
     bool? treatmentPersonalData,
   }) {
     final String $url = '/api/v1/website/customers/save';
     final Map<String, dynamic> $params = <String, dynamic>{
-      'accessesList[0].customerAccessId': accessesList0CustomerAccessId,
-      'accessesList[0].accessDate': accessesList0AccessDate,
-      'accessesList[0].branchLocation': accessesList0BranchLocation,
-      'accessesList[0].customerId': accessesList0CustomerId,
       'customerId': customerId,
       'name': name,
       'lastname': lastname,
       'email': email,
       'phone': phone,
       'dob': dob,
+      'registrationDate': registrationDate,
+      'branchLocation': branchLocation,
       'treatmentPersonalData': treatmentPersonalData,
     };
     final Request $request = Request(
@@ -1166,60 +1103,45 @@ class _$Swagger extends Swagger {
   }
 
   @override
+  Future<Response<dynamic>> _apiV1WebsiteCustomersSavecustomerPost(
+      {required String? customer}) {
+    final String $url = '/api/v1/website/customers/savecustomer';
+    final $body = customer;
+    final Request $request = Request(
+      'POST',
+      $url,
+      client.baseUrl,
+      body: $body,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> _apiV1WebsiteCustomersUpdatePut({
-    int? accessesList0CustomerAccessId,
-    String? accessesList0AccessDate,
-    String? accessesList0BranchLocation,
-    int? accessesList0CustomerId,
     int? customerId,
     String? name,
     String? lastname,
     String? email,
     String? phone,
     String? dob,
+    String? registrationDate,
+    String? branchLocation,
     bool? treatmentPersonalData,
   }) {
     final String $url = '/api/v1/website/customers/update';
     final Map<String, dynamic> $params = <String, dynamic>{
-      'accessesList[0].customerAccessId': accessesList0CustomerAccessId,
-      'accessesList[0].accessDate': accessesList0AccessDate,
-      'accessesList[0].branchLocation': accessesList0BranchLocation,
-      'accessesList[0].customerId': accessesList0CustomerId,
       'customerId': customerId,
       'name': name,
       'lastname': lastname,
       'email': email,
       'phone': phone,
       'dob': dob,
+      'registrationDate': registrationDate,
+      'branchLocation': branchLocation,
       'treatmentPersonalData': treatmentPersonalData,
     };
     final Request $request = Request(
       'PUT',
-      $url,
-      client.baseUrl,
-      parameters: $params,
-    );
-    return client.send<dynamic, dynamic>($request);
-  }
-
-  @override
-  Future<Response<dynamic>> _apiV1WebsiteWhatsappStartcampainPost({
-    List<String>? numbers,
-    int? wsCampainId,
-    String? message,
-    String? date,
-    String? errors,
-  }) {
-    final String $url = '/api/v1/website/whatsapp/startcampain';
-    final Map<String, dynamic> $params = <String, dynamic>{
-      'numbers': numbers,
-      'wsCampainId': wsCampainId,
-      'message': message,
-      'date': date,
-      'errors': errors,
-    };
-    final Request $request = Request(
-      'POST',
       $url,
       client.baseUrl,
       parameters: $params,

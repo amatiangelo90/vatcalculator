@@ -64,8 +64,10 @@ class DataBundleNotifier extends ChangeNotifier {
     Response response = await getSwaggerClient().apiV1AppBranchesRetrievebranchbyidGet(branchid: _currentBranch.branchId!.toInt());
 
     if(response.isSuccessful){
+
       Branch branch = response.body;
       setBranch(branch);
+
       if(branch.storages!.isNotEmpty){
         setStorage(branch.storages!.first);
       }
@@ -118,9 +120,6 @@ class DataBundleNotifier extends ChangeNotifier {
     _currentStorage = storage;
     notifyListeners();
   }
-
-
-
 
   UserEntity getUserEntity(){
     return _userEntity;
@@ -457,6 +456,101 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
+  /**
+   * Example
+   * List dropdownItemList = [
+      {'label': 'apple', 'value': 'apple'},
+      {'label': 'banana', 'value': 'banana'},
+      {'label': 'grape', 'value': 'grape'},
+      {'label': 'pineapple', 'value': 'pineapple'},
+      {'label': 'grape fruit', 'value': 'grape fruit'},
+      {'label': 'kiwi', 'value': 'kiwi'},
+      ];
+   */
+  getCoolDropDownListFromStorages() {
 
+    List dropdownItemList = [
+
+    ];
+
+    for (var branch in getUserEntity().branchList!) {
+
+      for (var storage in branch.storages!) {
+        if(storage.storageId != getCurrentStorage().storageId){
+          dropdownItemList.add({'label': storage.name! + ' (' +  branch.name! + ')', 'value': storage.storageId});
+        }
+      }
+    }
+    return dropdownItemList;
+  }
+
+  Storage selectedStorageNameToMoveProd = Storage(storageId: 0);
+  List<RStorageProduct> rStorageProdListToMoveProdBetweenStorages = [];
+  double stock = 0.0;
+
+  TextEditingController stockController = TextEditingController();
+
+  calculateStorageProdListByStorageId(storageIndex){
+    for (var branch in _userEntity.branchList!) {
+      for (var storage in branch.storages!) {
+        if(storageIndex['value'] == storage.storageId){
+          rStorageProdListToMoveProdBetweenStorages.clear();
+          selectedStorageNameToMoveProd = storage;
+          rStorageProdListToMoveProdBetweenStorages.addAll(storage.products!);
+        }
+      }
+    }
+    notifyListeners();
+  }
+
+  void setStockToMoveProd(double newStockVal) {
+    print(newStockVal.toStringAsFixed(2));
+    stock = newStockVal;
+    stockController = TextEditingController(text: stock.toStringAsFixed(2).replaceAll('.00',''));
+    notifyListeners();
+  }
+
+  void updateStock() {
+
+    if(double.parse(stockController.value.text) > stock){
+      stock = stock;
+    }else{
+      stock = double.parse(stockController.value.text);
+    }
+    notifyListeners();
+  }
+
+  void updateStockByPassingValue(double stockIncoming){
+    stock = stockIncoming;
+    notifyListeners();
+  }
+
+  void clearChoosedStorage() {
+    selectedStorageNameToMoveProd = Storage(storageId: 0);
+    rStorageProdListToMoveProdBetweenStorages.clear();
+    notifyListeners();
+  }
+
+  void updateProductOnCurrentStorage(int prodId,
+      double stockToRemove) {
+    _currentStorage.products!.where((element) => element.productId == prodId)!.first.stock = _currentStorage.products!.where((element) => element.productId == prodId)!.first.stock! - stockToRemove;
+    notifyListeners();
+  }
+
+  void refreshDataIntoChoicedStorageToMoveProduct(List<RStorageProduct> products) {
+
+    getUserEntity().branchList!.forEach((branch) {
+      branch.storages!.forEach((storage) {
+        if(storage.storageId == selectedStorageNameToMoveProd.storageId){
+          storage.products!.clear();
+          storage.products!.addAll(products);
+        }
+      });
+    });
+    rStorageProdListToMoveProdBetweenStorages.clear();
+    rStorageProdListToMoveProdBetweenStorages.addAll(products);
+
+    notifyListeners();
+  }
 
 }

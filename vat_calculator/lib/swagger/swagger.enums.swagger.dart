@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-enum CustomerAccessBranchLocation {
+enum CustomerLocation {
   @JsonValue('swaggerGeneratedUnknown')
   swaggerGeneratedUnknown,
   @JsonValue('CISTERNINO')
@@ -11,10 +11,10 @@ enum CustomerAccessBranchLocation {
   monopoli
 }
 
-const $CustomerAccessBranchLocationMap = {
-  CustomerAccessBranchLocation.cisternino: 'CISTERNINO',
-  CustomerAccessBranchLocation.locorotondo: 'LOCOROTONDO',
-  CustomerAccessBranchLocation.monopoli: 'MONOPOLI'
+const $CustomerLocationMap = {
+  CustomerLocation.cisternino: 'CISTERNINO',
+  CustomerLocation.locorotondo: 'LOCOROTONDO',
+  CustomerLocation.monopoli: 'MONOPOLI'
 };
 
 enum ProductUnitMeasure {

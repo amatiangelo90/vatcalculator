@@ -26,7 +26,7 @@ class ROrderProduct {
   @JsonKey(name: 'orderProductId')
   final num? orderProductId;
   @JsonKey(name: 'price')
-  final double? price;
+  double? price;
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
@@ -227,7 +227,7 @@ class RWorkstationProduct {
       _$RWorkstationProductFromJson(json);
 
   @JsonKey(name: 'amountHundred')
-  double? amountHundred;
+  final double? amountHundred;
   @JsonKey(name: 'amountLoad')
   double? amountLoad;
   @JsonKey(name: 'amountUnload')
@@ -239,13 +239,13 @@ class RWorkstationProduct {
   @JsonKey(name: 'productId')
   final num? productId;
   @JsonKey(name: 'productName')
-  String? productName;
+  final String? productName;
   @JsonKey(name: 'stockFromStorage')
   double? stockFromStorage;
   @JsonKey(name: 'storageId')
   final num? storageId;
   @JsonKey(name: 'unitMeasure')
-  String? unitMeasure;
+  final String? unitMeasure;
   @JsonKey(name: 'workstationProductId')
   final num? workstationProductId;
   static const fromJsonFactory = _$RWorkstationProductFromJson;
@@ -373,70 +373,6 @@ extension $RWorkstationProductExtension on RWorkstationProduct {
 }
 
 @JsonSerializable(explicitToJson: true)
-class CustomerAccess {
-  CustomerAccess({
-    this.accessDate,
-    this.branchLocation,
-  });
-
-  factory CustomerAccess.fromJson(Map<String, dynamic> json) =>
-      _$CustomerAccessFromJson(json);
-
-  @JsonKey(name: 'accessDate')
-  final String? accessDate;
-  @JsonKey(
-    name: 'branchLocation',
-    toJson: customerAccessBranchLocationToJson,
-    fromJson: customerAccessBranchLocationFromJson,
-  )
-  final enums.CustomerAccessBranchLocation? branchLocation;
-  static const fromJsonFactory = _$CustomerAccessFromJson;
-  static const toJsonFactory = _$CustomerAccessToJson;
-  Map<String, dynamic> toJson() => _$CustomerAccessToJson(this);
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other is CustomerAccess &&
-            (identical(other.accessDate, accessDate) ||
-                const DeepCollectionEquality()
-                    .equals(other.accessDate, accessDate)) &&
-            (identical(other.branchLocation, branchLocation) ||
-                const DeepCollectionEquality()
-                    .equals(other.branchLocation, branchLocation)));
-  }
-
-  @override
-  String toString() => jsonEncode(this);
-
-  @override
-  int get hashCode =>
-      const DeepCollectionEquality().hash(accessDate) ^
-      const DeepCollectionEquality().hash(branchLocation) ^
-      runtimeType.hashCode;
-}
-
-extension $CustomerAccessExtension on CustomerAccess {
-  CustomerAccess copyWith(
-      {String? accessDate,
-      enums.CustomerAccessBranchLocation? branchLocation}) {
-    return CustomerAccess(
-        accessDate: accessDate ?? this.accessDate,
-        branchLocation: branchLocation ?? this.branchLocation);
-  }
-
-  CustomerAccess copyWithWrapped(
-      {Wrapped<String?>? accessDate,
-      Wrapped<enums.CustomerAccessBranchLocation?>? branchLocation}) {
-    return CustomerAccess(
-        accessDate: (accessDate != null ? accessDate.value : this.accessDate),
-        branchLocation: (branchLocation != null
-            ? branchLocation.value
-            : this.branchLocation));
-  }
-}
-
-@JsonSerializable(explicitToJson: true)
 class RStorageProduct {
   RStorageProduct({
     this.amountHundred,
@@ -468,7 +404,7 @@ class RStorageProduct {
   @JsonKey(name: 'productName')
   final String? productName;
   @JsonKey(name: 'stock')
-  final double? stock;
+  double? stock;
   @JsonKey(name: 'storageProductId')
   final num? storageProductId;
   @JsonKey(name: 'supplierId')
@@ -602,33 +538,40 @@ extension $RStorageProductExtension on RStorageProduct {
 @JsonSerializable(explicitToJson: true)
 class Customer {
   Customer({
-    this.accessesList,
-    this.customerId,
-    this.dob,
+    this.cellulare,
+    this.cognome,
+    this.dataAccesso,
+    this.datadinascita,
     this.email,
-    this.lastname,
-    this.name,
-    this.phone,
+    this.location,
+    this.nome,
+    this.customerId,
     this.treatmentPersonalData,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) =>
       _$CustomerFromJson(json);
 
-  @JsonKey(name: 'accessesList', defaultValue: <CustomerAccess>[])
-  final List<CustomerAccess>? accessesList;
+  @JsonKey(name: 'Cellulare')
+  final String? cellulare;
+  @JsonKey(name: 'Cognome')
+  final String? cognome;
+  @JsonKey(name: 'DataAccesso')
+  final String? dataAccesso;
+  @JsonKey(name: 'Datadinascita')
+  final String? datadinascita;
+  @JsonKey(name: 'Email')
+  final String? email;
+  @JsonKey(
+    name: 'Location',
+    toJson: customerLocationToJson,
+    fromJson: customerLocationFromJson,
+  )
+  final enums.CustomerLocation? location;
+  @JsonKey(name: 'Nome')
+  final String? nome;
   @JsonKey(name: 'customerId')
   final num? customerId;
-  @JsonKey(name: 'dob')
-  final String? dob;
-  @JsonKey(name: 'email')
-  final String? email;
-  @JsonKey(name: 'lastname')
-  final String? lastname;
-  @JsonKey(name: 'name')
-  final String? name;
-  @JsonKey(name: 'phone')
-  final String? phone;
   @JsonKey(name: 'treatmentPersonalData')
   final bool? treatmentPersonalData;
   static const fromJsonFactory = _$CustomerFromJson;
@@ -639,23 +582,28 @@ class Customer {
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other is Customer &&
-            (identical(other.accessesList, accessesList) ||
+            (identical(other.cellulare, cellulare) ||
                 const DeepCollectionEquality()
-                    .equals(other.accessesList, accessesList)) &&
+                    .equals(other.cellulare, cellulare)) &&
+            (identical(other.cognome, cognome) ||
+                const DeepCollectionEquality()
+                    .equals(other.cognome, cognome)) &&
+            (identical(other.dataAccesso, dataAccesso) ||
+                const DeepCollectionEquality()
+                    .equals(other.dataAccesso, dataAccesso)) &&
+            (identical(other.datadinascita, datadinascita) ||
+                const DeepCollectionEquality()
+                    .equals(other.datadinascita, datadinascita)) &&
+            (identical(other.email, email) ||
+                const DeepCollectionEquality().equals(other.email, email)) &&
+            (identical(other.location, location) ||
+                const DeepCollectionEquality()
+                    .equals(other.location, location)) &&
+            (identical(other.nome, nome) ||
+                const DeepCollectionEquality().equals(other.nome, nome)) &&
             (identical(other.customerId, customerId) ||
                 const DeepCollectionEquality()
                     .equals(other.customerId, customerId)) &&
-            (identical(other.dob, dob) ||
-                const DeepCollectionEquality().equals(other.dob, dob)) &&
-            (identical(other.email, email) ||
-                const DeepCollectionEquality().equals(other.email, email)) &&
-            (identical(other.lastname, lastname) ||
-                const DeepCollectionEquality()
-                    .equals(other.lastname, lastname)) &&
-            (identical(other.name, name) ||
-                const DeepCollectionEquality().equals(other.name, name)) &&
-            (identical(other.phone, phone) ||
-                const DeepCollectionEquality().equals(other.phone, phone)) &&
             (identical(other.treatmentPersonalData, treatmentPersonalData) ||
                 const DeepCollectionEquality().equals(
                     other.treatmentPersonalData, treatmentPersonalData)));
@@ -666,57 +614,63 @@ class Customer {
 
   @override
   int get hashCode =>
-      const DeepCollectionEquality().hash(accessesList) ^
-      const DeepCollectionEquality().hash(customerId) ^
-      const DeepCollectionEquality().hash(dob) ^
+      const DeepCollectionEquality().hash(cellulare) ^
+      const DeepCollectionEquality().hash(cognome) ^
+      const DeepCollectionEquality().hash(dataAccesso) ^
+      const DeepCollectionEquality().hash(datadinascita) ^
       const DeepCollectionEquality().hash(email) ^
-      const DeepCollectionEquality().hash(lastname) ^
-      const DeepCollectionEquality().hash(name) ^
-      const DeepCollectionEquality().hash(phone) ^
+      const DeepCollectionEquality().hash(location) ^
+      const DeepCollectionEquality().hash(nome) ^
+      const DeepCollectionEquality().hash(customerId) ^
       const DeepCollectionEquality().hash(treatmentPersonalData) ^
       runtimeType.hashCode;
 }
 
 extension $CustomerExtension on Customer {
   Customer copyWith(
-      {List<CustomerAccess>? accessesList,
-      num? customerId,
-      String? dob,
+      {String? cellulare,
+      String? cognome,
+      String? dataAccesso,
+      String? datadinascita,
       String? email,
-      String? lastname,
-      String? name,
-      String? phone,
+      enums.CustomerLocation? location,
+      String? nome,
+      num? customerId,
       bool? treatmentPersonalData}) {
     return Customer(
-        accessesList: accessesList ?? this.accessesList,
-        customerId: customerId ?? this.customerId,
-        dob: dob ?? this.dob,
+        cellulare: cellulare ?? this.cellulare,
+        cognome: cognome ?? this.cognome,
+        dataAccesso: dataAccesso ?? this.dataAccesso,
+        datadinascita: datadinascita ?? this.datadinascita,
         email: email ?? this.email,
-        lastname: lastname ?? this.lastname,
-        name: name ?? this.name,
-        phone: phone ?? this.phone,
+        location: location ?? this.location,
+        nome: nome ?? this.nome,
+        customerId: customerId ?? this.customerId,
         treatmentPersonalData:
             treatmentPersonalData ?? this.treatmentPersonalData);
   }
 
   Customer copyWithWrapped(
-      {Wrapped<List<CustomerAccess>?>? accessesList,
-      Wrapped<num?>? customerId,
-      Wrapped<String?>? dob,
+      {Wrapped<String?>? cellulare,
+      Wrapped<String?>? cognome,
+      Wrapped<String?>? dataAccesso,
+      Wrapped<String?>? datadinascita,
       Wrapped<String?>? email,
-      Wrapped<String?>? lastname,
-      Wrapped<String?>? name,
-      Wrapped<String?>? phone,
+      Wrapped<enums.CustomerLocation?>? location,
+      Wrapped<String?>? nome,
+      Wrapped<num?>? customerId,
       Wrapped<bool?>? treatmentPersonalData}) {
     return Customer(
-        accessesList:
-            (accessesList != null ? accessesList.value : this.accessesList),
-        customerId: (customerId != null ? customerId.value : this.customerId),
-        dob: (dob != null ? dob.value : this.dob),
+        cellulare: (cellulare != null ? cellulare.value : this.cellulare),
+        cognome: (cognome != null ? cognome.value : this.cognome),
+        dataAccesso:
+            (dataAccesso != null ? dataAccesso.value : this.dataAccesso),
+        datadinascita:
+            (datadinascita != null ? datadinascita.value : this.datadinascita),
         email: (email != null ? email.value : this.email),
-        lastname: (lastname != null ? lastname.value : this.lastname),
-        name: (name != null ? name.value : this.name),
-        phone: (phone != null ? phone.value : this.phone),
+        location: (location != null ? location.value : this.location),
+        nome: (nome != null ? nome.value : this.nome),
+        customerId: (customerId != null ? customerId.value : this.customerId),
         treatmentPersonalData: (treatmentPersonalData != null
             ? treatmentPersonalData.value
             : this.treatmentPersonalData));
@@ -2292,73 +2246,67 @@ extension $UserBranchExtension on UserBranch {
   }
 }
 
-String? customerAccessBranchLocationToJson(
-    enums.CustomerAccessBranchLocation? customerAccessBranchLocation) {
-  return enums.$CustomerAccessBranchLocationMap[customerAccessBranchLocation];
+String? customerLocationToJson(enums.CustomerLocation? customerLocation) {
+  return enums.$CustomerLocationMap[customerLocation];
 }
 
-enums.CustomerAccessBranchLocation customerAccessBranchLocationFromJson(
-  Object? customerAccessBranchLocation, [
-  enums.CustomerAccessBranchLocation? defaultValue,
+enums.CustomerLocation customerLocationFromJson(
+  Object? customerLocation, [
+  enums.CustomerLocation? defaultValue,
 ]) {
-  if (customerAccessBranchLocation is String) {
-    return enums.$CustomerAccessBranchLocationMap.entries
+  if (customerLocation is String) {
+    return enums.$CustomerLocationMap.entries
         .firstWhere(
             (element) =>
-                element.value.toLowerCase() ==
-                customerAccessBranchLocation.toLowerCase(),
+                element.value.toLowerCase() == customerLocation.toLowerCase(),
             orElse: () => const MapEntry(
-                enums.CustomerAccessBranchLocation.swaggerGeneratedUnknown, ''))
+                enums.CustomerLocation.swaggerGeneratedUnknown, ''))
         .key;
   }
 
   final parsedResult = defaultValue == null
       ? null
-      : enums.$CustomerAccessBranchLocationMap.entries
+      : enums.$CustomerLocationMap.entries
           .firstWhereOrNull((element) => element.value == defaultValue)
           ?.key;
 
   return parsedResult ??
       defaultValue ??
-      enums.CustomerAccessBranchLocation.swaggerGeneratedUnknown;
+      enums.CustomerLocation.swaggerGeneratedUnknown;
 }
 
-List<String> customerAccessBranchLocationListToJson(
-    List<enums.CustomerAccessBranchLocation>? customerAccessBranchLocation) {
-  if (customerAccessBranchLocation == null) {
+List<String> customerLocationListToJson(
+    List<enums.CustomerLocation>? customerLocation) {
+  if (customerLocation == null) {
     return [];
   }
 
-  return customerAccessBranchLocation
-      .map((e) => enums.$CustomerAccessBranchLocationMap[e]!)
-      .toList();
+  return customerLocation.map((e) => enums.$CustomerLocationMap[e]!).toList();
 }
 
-List<enums.CustomerAccessBranchLocation>
-    customerAccessBranchLocationListFromJson(
-  List? customerAccessBranchLocation, [
-  List<enums.CustomerAccessBranchLocation>? defaultValue,
+List<enums.CustomerLocation> customerLocationListFromJson(
+  List? customerLocation, [
+  List<enums.CustomerLocation>? defaultValue,
 ]) {
-  if (customerAccessBranchLocation == null) {
+  if (customerLocation == null) {
     return defaultValue ?? [];
   }
 
-  return customerAccessBranchLocation
-      .map((e) => customerAccessBranchLocationFromJson(e.toString()))
+  return customerLocation
+      .map((e) => customerLocationFromJson(e.toString()))
       .toList();
 }
 
-List<enums.CustomerAccessBranchLocation>?
-    customerAccessBranchLocationNullableListFromJson(
-  List? customerAccessBranchLocation, [
-  List<enums.CustomerAccessBranchLocation>? defaultValue,
+List<enums.CustomerLocation>? customerLocationNullableListFromJson(
+  List? customerLocation, [
+  List<enums.CustomerLocation>? defaultValue,
 ]) {
-  if (customerAccessBranchLocation == null) {
+  if (customerLocation == null) {
     return defaultValue;
   }
 
-  return customerAccessBranchLocation
-      .map((e) => customerAccessBranchLocationFromJson(e.toString()))
+  return customerLocation
+      .map((e) => customerLocationFromJson(e.toString()))
       .toList();
 }
 

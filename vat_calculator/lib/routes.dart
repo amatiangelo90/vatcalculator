@@ -8,6 +8,7 @@ import 'package:vat_calculator/screens/orders/components/screens/order_creation/
 import 'package:vat_calculator/screens/orders/components/screens/recap_order_screen.dart';
 import 'package:vat_calculator/screens/storage/components/load_unload_screen.dart';
 import 'package:vat_calculator/screens/storage/components/order_from_storage_widget.dart';
+import 'package:vat_calculator/screens/storage/move_prod_to_other_storage.dart';
 import 'package:vat_calculator/screens/storage/storage_screen.dart';
 import 'package:vat_calculator/screens/branch_registration/branch_update.dart';
 import 'package:vat_calculator/screens/event/component/event_create_screen.dart';
@@ -50,6 +51,7 @@ final Map<String, WidgetBuilder> routes = {
   LoadUnloadScreen.routeName: (context) => LoadUnloadScreen(isLoad: false, isUnLoad: true),
   StorageScreen.routeName: (context) => StorageScreen(),
   EventManagerScreen.routeName: (context) => EventManagerScreen(),
+  MoveProductToOtherStorageScreen.routeName: (context) => MoveProductToOtherStorageScreen(),
   EventManagerScreenClosed.routeName: (context) => EventManagerScreenClosed(),
   OrderDetailsScreen.routeName: (context) => OrderDetailsScreen(),
 };
