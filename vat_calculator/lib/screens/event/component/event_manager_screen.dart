@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:chopper/chopper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +7,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' as excel;
+import 'package:path_provider/path_provider.dart';
+import 'package:open_file/open_file.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
 import 'package:vat_calculator/screens/event/component/workstation_manager_screen.dart';
 import 'package:vat_calculator/size_config.dart';
-import '../../../client/excel/excel_export.dart';
 import '../../../constants.dart';
 import '../../../swagger/swagger.enums.swagger.dart';
 import '../../../swagger/swagger.models.swagger.dart';
@@ -319,7 +322,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                         ),
                         Container(
                           decoration: BoxDecoration(
-                            color: kCustomGreen,
+                              color: kCustomGreen,
                               border: Border.all(color: kCustomGreen),
                               borderRadius: BorderRadius.all(Radius.circular(9))
                           ),
@@ -384,8 +387,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                           width: getProportionateScreenWidth(600),
                           decoration: BoxDecoration(
                             color: kCustomBordeaux,
-                              border: Border.all(color: kCustomBordeaux),
-                              borderRadius: BorderRadius.all(Radius.circular(9)),
+                            border: Border.all(color: kCustomBordeaux),
+                            borderRadius: BorderRadius.all(Radius.circular(9)),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -451,31 +454,51 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                 ),
                 dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Center(child: Text('Non hai i permessi per visualizzare questa pagina'))
                     : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: [
-                              buildRecapAllWorkstationExpences(
-                                  dataBundleNotifier.getCurrentEvent()
-                              ),
-                              buildRecapWorkstationExpences(
-                                  dataBundleNotifier.getCurrentEvent(),
-                                  WorkstationWorkstationType.bar
-                              ),
-                              buildRecapWorkstationExpences(
-                                  dataBundleNotifier.getCurrentEvent(),
-                                  WorkstationWorkstationType.champagnerie
-                              ),
-                              const SizedBox(height: 50),
-                            ],
-                          )
-                      ),
+                    child: Container(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue,
+                                      ),
+                                      child: Center(child: Column(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text('Resoconto', style: TextStyle(color: Colors.white, fontSize: 16),),
+                                          ),
+                                        ],
+                                      )),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            buildRecapAllWorkstationExpences(
+                                dataBundleNotifier.getCurrentEvent()
+                            ),
+                            buildTotalTableRecap(dataBundleNotifier, false, true, true),
+                            buildRecapWorkstationExpences(
+                                dataBundleNotifier.getCurrentEvent(),
+                                WorkstationWorkstationType.bar
+                            ),
+                            buildRecapWorkstationExpences(
+                                dataBundleNotifier.getCurrentEvent(),
+                                WorkstationWorkstationType.champagnerie
+                            ),
+                            const SizedBox(height: 50),
+                          ],
+                        )
                     )
                 ),
-                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Center(child: Text('Non hai i permessi per visualizzare questa pagina'))
-                    : Stack(
+                if (dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee) const Center(child: Text('Non hai i permessi per visualizzare questa pagina')) else Stack(
                   children: [
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
@@ -486,9 +509,13 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                               child: Column(
                                 children: [
                                   buildExpenceWidget(dataBundleNotifier),
-                                  const Divider(),
-                                  buildTotalTableRecap(dataBundleNotifier),
-                                  SizedBox(height: 50),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 20,
+                                    color: Colors.blue,
+                                  ),
+                                  buildTotalTableRecap(dataBundleNotifier, true, true, true),
+                                  SizedBox(height: 150),
                                 ],
                               )
                           )
@@ -498,125 +525,260 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                       padding: const EdgeInsets.all(20.0),
                       child: Container(alignment: Alignment.bottomRight, child: FloatingActionButton(
                           child: Icon(Icons.add, size: getProportionateScreenHeight(30),),
-                          
+
                           onPressed: (){
 
-                        TextEditingController amountController = TextEditingController();
-                        TextEditingController descriptionController = TextEditingController();
-                        TextEditingController priceController = TextEditingController();
+                            TextEditingController amountController = TextEditingController();
+                            TextEditingController descriptionController = TextEditingController();
+                            TextEditingController priceController = TextEditingController();
 
-                        Widget saveButton = TextButton(
-                          child: const Text("Salva", style: TextStyle(color: kCustomGreen),),
-                          onPressed:  () async {
+                            Widget saveButton = TextButton(
+                              child: const Text("Salva", style: TextStyle(color: kCustomGreen),),
+                              onPressed:  () async {
 
-                            Response apiV1AppEventExpenceCreatePost = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceCreatePost(expenceEvent: ExpenceEvent(
-                                amount: double.parse(amountController.text.replaceAll(',', '.')),
-                                description: descriptionController.text,
-                                price: double.parse(priceController.text.replaceAll(',', '.')),
-                                eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt()
-                            ));
+                                Response apiV1AppEventExpenceCreatePost = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceCreatePost(expenceEvent: ExpenceEvent(
+                                    amount: double.parse(amountController.text.replaceAll(',', '.')),
+                                    description: descriptionController.text,
+                                    price: double.parse(priceController.text.replaceAll(',', '.')),
+                                    eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt()
+                                ));
 
-                            if(apiV1AppEventExpenceCreatePost.isSuccessful){
-                              dataBundleNotifier.setExpenceToCurrentEvent(apiV1AppEventExpenceCreatePost.body);
-                              Navigator.of(context).pop();
-                            }else{
-                              Navigator.of(context).pop();
-                            }
-                          },
-                        );
+                                if(apiV1AppEventExpenceCreatePost.isSuccessful){
+                                  dataBundleNotifier.setExpenceToCurrentEvent(apiV1AppEventExpenceCreatePost.body);
+                                  Navigator.of(context).pop();
+                                }else{
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                            );
 
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                              actions: [
-                                saveButton
-                              ],
-                              contentPadding: EdgeInsets.zero,
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.all(
-                                      Radius.circular(10.0))),
-                              content: Builder(
-                                builder: (context) {
-                                  var width = MediaQuery.of(context).size.width;
-                                  return SizedBox(
-                                    width: width - 90,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Column(
-                                        children: [
-                                          Center(
-                                            child: Padding(
-                                              padding: EdgeInsets.all(18.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  actions: [
+                                    saveButton
+                                  ],
+                                  contentPadding: EdgeInsets.zero,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius:
+                                      BorderRadius.all(
+                                          Radius.circular(10.0))),
+                                  content: Builder(
+                                    builder: (context) {
+                                      var width = MediaQuery.of(context).size.width;
+                                      return SizedBox(
+                                        width: width - 90,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Column(
+                                            children: [
+                                              Center(
+                                                child: Padding(
+                                                  padding: EdgeInsets.all(3.0),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: [
+                                                      const Padding(
+                                                        padding: EdgeInsets.all(8.0),
+                                                        child: Text('Crea spesa evento',
+                                                          style: TextStyle(fontSize: 14),
+                                                          textAlign: TextAlign.center,
+                                                        ),
+                                                      ),
+                                                      IconButton(icon: Icon(Icons.clear), onPressed: (){
+                                                        Navigator.of(context).pop();
+                                                      },)
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Wrap(
+
                                                 children: [
-                                                  const Padding(
-                                                    padding: EdgeInsets.all(8.0),
-                                                    child: Text('Crea spesa evento',
-                                                      style: TextStyle(fontSize: 14),
-                                                      textAlign: TextAlign.center,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Barman';
+                                                        priceController.text = '80';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Barman - 80€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
                                                     ),
                                                   ),
-                                                  IconButton(icon: Icon(Icons.clear), onPressed: (){
-                                                    Navigator.of(context).pop();
-                                                  },)
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Cameriere';
+                                                        priceController.text = '60';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Cameriere - 60€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Assunzione';
+                                                        priceController.text = '35';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Assunzione - 35€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Drink base';
+                                                        priceController.text = '1.9';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Drink base - 1.9€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Drink premium';
+                                                        priceController.text = '3.5';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Drink premium - 3.5€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Kit base';
+                                                        priceController.text = '28';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Kit base - 28€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Kit premium';
+                                                        priceController.text = '50';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Kit premium - 50€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Champagne';
+                                                        priceController.text = '50';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Champagne - 50€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Ca del bosco';
+                                                        priceController.text = '30';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Ca del bosco - 30€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      setState((){
+                                                        descriptionController.text = 'Prosecco';
+                                                        priceController.text = '11';
+                                                      }
+                                                      );
+                                                    },
+                                                    child: const Chip(
+                                                      label: Text('Prosecco - 11€', style: TextStyle(color: Colors.white)),
+                                                      backgroundColor: Colors.blue,
+                                                    ),
+                                                  ),
                                                 ],
+                                                alignment: WrapAlignment.center,
                                               ),
-                                            ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                                    CupertinoTextField(
+                                                      enabled: true,
+                                                      textInputAction: TextInputAction.next,
+                                                      restorationId: 'Descrizion',
+                                                      keyboardType: TextInputType.text,
+                                                      controller: descriptionController,
+                                                      clearButtonMode: OverlayVisibilityMode.never,
+                                                      autocorrect: false,
+                                                      placeholder: 'Descrizione',
+                                                    ),
+                                                    Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                                    CupertinoTextField(
+                                                      enabled: true,
+                                                      textInputAction: TextInputAction.next,
+                                                      restorationId: 'Prezzo',
+                                                      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                                      controller: priceController,
+                                                      clearButtonMode: OverlayVisibilityMode.never,
+                                                      autocorrect: false,
+                                                      placeholder: 'Prezzo',
+                                                    ),
+                                                    Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                                    CupertinoTextField(
+                                                      enabled: true,
+                                                      textInputAction: TextInputAction.next,
+                                                      restorationId: 'Quantità',
+                                                      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                                      controller: amountController,
+                                                      clearButtonMode: OverlayVisibilityMode.never,
+                                                      autocorrect: false,
+                                                      placeholder: 'Quantità',
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                                CupertinoTextField(
-                                                  enabled: true,
-                                                  textInputAction: TextInputAction.next,
-                                                  restorationId: 'Descrizion',
-                                                  keyboardType: TextInputType.text,
-                                                  controller: descriptionController,
-                                                  clearButtonMode: OverlayVisibilityMode.never,
-                                                  autocorrect: false,
-                                                  placeholder: 'Descrizione',
-                                                ),
-                                                Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                                CupertinoTextField(
-                                                  enabled: true,
-                                                  textInputAction: TextInputAction.next,
-                                                  restorationId: 'Quantità',
-                                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                                  controller: amountController,
-                                                  clearButtonMode: OverlayVisibilityMode.never,
-                                                  autocorrect: false,
-                                                  placeholder: 'Quantità',
-                                                ),
-                                                Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                                CupertinoTextField(
-                                                  enabled: true,
-                                                  textInputAction: TextInputAction.next,
-                                                  restorationId: 'Prezzo',
-                                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                                  controller: priceController,
-                                                  clearButtonMode: OverlayVisibilityMode.never,
-                                                  autocorrect: false,
-                                                  placeholder: 'Prezzo',
-                                                ),
-
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            )
-                        );
-                      })),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                )
+                            );
+                          })),
                     ),
                   ],
                 ),
@@ -846,82 +1008,62 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
       ),
     );
   }
+
+
+
+
   buildRecapAllWorkstationExpences(Event currentEvent) {
 
     List<Widget> tableRecapRow = [];
 
     List<RWorkstationProduct> normalizedProd = normalizeProducts(currentEvent.workstations!);
-      tableRecapRow.add(
-          Row(
-            children: [
-              Expanded(
-                flex: 1,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Container(
-                    decoration: const BoxDecoration(
-                        color: kCustomBlue,
-                        borderRadius: BorderRadius.all(Radius.circular(9))
-                    ),
-                    child: Center(child: Column(
-                      children: const [
-                        Text('Resoconto', style: TextStyle(color: Colors.white),),
-                        Text('', style: TextStyle(color: Colors.white),),
-                      ],
-                    )),
-                  ),
-                ),
-              ),
-            ],
-          )
-      );
 
-      tableRecapRow.add(Row(
-        children: [
-          Expanded(flex: 3, child: Text('Prodotto', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),),),
-          const Expanded(flex: 1, child: Tooltip(message: 'Carico',child: Icon(Icons.arrow_circle_down_outlined, color: kCustomGreen)),),
-          const Expanded(flex: 1, child: Tooltip(message: 'Giacenza',child: Icon(Icons.arrow_circle_up, color: kCustomBordeaux)),),
-          const Expanded(flex: 1, child: Tooltip(message: 'Consumato',child: Icon(Icons.storage, color: kCustomBlue)),),
-          Expanded(flex: 2, child: Text('Spesa', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),),),
-        ],
-      ));
-      for (var product in normalizedProd) {
-        tableRecapRow.add(
-          Row(
-            children: [
-              Expanded(flex: 3, child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(product.productName!, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
-                  Text(' - ' + product.unitMeasure!, style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
-                  Text(' - € ' + product.price!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
-                ],
-              ),),
-              Expanded(flex: 1, child: Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-              Expanded(flex: 1, child: Text(product.leftOvers!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-              Expanded(flex: 1, child: Text((product.stockFromStorage! - product.leftOvers!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-              Expanded(flex: 2, child: Text('€ ' + ((product.stockFromStorage! - product.leftOvers!) * product.price!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
-            ],
-          ),
-        );
-        tableRecapRow.add(Divider(height: 1,));
-      }
-
+    tableRecapRow.add(Row(
+      children: [
+        Expanded(flex: 3, child: Text('Prodotto', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),),),
+        const Expanded(flex: 1, child: Tooltip(message: 'Carico',child: Icon(Icons.arrow_circle_down_outlined, color: kCustomGreen)),),
+        const Expanded(flex: 1, child: Tooltip(message: 'Giacenza',child: Icon(Icons.arrow_circle_up, color: kCustomBordeaux)),),
+        const Expanded(flex: 1, child: Tooltip(message: 'Consumato',child: Icon(Icons.storage, color: kCustomBlue)),),
+        Expanded(flex: 2, child: Text('Spesa', textAlign: TextAlign.center, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(16)),),),
+      ],
+    ));
+    for (var product in normalizedProd) {
       tableRecapRow.add(
         Row(
           children: [
-            Expanded(flex: 3, child: Text('Totale: ', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),),
-            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
-            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
-            const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
-            Expanded(flex: 2, child: Text('€ ' + calculateTotal(normalizedProd), textAlign: TextAlign.center),),
+            Expanded(flex: 3, child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(product.productName!, style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),
+                Text(' - ' + product.unitMeasure!, style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
+                Text(' - € ' + product.price!.toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(color: kCustomGreyBlue, fontSize: getProportionateScreenWidth(8)),),
+              ],
+            ),),
+            Expanded(flex: 1, child: Text(product.stockFromStorage!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+            Expanded(flex: 1, child: Text(product.leftOvers!.toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+            Expanded(flex: 1, child: Text((product.stockFromStorage! - product.leftOvers!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
+            Expanded(flex: 2, child: Text('€ ' + ((product.stockFromStorage! - product.leftOvers!) * product.price!).toStringAsFixed(2).replaceAll('.00', ''), textAlign: TextAlign.center),),
           ],
         ),
       );
+      tableRecapRow.add(Divider(height: 1,));
+    }
+
+    tableRecapRow.add(
+      Row(
+        children: [
+          Expanded(flex: 3, child: Text('Totale: ', style: TextStyle(color: kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenWidth(12)),),),
+          const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+          const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+          const Expanded(flex: 1, child: Text('', textAlign: TextAlign.center),),
+          Expanded(flex: 2, child: Text('€ ' + calculateTotal(normalizedProd), textAlign: TextAlign.center),),
+        ],
+      ),
+    );
 
     return Padding(
-      padding: EdgeInsets.only(bottom: getProportionateScreenHeight(80)),
+      padding: const EdgeInsets.all(2.0),
       child: Column(
         children: tableRecapRow,
       ),
@@ -939,8 +1081,8 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: Container(
                     decoration: BoxDecoration(
-                        color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,
-                        borderRadius: BorderRadius.all(Radius.circular(9))
+                      color: type == WorkstationWorkstationType.bar ? kCustomGreen : kCustomBordeaux,
+
                     ),
                     child: Center(child: Column(
                       children: [
@@ -1279,212 +1421,17 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   buildExpenceWidget(DataBundleNotifier dataBundleNotifier) {
 
-    final columns = ['Casuale', 'Q', 'C', 'Tot'];
+    final columns = ['Desc', 'Q', 'C (€)', 'Tot (€)'];
 
     return DataTable(
+      columnSpacing: getProportionateScreenWidth(40),
       columns: getColumns(columns),
       rows: buildRows(dataBundleNotifier),
-
-    );
-
-    return SizedBox(
-      height: dataBundleNotifier.getCurrentEvent().expenceEvents!.length! * 90,
-      child: ListView.builder(
-        itemCount: dataBundleNotifier.getCurrentEvent().expenceEvents!.length,
-        itemBuilder: (context, index) {
-          ExpenceEvent currentEventExpence = dataBundleNotifier.getCurrentEvent().expenceEvents![index];
-          return Dismissible(key: Key(currentEventExpence.expenceId.toString()),
-              child: ListTile(
-                title: GestureDetector(
-                  onTap: (){
-                    TextEditingController amountController = TextEditingController(text: currentEventExpence.amount!.toStringAsFixed(2).replaceAll('.00', ''));
-                    TextEditingController descriptionController = TextEditingController(text: currentEventExpence.description);
-                    TextEditingController priceController = TextEditingController(text: currentEventExpence.price!.toStringAsFixed(2).replaceAll('.00', ''));
-
-                    Widget saveButton = TextButton(
-                      child: const Text("Aggiorna", style: TextStyle(color: kCustomGreen),),
-                      onPressed:  () async {
-
-                        Response apiV1AppEventExpenceCreatePost = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceUpdatePut(expenceEvent: ExpenceEvent(
-                            amount: double.parse(amountController.text),
-                            expenceId: currentEventExpence.expenceId,
-                            description: descriptionController.text,
-                            price: double.parse(priceController.text),
-                            eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt()
-                        ));
-
-                        if(apiV1AppEventExpenceCreatePost.isSuccessful){
-
-                          dataBundleNotifier.updateExpenceToCurrentEvent(amount: double.parse(amountController.text),
-                              expenceId: currentEventExpence.expenceId!,
-                              description: descriptionController.text,
-                              price: double.parse(priceController.text),
-                              eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt());
-                          Navigator.of(context).pop();
-                        }else{
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    );
-
-                    showDialog(
-                        context: context,
-                        builder: (_) => AlertDialog(
-                          actions: [
-                            saveButton
-                          ],
-                          contentPadding: EdgeInsets.zero,
-                          shape: const RoundedRectangleBorder(
-                              borderRadius:
-                              BorderRadius.all(
-                                  Radius.circular(10.0))),
-                          content: Builder(
-                            builder: (context) {
-                              var width = MediaQuery.of(context).size.width;
-                              return SizedBox(
-                                width: width - 90,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Column(
-                                    children: [
-                                      Center(
-                                        child: Padding(
-                                          padding: EdgeInsets.all(18.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: Text('Crea spesa evento',
-                                                  style: TextStyle(fontSize: 14),
-                                                  textAlign: TextAlign.center,
-                                                ),
-                                              ),
-                                              IconButton(icon: Icon(Icons.clear), onPressed: (){
-                                                Navigator.of(context).pop();
-                                              },)
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                            CupertinoTextField(
-                                              enabled: true,
-                                              textInputAction: TextInputAction.next,
-                                              restorationId: 'Descrizion',
-                                              keyboardType: TextInputType.text,
-                                              controller: descriptionController,
-                                              clearButtonMode: OverlayVisibilityMode.never,
-                                              autocorrect: false,
-                                              placeholder: 'Descrizione',
-                                            ),
-                                            Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                            CupertinoTextField(
-                                              enabled: true,
-                                              textInputAction: TextInputAction.next,
-                                              restorationId: 'Quantità',
-                                              keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                              controller: amountController,
-                                              clearButtonMode: OverlayVisibilityMode.never,
-                                              autocorrect: false,
-                                              placeholder: 'Quantità',
-                                            ),
-                                            Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                            CupertinoTextField(
-                                              enabled: true,
-                                              textInputAction: TextInputAction.next,
-                                              restorationId: 'Prezzo',
-                                              keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                              controller: priceController,
-                                              clearButtonMode: OverlayVisibilityMode.never,
-                                              autocorrect: false,
-                                              placeholder: 'Prezzo',
-                                            ),
-
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        )
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      Expanded(flex: 4,child: Text(currentEventExpence.description!.toString())),
-                      Expanded(flex: 2,child: Text(currentEventExpence.amount!.toStringAsFixed(2).replaceAll('.00', ''))),
-                      const Expanded(flex: 1,child: Text('x')),
-                      Expanded(flex: 2,child: Text(currentEventExpence.price!.toStringAsFixed(2).replaceAll('.00', ''))),
-                      Expanded(flex: 3,child: Text((currentEventExpence.amount! * currentEventExpence.price!).toStringAsFixed(2).replaceAll('.00', '') + ' €')),
-                    ],
-                  ),
-                ),
-              ),
-            resizeDuration: Duration(milliseconds: 400),
-            onDismissed: (direction) async {
-              Response responseDeleteExpence = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceDeleteDelete(expenceEvent: currentEventExpence);
-
-              if(responseDeleteExpence.isSuccessful){
-                dataBundleNotifier.removeExpence(currentEventExpence);
-              }
-            },
-            direction: DismissDirection.endToStart,
-            background: Container(
-              decoration: BoxDecoration(
-                color: kCustomBordeaux,
-                  border: Border.all(color: kCustomGreen),
-                  borderRadius: BorderRadius.all(Radius.circular(9))
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Icon(Icons.delete, color: Colors.white,),
-                  )
-                ],
-              ),
-            ),
-            confirmDismiss: (DismissDirection direction) async {
-              return await showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: const Text("Conferma operazione"),
-                    content: const Text("Sei sicuro di voler eliminare la spesa?"),
-                    actions: <Widget>[
-                      OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(true),
-                          child: const Text("Elimina", style: TextStyle(color: kRed),)
-                      ),
-                      OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(false),
-                        child: const Text("Indietro"),
-                      ),
-                    ],
-                  );
-                },
-              );
-            },
-          );
-        },
-      ),
     );
   }
 
   List<Widget> buildListAvatars(List<UserBranch> listUserBranch) {
     List<Widget> widget = [];
-
     listUserBranch.forEach((userBranch) {
       widget.add(Padding(
         padding: const EdgeInsets.only(right: 10),
@@ -1493,6 +1440,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
           },
           child: Column(
+
             children: [
               userBranch.userEntity!.photo != null ?
               CircleAvatar(
@@ -1540,28 +1488,294 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
 
   }
 
+  getColumns(List<String> columns) => columns.map((String columnName) => DataColumn(
+    label: Center(child: Text(' ' + columnName, style: TextStyle(fontSize: getProportionateScreenWidth(12)), textAlign: TextAlign.center,)),
+  )).toList();
+
+  List<DataRow> buildRows(DataBundleNotifier dataBundle) =>
+
+      dataBundle.getCurrentEvent().expenceEvents!.map((ExpenceEvent exp) => DataRow(
+          selected: selectedExpences.contains(exp),
+          onLongPress: (){
+            TextEditingController amountController = TextEditingController(text: exp.amount!.toStringAsFixed(2).replaceAll('.00', ''));
+            TextEditingController descriptionController = TextEditingController(text: exp.description);
+            TextEditingController priceController = TextEditingController(text: exp.price!.toStringAsFixed(2).replaceAll('.00', ''));
+
+            Widget saveButton = TextButton(
+              child: const Text("Aggiorna", style: TextStyle(color: kCustomGreen),),
+              onPressed:  () async {
+
+                Response apiV1AppEventExpenceCreatePost = await dataBundle.getSwaggerClient().apiV1AppEventExpenceUpdatePut(expenceEvent: ExpenceEvent(
+                    amount: double.parse(amountController.text),
+                    expenceId: exp.expenceId,
+                    description: descriptionController.text,
+                    price: double.parse(priceController.text),
+                    eventId: dataBundle.getCurrentEvent().eventId!.toInt()
+                ));
+
+                if(apiV1AppEventExpenceCreatePost.isSuccessful){
+
+                  dataBundle.updateExpenceToCurrentEvent(amount: double.parse(amountController.text),
+                      expenceId: exp.expenceId!,
+                      description: descriptionController.text,
+                      price: double.parse(priceController.text),
+                      eventId: dataBundle.getCurrentEvent().eventId!.toInt());
+                  Navigator.of(context).pop();
+                }else{
+                  Navigator.of(context).pop();
+                }
+              },
+            );
+
+            Widget deleteButton = TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(false);
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Conferma operazione"),
+                      content: const Text("Sei sicuro di voler eliminare la spesa?"),
+                      actions: <Widget>[
+                        OutlinedButton(
+                            onPressed: () async {
+                              Response responseDeleteExpence = await dataBundle.getSwaggerClient().apiV1AppEventExpenceDeleteDelete(expenceEvent: exp);
+
+                              if(responseDeleteExpence.isSuccessful){
+                                dataBundle.removeExpence(exp);
+                                setState((){
+                                  selectedExpences.remove(exp);
+                                });
+                                Navigator.of(context).pop(false);
+                              }else{
+                                print(responseDeleteExpence.error);
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  backgroundColor: kCustomGreen,
+                                  duration: Duration(seconds: 1),
+                                  content: Text('Errore: ' + responseDeleteExpence.error.toString()),
+                                ));
+                                Navigator.of(context).pop(false);
+                              }
+                            },
+                            child: const Text("Elimina", style: TextStyle(color: kRed),)
+                        ),
+                        OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text("Indietro"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+
+
+              }, child: const Text("Cancella", style: TextStyle(color: kCustomBordeaux),),
+            );
+
+            showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  actions: [
+                    deleteButton,
+                    saveButton,
+                  ],
+                  contentPadding: EdgeInsets.zero,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius:
+                      BorderRadius.all(
+                          Radius.circular(10.0))),
+                  content: Builder(
+                    builder: (context) {
+                      var width = MediaQuery.of(context).size.width;
+                      return SizedBox(
+                        width: width - 90,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Column(
+                            children: [
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(18.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Text('Modifica spesa evento',
+                                          style: TextStyle(fontSize: 14),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      IconButton(icon: const Icon(Icons.clear), onPressed: (){
+                                        Navigator.of(context).pop();
+                                      },)
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                    CupertinoTextField(
+                                      enabled: true,
+                                      textInputAction: TextInputAction.next,
+                                      restorationId: 'Descrizion',
+                                      keyboardType: TextInputType.text,
+                                      controller: descriptionController,
+                                      clearButtonMode: OverlayVisibilityMode.never,
+                                      autocorrect: false,
+                                      placeholder: 'Descrizione',
+                                    ),
+                                    Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                    CupertinoTextField(
+                                      enabled: true,
+                                      textInputAction: TextInputAction.next,
+                                      restorationId: 'Quantità',
+                                      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                      controller: amountController,
+                                      clearButtonMode: OverlayVisibilityMode.never,
+                                      autocorrect: false,
+                                      placeholder: 'Quantità',
+                                    ),
+                                    Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                    CupertinoTextField(
+                                      enabled: true,
+                                      textInputAction: TextInputAction.next,
+                                      restorationId: 'Prezzo',
+                                      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                      controller: priceController,
+                                      clearButtonMode: OverlayVisibilityMode.never,
+                                      autocorrect: false,
+                                      placeholder: 'Prezzo',
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                )
+            );
+          },
+          onSelectChanged: (isSelected){
+            setState((){
+              final isAdding = isSelected != null && isSelected;
+              isAdding ? selectedExpences.add(exp) : selectedExpences.remove(exp);
+            });
+          },
+          cells: [
+            DataCell(Text(exp.description.toString())),
+            DataCell(Text(exp.amount!.toStringAsFixed(2).replaceAll('.00', ''))),
+            DataCell(Text(exp.price!.toStringAsFixed(2).replaceAll('.00', '') + ' €')),
+            DataCell(Text((exp.price! * exp.amount!).toStringAsFixed(2).replaceAll('.00', '') + ' €')),
+          ]
+      )).toList();
+
+  Widget buildTotalTableRecap(DataBundleNotifier dataBundleNotifier, bool totB, bool totSelB, bool totUnselB) {
+    double tot = 0.0;
+    for (var element in dataBundleNotifier.getCurrentEvent().expenceEvents!) {
+      tot = tot + (element.price! * element.amount!);
+    }
+
+    double totSelected = 0.0;
+    for (var exp in selectedExpences) {
+      totSelected = totSelected + (exp.price! * exp.amount!);
+    }
+
+
+    List<DataRow> list = [];
+
+
+    if(totSelB){
+      list.add(DataRow(
+      cells: [
+      DataCell(Row(
+    children: const [
+    Icon(Icons.check_box, color: Colors.blue),
+    Text(' Totale selezionati'),
+    ],
+    )),
+    DataCell(Text(totSelected.toStringAsFixed(2).replaceAll('.00', '') + ' €')),
+    ]
+    ));
+    }
+
+    if(totUnselB){
+      list.add(
+          DataRow(
+              cells: [
+                DataCell(Row(
+                  children: const [
+                    Icon(Icons.check_box_outline_blank, color: Colors.grey),
+                    Text(' Totale non selezionati'),
+                  ],
+                )),
+                DataCell(Text((tot - totSelected).toStringAsFixed(2).replaceAll('.00', '') + ' €')),
+              ]
+          )
+      );
+    }
+    if(totB){
+      list.add(DataRow(
+          cells: [
+            DataCell(Row(
+              children: const [
+                Icon(Icons.checklist, color: Colors.green),
+                Text(' Totale'),
+              ],
+            )),
+            DataCell(Text(tot.toStringAsFixed(2).replaceAll('.00', '') + ' €')),
+          ]
+      ));
+    }
+    return Row(
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: DataTable(
+            rows: list,
+            columns: [
+              DataColumn(label: Text('')),
+              DataColumn(label: Text('')),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _createExceel() async {
+    final excel.Workbook workbook = excel.Workbook();
+    final List<int> bytes = workbook.saveAsStream();
+
+
+    workbook.dispose();
+
+    final String path = (await getApplicationSupportDirectory()).path;
+    final String fileName = '$path/Output.xlsm';
+    final File file = File(fileName);
+    await file.writeAsBytes(bytes, flush: true);
+    OpenFile.open(fileName);
+
+  }
+
+
   Future<void> _createExcel() async {
 
     final excel.Workbook workbook = excel.Workbook();
-    //Accessing via index
     final excel.Worksheet sheet = workbook.worksheets[0];
-    sheet.showGridlines = false;
+    sheet.showGridlines = true;
 
     // Enable calculation for worksheet.
     sheet.enableSheetCalculations();
-
-    //Set data in the worksheet.
-    sheet.getRangeByName('A1').columnWidth = 4.82;
-    sheet.getRangeByName('B1:C1').columnWidth = 13.82;
-    sheet.getRangeByName('D1').columnWidth = 13.20;
-    sheet.getRangeByName('E1').columnWidth = 7.50;
-    sheet.getRangeByName('F1').columnWidth = 9.73;
-    sheet.getRangeByName('G1').columnWidth = 8.82;
-    sheet.getRangeByName('H1').columnWidth = 4.46;
-
-    sheet.getRangeByName('A1:H1').cellStyle.backColor = '#333F4F';
-    sheet.getRangeByName('A1:H1').merge();
-    sheet.getRangeByName('B4:D6').merge();
 
     sheet.getRangeByName('B4').setText('Invoice');
     sheet.getRangeByName('B4').cellStyle.fontSize = 32;
@@ -1660,222 +1874,27 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     sheet.getRangeByIndex(19, 6).setNumber(175.49);
     sheet.getRangeByIndex(20, 6).setNumber(34.99);
 
-    sheet.getRangeByIndex(15, 7).setText('Total');
-    sheet.getRangeByIndex(16, 7).setFormula('=E16*F16+(E16*F16)');
-    sheet.getRangeByIndex(17, 7).setFormula('=E17*F17+(E17*F17)');
-    sheet.getRangeByIndex(18, 7).setFormula('=E18*F18+(E18*F18)');
-    sheet.getRangeByIndex(19, 7).setFormula('=E19*F19+(E19*F19)');
-    sheet.getRangeByIndex(20, 7).setFormula('=E20*F20+(E20*F20)');
-    sheet.getRangeByIndex(15, 6, 20, 7).numberFormat = '\$#,##0.00';
-
-    sheet.getRangeByName('E15:G15').cellStyle.hAlign = excel.HAlignType.right;
-    sheet.getRangeByName('B15:G15').cellStyle.fontSize = 10;
-    sheet.getRangeByName('B15:G15').cellStyle.bold = true;
-    sheet.getRangeByName('B16:G20').cellStyle.fontSize = 9;
-
-    sheet.getRangeByName('E22:G22').merge();
-    sheet.getRangeByName('E22:G22').cellStyle.hAlign = excel.HAlignType.right;
-    sheet.getRangeByName('E23:G24').merge();
-
-    final excel.Range range7 = sheet.getRangeByName('E22');
-    final excel.Range range8 = sheet.getRangeByName('E23');
-    range7.setText('TOTAL');
-    range7.cellStyle.fontSize = 8;
-    range8.setFormula('=SUM(G16:G20)');
-    range8.numberFormat = '\$#,##0.00';
-    range8.cellStyle.fontSize = 24;
-    range8.cellStyle.hAlign = excel.HAlignType.right;
-    range8.cellStyle.bold = true;
-
-    final excel.Range range9 = sheet.getRangeByName('A26:H27');
-    range9.cellStyle.backColor = '#ACB9CA';
-    range9.merge();
-    range9.cellStyle.hAlign = excel.HAlignType.center;
-    range9.cellStyle.vAlign = excel.VAlignType.center;
-
     final List<int> bytes = workbook.saveAsStream();
+    //Dispose the document.
     workbook.dispose();
-
-    FileSaveHelper.saveAndLaunchFile(bytes, 'ddd.xslt');
-  }
-
-  getColumns(List<String> columns) => columns.map((String columnName) => DataColumn(
-        label: Text(columnName),
-    )).toList();
-
-  List<DataRow> buildRows(DataBundleNotifier dataBundle) => dataBundle.getCurrentEvent().expenceEvents!.map((ExpenceEvent exp) => DataRow(
-    selected: selectedExpences.contains(exp),
-      onLongPress: (){
-        TextEditingController amountController = TextEditingController(text: exp.amount!.toStringAsFixed(2).replaceAll('.00', ''));
-        TextEditingController descriptionController = TextEditingController(text: exp.description);
-        TextEditingController priceController = TextEditingController(text: exp.price!.toStringAsFixed(2).replaceAll('.00', ''));
-
-        Widget saveButton = TextButton(
-          child: const Text("Aggiorna", style: TextStyle(color: kCustomGreen),),
-          onPressed:  () async {
-
-            Response apiV1AppEventExpenceCreatePost = await dataBundle.getSwaggerClient().apiV1AppEventExpenceUpdatePut(expenceEvent: ExpenceEvent(
-                amount: double.parse(amountController.text),
-                expenceId: exp.expenceId,
-                description: descriptionController.text,
-                price: double.parse(priceController.text),
-                eventId: dataBundle.getCurrentEvent().eventId!.toInt()
-            ));
-
-            if(apiV1AppEventExpenceCreatePost.isSuccessful){
-
-              dataBundle.updateExpenceToCurrentEvent(amount: double.parse(amountController.text),
-                  expenceId: exp.expenceId!,
-                  description: descriptionController.text,
-                  price: double.parse(priceController.text),
-                  eventId: dataBundle.getCurrentEvent().eventId!.toInt());
-              Navigator.of(context).pop();
-            }else{
-              Navigator.of(context).pop();
-            }
-          },
-        );
-
-        Widget deleteButton = TextButton(
-          onPressed: () async {
-            Response responseDeleteExpence = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceDeleteDelete(expenceEvent: currentEventExpence);
-
-            if(responseDeleteExpence.isSuccessful){
-              dataBundleNotifier.removeExpence(currentEventExpence);
-            }
-          },
-        );
-
-        showDialog(
-            context: context,
-            builder: (_) => AlertDialog(
-              actions: [
-                saveButton
-              ],
-              contentPadding: EdgeInsets.zero,
-              shape: const RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.all(
-                      Radius.circular(10.0))),
-              content: Builder(
-                builder: (context) {
-                  var width = MediaQuery.of(context).size.width;
-                  return SizedBox(
-                    width: width - 90,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        children: [
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.all(18.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Text('Modifica spesa evento',
-                                      style: TextStyle(fontSize: 14),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  IconButton(icon: Icon(Icons.clear), onPressed: (){
-                                    Navigator.of(context).pop();
-                                  },)
-                                ],
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                CupertinoTextField(
-                                  enabled: true,
-                                  textInputAction: TextInputAction.next,
-                                  restorationId: 'Descrizion',
-                                  keyboardType: TextInputType.text,
-                                  controller: descriptionController,
-                                  clearButtonMode: OverlayVisibilityMode.never,
-                                  autocorrect: false,
-                                  placeholder: 'Descrizione',
-                                ),
-                                Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                CupertinoTextField(
-                                  enabled: true,
-                                  textInputAction: TextInputAction.next,
-                                  restorationId: 'Quantità',
-                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                  controller: amountController,
-                                  clearButtonMode: OverlayVisibilityMode.never,
-                                  autocorrect: false,
-                                  placeholder: 'Quantità',
-                                ),
-                                Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                CupertinoTextField(
-                                  enabled: true,
-                                  textInputAction: TextInputAction.next,
-                                  restorationId: 'Prezzo',
-                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                  controller: priceController,
-                                  clearButtonMode: OverlayVisibilityMode.never,
-                                  autocorrect: false,
-                                  placeholder: 'Prezzo',
-                                ),
-
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            )
-        );
-      },
-      onSelectChanged: (isSelected){
-        setState((){
-          final isAdding = isSelected != null && isSelected;
-          isAdding ? selectedExpences.add(exp) : selectedExpences.remove(exp);
-        });
-      },
-      cells: [
-        DataCell(Text(exp.description.toString())),
-        DataCell(Text(exp.amount!.toStringAsFixed(2).replaceAll('.00', ''))),
-        DataCell(Text(exp.price!.toStringAsFixed(2).replaceAll('.00', ''))),
-        DataCell(Text((exp.price! * exp.amount!).toStringAsFixed(2).replaceAll('.00', ''))),
-      ]
-  )).toList();
-
-  DataTable buildTotalTableRecap(DataBundleNotifier dataBundleNotifier) {
-      double tot = 0.0;
-      for (var element in dataBundleNotifier.getCurrentEvent().expenceEvents!) {
-        tot = tot + (element.price! * element.amount!);
-      }
-
-      double totSelected = 0.0;
-      for (var exp in selectedExpences) {
-        totSelected = totSelected + (exp.price! * exp.amount!);
-      }
-
-
-
-
-      return DataTable(
-        columns: [DataColumn(label: Text('Tot')), DataColumn(label: Text( tot.toStringAsFixed(2).replaceAll('.00', '')))],
-        rows: [DataRow(cells: [
-          const DataCell(
-            Text('Tot Sel'),
-        ),DataCell(
-            Text(totSelected.toStringAsFixed(2).replaceAll('.00', '')),
-          )]
-        )],
-      );
+    final String path = (await getApplicationSupportDirectory()).path;
+    final String fileName = '$path/Output.xlsx';
+    //Save and launch file.
+    final File file = File(fileName);
+    await file.writeAsBytes(bytes, flush: true);
+    OpenFile.open(fileName);
   }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
