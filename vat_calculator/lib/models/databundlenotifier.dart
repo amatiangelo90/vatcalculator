@@ -394,14 +394,6 @@ class DataBundleNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  String getTotalFromCurrentExpenceList() {
-    double tot = 0.0;
-    getCurrentEvent().expenceEvents!.forEach((element) {
-      tot = tot + (element.price! * element.amount!);
-    });
-    return tot.toStringAsFixed(2).replaceAll('.00', '');
-  }
-
   List<Event> _currentEventsClosed = [];
 
   List<Event> getListEventClosed(){

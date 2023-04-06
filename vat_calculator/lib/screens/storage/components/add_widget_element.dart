@@ -64,9 +64,9 @@ class AddElementWidget extends StatelessWidget {
                         if(apiV1AppStorageInsertproductGet.isSuccessful){
                           dataBundleNotifier.addProductToCurrentStorage(apiV1AppStorageInsertproductGet.body);
                         }else{
-                          print(apiV1AppStorageInsertproductGet.error.toString());
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+
                             backgroundColor: kPinaColor,
                             content: Text('Ho riscontrato degli errori durante il salvataggio. Error: ' + apiV1AppStorageInsertproductGet.error.toString()),
                           ));

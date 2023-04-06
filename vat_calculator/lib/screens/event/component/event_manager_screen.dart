@@ -27,6 +27,8 @@ class EventManagerScreen extends StatefulWidget {
 class _EventManagerScreenState extends State<EventManagerScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  List<ExpenceEvent> selectedExpences = [];
+
   @override
   Widget build(BuildContext context) {
 
@@ -56,13 +58,13 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                   Tab(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
+                      child: Text('Contabilità', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
                     ),
                   ),
                   Tab(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: Text('Contabilità', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
+                      child: Text('Spese', style: TextStyle(color:  kCustomGrey, fontWeight: FontWeight.bold, fontSize: getProportionateScreenHeight(10)),),
                     ),
                   ),
                 ],
@@ -455,177 +457,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                           color: Colors.white,
                           child: Column(
                             children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: kCustomBlue,
-                                    border: Border.all(color: kCustomGrey),
-                                    borderRadius: BorderRadius.all(Radius.circular(9))
-                                ),
-                                width: getProportionateScreenWidth(600),
-
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('Spese serata', textAlign: TextAlign.center, style: TextStyle(fontSize: getProportionateScreenHeight(16), color: Colors.white)),
-                                      dataBundleNotifier.getCurrentEvent().eventStatus == EventEventStatus.aperto ? OutlinedButton(
-                                          style: ButtonStyle(
-                                            elevation: MaterialStateProperty.resolveWith((states) => 5),
-                                            side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey),),
-                                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
-                                          ),
-
-                                          onPressed: () async {
-
-                                            TextEditingController amountController = TextEditingController();
-                                            TextEditingController descriptionController = TextEditingController();
-                                            TextEditingController priceController = TextEditingController();
-
-                                            Widget saveButton = TextButton(
-                                              child: const Text("Salva", style: TextStyle(color: kCustomGreen),),
-                                              onPressed:  () async {
-                                                Response apiV1AppEventExpenceCreatePost = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceCreatePost(expenceEvent: ExpenceEvent(
-                                                  amount: double.parse(amountController.text),
-                                                  description: descriptionController.text,
-                                                  price: double.parse(priceController.text),
-                                                  eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt()
-                                                ));
-
-                                                if(apiV1AppEventExpenceCreatePost.isSuccessful){
-                                                  dataBundleNotifier.setExpenceToCurrentEvent(apiV1AppEventExpenceCreatePost.body);
-                                                  Navigator.of(context).pop();
-                                                }else{
-                                                  Navigator.of(context).pop();
-                                                }
-                                              },
-                                            );
-
-                                            showDialog(
-                                                context: context,
-                                                builder: (_) => AlertDialog(
-                                                  actions: [
-                                                    saveButton
-                                                  ],
-                                                  contentPadding: EdgeInsets.zero,
-                                                  shape: const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                      BorderRadius.all(
-                                                          Radius.circular(10.0))),
-                                                  content: Builder(
-                                                    builder: (context) {
-                                                      var width = MediaQuery.of(context).size.width;
-                                                      return SizedBox(
-                                                        width: width - 90,
-                                                        child: SingleChildScrollView(
-                                                          scrollDirection: Axis.vertical,
-                                                          child: Column(
-                                                            children: [
-                                                              Center(
-                                                                child: Padding(
-                                                                  padding: EdgeInsets.all(18.0),
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      const Padding(
-                                                                        padding: EdgeInsets.all(8.0),
-                                                                        child: Text('Crea spesa evento',
-                                                                          style: TextStyle(fontSize: 14),
-                                                                          textAlign: TextAlign.center,
-                                                                        ),
-                                                                      ),
-                                                                      IconButton(icon: Icon(Icons.clear), onPressed: (){
-                                                                        Navigator.of(context).pop();
-                                                                      },)
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets.all(8.0),
-                                                                child: Column(
-                                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                                  children: [
-                                                                    Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                                                    CupertinoTextField(
-                                                                      enabled: true,
-                                                                      textInputAction: TextInputAction.next,
-                                                                      restorationId: 'Descrizion',
-                                                                      keyboardType: TextInputType.text,
-                                                                      controller: descriptionController,
-                                                                      clearButtonMode: OverlayVisibilityMode.never,
-                                                                      autocorrect: false,
-                                                                      placeholder: 'Descrizione',
-                                                                    ),
-                                                                    Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                                                    CupertinoTextField(
-                                                                      enabled: true,
-                                                                      textInputAction: TextInputAction.next,
-                                                                      restorationId: 'Quantità',
-                                                                      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                                                      controller: amountController,
-                                                                      clearButtonMode: OverlayVisibilityMode.never,
-                                                                      autocorrect: false,
-                                                                      placeholder: 'Quantità',
-                                                                    ),
-                                                                    Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
-                                                                    CupertinoTextField(
-                                                                      enabled: true,
-                                                                      textInputAction: TextInputAction.next,
-                                                                      restorationId: 'Prezzo',
-                                                                      keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
-                                                                      controller: priceController,
-                                                                      clearButtonMode: OverlayVisibilityMode.never,
-                                                                      autocorrect: false,
-                                                                      placeholder: 'Prezzo',
-                                                                    ),
-
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                )
-                                            );
-                                          },
-                                          child: const Text("Crea nuova", style: TextStyle(color: Colors.white),)
-                                      ) : Text(''),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              buildExpenceWidget(dataBundleNotifier),
-                              const Divider(),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Text('Totale spese serata: ',  style: TextStyle(color: kCustomGrey)),
-                                    Text('€ ' + dataBundleNotifier.getTotalFromCurrentExpenceList(),  style: TextStyle(color: kCustomGrey, fontSize: getProportionateScreenHeight(20))),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(height: 50),
-                            ],
-                          )
-                      ),
-                    )
-                ),
-                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? Center(child: Text('Non hai i permessi per visualizzare questa pagina'))
-                    : SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            children: [
                               buildRecapAllWorkstationExpences(
                                   dataBundleNotifier.getCurrentEvent()
                               ),
@@ -642,7 +473,153 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                           )
                       ),
                     )
-                )
+                ),
+                dataBundleNotifier.getCurrentBranch().userPriviledge == BranchUserPriviledge.employee ? const Center(child: Text('Non hai i permessi per visualizzare questa pagina'))
+                    : Stack(
+                  children: [
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: Container(
+                              color: Colors.white,
+                              child: Column(
+                                children: [
+                                  buildExpenceWidget(dataBundleNotifier),
+                                  const Divider(),
+                                  buildTotalTableRecap(dataBundleNotifier),
+                                  SizedBox(height: 50),
+                                ],
+                              )
+                          )
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Container(alignment: Alignment.bottomRight, child: FloatingActionButton(
+                          child: Icon(Icons.add, size: getProportionateScreenHeight(30),),
+                          
+                          onPressed: (){
+
+                        TextEditingController amountController = TextEditingController();
+                        TextEditingController descriptionController = TextEditingController();
+                        TextEditingController priceController = TextEditingController();
+
+                        Widget saveButton = TextButton(
+                          child: const Text("Salva", style: TextStyle(color: kCustomGreen),),
+                          onPressed:  () async {
+
+                            Response apiV1AppEventExpenceCreatePost = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceCreatePost(expenceEvent: ExpenceEvent(
+                                amount: double.parse(amountController.text.replaceAll(',', '.')),
+                                description: descriptionController.text,
+                                price: double.parse(priceController.text.replaceAll(',', '.')),
+                                eventId: dataBundleNotifier.getCurrentEvent().eventId!.toInt()
+                            ));
+
+                            if(apiV1AppEventExpenceCreatePost.isSuccessful){
+                              dataBundleNotifier.setExpenceToCurrentEvent(apiV1AppEventExpenceCreatePost.body);
+                              Navigator.of(context).pop();
+                            }else{
+                              Navigator.of(context).pop();
+                            }
+                          },
+                        );
+
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              actions: [
+                                saveButton
+                              ],
+                              contentPadding: EdgeInsets.zero,
+                              shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(
+                                      Radius.circular(10.0))),
+                              content: Builder(
+                                builder: (context) {
+                                  var width = MediaQuery.of(context).size.width;
+                                  return SizedBox(
+                                    width: width - 90,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Column(
+                                        children: [
+                                          Center(
+                                            child: Padding(
+                                              padding: EdgeInsets.all(18.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  const Padding(
+                                                    padding: EdgeInsets.all(8.0),
+                                                    child: Text('Crea spesa evento',
+                                                      style: TextStyle(fontSize: 14),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ),
+                                                  IconButton(icon: Icon(Icons.clear), onPressed: (){
+                                                    Navigator.of(context).pop();
+                                                  },)
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                                CupertinoTextField(
+                                                  enabled: true,
+                                                  textInputAction: TextInputAction.next,
+                                                  restorationId: 'Descrizion',
+                                                  keyboardType: TextInputType.text,
+                                                  controller: descriptionController,
+                                                  clearButtonMode: OverlayVisibilityMode.never,
+                                                  autocorrect: false,
+                                                  placeholder: 'Descrizione',
+                                                ),
+                                                Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                                CupertinoTextField(
+                                                  enabled: true,
+                                                  textInputAction: TextInputAction.next,
+                                                  restorationId: 'Quantità',
+                                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                                  controller: amountController,
+                                                  clearButtonMode: OverlayVisibilityMode.never,
+                                                  autocorrect: false,
+                                                  placeholder: 'Quantità',
+                                                ),
+                                                Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                                CupertinoTextField(
+                                                  enabled: true,
+                                                  textInputAction: TextInputAction.next,
+                                                  restorationId: 'Prezzo',
+                                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                                  controller: priceController,
+                                                  clearButtonMode: OverlayVisibilityMode.never,
+                                                  autocorrect: false,
+                                                  placeholder: 'Prezzo',
+                                                ),
+
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                        );
+                      })),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -1301,6 +1278,15 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
   }
 
   buildExpenceWidget(DataBundleNotifier dataBundleNotifier) {
+
+    final columns = ['Casuale', 'Q', 'C', 'Tot'];
+
+    return DataTable(
+      columns: getColumns(columns),
+      rows: buildRows(dataBundleNotifier),
+
+    );
+
     return SizedBox(
       height: dataBundleNotifier.getCurrentEvent().expenceEvents!.length! * 90,
       child: ListView.builder(
@@ -1711,6 +1697,185 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     workbook.dispose();
 
     FileSaveHelper.saveAndLaunchFile(bytes, 'ddd.xslt');
+  }
+
+  getColumns(List<String> columns) => columns.map((String columnName) => DataColumn(
+        label: Text(columnName),
+    )).toList();
+
+  List<DataRow> buildRows(DataBundleNotifier dataBundle) => dataBundle.getCurrentEvent().expenceEvents!.map((ExpenceEvent exp) => DataRow(
+    selected: selectedExpences.contains(exp),
+      onLongPress: (){
+        TextEditingController amountController = TextEditingController(text: exp.amount!.toStringAsFixed(2).replaceAll('.00', ''));
+        TextEditingController descriptionController = TextEditingController(text: exp.description);
+        TextEditingController priceController = TextEditingController(text: exp.price!.toStringAsFixed(2).replaceAll('.00', ''));
+
+        Widget saveButton = TextButton(
+          child: const Text("Aggiorna", style: TextStyle(color: kCustomGreen),),
+          onPressed:  () async {
+
+            Response apiV1AppEventExpenceCreatePost = await dataBundle.getSwaggerClient().apiV1AppEventExpenceUpdatePut(expenceEvent: ExpenceEvent(
+                amount: double.parse(amountController.text),
+                expenceId: exp.expenceId,
+                description: descriptionController.text,
+                price: double.parse(priceController.text),
+                eventId: dataBundle.getCurrentEvent().eventId!.toInt()
+            ));
+
+            if(apiV1AppEventExpenceCreatePost.isSuccessful){
+
+              dataBundle.updateExpenceToCurrentEvent(amount: double.parse(amountController.text),
+                  expenceId: exp.expenceId!,
+                  description: descriptionController.text,
+                  price: double.parse(priceController.text),
+                  eventId: dataBundle.getCurrentEvent().eventId!.toInt());
+              Navigator.of(context).pop();
+            }else{
+              Navigator.of(context).pop();
+            }
+          },
+        );
+
+        Widget deleteButton = TextButton(
+          onPressed: () async {
+            Response responseDeleteExpence = await dataBundleNotifier.getSwaggerClient().apiV1AppEventExpenceDeleteDelete(expenceEvent: currentEventExpence);
+
+            if(responseDeleteExpence.isSuccessful){
+              dataBundleNotifier.removeExpence(currentEventExpence);
+            }
+          },
+        );
+
+        showDialog(
+            context: context,
+            builder: (_) => AlertDialog(
+              actions: [
+                saveButton
+              ],
+              contentPadding: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                  borderRadius:
+                  BorderRadius.all(
+                      Radius.circular(10.0))),
+              content: Builder(
+                builder: (context) {
+                  var width = MediaQuery.of(context).size.width;
+                  return SizedBox(
+                    width: width - 90,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(18.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Text('Modifica spesa evento',
+                                      style: TextStyle(fontSize: 14),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                  IconButton(icon: Icon(Icons.clear), onPressed: (){
+                                    Navigator.of(context).pop();
+                                  },)
+                                ],
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text('Descrizione', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                CupertinoTextField(
+                                  enabled: true,
+                                  textInputAction: TextInputAction.next,
+                                  restorationId: 'Descrizion',
+                                  keyboardType: TextInputType.text,
+                                  controller: descriptionController,
+                                  clearButtonMode: OverlayVisibilityMode.never,
+                                  autocorrect: false,
+                                  placeholder: 'Descrizione',
+                                ),
+                                Text('Quantità', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                CupertinoTextField(
+                                  enabled: true,
+                                  textInputAction: TextInputAction.next,
+                                  restorationId: 'Quantità',
+                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                  controller: amountController,
+                                  clearButtonMode: OverlayVisibilityMode.never,
+                                  autocorrect: false,
+                                  placeholder: 'Quantità',
+                                ),
+                                Text('Prezzo', style: TextStyle(fontSize: getProportionateScreenHeight(7))),
+                                CupertinoTextField(
+                                  enabled: true,
+                                  textInputAction: TextInputAction.next,
+                                  restorationId: 'Prezzo',
+                                  keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+                                  controller: priceController,
+                                  clearButtonMode: OverlayVisibilityMode.never,
+                                  autocorrect: false,
+                                  placeholder: 'Prezzo',
+                                ),
+
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            )
+        );
+      },
+      onSelectChanged: (isSelected){
+        setState((){
+          final isAdding = isSelected != null && isSelected;
+          isAdding ? selectedExpences.add(exp) : selectedExpences.remove(exp);
+        });
+      },
+      cells: [
+        DataCell(Text(exp.description.toString())),
+        DataCell(Text(exp.amount!.toStringAsFixed(2).replaceAll('.00', ''))),
+        DataCell(Text(exp.price!.toStringAsFixed(2).replaceAll('.00', ''))),
+        DataCell(Text((exp.price! * exp.amount!).toStringAsFixed(2).replaceAll('.00', ''))),
+      ]
+  )).toList();
+
+  DataTable buildTotalTableRecap(DataBundleNotifier dataBundleNotifier) {
+      double tot = 0.0;
+      for (var element in dataBundleNotifier.getCurrentEvent().expenceEvents!) {
+        tot = tot + (element.price! * element.amount!);
+      }
+
+      double totSelected = 0.0;
+      for (var exp in selectedExpences) {
+        totSelected = totSelected + (exp.price! * exp.amount!);
+      }
+
+
+
+
+      return DataTable(
+        columns: [DataColumn(label: Text('Tot')), DataColumn(label: Text( tot.toStringAsFixed(2).replaceAll('.00', '')))],
+        rows: [DataRow(cells: [
+          const DataCell(
+            Text('Tot Sel'),
+        ),DataCell(
+            Text(totSelected.toStringAsFixed(2).replaceAll('.00', '')),
+          )]
+        )],
+      );
   }
 
 }

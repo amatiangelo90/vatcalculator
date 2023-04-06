@@ -413,7 +413,7 @@ class _WorkstationManagerScreenState extends State<WorkstationManagerScreen> wit
               side: MaterialStateProperty.resolveWith((states) => BorderSide(width: 0.5, color: Colors.grey.shade100),),
               shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0))),
             ),
-            child: Text('Configura GIACENZA', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
+            child: Text('Salva Giacenza', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontSize: getProportionateScreenHeight(20)),),
           ),
         ),
       ),
