@@ -22,7 +22,7 @@ String getRandomColor(){
 return colors[_random.nextInt(colors.length)];
 }
 
-const String kVersionApp = '2.0.3';
+const String kVersionApp = '2.0.5';
 const Color kCustomBlack = Color(0xff121212);
 const Color kCustomGreen = Color(0xff398564);
 const Color kCustomGrey = Color(0xff1C1C1E);

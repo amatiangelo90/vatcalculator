@@ -75,7 +75,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
               actions: [
                 dataBundleNotifier.getCurrentBranch().userPriviledge != BranchUserPriviledge.employee ? IconButton(
                   onPressed: (){
-                    _createExcel();
+                    _createExcel(dataBundleNotifier);
                   },
                   icon: SvgPicture.asset('assets/icons/excel.svg', height: getProportionateScreenWidth(30)),
                 ) :  const Text(''),
@@ -472,7 +472,7 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                                         children: const [
                                           Padding(
                                             padding: EdgeInsets.all(8.0),
-                                            child: Text('Resoconto', style: TextStyle(color: Colors.white, fontSize: 16),),
+                                            child: Text('Resoconto complessivo Bar/Champagnerie', style: TextStyle(color: Colors.white, fontSize: 16),),
                                           ),
                                         ],
                                       )),
@@ -484,7 +484,57 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
                             buildRecapAllWorkstationExpences(
                                 dataBundleNotifier.getCurrentEvent()
                             ),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.pinkAccent,
+                                      ),
+                                      child: Center(child: Column(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text('Recap Spese', style: TextStyle(color: Colors.white, fontSize: 16),),
+                                          ),
+                                        ],
+                                      )),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                             buildTotalTableRecap(dataBundleNotifier, false, true, true),
+                            Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.green,
+                                      ),
+                                      child: Center(child: Column(
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Text('Utile', style: TextStyle(color: Colors.white, fontSize: 16),),
+                                          ),
+                                        ],
+                                      )),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text('Totale non segnato - Spese totali (Reconto bar/champagnerie)', style: TextStyle(fontSize: 10, ), textAlign: TextAlign.center),
+
+                            calculateUtile(dataBundleNotifier),
+
                             buildRecapWorkstationExpences(
                                 dataBundleNotifier.getCurrentEvent(),
                                 WorkstationWorkstationType.bar
@@ -1689,8 +1739,6 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     for (var exp in selectedExpences) {
       totSelected = totSelected + (exp.price! * exp.amount!);
     }
-
-
     List<DataRow> list = [];
 
 
@@ -1741,10 +1789,11 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
         SizedBox(
           width: MediaQuery.of(context).size.width,
           child: DataTable(
+            showCheckboxColumn: false,
             rows: list,
             columns: [
-              DataColumn(label: Text('')),
-              DataColumn(label: Text('')),
+              DataColumn(label: Text('Descrizione')),
+              DataColumn(label: Text('Tot')),
             ],
           ),
         ),
@@ -1752,137 +1801,96 @@ class _EventManagerScreenState extends State<EventManagerScreen> {
     );
   }
 
-  Future<void> _createExceel() async {
-    final excel.Workbook workbook = excel.Workbook();
-    final List<int> bytes = workbook.saveAsStream();
-
-
-    workbook.dispose();
-
-    final String path = (await getApplicationSupportDirectory()).path;
-    final String fileName = '$path/Output.xlsm';
-    final File file = File(fileName);
-    await file.writeAsBytes(bytes, flush: true);
-    OpenFile.open(fileName);
-
-  }
-
-
-  Future<void> _createExcel() async {
+  Future<void> _createExcel(DataBundleNotifier dataBundleNotifier) async {
 
     final excel.Workbook workbook = excel.Workbook();
     final excel.Worksheet sheet = workbook.worksheets[0];
     sheet.showGridlines = true;
 
-    // Enable calculation for worksheet.
     sheet.enableSheetCalculations();
 
-    sheet.getRangeByName('B4').setText('Invoice');
-    sheet.getRangeByName('B4').cellStyle.fontSize = 32;
+    final excel.Range rangeTitle = sheet.getRangeByName('B2:F2');
+    final excel.Range rangeTitle3 = sheet.getRangeByName('B3:F3');
+    final excel.Range rangeTitle4 = sheet.getRangeByName('B4:F4');
+    rangeTitle.merge();
+    rangeTitle3.merge();
+    rangeTitle4.merge();
 
-    sheet.getRangeByName('B8').setText('BILL TO:');
-    sheet.getRangeByName('B8').cellStyle.fontSize = 9;
-    sheet.getRangeByName('B8').cellStyle.bold = true;
+    sheet.getRangeByName('B2').setText(dataBundleNotifier.getCurrentEvent().name!);
+    sheet.getRangeByName('B2').cellStyle.fontSize = 32;
 
-    sheet.getRangeByName('B9').setText('Abraham Swearegin');
-    sheet.getRangeByName('B9').cellStyle.fontSize = 12;
+    sheet.getRangeByName('B3').setText('Location: ' + dataBundleNotifier.getCurrentEvent().location!);
+    sheet.getRangeByName('B4').setText('Data: ' + dataBundleNotifier.getCurrentEvent().dateEvent!);
+    sheet.getRangeByName('B3').cellStyle.fontSize = 14;
+    sheet.getRangeByName('B4').cellStyle.fontSize = 14;
 
-    sheet
-        .getRangeByName('B10')
-        .setText('United States, California, San Mateo,');
-    sheet.getRangeByName('B10').cellStyle.fontSize = 9;
+    sheet.getRangeByIndex(7, 2).setText('Descrizione');
+    sheet.getRangeByIndex(7, 3).setText('Quantità');
+    sheet.getRangeByIndex(7, 4).setText('Costo (€)');
+    sheet.getRangeByIndex(7, 5).setText('Totale (€)');
 
-    sheet.getRangeByName('B11').setText('9920 BridgePointe Parkway,');
-    sheet.getRangeByName('B11').cellStyle.fontSize = 9;
+    sheet.getRangeByIndex(7, 2).columnWidth = 20;
+    sheet.getRangeByIndex(7, 3).columnWidth = 13;
+    sheet.getRangeByIndex(7, 4).columnWidth = 13;
+    sheet.getRangeByIndex(7, 5).columnWidth = 13;
 
-    sheet.getRangeByName('B12').setNumber(9365550136);
-    sheet.getRangeByName('B12').cellStyle.fontSize = 9;
-    sheet.getRangeByName('B12').cellStyle.hAlign = excel.HAlignType.left;
+    sheet.getRangeByIndex(7, 2).cellStyle.bold = true;
+    sheet.getRangeByIndex(7, 3).cellStyle.bold = true;
+    sheet.getRangeByIndex(7, 4).cellStyle.bold = true;
+    sheet.getRangeByIndex(7, 5).cellStyle.bold = true;
 
-    final excel.Range range1 = sheet.getRangeByName('F8:G8');
-    final excel.Range range2 = sheet.getRangeByName('F9:G9');
-    final excel.Range range3 = sheet.getRangeByName('F10:G10');
-    final excel.Range range4 = sheet.getRangeByName('F11:G11');
-    final excel.Range range5 = sheet.getRangeByName('F12:G12');
+    int last = 0;
 
-    range1.merge();
-    range2.merge();
-    range3.merge();
-    range4.merge();
-    range5.merge();
+    for (int i = 0; i < dataBundleNotifier.getCurrentEvent().expenceEvents!.length; i++) {
+      sheet.getRangeByIndex(8+i, 2).setText(dataBundleNotifier.getCurrentEvent().expenceEvents![i].description!);
+      sheet.getRangeByIndex(8+i, 3).setText(dataBundleNotifier.getCurrentEvent().expenceEvents![i].amount!.toStringAsFixed(2).replaceAll('.00', ''));
+      sheet.getRangeByIndex(8+i, 4).setText(dataBundleNotifier.getCurrentEvent().expenceEvents![i].price!.toStringAsFixed(2).replaceAll('.00', ''));
+      sheet.getRangeByIndex(8+i, 5).setText((dataBundleNotifier.getCurrentEvent().expenceEvents![i].amount! * dataBundleNotifier.getCurrentEvent().expenceEvents![i].price!).toStringAsFixed(2).replaceAll('.00', ''));
+      last = i;
+    }
 
-    sheet.getRangeByName('F8').setText('INVOICE#');
-    range1.cellStyle.fontSize = 8;
-    range1.cellStyle.bold = true;
-    range1.cellStyle.hAlign = excel.HAlignType.right;
+    double tot = 0.0;
+    for (var element in dataBundleNotifier.getCurrentEvent().expenceEvents!) {
+      tot = tot + (element.price! * element.amount!);
+    }
 
-    sheet.getRangeByName('F9').setNumber(2058557939);
-    range2.cellStyle.fontSize = 9;
-    range2.cellStyle.hAlign = excel.HAlignType.right;
-
-    sheet.getRangeByName('F10').setText('DATE');
-    range3.cellStyle.fontSize = 8;
-    range3.cellStyle.bold = true;
-    range3.cellStyle.hAlign = excel.HAlignType.right;
-
-    sheet.getRangeByName('F11').dateTime = DateTime(2020, 08, 31);
-    sheet.getRangeByName('F11').numberFormat =
-    '[\$-x-sysdate]dddd, mmmm dd, yyyy';
-    range4.cellStyle.fontSize = 9;
-    range4.cellStyle.hAlign = excel.HAlignType.right;
-
-    range5.cellStyle.fontSize = 8;
-    range5.cellStyle.bold = true;
-    range5.cellStyle.hAlign = excel.HAlignType.right;
-
-    final excel.Range range6 = sheet.getRangeByName('B15:G15');
-    range6.cellStyle.fontSize = 10;
-    range6.cellStyle.bold = true;
-
-    sheet.getRangeByIndex(15, 2).setText('Code');
-    sheet.getRangeByIndex(16, 2).setText('CA-1098');
-    sheet.getRangeByIndex(17, 2).setText('LJ-0192');
-    sheet.getRangeByIndex(18, 2).setText('So-B909-M');
-    sheet.getRangeByIndex(19, 2).setText('FK-5136');
-    sheet.getRangeByIndex(20, 2).setText('HL-U509');
-
-    sheet.getRangeByIndex(15, 3).setText('Description');
-    sheet.getRangeByIndex(16, 3).setText('AWC Logo Cap');
-    sheet.getRangeByIndex(17, 3).setText('Long-Sleeve Logo Jersey, M');
-    sheet.getRangeByIndex(18, 3).setText('Mountain Bike Socks, M');
-    sheet.getRangeByIndex(19, 3).setText('ML Fork');
-    sheet.getRangeByIndex(20, 3).setText('Sports-100 Helmet, Black');
-
-    sheet.getRangeByIndex(15, 3, 15, 4).merge();
-    sheet.getRangeByIndex(16, 3, 16, 4).merge();
-    sheet.getRangeByIndex(17, 3, 17, 4).merge();
-    sheet.getRangeByIndex(18, 3, 18, 4).merge();
-    sheet.getRangeByIndex(19, 3, 19, 4).merge();
-    sheet.getRangeByIndex(20, 3, 20, 4).merge();
-
-    sheet.getRangeByIndex(15, 5).setText('Quantity');
-    sheet.getRangeByIndex(16, 5).setNumber(2);
-    sheet.getRangeByIndex(17, 5).setNumber(3);
-    sheet.getRangeByIndex(18, 5).setNumber(2);
-    sheet.getRangeByIndex(19, 5).setNumber(6);
-    sheet.getRangeByIndex(20, 5).setNumber(1);
-
-    sheet.getRangeByIndex(15, 6).setText('Price');
-    sheet.getRangeByIndex(16, 6).setNumber(8.99);
-    sheet.getRangeByIndex(17, 6).setNumber(49.99);
-    sheet.getRangeByIndex(18, 6).setNumber(9.50);
-    sheet.getRangeByIndex(19, 6).setNumber(175.49);
-    sheet.getRangeByIndex(20, 6).setNumber(34.99);
+    sheet.getRangeByIndex(8+last+2, 2).setText('TOT');
+    sheet.getRangeByIndex(8+last+2, 5).setText(tot.toStringAsFixed(2).replaceAll('.00', '') + ' €' );
+    sheet.getRangeByIndex(8+last+2, 5).cellStyle.bold = true;
 
     final List<int> bytes = workbook.saveAsStream();
     //Dispose the document.
     workbook.dispose();
     final String path = (await getApplicationSupportDirectory()).path;
-    final String fileName = '$path/Output.xlsx';
+    final String fileNamePartial = 'Resoconto_' + dataBundleNotifier.getCurrentEvent().name!
+        + '_' +dataBundleNotifier.getCurrentEvent().location! + '_' + dataBundleNotifier.getCurrentEvent().dateEvent!.toString()!;
+    fileNamePartial.replaceAll(' ', '');
+    final String fileName = '$path/$fileNamePartial.xlsx';
     //Save and launch file.
     final File file = File(fileName);
     await file.writeAsBytes(bytes, flush: true);
     OpenFile.open(fileName);
+  }
+
+  calculateUtile(DataBundleNotifier dataBundleNotifier) {
+    List<RWorkstationProduct> normalizedProd = normalizeProducts(dataBundleNotifier.getCurrentEvent().workstations!);
+
+    double calculateTot = double.parse(calculateTotal(normalizedProd));
+
+    double tot = 0.0;
+    for (var element in dataBundleNotifier.getCurrentEvent().expenceEvents!) {
+      tot = tot + (element.price! * element.amount!);
+    }
+
+    double totSelected = 0.0;
+    for (var exp in selectedExpences) {
+      totSelected = totSelected + (exp.price! * exp.amount!);
+    }
+
+    return Text((calculateTot - (tot - totSelected)).toStringAsFixed(2).replaceAll('.00', ''), style: TextStyle(fontSize: getProportionateScreenWidth(30)),);
+
+
+
   }
 
 }
