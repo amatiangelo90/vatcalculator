@@ -31,8 +31,8 @@ abstract class Swagger extends ChopperService {
         converter: $JsonSerializableConverter(),
         interceptors: interceptors ?? [],
         authenticator: authenticator,
-        baseUrl: baseUrl ??
-            'http://servicedbacorp741w.com:8444/ventimetriquadriservice');
+        baseUrl: Uri.parse(baseUrl ??
+            'http://servicedbacorp741w.com:8444/ventimetriquadriservice'));
     return _$Swagger(newClient);
   }
 

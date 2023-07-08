@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:vat_calculator/constants.dart';
 import 'package:vat_calculator/models/databundlenotifier.dart';
@@ -134,7 +133,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       children: [
                         GestureDetector(
                           onTap: (){
-                            _getFromCamera(dataBundle);
+
                           },
                           child: CircleAvatar(
                             radius: getProportionateScreenHeight(80),
@@ -144,7 +143,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         IconButton(onPressed: (){
-                            _getFromCamera(dataBundle);
+
                           }, icon: Icon(FontAwesomeIcons.camera, color: kCustomGrey, size: getProportionateScreenHeight(20)),),
                         Text(dataBundle.getUserEntity().email!, style: TextStyle(fontSize: getProportionateScreenHeight(20), color: kCustomGrey),),
                       ],
@@ -191,32 +190,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         );
       },
     );
-  }
-
-  static Uint8List dataFromBase64String(String base64String) {
-    return base64Decode(base64String);
-  }
-
-  _getFromCamera(DataBundleNotifier dataBundle) async {
-    XFile? xFile = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (xFile != null) {
-
-      Reference reference = FirebaseStorage.instance.ref();
-      Reference referenceDirImage = reference.child('images');
-      Reference referenceImageToUpload = referenceDirImage.child(dataBundle.getUserEntity().userId.toString());
-      await referenceImageToUpload.putFile(File(xFile.path));
-
-      String imageUrlRetrieved = await referenceImageToUpload.getDownloadURL();
-
-      dataBundle.setImagePhotoUrlToCurrentProfile(imageUrlRetrieved);
-
-
-
-    }
   }
 
 }

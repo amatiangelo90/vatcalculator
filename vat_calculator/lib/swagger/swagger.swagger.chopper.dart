@@ -28,7 +28,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+        Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -42,7 +42,7 @@ class _$Swagger extends Swagger {
     final $body = branch;
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -54,7 +54,7 @@ class _$Swagger extends Swagger {
     final String $url = '/api/v1/app/branches/findall';
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
     );
     return client.send<List<Branch>, Branch>($request);
@@ -74,7 +74,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -90,7 +90,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -106,7 +106,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -123,7 +123,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -137,7 +137,7 @@ class _$Swagger extends Swagger {
     final $body = branch;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -151,7 +151,7 @@ class _$Swagger extends Swagger {
     final $body = branch;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -164,7 +164,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'eventId': eventId};
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -178,7 +178,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'eventId': eventId};
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -192,7 +192,7 @@ class _$Swagger extends Swagger {
     final $body = expenceEvent;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -206,7 +206,7 @@ class _$Swagger extends Swagger {
     final $body = expenceEvent;
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -220,7 +220,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'eventid': eventid};
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -234,7 +234,7 @@ class _$Swagger extends Swagger {
     final $body = expenceEvent;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -250,7 +250,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -266,7 +266,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -280,7 +280,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'eventid': eventid};
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -293,7 +293,7 @@ class _$Swagger extends Swagger {
     final $body = event;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -306,7 +306,7 @@ class _$Swagger extends Swagger {
     final $body = event;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -320,7 +320,7 @@ class _$Swagger extends Swagger {
     final $body = workstation;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -334,7 +334,7 @@ class _$Swagger extends Swagger {
     final $body = workstation;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -348,7 +348,7 @@ class _$Swagger extends Swagger {
     final $body = orderEntity;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -362,7 +362,7 @@ class _$Swagger extends Swagger {
     final $body = orderEntity;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -376,7 +376,7 @@ class _$Swagger extends Swagger {
     final $body = product;
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -388,7 +388,7 @@ class _$Swagger extends Swagger {
     final String $url = '/api/v1/app/products/findall';
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
     );
     return client.send<List<Product>, Product>($request);
@@ -403,7 +403,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -417,7 +417,7 @@ class _$Swagger extends Swagger {
     final $body = product;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -431,7 +431,7 @@ class _$Swagger extends Swagger {
     final $body = product;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -450,7 +450,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -464,7 +464,7 @@ class _$Swagger extends Swagger {
     final $body = storage;
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -483,7 +483,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -499,7 +499,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -515,7 +515,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -531,7 +531,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -550,7 +550,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -564,7 +564,7 @@ class _$Swagger extends Swagger {
     final $body = loadUnloadModel;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -587,7 +587,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -601,7 +601,7 @@ class _$Swagger extends Swagger {
     final $body = storage;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -617,7 +617,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -631,7 +631,7 @@ class _$Swagger extends Swagger {
     final $body = loadUnloadModel;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -645,7 +645,7 @@ class _$Swagger extends Swagger {
     final $body = storage;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -664,7 +664,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -683,7 +683,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -695,7 +695,7 @@ class _$Swagger extends Swagger {
     final String $url = '/api/v1/app/suppliers/findall';
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
     );
     return client.send<List<Supplier>, Supplier>($request);
@@ -710,7 +710,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -724,7 +724,7 @@ class _$Swagger extends Swagger {
     final $body = supplier;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -738,7 +738,7 @@ class _$Swagger extends Swagger {
     final $body = supplier;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -752,7 +752,7 @@ class _$Swagger extends Swagger {
     final $body = userEntity;
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -766,7 +766,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'userId': userId};
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -782,7 +782,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -794,7 +794,7 @@ class _$Swagger extends Swagger {
     final String $url = '/api/v1/app/users/findall';
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
     );
     return client.send<List<UserEntity>, UserEntity>($request);
@@ -807,7 +807,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'email': email};
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -826,7 +826,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -840,7 +840,7 @@ class _$Swagger extends Swagger {
     final $body = userEntity;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -854,7 +854,7 @@ class _$Swagger extends Swagger {
     final $body = userEntity;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -873,7 +873,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -889,7 +889,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -910,7 +910,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -925,7 +925,7 @@ class _$Swagger extends Swagger {
     final $body = workstationLoadUnloadProductList;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -941,7 +941,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -957,7 +957,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'DELETE',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -973,7 +973,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -989,7 +989,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -1007,7 +1007,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -1023,7 +1023,7 @@ class _$Swagger extends Swagger {
     final $body = workstationLoadUnloadProductList;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -1037,7 +1037,7 @@ class _$Swagger extends Swagger {
     final $body = workstation;
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -1049,7 +1049,7 @@ class _$Swagger extends Swagger {
     final String $url = '/api/v1/website/customers/findall';
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
     );
     return client.send<List<Customer>, Customer>($request);
@@ -1062,7 +1062,7 @@ class _$Swagger extends Swagger {
     final Map<String, dynamic> $params = <String, dynamic>{'date': date};
     final Request $request = Request(
       'GET',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -1095,7 +1095,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
@@ -1109,7 +1109,7 @@ class _$Swagger extends Swagger {
     final $body = customer;
     final Request $request = Request(
       'POST',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       body: $body,
     );
@@ -1142,7 +1142,7 @@ class _$Swagger extends Swagger {
     };
     final Request $request = Request(
       'PUT',
-      $url,
+      Uri.parse($url),
       client.baseUrl,
       parameters: $params,
     );
