@@ -9,7 +9,6 @@ final _random = Random();
 const Color kLightYellow = Color(0xFFFFF9EC);
 const Color kLightYellow2 = Color(0xFFFFE4C7);
 const Color kDarkYellow = Color(0xFFF9BE7C);
-
 const Color kRed = Color(0xFFE46472);
 const Color kLavender = Color(0xFFc0a1f0);
 const Color kBlue = Color(0xFF6488E4);
